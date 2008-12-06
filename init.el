@@ -1,4 +1,3 @@
-(require 'cl)
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 
@@ -16,10 +15,15 @@
       (setq tail (cdr tail)))))
 
 
-(extend-load-path-respecting-subdirs "~/lisp" "~/.emacs.d")
+(extend-load-path-respecting-subdirs "~/lisp" dotfiles-dir)
+(setq custom-file (concat dotfiles-dir "/preferences.el"))
 
-(setq custom-file "~/.emacs.d/preferences.el")
+(require 'cl)
+
 (load custom-file)
+(require 'package)
+(package-initialize)
+
 (require 'initscripts)
 
 (defun transpose-chars (arg)
