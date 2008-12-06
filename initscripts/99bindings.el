@@ -1,26 +1,26 @@
 ;;; 99bindings.el --- Misc. global key bindings
 ;; Some custom global key bindings
-(global-set-key "\C-cs"  'calendar)
-(global-set-key "\C-cg"  'goto-line)
-(global-set-key "\C-cc"  'recompile)
-(global-set-key "\C-ca"  'apply-macro-to-region-lines)
-(global-set-key "\C-cw"  'woman)
-(global-set-key "\C-co"  'occur)
-(global-set-key "\M-d"   'kill-word)
-(global-unset-key "\C-z")
+(global-set-key (kbd "C-c s")  'calendar)
+(global-set-key (kbd "C-c g")  'goto-line)
+(global-set-key (kbd "C-c c")  'recompile)
+(global-set-key (kbd "C-c a")  'apply-macro-to-region-lines)
+(global-set-key (kbd "C-c w")  'woman)
+(global-set-key (kbd "C-c o")  'occur)
+(global-set-key (kbd "M-d")   'kill-word)
+(global-unset-key (kbd "C-z"))
 (global-unset-key [insert])
 (global-set-key [M-insert] 'overwrite-mode)
-(global-set-key "\C-ci" 'set-tab-width)
+(global-set-key (kbd "C-c i") 'set-tab-width)
 
 ;; ido -- be powerful!
-;;(global-set-key "\C-x\C-f" 'ido-find-file)
+;;(global-set-key (kbd "C-xC-f") 'ido-find-file)
 
 ;; A few from Steve Yegge that seem to make sense
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command)
-(global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-(global-set-key "\C-c\C-k" 'kill-region)
+(global-set-key (kbd "C-x C-m") 'execute-extended-command)
+(global-set-key (kbd "C-c C-m") 'execute-extended-command)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-c C-k") 'kill-region)
 (defalias 'qrr 'query-replace-regexp)
 
 ;; More, inspired by the Emacs Starter Kit
