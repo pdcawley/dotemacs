@@ -7,31 +7,6 @@
   (interactive "P")
   (set-variable 'tab-width width))
 
-;; RFC fetching
-(defun fetch-rfc (arg)
-  (interactive "MRFC number: ")
-  (let ((name (format "*rfc%s*" arg))
-        (url (format "http://www.ietf.org/rfc/rfc%s.txt" arg)))
-    (if (get-buffer name)
-        (switch-to-buffer name)
-      (switch-to-buffer (url-retrieve-synchronously url))
-      (rename-buffer name)
-      (goto-char (point-min))
-      (while (and (not (looking-at "^$"))
-                  (not (eobp)))
-        (forward-line 1))
-      (forward-line 1)
-      (delete-char (- (1- (point))))
-      (setq buffer-read-only t)
-      (rfcview-mode)
-      (not-modified))))
-
-(add-hook 'rfcview-mode-hook 'llasram/rfcview-extra-keys)
-(defun llasram/rfcview-extra-keys ()
-  (define-key rfcview-mode-map [mouse-1] 'muse-follow-name-at-mouse)
-  (define-key rfcview-mode-map [mouse-2]
-    'muse-follow-name-at-mouse-other-window))
-
 ;; Browse kill-ring
 (require 'browse-kill-ring)
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)

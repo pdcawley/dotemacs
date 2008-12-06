@@ -9,9 +9,9 @@
 
 ;; TODO: make this generic
 
-(add-to-list 'load-path "~/.emacs.d/ruby")
-(add-to-list 'load-path "~/.emacs.d/misc")
-(add-to-list 'load-path "~/.emacs.d/Emacs")
+(add-to-list 'load-path (concat dotfiles-dir "/ruby"))
+(add-to-list 'load-path (concat dotfiles-dir "/misc"))
+(add-to-list 'load-path (concat dotfiles-dir "/Emacs"))
 
 ;; Make sure we have font-lock to start with
 (require 'font-lock)
@@ -35,14 +35,15 @@
 ;; Some minor modes I usually enjoy
 (column-number-mode t)
 
-;; Make sure we have TRAMP
+;; Load up a bunch of common libraries
 (require 'tramp)
-
-;; Load ffap's bindings
 (require 'ffap)
-
-;; URL is one useful library
 (require 'url)
+(require 'saveplace)
+(require 'uniquify)
+(require 'ansi-color)
+(require 'recentf)
+
 
 ;; RELAX-NG editing
 (require 'rnc-mode)
@@ -52,10 +53,10 @@
 (require 'vc)
 (require 'vc-git)
 
-(add-to-list 'load-path "~/.emacs.d/yasnippet")
+(add-to-list 'load-path (concat dotfiles-dir "/yasnippet"))
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+(yas/load-directory (concat dotfiles-dir "/yasnippet/snippets"))
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 

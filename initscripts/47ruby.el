@@ -66,16 +66,6 @@
     (and (null (memq 'font-lock-string-face properties))
          (null (memq 'font-lock-comment-face properties)))))
 
-;; Continuation lines should be indented.  Make it so, commander.
-;(defadvice ruby-calculate-indent
-;  (after ruby-indent-continuation-lines activate)
-;  "Advise ruby-mode to further indent continuation lines."
-;  (save-excursion
-;    (goto-char (point-at-bol))
-;    (skip-chars-backward " \t\n")
-;    (when (eq ?\\ (char-before))
-;      (setq ad-return-value (+ ruby-indent-level ad-return-value)))))
-
 ;; Add the Unit::Test output to the list of regexps understood by the
 ;; compile buffer
 (add-to-list 'compilation-error-regexp-alist
@@ -109,8 +99,3 @@
 
 ;; RI everywhere!
 (define-key help-map "r" 'ri)
-
-;; Semantic wossnames for ruby
-;(require 'wisent-ruby-wy)
-;(require 'wisent-ruby)
-;(add-hook 'ruby-mode-hook 'wisent-ruby-default-setup)
