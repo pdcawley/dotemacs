@@ -1,3 +1,4 @@
 semantic.cache
 flc
 loaddefs.el*
+*.elc
