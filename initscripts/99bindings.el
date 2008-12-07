@@ -87,3 +87,7 @@
 ;; My completions
 ;; isearch -- be sane!
 (define-key isearch-mode-map [backspace] 'isearch-delete-char)
+
+;; Tabkey2 and other expansion related malarkey
+(require 'tabkey2)
+(
