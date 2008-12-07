@@ -90,4 +90,5 @@
 
 ;; Tabkey2 and other expansion related malarkey
 (require 'tabkey2)
-(
+(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
+(tabkey2-mode 1)
