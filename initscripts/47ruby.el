@@ -1,15 +1,11 @@
 ;; 47ruby.el --- Custom ruby-mode configuration
 
-;; Ruby mode
-;(require 'snippet)
-(require 'ruby-mode)
-(require 'ruby-electric)
-(require 'inf-ruby)
-(require 'rubydb)
-(require 'ri-emacs)
-(require 'align)
+(add-to-list 'load-path (concat dotfiles-dir "rinari"))
+(add-to-list 'Info-additional-directory-list
+             (concat dotfiles-dir "rinari/doc"))
 
-
+;; Rinari will fetch ruby-mode, ruby-inf etc...
+(require 'rinari)
 
 ;; Set those modes!
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
