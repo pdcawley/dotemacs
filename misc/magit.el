@@ -41,8 +41,6 @@
 ;; - Get current defun from removed lines in a diff
 ;; - Equivalent of git-wtf, http://git-wt-commit.rubyforge.org/#git-wtf
 ;; - 'Subsetting', only looking at a subset of all files.
-;; - Untracked directories should show one entry, not all contents
-;; - `n' and `p' at the end of the status buffer shouldn't error
 
 (require 'cl)
 (require 'parse-time)
@@ -659,11 +657,6 @@ Many Magit faces inherit from this one by default."
 (defvar magit-highlight-overlay nil)
 
 (defvar magit-highlighted-section nil)
-
-(defvar magit-log-edit-hook nil)
-
-(defvar magit-auto-update nil
-  "Make every save to potentially update the status buffer where applicable.")
 
 (defun magit-highlight-section ()
   (let ((section (magit-current-section)))
@@ -1512,7 +1505,6 @@ in log buffer."
 	(when remote
 	  (magit-insert-unpushed-commits remote branch))))))
 
-;;;###autoload
 (defun magit-status (dir)
   (interactive (list (magit-read-top-dir)))
   (save-some-buffers)
@@ -1978,8 +1970,7 @@ Prefix arg means justify as well."
     (pop-to-buffer buf)
     (setq default-directory dir)
     (magit-log-edit-mode)
-    (message "Type C-c C-c to %s." operation)
-    (run-hooks 'magit-log-edit-hook)))
+    (message "Type C-c C-c to %s." operation)))
 
 (defun magit-log-edit ()
   (interactive)
@@ -2244,19 +2235,6 @@ Prefix arg means justify as well."
   (magit-diff (cons (magit-marked-commit)
 		    (magit-commit-at-point))))
 
-;;; Auto-update
-
-(add-hook 'after-save-hook 'magit-maybe-update-status)
-
-(defun magit-maybe-update-status ()
-  "Update the status buffer for the current buffer if there is one."
-  (when magit-auto-update
-    ;; TODO: is it quicker to just check (vc-git-registered (buffer-file-name)))?
-    (let ((buf (magit-find-status-buffer
-                (magit-get-top-dir (file-name-directory (buffer-file-name))))))
-      (if buf
-          (magit-refresh buf)))))
-
 ;;; Miscellaneous
 
 (defun magit-ignore-file (file edit local)
@@ -2372,4 +2350,3 @@ Prefix arg means justify as well."
      (message "%s" info))))
 
 (provide 'magit)
-;;; magit.el ends here
