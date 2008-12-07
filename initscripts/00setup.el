@@ -60,6 +60,8 @@
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 
 (require 'align)
 
