@@ -31,3 +31,17 @@
   "Face used to dim parentheses."
   :group 'pdc-faces)
 
+(defun regen-autoloads ()
+  "Regenerate the autoload definitions file if necessary and load it."
+  (interactive)
+  (if (or (not (file-exists-p autoload-file))
+          ;; TODO: make this more readable
+          (< (+ (car (nth 5 (file-attributes autoload-file))) 20)
+             (car (current-time))))
+      (let ((generated-autoload-file autoload-file))
+        (message "Updating autoloads...")
+        (update-directory-autoloads dotfiles-dir
+                                    (concat dotfiles-dir "/elpa-to-submit"))))
+  (load autoload-file))
+
+

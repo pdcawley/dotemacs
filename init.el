@@ -16,7 +16,9 @@
 
 
 (extend-load-path-respecting-subdirs "~/lisp" dotfiles-dir)
-(setq custom-file (concat dotfiles-dir "/preferences.el"))
+(setq custom-file (concat dotfiles-dir "preferences.el")
+      autoload-file (concat dotfiles-dir "loaddefs.el"))
+
 
 (require 'cl)
 
@@ -35,6 +37,7 @@ If no argument and at end of line, the previous two chars are exchanged."
   (and (null arg) (or (looking-at "['\"]") (eolp)) (forward-char -1))
   (transpose-subr 'forward-char (prefix-numeric-value arg)))
 
+(regen-autoloads)
 
 
 (put 'narrow-to-region 'disabled nil)
