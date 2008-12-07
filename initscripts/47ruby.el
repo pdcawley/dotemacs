@@ -1,6 +1,7 @@
 ;; 47ruby.el --- Custom ruby-mode configuration
 
 (add-to-list 'load-path (concat dotfiles-dir "rinari"))
+(add-to-list 'load-path (concat dotfiles-dir "rinari/util"))
 (add-to-list 'Info-additional-directory-list
              (concat dotfiles-dir "rinari/doc"))
 
