@@ -45,9 +45,10 @@
 (require 'recentf)
 
 
+
 ;; RELAX-NG editing
 (require 'rnc-mode)
-(add-to-list 'auto-mode-alist '("\\.rnc$" . rnc-mode))
+(update-auto-mode-binding '("\\.rnc\\'" . rnc-mode))
 
 ;; SVN
 (require 'vc)

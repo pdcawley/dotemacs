@@ -9,9 +9,9 @@
 (require 'rinari)
 
 ;; Set those modes!
-(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\(?:^\\|/\\)Rakefile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(update-auto-mode-bindings '(("\\.rb\\'" . ruby-mode)
+                             ("\\(?:^\\|/\\)Rakefile\\'" . ruby-mode)
+                             ("\\.gemspec\\'" . ruby-mode)))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 
 ;; Like c-in-literal, only for Ruby

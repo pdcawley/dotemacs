@@ -21,6 +21,7 @@
 
 
 (require 'cl)
+(require 'pdc-support)
 
 (load custom-file)
 (require 'package)

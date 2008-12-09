@@ -5,4 +5,4 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 
-(add-to-list 'auto-mode-alist '("\\.hs\\'" . haskell-mode))
+(update-auto-mode-binding '("\\.hs\\'" . haskell-mode))

@@ -2,7 +2,7 @@
 
 (require 'yaml-mode)
 
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(update-auto-mode-binding '("\\.yml$" . yaml-mode))
 
 (add-hook 'yaml-mode-hook
  '(lambda ()
