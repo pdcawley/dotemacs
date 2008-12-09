@@ -92,3 +92,13 @@
 (require 'tabkey2)
 (add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
 (tabkey2-mode 1)
+
+;; File type bindings - By doing this last, my desired bindings win
+(update-auto-mode-bindings '(("\\.hs\\'"                 . haskell-mode)
+                             ("\\.yml\\'"                . yaml-mode)
+                             ("\\.rb\\'"                 . ruby-mode)
+                             ("\\(?:^\\|/\\)Rakefile\\'" . ruby-mode)
+                             ("\\.gemspec\\'"            . ruby-mode)
+                             ("\\.rnc\\'"                . rnc-mode)
+                             ("\\.js\\'"                 . js2-mode)))
+                           
