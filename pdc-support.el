@@ -9,4 +9,9 @@
           (setcdr binding mode)
         (add-to-list 'auto-mode-alist (cons pattern mode))))))
 
+(defun update-auto-mode-bindings (alist)
+  (if (listp alist)
+      (mapc #'update-auto-mode-binding alist)
+    (update-automode-binding alist)))
+
 (provide 'pdc-support)
