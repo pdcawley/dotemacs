@@ -69,3 +69,15 @@
 
 ;; Load the rspec snippets
 (yas/load-directory (concat dotfiles-dir "yasnippets-rspec"))
+
+;; Define some snippets here
+(yas/define-snippets
+ 'ruby-mode
+ '(("do"
+   "do
+      $0$>
+    end$>\n" "do ... end" nil)
+   ("doo"
+    "do |${1:each}|
+      $0$>
+     end$>\n" "do |each| ... end" nil)))
