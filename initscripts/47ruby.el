@@ -19,27 +19,6 @@
         (nth 4 state)
         nil)))
 
-;; Like c-electric-backspace, only for Ruby
-(defun ruby-electric-backspace (arg)
-  (interactive "*P")
-  (if (or arg (ruby-in-literal))
-      (backward-delete-char-untabify (prefix-numeric-value arg))
-    (let ((here (point)))
-      (skip-chars-backward " \t")
-      (if (/= (point) here)
-          (delete-region (point) here)
-        (backward-delete-char-untabify 1)))))
-
-(defun ruby-electric-delete (arg)
-  (interactive "*P")
-  (if (or arg (ruby-in-literal))
-      (backward-delete-char-untabify (- (prefix-numeric-value arg)))
-    (let ((here (point)))
-      (skip-chars-forward " \t")
-      (if (/= (point) here)
-          (delete-region (point) here)
-        (backward-delete-char-untabify -1)))))
-
 ;; Pipe the current buffer through mfp's xmpfilter
 (defun ruby-annotate-buffer ()
   "Send the current current buffer to the annotation filter."
@@ -83,11 +62,22 @@
 (add-hook 'ruby-mode-hook 'llasram/ruby-extra-keys)
 (defun llasram/ruby-extra-keys ()
   (define-key ruby-mode-map "\C-m"      'reindent-then-newline-and-indent)
-  (define-key ruby-mode-map " "         'ruby-electric-space)
-  (define-key ruby-mode-map [backspace] 'ruby-electric-backspace)
-  (define-key ruby-mode-map [delete]    'ruby-electric-delete)
-  (define-key ruby-mode-map "\C-d"      'ruby-electric-delete)
   (define-key ruby-mode-map "\C-c\C-a"  'ruby-annotate-buffer))
 
 ;; RI everywhere!
 (define-key help-map "r" 'ri)
+
+;; Load the rspec snippets
+(yas/load-directory (concat dotfiles-dir "yasnippets-rspec"))
+
+;; Define some snippets here
+(yas/define-snippets
+ 'ruby-mode
+ '(("do"
+   "do
+      $0$>
+    end$>\n" "do ... end" nil)
+   ("doo"
+    "do |${1:each}|
+      $0$>
+     end$>\n" "do |each| ... end" nil)))
