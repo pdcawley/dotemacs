@@ -2,8 +2,6 @@
 
 (add-to-list 'load-path (concat dotfiles-dir "rinari"))
 (add-to-list 'load-path (concat dotfiles-dir "rinari/util"))
-(add-to-list 'Info-additional-directory-list
-             (concat dotfiles-dir "rinari/doc"))
 
 ;; Rinari will fetch ruby-mode, ruby-inf etc...
 (require 'rinari)
