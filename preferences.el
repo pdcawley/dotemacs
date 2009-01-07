@@ -24,6 +24,7 @@
  '(global-auto-revert-mode t)
  '(global-font-lock-mode t nil (font-lock))
  '(grep-command "grep -n -e")
+ '(haskell-program-name "ghci")
  '(hippie-expand-try-functions-list (quote (try-complete-abbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
  '(ido-auto-merge-work-directories-length -1)
  '(ido-case-fold t)
@@ -33,7 +34,7 @@
  '(ido-mode (quote both) nil (ido))
  '(ido-show-dot-for-dired nil)
  '(ido-use-filename-at-point nil)
- '(indent-region-mode t)
+ '(indent-region-mode t t)
  '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote right))
  '(indicate-empty-lines t)
@@ -60,7 +61,7 @@
  '(nxhtml-default-encoding (quote utf-8))
  '(nxhtml-global-minor-mode t)
  '(nxhtml-global-validation-header-mode t)
- '(nxhtml-skip-welcome t)
+ '(nxhtml-skip-welcome t t)
  '(nxml-attribute-indent 2)
  '(nxml-slash-auto-complete-flag t)
  '(overflow-newline-into-fringe t)
@@ -85,4 +86,4 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-)
+ )
