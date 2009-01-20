@@ -7,3 +7,6 @@
 [submodule "yasnippets-rspec"]
 	path = yasnippets-rspec
 	url = git://github.com/gary/yasnippets-rspec.git
+[submodule "cperl-mode"]
+	path = cperl-mode
+	url = git://github.com/jrockway/cperl-mode.git

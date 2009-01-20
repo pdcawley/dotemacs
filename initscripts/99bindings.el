@@ -56,6 +56,10 @@
 
 (windmove-default-keybindings)
 
+;; Perly
+(require 'cperl-mode)
+(define-key cperl-mode-map (kbd "RET") 'newline-and-indent)
+
 ;; Lispy
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
@@ -92,6 +96,19 @@
 (require 'tabkey2)
 (add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
 (tabkey2-mode 1)
+
+;; vi-like %
+(global-set-key "%" 'match-paren)
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren; otherwise insert %."
+  (interactive "p")
+  (let ((prev-char (char-to-string (preceding-char)))
+        (next-char (char-to-string (following-char))))
+    (cond ((string-match "[[{(<]" next-char) (forward-sexp 1))
+          ((string-match "[\]})>]" prev-char) (backward-sexp 1))
+          (t (self-insert-command (or arg 1))))))
+
+
 
 ;; File type bindings - By doing this last, my desired bindings win
 (update-auto-mode-bindings '(("\\.hs\\'"                 . haskell-mode)

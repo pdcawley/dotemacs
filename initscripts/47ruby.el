@@ -75,9 +75,16 @@
  'ruby-mode
  '(("do"
    "do
-      $0$>
-    end$>\n" "do ... end" nil)
+  $0
+end" "do ... end" nil)
    ("doo"
     "do |${1:each}|
-      $0$>
-     end$>\n" "do |each| ... end" nil)))
+  $0`(indent-according-to-mode)
+end`(indent-according-to-mode)" "do |each| ... end" nil)
+   ("L.noargs"
+    "lambda {
+  $0
+}" "lambda { ... }")
+   ("L.args" "lambda{|${1:args}|
+  $0
+}" "lambda {|args| ... }")))
