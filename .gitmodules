@@ -10,3 +10,6 @@
 [submodule "cperl-mode"]
 	path = cperl-mode
 	url = git://github.com/jrockway/cperl-mode.git
+[submodule "cucumber-mode"]
+	path = cucumber-mode
+	url = git://github.com/michaelklishin/cucumber.el.git
