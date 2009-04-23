@@ -23,4 +23,3 @@
   (interactive "*")                                 
   (switch-to-buffer "module-template-pm")
   (insert-file "~/.code_templates/perl_module.pm"))
-

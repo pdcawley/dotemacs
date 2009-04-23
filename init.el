@@ -19,10 +19,11 @@
 (setq custom-file (concat dotfiles-dir "preferences.el")
       autoload-file (concat dotfiles-dir "loaddefs.el"))
 
+(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
 
 (require 'cl)
 (require 'pdc-support)
-
+(message "foo")
 (load custom-file)
 (require 'package)
 (package-initialize)
@@ -44,4 +45,4 @@ If no argument and at end of line, the previous two chars are exchanged."
 (put 'narrow-to-region 'disabled nil)
 
 (set-face-attribute 'default nil
-                    :family "TheSansMonoCd Office" :height 140)
+                    :height 160)
