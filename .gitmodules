@@ -1,9 +1,6 @@
 [submodule "rinari"]
 	path = rinari
 	url = git@github.com:pdcawley/rinari.git
-[submodule "yasnippet"]
-	path = yasnippet
-	url = git://github.com/defunkt/yasnippet.git
 [submodule "yasnippets-rspec"]
 	path = yasnippets-rspec
 	url = git://github.com/gary/yasnippets-rspec.git
