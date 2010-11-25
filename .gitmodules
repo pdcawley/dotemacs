@@ -10,3 +10,9 @@
 [submodule "cucumber-mode"]
 	path = cucumber-mode
 	url = git://github.com/michaelklishin/cucumber.el.git
+[submodule "coffee-mode"]
+	path = coffee-mode
+	url = https://github.com/defunkt/coffee-mode.git
+[submodule "html5-el"]
+	path = html5-el
+	url = https://github.com/hober/html5-el.git
