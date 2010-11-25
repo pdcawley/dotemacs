@@ -4,3 +4,6 @@ loaddefs.el*
 *.elc
 *.rnc
 bookmarks
+org-clock-save.el
+server
+url
