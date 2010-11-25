@@ -1,9 +1,6 @@
 [submodule "rinari"]
 	path = rinari
 	url = git@github.com:pdcawley/rinari.git
-[submodule "yasnippets-rspec"]
-	path = yasnippets-rspec
-	url = git://github.com/gary/yasnippets-rspec.git
 [submodule "cperl-mode"]
 	path = cperl-mode
 	url = git://github.com/jrockway/cperl-mode.git
@@ -16,3 +13,6 @@
 [submodule "html5-el"]
 	path = html5-el
 	url = https://github.com/hober/html5-el.git
+[submodule "org-mode"]
+	path = org-mode
+	url = ./org-mode
