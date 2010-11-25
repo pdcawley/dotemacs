@@ -1,13 +1,15 @@
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(auto-save-interval 300)
  '(blink-cursor-mode nil)
  '(blink-matching-paren-distance 51200)
  '(buffers-menu-show-directories (quote unless-uniquify))
+ '(coffee-command "/usr/local/bin/coffee")
  '(compilation-error-screen-columns nil)
+ '(confluence-url "https://confluence.dev.bbc.co.uk/rpc/xmlrpc")
  '(cperl-close-paren-offset -4)
  '(cperl-continued-statement-offset 0)
  '(cperl-indent-level 4)
@@ -15,7 +17,7 @@
  '(cperl-merge-trailing-else nil)
  '(cperl-tab-always-indent t)
  '(current-language-environment "English")
- '(cursor-type (quote box) t)
+ '(cursor-type (quote bar) t)
  '(default-fill-column 78 t)
  '(default-frame-alist (quote ((top . 50) (left . 100) (width . 110) (height . 40) (cursor-color . "#dcdccc") (tool-bar-lines . 0) (menu-bar-lines . 1))))
  '(default-input-method nil)
@@ -55,6 +57,7 @@
  '(ido-mode (quote both) nil (ido))
  '(ido-show-dot-for-dired nil)
  '(ido-use-filename-at-point nil)
+ '(imap-ssl-program (quote ("openssl s_client -connect %s:%p -cert /Users/pdcawley/certs/pdcawley.pem -CAfile /Users/pdcawley/certs/dev-services-chain.pem" "s_client -connect %s:%p -cert /Users/pdcawley/certs/pdcawley.pem -CAfile /Users/pdcawley/certs/dev-services-chain.pem" "openssl s_client -quiet -ssl3 -connect %s:%p" "openssl s_client -quiet -ssl2 -connect %s:%p" "s_client -quiet -ssl3 -connect %s:%p" "s_client -quiet -ssl2 -connect %s:%p")))
  '(indent-region-mode t t)
  '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote right))
@@ -86,15 +89,20 @@
  '(ns-command-modifier (quote alt))
  '(ns-use-qd-smoothing nil)
  '(ns-use-system-highlight-color nil t)
+ '(org-agenda-files (quote ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org" "~/Dropbox/org/bbc.org")))
+ '(org-link-abbrev-alist (quote (("cpan" . "http://search.cpan.org/dist/") ("cpansearch" . "http://search.cpan.org/search?mode=module&query=") ("jira" . "https://jira.dev.bbc.co.uk/browse/") ("gmap" . "http://maps.google.com/maps?q=%s"))))
+ '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-jsinfo org-habit org-inlinetask org-irc org-mac-message org-mew org-mhe org-protocol org-rmail org-vm org-wl org-w3m org-mouse org-annotate-file org-checklist org-elisp-symbol org-mac-iCal org-mac-link-grabber org-man)))
+ '(org-protocol-default-template-key "w")
+ '(org-startup-indented t)
  '(overflow-newline-into-fringe t)
  '(pc-selection-mode nil)
  '(rails-always-use-text-menus t)
- '(require-final-newline (quote visit-save))
+ '(require-final-newline t)
  '(scroll-conservatively 0)
  '(scroll-preserve-screen-position t)
  '(scroll-step 0)
  '(server-mode t)
- '(server-use-tcp nil)
+ '(server-use-tcp t)
  '(show-paren-style (quote parenthesis))
  '(slime-autodoc-use-multiline-p t)
  '(slime-complete-symbol*-fancy t)
@@ -103,6 +111,8 @@
  '(temp-buffer-max-height (lambda (buffer) (/ (- (frame-height) 2) 3)))
  '(temp-buffer-resize-mode nil)
  '(text-mode-hook (quote (text-mode-hook-identify)))
+ '(tls-checktrust (quote ask))
+ '(tls-program (quote ("openssl s_client -connect %h:%p -CAfile /Users/pdcawley/certs/dev-services-chain.pem -cert /Users/pdcawley/certs/pdcawley.pem" "gnutls-cli --priority secure256 --x509cafile /Users/pdcawley/certs/dev-services-chain.pem --x509certfile /Users/pdcawley/certs/pdcawley.pem -p %p %h")))
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
  '(uniquify-separator ":")
  '(visible-bell nil)
@@ -110,12 +120,14 @@
  '(woman-use-own-frame nil))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))))
  '(autoface-default ((t (:inherit default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))))
+ '(cperl-array-face ((t (:inherit font-lock-variable-name :weight bold))))
  '(latex-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "Lucida Grande"))) t)
+ '(org-hide ((t (:foreground "controlColor"))))
  '(org-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
  '(text-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t))
