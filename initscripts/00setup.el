@@ -12,9 +12,14 @@
 (add-to-list 'load-path (concat dotfiles-dir "/ruby"))
 (add-to-list 'load-path (concat dotfiles-dir "/misc"))
 (add-to-list 'load-path (concat dotfiles-dir "/Emacs"))
+(add-to-list 'load-path (concat dotfiles-dir "/html5-el"))
+(add-to-list 'load-path (concat dotfiles-dir "/coffee-mode"))
 
 ;; Make sure we have font-lock to start with
 (require 'font-lock)
+(require 'zenburn)
+(color-theme-zenburn)
+(global-hl-line-mode t)
 
 ;; Just say no to splash screens
 (setq inhibit-startup-message t)

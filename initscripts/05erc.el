@@ -118,3 +118,17 @@ you'll change the colors used for nicks."
 
 ;; This adds the ERC message insert hook.
 (add-hook 'erc-insert-modify-hook 'my-erc-colorize-nick)
+
+;; Setup the gear to connect to forge irc.
+(require 'tls)
+(defun start-irc ()
+  "Connect to IRC."
+  (interactive)
+  (erc-tls :server "irc.dev.bbc.co.uk"
+           :port 6697
+           :nick "PiersCawley"
+           :full-name "Piers Cawley")
+  (erc     :server "irc.perl.org" :port 6667)
+  (erc     :server "irc.filknet.org" :port 6667)
+  (erc     :server "irc.runstate.com" :port 6667)
+  (erc     :server "irc.freenode.net" :port 6667))

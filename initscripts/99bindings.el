@@ -69,7 +69,7 @@
 (global-set-key (kbd "C-x m") 'eshell)
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
-(global-set-key (kbd "C-h c") 'cheat)
+(global-set-key (kbd "A-s") 'save-buffer)
 
 (eval-after-load 'vc
   (define-key vc-prefix-map (kbd "i")
