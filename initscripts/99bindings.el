@@ -5,7 +5,7 @@
 (global-set-key (kbd "C-c c")  'recompile)
 (global-set-key (kbd "C-c a")  'apply-macro-to-region-lines)
 (global-set-key (kbd "C-c w")  'woman)
-(global-set-key (kbd "C-c o")  'occur)
+(global-set-key (kbd "C-c o o")  'occur)
 (global-set-key (kbd "M-d")   'kill-word)
 (global-unset-key (kbd "C-z"))
 (global-unset-key [insert])
@@ -48,8 +48,8 @@
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
+(global-set-key (kbd "C-A-s") 'isearch-forward)
+(global-set-key (kbd "C-A-r") 'isearch-backward)
 
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)

@@ -45,6 +45,7 @@
 ;(setq compilation-error-regexp-alist (cdr compilation-error-regexp-alist))
 
 ;; Alignment
+(require 'align)
 (add-to-list 'align-rules-list
              '(ruby-comma-delimiter
                (regexp . ",\\(\\s-*\\)[^# \t\n]")
@@ -68,15 +69,14 @@
 (define-key help-map "r" 'ri)
 
 ;; Load the rspec snippets
-(yas/load-directory (concat dotfiles-dir "yasnippets-rspec"))
-
+(require 'yasnippet)
 ;; Define some snippets here
 (yas/define-snippets
  'ruby-mode
  '(("do"
    "do
-  $0
-end" "do ... end" nil)
+  $0$>
+end$>" "do ... end" nil)
    ("doo"
     "do |${1:each}|
   $0`(indent-according-to-mode)

@@ -442,6 +442,8 @@ static char *gnus-pointer[] = {
        ((t (:inherit font-lock-doc))))
      '(custom-documentation
        ((t (:inherit font-lock-doc))))
+     '(custom-link
+       ((t (:inherit zenburn-yellow :underline t))))
      '(custom-tag
        ((t (:inherit zenburn-primary-2))))
      '(custom-group-tag

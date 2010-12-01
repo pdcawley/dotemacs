@@ -406,31 +406,43 @@ Late deadlines first, then scheduled, then non-late deadlines"
      ((pdc/agenda-sort-test 'pdc/is-due-deadline a b))
      ((pdc/agenda-sort-test-num 'pdc/is-scheduled-late '> a b))
      ((pdc/agenda-sort-test 'pdc/is-scheduled-today a b))
-     ((pdc/agenda-sort-test-num 'pdc-is-pending-deadline '< a b))
+     ((pdc/agenda-sort-test-num 'pdc/is-pending-deadline '< a b))
      (t (setq result nil)))
-    result))
+    result))    
 
 (defmacro pdc/agenda-sort-test (fn a b)
   "Test for agenda sort"
-  `(setq result
-    (cond
-     ((and (,fn ,@a) (,fn ,@b)) nil)
-     ((,fn ,@a) (if (,fn ,@b) nil -1)
-     ((,fn ,@b) 1)
-     (t nil)))))
+  `(cond
+                                        ; if both match leave them unsorted
+    ((and (apply ,fn (list ,a))
+          (apply ,fn (list ,b)))
+     (setq result nil))
+                                        ; if a matches put a first
+    ((apply ,fn (list ,a))
+                                        ; if b also matches leave unsorted
+     (if (apply ,fn (list ,b))
+         (setq result nil)
+       (setq result -1)))
+                                        ; otherwise if b matches put b first
+    ((apply ,fn (list ,b))
+     (setq result 1))
+                                        ; if none match leave them unsorted
+    (t nil)))
 
-(defmacro pdc/agenda-sort-test-num (fn cmpfn a b)
-  `(setq result
-    (cond
-     ((,fn ,@a)
-      (setq num-a (string-to-number (match-string 1 ,a)))
-      (if (,fn ,@b)
-          (progn
-            (setq num-b (string-to-number (match-string 1 ,b)))
-            (if (,compfn num-a num-b) -1 1))
-        -1))
-     ((,fn ,@b) 1)
-     (t nil))))
+(defmacro pdc/agenda-sort-test-num (fn compfn a b)
+  `(cond
+    ((apply ,fn (list ,a))
+     (setq num-a (string-to-number (match-string 1 ,a)))
+     (if (apply ,fn (list ,b))
+         (progn
+           (setq num-b (string-to-number (match-string 1 ,b)))
+           (setq result (if (apply ,compfn (list num-a num-b))
+                            -1
+                          1)))
+       (setq result -1)))
+    ((apply ,fn (list ,b))
+     (setq result 1))
+    (t nil)))
 
 (defun pdc/is-not-scheduled-or-deadline (date-str)
   (and (not (pdc/is-deadline date-str))
@@ -589,6 +601,11 @@ Late deadlines first, then scheduled, then non-late deadlines"
                   (unless (buffer-modified-p)
                     (kill-buffer (current-buffer)))
                   (delete-frame)))
+
+
+;; MobileOrg support
+(setq org-mobile-directory "~/Dropbox/MobileOrg")
+(add-to-list 'file-coding-system-alist '("\.org" . utf-8))
 
 (require 'appt)
 (defun pdc/org-agenda-to-appt ()

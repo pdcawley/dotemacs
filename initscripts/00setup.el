@@ -1,4 +1,4 @@
-;;; 00setup.el --- Personal initial setup code
+;;; 00setup.el --- Personal initial setup code    
 
 ;; Copyright (c) 2006 Marshall T. Vandegrift
 
@@ -9,11 +9,13 @@
 
 ;; TODO: make this generic
 
-(add-to-list 'load-path (concat dotfiles-dir "/ruby"))
-(add-to-list 'load-path (concat dotfiles-dir "/misc"))
-(add-to-list 'load-path (concat dotfiles-dir "/Emacs"))
-(add-to-list 'load-path (concat dotfiles-dir "/html5-el"))
-(add-to-list 'load-path (concat dotfiles-dir "/coffee-mode"))
+(add-to-list 'load-path (concat dotfiles-dir "ruby/"))
+(add-to-list 'load-path (concat dotfiles-dir "misc/"))
+(add-to-list 'load-path (concat dotfiles-dir "Emacs/"))
+(add-to-list 'load-path (concat dotfiles-dir "html5-el/"))
+(add-to-list 'load-path (concat dotfiles-dir "coffee-mode/"))
+(add-to-list 'load-path (concat dotfiles-dir "twittering-mode/"))
+(add-to-list 'load-path (concat dotfiles-dir "yasnippet/"))
 
 ;; Make sure we have font-lock to start with
 (require 'font-lock)

@@ -21,6 +21,8 @@
 
 (setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
 
+(setq server-auth-dir (expand-file-name "~/server/"))
+
 (require 'cl)
 (require 'pdc-support)
 (message "foo")

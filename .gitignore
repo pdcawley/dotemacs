@@ -7,3 +7,9 @@ bookmarks
 org-clock-save.el
 server
 url
+.org-id-locations
+*.elc
+*~
+\#*#
+.\#*\#
+
