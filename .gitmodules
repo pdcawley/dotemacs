@@ -19,3 +19,9 @@
 [submodule "yasnippet"]
 	path = yasnippet
 	url = https://github.com/emacsmirror/yasnippet.git
+[submodule "shime"]
+	path = shime
+	url = https://github.com/chrisdone/shime.git
+[submodule "gnus"]
+	path = gnus
+	url = https://github.com/emacsmirror/gnus.git
