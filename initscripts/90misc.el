@@ -76,7 +76,6 @@
 
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;;; TextMate style yank and indent - lifted from the EmacsWiki and tweaked for DRYness
 
@@ -153,3 +152,9 @@ Helper method for 'yank' advice"
                     nil))))))
 
 (add-hook 'lisp-mode-hook 'pretty-lambdas)
+
+;; Keyboard macros too handy to lose
+
+(fset 'pdc:mxd-method->sub
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([1 M-right M-backspace 115 117 98 M-right 134217820 11 32 123 return 109 121 25 backspace 61 32 64 95 59 1 M-right right 36 115 101 108 102 44 32 1 67108896 down 21 134217852 102 105 120 117 112 45 112 97 114 97 109 115 return 19 109 101 116 104 111 100 1] 0 "%d")) arg)))
+(global-set-key [f6] 'pdc:mxd-method->sub)

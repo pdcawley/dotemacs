@@ -16,6 +16,8 @@
 (add-to-list 'load-path (concat dotfiles-dir "coffee-mode/"))
 (add-to-list 'load-path (concat dotfiles-dir "twittering-mode/"))
 (add-to-list 'load-path (concat dotfiles-dir "yasnippet/"))
+(add-to-list 'load-path (concat dotfiles-dir "gnus/lisp/"))
+(add-to-list 'load-path (concat dotfiles-dir "shime/"))
 
 ;; Make sure we have font-lock to start with
 (require 'font-lock)

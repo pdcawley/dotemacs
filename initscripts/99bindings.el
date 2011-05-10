@@ -18,10 +18,11 @@
 ;; A few from Steve Yegge that seem to make sense
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-c C-k") 'kill-region)
+;(global-set-key (kbd "C-w") 'backward-kill-word)
+;(global-set-key (kbd "C-x C-k") 'kill-region)
+;(global-set-key (kbd "C-c C-k") 'kill-region)
 (defalias 'qrr 'query-replace-regexp)
+(defalias 'rr  'replace-regexp)
 
 ;; More, inspired by the Emacs Starter Kit
 (defgroup pdc nil

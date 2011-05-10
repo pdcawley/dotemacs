@@ -3,9 +3,6 @@
 (add-to-list 'load-path (concat dotfiles-dir "rinari"))
 (add-to-list 'load-path (concat dotfiles-dir "rinari/util"))
 
-;; Rinari will fetch ruby-mode, ruby-inf etc...
-(require 'rinari)
-
 ;; Set those modes!
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 

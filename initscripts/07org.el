@@ -10,13 +10,14 @@
           (lambda ()
             (make-variable-buffer-local 'yas/trigger-key)
             (org-set-local 'yas/trigger-key [tab])
-            (define-key yas/keymap [tab] 'yas/next-field-group)))
+            (define-key yas/keymap [tab] 'yas/next-field-or-maybe-expand)))
 
 
 (setq org-link-abbrev-alist
       '(("cpan" . "http://search.cpan.org/dist/")
         ("cpansearch" . "http://search.cpan.org/search?mode=module&query=")
         ("jira" . "https://jira.dev.bbc.co.uk/browse/")
+        ("MS"   . "https://jira.dev.bbc.co.uk/browse/MEDIASELECTOR-")
         ("gmap" . "http://maps.google.com/maps?q=%s")))
 (setq org-startup-indented t)
 (setq org-directory "~/Dropbox/org/")
@@ -26,7 +27,7 @@
 (setq org-odd-levels-only t)
 
 (setq org-todo-keywords
-  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+  '((sequence "TODO(t)" "NEXT(n)" "TOREVIEW(R)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
     (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
     (sequence "OPEN(O)" "|" "CLOSED(C)")))
 
@@ -39,16 +40,25 @@
          ("WAITING" . t))
         ("SOMEDAY"
          ("WAITING" . t))
+        (("WONTFIX")
+         ("CANCELLED" . t)
+         ("WONTFIX" . t))
         (done
          ("WAITING"))
         ("TODO"
          ("WAITING")
-         ("CANCELLED"))
+         ("CANCELLED")
+         ("WONTFIX"))
         ("NEXT"
-         ("WAITING"))
+         ("WAITING")
+         ("WONTFIX"))
+        ("TOREVIEW"
+         ("WAITING")
+         ("WONTFIX"))
         ("DONE"
          ("WAITING")
-         ("CANCELLED"))))
+         ("CANCELLED")
+         ("WONTFIX"))))
 
 (defun pdc/clock-in-to-next (kw)
   "Switch task from TODO to NEXT when clocking in.
@@ -76,19 +86,23 @@ Skips capture tasks and tasks with subtasks"
 (add-hook 'org-clock-out-hook 'pdc/remove-empty-drawer-on-clock-out)
 
 (setq org-capture-templates
- '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-        "* TODO %?  %U\n  %a" :clock-in t :clock-resume t)
-   ("n" "notes" entry (file+headline org-default-notes-file "Inbox and Notes")
-    "* %?\n  \%U\n  %a\n  :CLOCK:\n  :END:" :clock-in t :clock-resume t)
-   ("w" "Default template" entry (file+headline org-default-notes-file "Inbox and Notes")
-    "*** TODO Review %c\n  %U\n  %i" :immediate-finish t :clock-in t :clock-resume t)
-   ("b" "blog" entry (file (concat org-directory "/blog.org"))
-    "* %U %?\n\n  %i\n  %a")
-   ("a" "technology" entry (file (concat org-directory "/technology.org"))
-    "* %U %?\n\n  %i\n  %a")))
+   '(("J" "Jira Task" entry (file+headline org-default-notes-file "Tasks")
+      "* TODO [[MS:%^{Ticket #}][MEDIASELECTOR-%?]]" :clock-in t :clock-resume t)
+     ("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
+      "* TODO %?  %U\n  %a" :clock-in t :clock-resume t)
+     ("n" "notes" entry (file+headline org-default-notes-file "Inbox and Notes")
+      "* %?\n  \%U\n  %a\n  :CLOCK:\n  :END:" :clock-in t :clock-resume t)
+     ("w" "Default template" entry
+      (file+headline org-default-notes-file "Inbox and Notes")
+      "*** TODO Review %c\n  %U\n  %i"
+      :immediate-finish t :clock-in t :clock-resume t)
+     ("b" "blog" entry (file (concat org-directory "/blog.org"))
+      "* %U %?\n\n  %i\n  %a")
+     ("a" "technology" entry (file (concat org-directory "/technology.org"))
+      "* %U %?\n\n  %i\n  %a")))
 
 (setq org-completion-use-ido t)
-(setq org-refile-targets '((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5)))
+(setq org-refile-targets '((org-genda-files :maxlevel . 5) (nil :maxlevel . 5)))
 (setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -100,7 +114,7 @@ Skips capture tasks and tasks with subtasks"
                     path
                   (concat org-directory path)))
               '("codex.org" "blog.org" "todo.org" "technology.org"
-                "journal.org" "bbc.org")))
+                "journal.org" "bbc.org" "coding.org")))
 
 (defvar org-journal-file "~/Dropbox/org/journal.org"
   "Path to OrgMode journal file.")
@@ -569,7 +583,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (global-set-key (kbd "C-c o c") 'org-capture)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "<f5>") 'pdc/org-todo)
+(global-set-key (kbd "<f5>") 'pdc/org-todo)    
 (global-set-key (kbd "<S-f5>") 'pdc/widen)
 (global-set-key (kbd "<f9> t") 'pdc/insert-inactive-timestamp)
 

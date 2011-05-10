@@ -3,6 +3,7 @@
 (add-to-list 'load-path (concat dotfiles-dir "/cperl-mode"))
 
 (defalias 'perl-mode 'cperl-mode)
+(add-to-list 'auto-mode-alist '("\\.t" . perl-mode))
 
 ;; Load an application template in a new unattached buffer...
 
