@@ -129,6 +129,6 @@ you'll change the colors used for nicks."
            :nick "PiersCawley"
            :full-name "Piers Cawley")
   (erc     :server "irc.perl.org" :port 6667)
-;  (erc     :server "irc.filknet.org" :port 6667)
+  (erc     :server "irc.filknet.org" :port 6667)
   (erc     :server "irc.runstate.com" :port 6667)
   (erc     :server "irc.freenode.net" :port 6667))

@@ -18,6 +18,7 @@
 (add-to-list 'load-path (concat dotfiles-dir "yasnippet/"))
 (add-to-list 'load-path (concat dotfiles-dir "gnus/lisp/"))
 (add-to-list 'load-path (concat dotfiles-dir "shime/"))
+(add-to-list 'load-path (concat dotfiles-dir "emacs-color-theme-solarized/"))
 
 ;; Make sure we have font-lock to start with
 (require 'font-lock)

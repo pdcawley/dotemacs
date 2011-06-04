@@ -12,4 +12,6 @@ url
 *~
 \#*#
 .\#*\#
-
+session.*
+tramp
+initscripts/99passwords.el
