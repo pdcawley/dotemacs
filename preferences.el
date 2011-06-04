@@ -134,6 +134,7 @@
  '(cperl-array-face ((t (:inherit font-lock-variable-name :weight bold))))
  '(cperl-hash-face ((t (:inherit font-lock-variable-name-face))))
  '(latex-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "Lucida Grande"))) t)
+ '(link ((((class color) (min-colors 88) (background light)) (:foreground "blue1" :underline t)) (((class color) (background light)) (:foreground "blue" :underline t)) (((class color) (min-colors 88) (background dark)) (:foreground zenburn-yellow-2 :underline t)) (((class color) (background dark)) (:foreground zenburn-yellow-2 :underline t)) (t (:inherit underline))))
  '(org-hide ((t (:foreground "controlColor"))))
  '(org-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
  '(text-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t))
