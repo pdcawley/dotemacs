@@ -376,6 +376,8 @@ static char *gnus-pointer[] = {
      '(show-paren-mismatch ((t (:inherit font-lock-warning))))
      '(show-paren-match ((t (:inherit font-lock-keyword))))
      '(match ((t (:weight bold))))
+     '(link
+       ((t (:inherit zenburn-yellow :underline t))))
 
      `(cursor ((t (:background ,zenburn-fg :foreground ,zenburn-bg))))
      '(hover-highlight ((t (:underline t :foreground "#f8f893"))))
