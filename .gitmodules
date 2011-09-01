@@ -28,3 +28,6 @@
 [submodule "emacs-color-theme-solarized"]
 	path = emacs-color-theme-solarized
 	url = https://github.com/sellout/emacs-color-theme-solarized.git
+[submodule "geiser"]
+	path = geiser
+	url = http://git.sv.gnu.org/r/geiser.git
