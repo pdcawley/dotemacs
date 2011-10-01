@@ -12,15 +12,15 @@
 (global-set-key [M-insert] 'overwrite-mode)
 (global-set-key (kbd "C-c i") 'set-tab-width)
 
-;; ido -- be powerful!
 ;;(global-set-key (kbd "C-xC-f") 'ido-find-file)
 
 ;; A few from Steve Yegge that seem to make sense
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
-;(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-w") 'backward-kill-word)
 ;(global-set-key (kbd "C-x C-k") 'kill-region)
-;(global-set-key (kbd "C-c C-k") 'kill-region)
+(global-set-key (kbd "C-x t") 'beginning-of-buffer)
+(global-set-key (kbd "C-c C-k") 'kill-region)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'rr  'replace-regexp)
 

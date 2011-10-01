@@ -29,6 +29,8 @@
 (load custom-file)
 (require 'package)
 (add-to-list 'package-archives
+             '("ELPA" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 

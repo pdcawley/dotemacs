@@ -73,7 +73,14 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
 (require 'align)
+
+(setq pdc:elisp-external-dir
+      (expand-file-name "elisp/external" dotfiles-dir))
+
+(dolist (project (directory-files pdc:elisp-external-dir t "\\w+"))
+  (when (file-directory-p project)
+    (add-to-list 'load-path project)))
+                 
 
 ;; end 00setup.el

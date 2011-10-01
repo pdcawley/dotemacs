@@ -6,8 +6,7 @@
 (require 'whattf-dt)
 (load "nxhtml/autostart")
 
-(setq mumamo-chunk-coloring 'submode-colored
-      nxhtml-skip-welcome t
+(setq nxhtml-skip-welcome t
       indent-region-mode t
       rng-nxml-auto-validate-flag nil)
 

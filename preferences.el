@@ -50,6 +50,8 @@
  '(footnote-section-tag-regexp "Footnotes\\(\\[.\\]\\)?: *")
  '(footnote-use-message-mode nil)
  '(frame-background-mode (quote light))
+ '(geiser-guile-binary "/usr/local/bin/guile")
+ '(geiser-racket-binary "/Applications/Racket/bin/racket")
  '(global-auto-revert-mode t)
  '(grep-command "grep -n -e")
  '(haskell-program-name "/usr/bin/ghci")
@@ -84,6 +86,12 @@
  '(mac-key-mode-hook nil)
  '(mac-wheel-button-is-mouse-2 t t)
  '(max-specpdl-size 10000)
+ '(mode-line-position (quote ((line-number-mode ((column-number-mode (10 #("(%03l,%03c)" 0 9 (help-echo "Line number and Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (6 #(" L%l" 0 4 (help-echo "Line Number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))))) ((column-number-mode (5 #(" C%c" 0 4 (help-echo "Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))))))))) "[" (-3 #("%p" 0 2 (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (size-indication-mode #("/%I" 0 3 (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) "]")))
  '(mode-require-final-newline (quote visit-save))
  '(mouse-region-delete-keys (quote ([delete] [deletechar] [backspace])))
  '(next-line-add-newlines nil)
@@ -92,6 +100,8 @@
  '(ns-command-modifier (quote alt))
  '(ns-use-qd-smoothing nil)
  '(ns-use-system-highlight-color nil t)
+ '(nxml-bind-meta-tab-to-complete-flag t)
+ '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files (quote ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org" "~/Dropbox/org/bbc.org")))
  '(org-link-abbrev-alist (quote (("cpan" . "http://search.cpan.org/dist/") ("cpansearch" . "http://search.cpan.org/search?mode=module&query=") ("jira" . "https://jira.dev.bbc.co.uk/browse/") ("gmap" . "http://maps.google.com/maps?q=%s"))))
  '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
@@ -138,4 +148,5 @@
  '(link ((t (:underline t :inherit (quote zenburn-yellow)))))
  '(org-hide ((t (:foreground "controlColor"))))
  '(org-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
- '(text-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t))
+ '(text-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
+ '(textile-link-face ((t (:inherit link)))))
