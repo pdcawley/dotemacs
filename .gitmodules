@@ -10,9 +10,6 @@
 [submodule "html5-el"]
 	path = html5-el
 	url = https://github.com/hober/html5-el.git
-[submodule "org-mode"]
-	path = org-mode
-	url = ./org-mode
 [submodule "twittering-mode"]
 	path = twittering-mode
 	url = https://github.com/hayamiz/twittering-mode.git
@@ -40,3 +37,6 @@
 [submodule "elisp/external/deft"]
 	path = elisp/external/deft
 	url = git://jblevins.org/git/deft.git
+[submodule "elisp/external/magit"]
+	path = elisp/external/magit
+	url = https://github.com/magit/magit.git
