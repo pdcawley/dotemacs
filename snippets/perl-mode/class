@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: class
+# --
+package ${1:`(pdc:path->perl-module (buffer-file-name))`};
+use Moose;
+
+$0
+
+__PACKAGE__->meta->make_immutable;
+1;

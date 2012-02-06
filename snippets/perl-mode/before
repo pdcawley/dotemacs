@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: before
+# --
+before ${1:BUILD} => sub {
+    my($self, @args) = @_;
+    $0
+};

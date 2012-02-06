@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: troutine
+# --
+use Test::Routine;
+use Test::Routine::Util;
+
+use Test::Most qw(!blessed);
+
+$0
+
+run_me;
+done_testing;

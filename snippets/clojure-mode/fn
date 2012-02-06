@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: fn
+# --
+(fn [${1:ARG-LIST}] $0)

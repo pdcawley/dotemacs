@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: cond
+# --
+(cond
+  $0
+  ${1:else ${2:ELSE-CLAUSE}})

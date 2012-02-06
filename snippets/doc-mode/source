@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: source
+# --
+[source${1:, ${2:coffeescript}}]
+----
+$0
+----
