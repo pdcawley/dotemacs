@@ -6,7 +6,7 @@
 (add-to-list 'auto-mode-alist '("\\.t" . perl-mode))
 
 (defun pdc:path->perl-module (path)
-  (if (string-match "/lib/\\(.*\\)\\.pm" path)
+  (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
       (let ((module (match-string 1 path)))
         (while (string-match "/" module)
           (setq module (replace-match "::" nil nil module)))

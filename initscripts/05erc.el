@@ -124,10 +124,6 @@ you'll change the colors used for nicks."
 (defun start-irc ()
   "Connect to IRC."
   (interactive)
-  (erc-tls :server "irc.dev.bbc.co.uk"
-           :port 6697
-           :nick "PiersCawley"
-           :full-name "Piers Cawley")
   (erc     :server "irc.perl.org" :port 6667)
   (erc     :server "irc.filknet.org" :port 6667)
   (erc     :server "irc.runstate.com" :port 6667)

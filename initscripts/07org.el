@@ -24,7 +24,6 @@
 (setq org-default-notes-file (concat org-directory "/codex.org"))
 (setq org-agenda-include-all-todo t)
 (setq org-hide-leading-stars t)
-(setq org-odd-levels-only t)
 
 (setq org-todo-keywords
   '((sequence "TODO(t)" "NEXT(n)" "TOREVIEW(R)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
@@ -91,7 +90,7 @@ Skips capture tasks and tasks with subtasks"
      ("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
       "* TODO %?  %U\n  %a" :clock-in t :clock-resume t)
      ("n" "notes" entry (file+headline org-default-notes-file "Inbox and Notes")
-      "* %?\n  \%U\n  %a\n  :CLOCK:\n  :END:" :clock-in t :clock-resume t)
+      "* %?\n  \%U\n  %i\n  :CLOCK:\n  :END:" :clock-in t :clock-resume t)
      ("w" "Default template" entry
       (file+headline org-default-notes-file "Inbox and Notes")
       "*** TODO Review %c\n  %U\n  %i"
@@ -102,7 +101,7 @@ Skips capture tasks and tasks with subtasks"
       "* %U %?\n\n  %i\n  %a")))
 
 (setq org-completion-use-ido t)
-(setq org-refile-targets '((org-genda-files :maxlevel . 5) (nil :maxlevel . 5)))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5)))
 (setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -114,7 +113,7 @@ Skips capture tasks and tasks with subtasks"
                     path
                   (concat org-directory path)))
               '("codex.org" "blog.org" "todo.org" "technology.org"
-                "journal.org" "bbc.org" "coding.org")))
+                "journal.org" "headforwards.org" "coding.org")))
 
 (defvar org-journal-file "~/Dropbox/org/journal.org"
   "Path to OrgMode journal file.")
@@ -283,9 +282,8 @@ Skips capture tasks and tasks with subtasks"
 (setq org-tag-alist
       '((:startgroup)
         ("@errand" . ?e)
-        ("@office" . ?e)
+        ("@office" . ?o)
         ("@home" . ?h)
-        ("@flat" . ?f)
         (:endgroup)
         ("PHONE" . ?P)
         ("WAITING" . ?w)

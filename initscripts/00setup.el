@@ -81,6 +81,8 @@
 (dolist (project (directory-files pdc:elisp-external-dir t "\\w+"))
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
+
+
                  
 
 ;; end 00setup.el

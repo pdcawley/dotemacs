@@ -6,14 +6,14 @@
  '(auto-save-interval 300)
  '(blink-cursor-mode nil)
  '(blink-matching-paren-distance 51200)
- '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-browser-function (quote browse-url-default-browser))
  '(browse-url-generic-program "google-chrome")
  '(buffers-menu-show-directories (quote unless-uniquify))
  '(coffee-command "/usr/local/bin/coffee")
  '(compilation-error-screen-columns nil)
  '(confluence-url "https://confluence.dev.bbc.co.uk/rpc/xmlrpc")
  '(cperl-close-paren-offset -4)
- '(cperl-continued-statement-offset 0)
+ '(cperl-continued-statement-offset 4)
  '(cperl-indent-level 4)
  '(cperl-indent-parens-as-block t)
  '(cperl-indent-subs-specially nil)
@@ -26,6 +26,7 @@
  '(default-input-method nil)
  '(default-mime-charset (quote utf-8))
  '(delete-selection-mode nil nil (delsel))
+ '(desktop-save-mode t)
  '(dictionary-default-popup-strategy "soundex")
  '(display-buffer-reuse-frames nil)
  '(ecb-options-version "2.33beta1")
@@ -64,7 +65,6 @@
  '(ido-mode (quote both) nil (ido))
  '(ido-show-dot-for-dired nil)
  '(ido-use-filename-at-point nil)
- '(imap-ssl-program (quote ("openssl s_client -connect %s:%p -cert /home/pdcawley/certs/pdcawley.pem -pass file:/home/pdcawley/certs/pdcawley.pass -CAfile /home/pdcawley/certs/dev-services-chain.pem" "s_client -connect %s:%p -cert /home/pdcawley/certs/pdcawley.pem -pass file:/home/pdcawley/certs/pdcawley.pass -CAfile /home/pdcawley/certs/dev-services-chain.pem" "openssl s_client -quiet -ssl3 -connect %s:%p" "openssl s_client -quiet -ssl2 -connect %s:%p" "s_client -quiet -ssl3 -connect %s:%p" "s_client -quiet -ssl2 -connect %s:%p")))
  '(indent-region-mode t t)
  '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote right))
@@ -74,6 +74,12 @@
  '(ispell-extra-args (quote ("--sug-mode=ultra")))
  '(ispell-program-name "/usr/local/bin/aspell")
  '(iswitchb-default-method (quote samewindow))
+ '(jabber-account-list (quote (("piers.cawley@headforwards.com" (:network-server . "xmpp.atlasit.com")))))
+ '(jabber-alert-info-message-hooks (quote (jabber-info-display)))
+ '(jabber-message-alert-same-buffer nil)
+ '(jabber-mode-line-mode t)
+ '(jabber-muc-autojoin (quote ("ntteodevroom@conference.atlasit.com" "ehportal@conference.atlasit.com")))
+ '(jabber-muc-default-nicknames (quote (("ntteodevroom@conference.atlasit.com" . "Piers Cawley") ("ehportal@conference.atlasit.com" . "Piers Cawley"))))
  '(javascript-indent-level 2)
  '(js2-auto-indent-flag nil)
  '(js2-indent-on-enter-key nil)
@@ -86,12 +92,12 @@
  '(mac-key-mode-hook nil)
  '(mac-wheel-button-is-mouse-2 t t)
  '(max-specpdl-size 10000)
- '(mode-line-position (quote ((line-number-mode ((column-number-mode (10 #("(%03l,%03c)" 0 9 (help-echo "Line number and Column number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (6 #(" L%l" 0 4 (help-echo "Line Number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))))) ((column-number-mode (5 #(" C%c" 0 4 (help-echo "Column number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))))))))) "[" (-3 #("%p" 0 2 (help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (size-indication-mode #("/%I" 0 3 (help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) "]")))
+ '(mode-line-position (quote ((line-number-mode ((column-number-mode (10 #("(%03l,%03c)" 0 9 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Line number and Column number
+mouse-1: Display Line and Column Mode Menu"))) (6 #(" L%l" 0 4 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Line Number
+mouse-1: Display Line and Column Mode Menu"))))) ((column-number-mode (5 #(" C%c" 0 4 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Column number
+mouse-1: Display Line and Column Mode Menu")))))) "[" (-3 #("%p" 0 2 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu"))) (size-indication-mode #("/%I" 0 3 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu"))) "]")))
  '(mode-require-final-newline (quote visit-save))
  '(mouse-region-delete-keys (quote ([delete] [deletechar] [backspace])))
  '(next-line-add-newlines nil)
@@ -102,7 +108,7 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(ns-use-system-highlight-color nil t)
  '(nxml-bind-meta-tab-to-complete-flag t)
  '(nxml-slash-auto-complete-flag t)
- '(org-agenda-files (quote ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org" "~/Dropbox/org/bbc.org")))
+ '(org-agenda-files (quote ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
  '(org-link-abbrev-alist (quote (("cpan" . "http://search.cpan.org/dist/") ("cpansearch" . "http://search.cpan.org/search?mode=module&query=") ("jira" . "https://jira.dev.bbc.co.uk/browse/") ("gmap" . "http://maps.google.com/maps?q=%s"))))
  '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-jsinfo org-habit org-inlinetask org-irc org-mac-message org-mew org-mhe org-protocol org-rmail org-vm org-wl org-w3m org-mouse org-annotate-file org-checklist org-elisp-symbol org-mac-iCal org-mac-link-grabber org-man)))
@@ -127,9 +133,10 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(temp-buffer-resize-mode nil)
  '(text-mode-hook (quote (text-mode-hook-identify)))
  '(tls-checktrust (quote ask))
- '(tls-program (quote ("gnutls-cli -p %p %h" "gnutls-cli -p %p %h --protocols ssl3" "openssl s_client -connect %h:%p -no_ssl2 -ign_eof" "openssl s_client -connect %h:%p -CAfile ~/certs/dev-services-chain.pem -cert ~/certs/pdcawley.pem -pass file:/Users/pdcawley/certs/pdcawley.pass" "openssl s_client -connect %h:%p -CAfile ~/certs/dev-services-chain.pem -cert ~/certs/pdcawley.pem -pass file:/home/pdcawley/certs/pdcawley.pass" "gnutls-cli --priority secure256 --x509cafile ~/certs/dev-services-chain.pem --x509certfile ~/certs/pdcawley.pem -p %p %h")))
+ '(tramp-auto-save-directory "~/.tramp-autosaves")
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
  '(uniquify-separator ":")
+ '(vc-handled-backends (quote (RCS CVS SVN SCCS Bzr Hg Arch)))
  '(visible-bell nil)
  '(visual-scroll-margin nil)
  '(w3m-command "/opt/local/bin/w3m")

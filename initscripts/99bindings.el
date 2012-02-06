@@ -18,9 +18,9 @@
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 (global-set-key (kbd "C-c C-m") 'execute-extended-command)
 (global-set-key (kbd "C-w") 'backward-kill-word)
-;(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x t") 'beginning-of-buffer)
-(global-set-key (kbd "C-c C-k") 'kill-region)
+(global-set-key (kbd "C-c C-k") 'kmacro-keymap)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'rr  'replace-regexp)
 
@@ -60,6 +60,10 @@
 ;; Perly
 (require 'cperl-mode)
 (define-key cperl-mode-map (kbd "RET") 'newline-and-indent)
+
+;; jabbery
+(when (require 'jabber nil 'noerror)
+  (define-key jabber-chat-mode-map (kbd "M-RET") 'newline))
 
 ;; Lispy
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
@@ -118,5 +122,6 @@
                              ("\\(?:^\\|/\\)Rakefile\\'" . ruby-mode)
                              ("\\.gemspec\\'"            . ruby-mode)
                              ("\\.rnc\\'"                . rnc-mode)
-                             ("\\.js\\'"                 . js2-mode)))
+                             ("\\.js\\'"                 . js2-mode)
+                             ("\\.psgi\\'"               . cperl-mode)))
                            

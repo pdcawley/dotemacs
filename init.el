@@ -35,6 +35,7 @@
 (package-initialize)
 
 (require 'initscripts)
+(load custom-file)
 
 (defun transpose-chars (arg)
   "Interchange characters around point, moving forward one character.
@@ -51,7 +52,5 @@ If no argument and at end of line, the previous two chars are exchanged."
 (put 'narrow-to-region 'disabled nil)
 
 (set-face-attribute 'default nil
-                    :height 160)
-
-
-
+                    :height 140
+                    :family "Menlo")
