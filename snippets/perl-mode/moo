@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: moo
+# --
+package ${1:`(pdc:path->perl-module (buffer-file-name))`};
+use Moo;
+
+$0
+
+1;
