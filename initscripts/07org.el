@@ -484,7 +484,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (defun pdc/is-scheduled-late (date-str)
   (string-match "Sched\\.\\(.*\\)x:" date-str))
 
-(require 'org-checklist)
+;(require 'org-checklist)
 
 (setq org-enforce-todo-dependencies t)
 (setq org-cycle-separator-lines 0)
@@ -564,7 +564,8 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (defun pdc/org-info ()
   (interactive)
-  (info (concat dotfiles-dir "org-mode/doc/org")))
+  (let ((local-info-file (concat dotfiles-dir "org-mode/doc/org")))
+    (info (if (file-exists-p local-info-file) local-info-file "org"))))
 
 (defun pdc/go-to-scratch ()
   (interactive)

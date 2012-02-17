@@ -13,7 +13,7 @@
  '(compilation-error-screen-columns nil)
  '(confluence-url "https://confluence.dev.bbc.co.uk/rpc/xmlrpc")
  '(cperl-close-paren-offset -4)
- '(cperl-continued-statement-offset 4)
+ '(cperl-continued-statement-offset 0)
  '(cperl-indent-level 4)
  '(cperl-indent-parens-as-block t)
  '(cperl-indent-subs-specially nil)
@@ -54,6 +54,7 @@
  '(geiser-guile-binary "/usr/local/bin/guile")
  '(geiser-racket-binary "/Applications/Racket/bin/racket")
  '(global-auto-revert-mode t)
+ '(global-whitespace-mode t)
  '(grep-command "grep -n -e")
  '(haskell-program-name "/usr/bin/ghci")
  '(hippie-expand-try-functions-list (quote (try-complete-abbrev try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill)))
@@ -73,6 +74,7 @@
  '(initial-major-mode (quote lisp-interaction-mode))
  '(ispell-extra-args (quote ("--sug-mode=ultra")))
  '(ispell-program-name "/usr/local/bin/aspell")
+ '(ispell-silently-savep t)
  '(iswitchb-default-method (quote samewindow))
  '(jabber-account-list (quote (("piers.cawley@headforwards.com" (:network-server . "xmpp.atlasit.com")))))
  '(jabber-alert-info-message-hooks (quote (jabber-info-display)))
@@ -92,12 +94,12 @@
  '(mac-key-mode-hook nil)
  '(mac-wheel-button-is-mouse-2 t t)
  '(max-specpdl-size 10000)
- '(mode-line-position (quote ((line-number-mode ((column-number-mode (10 #("(%03l,%03c)" 0 9 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Line number and Column number
-mouse-1: Display Line and Column Mode Menu"))) (6 #(" L%l" 0 4 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Line Number
-mouse-1: Display Line and Column Mode Menu"))))) ((column-number-mode (5 #(" C%c" 0 4 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Column number
-mouse-1: Display Line and Column Mode Menu")))))) "[" (-3 #("%p" 0 2 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu"))) (size-indication-mode #("/%I" 0 3 (local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))) mouse-face mode-line-highlight help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu"))) "]")))
+ '(mode-line-position (quote ((line-number-mode ((column-number-mode (10 #("(%03l,%03c)" 0 9 (help-echo "Line number and Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (6 #(" L%l" 0 4 (help-echo "Line Number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))))) ((column-number-mode (5 #(" C%c" 0 4 (help-echo "Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display"))))))))) "[" (-3 #("%p" 0 2 (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) (size-indication-mode #("/%I" 0 3 (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map (keymap (mode-line keymap (down-mouse-1 keymap (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button (:toggle . column-number-mode)) (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button (:toggle . line-number-mode)) "Toggle Line and Column Number Display")))))) "]")))
  '(mode-require-final-newline (quote visit-save))
  '(mouse-region-delete-keys (quote ([delete] [deletechar] [backspace])))
  '(next-line-add-newlines nil)
@@ -141,6 +143,7 @@ mouse-1: Display Line and Column Mode Menu"))) "]")))
  '(visual-scroll-margin nil)
  '(w3m-command "/opt/local/bin/w3m")
  '(w3m-use-cookies t)
+ '(whitespace-style (quote (face tabs trailing lines-tail empty)))
  '(woman-use-own-frame nil))
 
 (custom-set-faces
