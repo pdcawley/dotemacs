@@ -16,6 +16,7 @@
 
 
 (extend-load-path-respecting-subdirs "~/lisp" dotfiles-dir)
+(extend-load-path-respecting-subdirs (concat dotfiles-dir "yasnippet"))
 (setq custom-file (concat dotfiles-dir "preferences.el")
       autoload-file (concat dotfiles-dir "loaddefs.el"))
 
