@@ -40,3 +40,6 @@
 [submodule "elisp/external/magit"]
 	path = elisp/external/magit
 	url = https://github.com/magit/magit.git
+[submodule "elisp/external/expand-region"]
+	path = elisp/external/expand-region
+	url = git://github.com/magnars/expand-region.el
