@@ -1,9 +1,9 @@
 # -*- mode: snippet -*-
-# name: moo
-# key: moo
+# name: mrole
+# key: mrole
 # --
 package ${1:`(pdc:path->perl-module (buffer-file-name))`};
-use Moo;
+use Moo::Role;
 
 $0
 
