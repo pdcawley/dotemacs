@@ -631,3 +631,11 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (appt-activate t)
 (run-at-time "24:01" nil 'pdc/org-agenda-to-appt)
 
+(defun org-wp-linkify ()
+  "Turn the region or word at the point into an org Wikipedia link"
+  (interactive)
+  (let* ((thing (region-or-thing 'word))
+         (subject (replace-regexp-in-string " " "_" (elt thing 0))))
+    (delete-region (elt thing 1) (elt thing 2))
+    (insert (concat "[[http://en.wikipedia.org/wiki" subject
+                    "][" (elt thing 0) "]]"))))

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: reqtest
+# --
+#!/usr/bin/env perl
+
+use Test::More;
+use v${1:5.14.2};
+
+use lib 'lib';
+use Module::Pluggable search_path => [ '${2:MyApp}' ];
+
+require_ok( $_ ) for __PACKAGE__->plugins;
+
+done_testing;
