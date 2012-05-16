@@ -15,3 +15,5 @@ url
 session.*
 tramp
 initscripts/99passwords.el
+eshell/history
+eshell/lastdir
