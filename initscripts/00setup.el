@@ -19,6 +19,7 @@
 (add-to-list 'load-path (concat dotfiles-dir "gnus/lisp/"))
 (add-to-list 'load-path (concat dotfiles-dir "shime/"))
 (add-to-list 'load-path (concat dotfiles-dir "emacs-color-theme-solarized/"))
+(add-to-list 'load-path (concat dotfiles-dir "elisp/"))
 
 ;; Make sure we have font-lock to start withco
 (require 'font-lock)
@@ -28,6 +29,9 @@
 
 ;; Just say no to splash screens
 (setq inhibit-startup-message t)
+
+;; Remember window combinations
+(winner-mode)
 
 ;; Abbrevs
 (if (file-exists-p abbrev-file-name)
