@@ -98,9 +98,9 @@
 (define-key isearch-mode-map [backspace] 'isearch-delete-char)
 
 ;; Tabkey2 and other expansion related malarkey
-(require 'tabkey2)
-(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
-(tabkey2-mode 1)
+;(require 'tabkey2)
+;(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
+;(tabkey2-mode 1)
 
 ;; vi-like %
 (global-set-key "%" 'match-paren)

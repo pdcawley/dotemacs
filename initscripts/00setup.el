@@ -71,8 +71,7 @@
 
 (add-to-list 'load-path (concat dotfiles-dir "/yasnippet"))
 (require 'yasnippet)
-(yas/initialize)
-(yas/load-directory (concat dotfiles-dir "/yasnippet/snippets"))
+(yas/global-mode 1)
 (setq yas/window-system-popup-function
       'yas/x-popup-menu-for-template)
 

@@ -65,23 +65,3 @@
 ;; RI everywhere!
 (define-key help-map "r" 'ri)
 
-;; Load the rspec snippets
-(require 'yasnippet)
-;; Define some snippets here
-(yas/define-snippets
- 'ruby-mode
- '(("do"
-   "do
-  $0$>
-end$>" "do ... end" nil)
-   ("doo"
-    "do |${1:each}|
-  $0`(indent-according-to-mode)
-end`(indent-according-to-mode)" "do |each| ... end" nil)
-   ("L.noargs"
-    "lambda {
-  $0
-}" "lambda { ... }")
-   ("L.args" "lambda{|${1:args}|
-  $0
-}" "lambda {|args| ... }")))
