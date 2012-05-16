@@ -159,4 +159,3 @@
                              ("\\.rnc\\'"                . rnc-mode)
                              ("\\.js\\'"                 . js2-mode)
                              ("\\.psgi\\'"               . cperl-mode)))
-                           

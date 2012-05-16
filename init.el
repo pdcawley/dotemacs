@@ -25,6 +25,10 @@
 (setq server-auth-dir (expand-file-name "~/server/"))
 (setq-default gc-cons-threshold 10000000)
 
+(defun pdc/turn-on-abbrev-mode ()
+  "A boring hook to turn abbrev mode on"
+  (abbrev-mode 1))
+
 (require 'cl)
 (require 'pdc-support)
 (message "foo")
