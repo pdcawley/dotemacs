@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: (table) CREATE a ntt table with id, sequence, etc
+# key: table
+# --
+CREATE SEQUENCE ${1:table_of_rows}_seq;
+GRANT SELECT ON $1_seq TO nexus_ro_users;
+GRANT ALL ON $1_seq TO nexus_users;
+
+CREATE TABLE $1 (
+    id INTEGER PRIMARY KEY NOT NULL DEFAULT nextval('$1_seq'),
+    $0
+);
+
+GRANT SELECT ON $1 TO nexus_ro_users;
+GRANT ALL ON $1 TO nexus_users;
+

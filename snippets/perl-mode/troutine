@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: troutine
 # --
+# -*- mode: cperl ; compile-command: "cd ..; prove -vl t/${1:`(buffer-name)`}
 use Test::Routine;
 use Test::Routine::Util;
 

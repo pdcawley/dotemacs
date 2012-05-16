@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: dk
+# --
+define-key $1-map (kbd "$2") '$0

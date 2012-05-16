@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: actionsub
+# --
+sub ${1:name} {
+    my ($db, $context, ${2:$$3id}, $updates, $field_errors) = @_;
+
+    $0
+}
