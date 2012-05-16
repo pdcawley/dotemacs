@@ -113,6 +113,11 @@
           ((string-match "[\]})>]" prev-char) (backward-sexp 1))
           (t (self-insert-command (or arg 1))))))
 
+(global-set-key (kbd "C-c |")    'pdc/align)
+(global-set-key (kbd "C-c \\")   'pdc/align)
+(global-set-key (kbd "C-c C-\\") 'pdc/align)
+
+(global-set-key (kbd "C-c '") 'pdc/quote-last-sexp)
 
 
 ;; File type bindings - By doing this last, my desired bindings win

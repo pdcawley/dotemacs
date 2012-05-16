@@ -162,3 +162,35 @@ Helper method for 'yank' advice"
 (defun pdc/dasherize (string)
   (replace-regexp-in-string "_" "-" string))
 
+(defun pdc/align-last-sexp ()
+  (interactive)
+  (save-excursion
+    (backward-sexp)
+    (let ((beg (point)))
+      (forward-sexp)
+      (align beg (point)))))
+
+(defun pdc/align-has ()
+  (interactive)
+  (save-excursion
+    (re-search-backward "has ")
+    (re-search-forward "(")
+    (backward-char)
+    (forward-sexp)
+    (pdc/align-last-sexp)))
+
+(defun pdc/align ()
+  (interactive)
+  (save-excursion
+    (cond ((region-active-p) (align (mark) (point)))
+          (t
+           (ignore-errors (up-list))
+           (pdc/align-last-sexp)))))
+
+(defun pdc/quote-last-sexp ()
+  (interactive)
+  (insert "'")
+  (save-excursion
+    (backward-char)
+    (backward-sexp)
+    (insert "'")))
