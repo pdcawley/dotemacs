@@ -167,4 +167,13 @@ http://kanji.zinbun.kyoto-u.ac.jp/~tomo/elisp/APEL/index.en.html"
     (async-shell-command
      (format "scp -v %s %s:%s" local-server-file host remote-server-file))))
 
+(let ((pdc/bdir (concat temporary-file-directory "/backups"))
+      (pdc/adir (concat temporary-file-directory "/autosaves")))
+  (setq backup-directory-alist `((".*" . ,pdc/bdir)))
+  (setq auto-save-file-name-transforms `((".*" ,pdc/adir t)))
+  (unless (file-exists-p pdc/bdir) (make-directory pdc/bdir))
+  (unless (file-exists-p pdc/adir) (make-directory pdc/adir)))
+
+
+
 ;; end 00setup.el

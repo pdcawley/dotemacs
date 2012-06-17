@@ -1,6 +1,10 @@
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 
+(setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
+(unless (file-exists-p temporary-file-directory)
+  (make-directory temporary-file-directory t))
+
 (defun extend-load-path-respecting-subdirs (&rest dirs)
   "Add DIRs to load-path and follow 'subdirs.el' directives"
   (let ((tail dirs) dir)

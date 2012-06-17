@@ -639,3 +639,8 @@ Late deadlines first, then scheduled, then non-late deadlines"
     (delete-region (elt thing 1) (elt thing 2))
     (insert (concat "[[http://en.wikipedia.org/wiki" subject
                     "][" (elt thing 0) "]]"))))
+
+(add-hook 'org-clock-in-hook
+          (lambda ()
+            (unless org-timer-current-timer
+              (org-timer-set-timer '(16)))))
