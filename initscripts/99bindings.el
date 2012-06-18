@@ -147,7 +147,8 @@
 (global-set-key (kbd "C-c \\")   'pdc/align)
 (global-set-key (kbd "C-c C-\\") 'pdc/align)
 
-(global-set-key (kbd "C-c '") 'pdc/quote-last-sexp)
+(global-set-key (kbd "C-c '") 'pdc/quote-behind)
+(global-set-key (kbd "C-c \"") 'pdc/doublequote-behind)
 
 
 ;; File type bindings - By doing this last, my desired bindings win

@@ -35,7 +35,7 @@
 
 (require 'cl)
 (require 'pdc-support)
-(message "foo")
+(require 'eieio)
 (load custom-file)
 (require 'package)
 (add-to-list 'package-archives

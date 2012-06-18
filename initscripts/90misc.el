@@ -66,7 +66,8 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
-;;; TextMate style yank and indent - lifted from the EmacsWiki and tweaked for DRYness
+;;; TextMate style yank and indent - lifted from the EmacsWiki and tweaked for
+;;; DRYness
 
 (defvar pdc/programming-major-modes
   '(emacs-lisp-mode scheme-mode lisp-mode
@@ -84,7 +85,7 @@ Helper method for 'yank' advice"
 
 (defadvice yank (after indent-region activate)
   (pdc/indent-yanked-region))
-  
+
 (defadvice yank-pop (after indent-region activate)
   (pdc/indent-yanked-region))
 
@@ -108,16 +109,16 @@ Helper method for 'yank' advice"
                            (cond
                             ((and (listp symbol) (imenu--subalist-p symbol))
                              (addsymbols symbol))
-                            
+
                             ((listp symbol)
                              (add-name-and-pos (car symbol) (cdr symbol)))
-                            
+
                             ((stringp symbol)
                              (add-name-and-pos symbol
                                                (get-text-property 1 'org-imenu-marker symbol)))))))))
       (addsymbols imenu--index-alist))
     (goto-char (cdr (assoc (ido-completing-read "Symbol? " symbol-names) name-and-pos)))))
-    
+
 (defun untabify-buffer ()
   (interactive)
   (untabify (point-min) (point-max)))
@@ -187,10 +188,45 @@ Helper method for 'yank' advice"
            (ignore-errors (up-list))
            (pdc/align-last-sexp)))))
 
-(defun pdc/quote-last-sexp ()
+(defun pdc/quote-last-sexp (&optional quote)
   (interactive)
-  (insert "'")
+  (or quote (setq quote "'"))
+  (insert quote)
   (save-excursion
     (backward-char)
     (backward-sexp)
-    (insert "'")))
+    (insert quote)))
+
+
+
+(defun pdc/quote-behind (&optional quote)
+  (interactive)
+  (skip-chars-backward ",;[:blank:]")
+  (or quote (setq quote "'"))
+  (cond ((looking-back quote 1)
+         (save-excursion
+           (backward-sexp)
+           (delete-char 1)
+           (backward-sexp)
+           (insert quote)))
+        (t
+         (pdc/quote-last-sexp quote))))
+
+(defun pdc/quote-from-last-comma (&optional quote)
+  (interactive)
+  (or quote (setq quote "'"))
+  (skip-chars-forward ",;[:blank:]")
+  (insert quote)
+  (save-excursion
+    (fastnav-search-char-backward 1 ?,)
+    (skip-chars-forward ",[:blank:]")
+    (insert quote)))
+
+(defun pdc/doublequote-behind ()
+  (interactive)
+  (pdc/quote-behind "\""))
+
+
+;;; Local Variables:
+;;; lexical-binding: t
+;;; End:
