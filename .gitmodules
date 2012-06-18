@@ -40,3 +40,15 @@
 [submodule "elisp/external/expand-region"]
 	path = elisp/external/expand-region
 	url = git://github.com/magnars/expand-region.el
+[submodule "elisp/external/multiple-cursors"]
+	path = elisp/external/multiple-cursors
+	url = https://github.com/magnars/multiple-cursors.el
+[submodule "elisp/external/mark-multiple"]
+	path = elisp/external/mark-multiple
+	url = https://github.com/magnars/mark-multiple.el.git
+[submodule "elisp/external/annoying-arrows-mode"]
+	path = elisp/external/annoying-arrows-mode
+	url = git://github.com/magnars/annoying-arrows-mode.el.git
+[submodule "elisp/external/smart-forward"]
+	path = elisp/external/smart-forward
+	url = git://github.com/magnars/smart-forward.el.git
