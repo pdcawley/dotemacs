@@ -52,3 +52,6 @@
 [submodule "elisp/external/smart-forward"]
 	path = elisp/external/smart-forward
 	url = git://github.com/magnars/smart-forward.el.git
+[submodule "elisp/external/wgrep"]
+	path = elisp/external/wgrep
+	url = git://github.com/mhayashi1120/Emacs-wgrep.git
