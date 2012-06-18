@@ -42,7 +42,7 @@
 	url = git://github.com/magnars/expand-region.el
 [submodule "elisp/external/multiple-cursors"]
 	path = elisp/external/multiple-cursors
-	url = https://github.com/magnars/multiple-cursors.el
+	url = git@github.com:pdcawley/multiple-cursors.el
 [submodule "elisp/external/mark-multiple"]
 	path = elisp/external/mark-multiple
 	url = https://github.com/magnars/mark-multiple.el.git
