@@ -16,10 +16,10 @@
 ;; Load an application template in a new unattached buffer...
 
 (defun application-template-pl (  )
-  "Inserts the standard Perl application template"  
+  "Inserts the standard Perl application template"
                                         ; For help and info.
 
-  (interactive "*")                                
+  (interactive "*")
                                         ; Make this user accessible.
 
   (switch-to-buffer "application-template-pl")
@@ -28,8 +28,15 @@
 ;; Load a module template in a new unattached buffer...
 
 (defun module-template-pm (  )
-  "Inserts the standard Perl module template"       
-  (interactive "*")                                 
+  "Inserts the standard Perl module template"
+  (interactive "*")
   (switch-to-buffer "module-template-pm")
   (insert-file "~/.code_templates/perl_module.pm"))
-  
+
+(defun cperl-backward-to-start-of-continued-exp (lim)
+  (goto-char containing-sexp)
+  (let ((sexp-start (following-char)))
+    (forward-char)
+    (skip-chars-forward " \t\n")
+    (if (memq sexp-start (append "([" nil))
+        (backward-char cperl-continued-statement-offset))))
