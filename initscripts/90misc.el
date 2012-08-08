@@ -226,6 +226,26 @@ Helper method for 'yank' advice"
   (interactive)
   (pdc/quote-behind "\""))
 
+(require 'annoying-arrows-mode)
+(global-annoying-arrows-mode)
+
+
+(aa-add-suggestion 'previous-line 'fastnav-jump-to-char-backward)
+(aa-add-suggestion 'previous-line 'fastnav-sprint-backward)
+(aa-add-suggestion 'next-line 'fastnav-jump-to-char-forward)
+(aa-add-suggestion 'next-line 'fastnav-sprint-forward)
+(aa-add-suggestion 'right-char 'fastnav-jump-to-char-forward)
+(aa-add-suggestion 'right-char 'fastnav-sprint-forward)
+(aa-add-suggestion 'left-char 'fastnav-jump-to-char-backward)
+(aa-add-suggestion 'left-char 'fastnav-sprint-backward)
+(aa-add-suggestion 'backward-delete-char-untabify
+                   'fastnav-zap-up-to-char-backward)
+(aa-add-suggestion 'backward-delete-char
+                   'fastnav-zap-up-to-char-backward)
+
+(add-annoying-arrows-advice
+ delete-char
+ '(subword-kill kill-line zap-to-char fastnav-zap-up-to-char-forward))
 
 ;;; Local Variables:
 ;;; lexical-binding: t

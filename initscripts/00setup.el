@@ -70,6 +70,7 @@
 (require 'vc-git)
 
 (add-to-list 'load-path (concat dotfiles-dir "/yasnippet"))
+(require 'cl)
 (require 'yasnippet)
 (yas/global-mode 1)
 (setq yas/window-system-popup-function
@@ -85,6 +86,9 @@
 (dolist (project (directory-files pdc:elisp-external-dir t "\\w+"))
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
+
+(add-to-list 'load-path (concat pdc:elisp-external-dir "/wanderlust/wl"))
+(add-to-list 'load-path (concat pdc:elisp-external-dir "/wanderlust/elmo"))
 
 
 ;; Utility functions etc...

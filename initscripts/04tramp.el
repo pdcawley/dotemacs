@@ -15,8 +15,8 @@
          (tramp-login-args
           (("-l" "%u")
            ("-p" "%p")
-           ("-o" "ControlPath=%t.%%r@%%h:%%p")
-           ("-o" "ControlMaster=yes")
+           ("-o" "ControlPath=~/.ssh/master-%%r@%%h:%%p")
+           ("-o" "ControlMaster=auto")
            ("-e" "none")
            ("%h")))
          (tramp-async-args

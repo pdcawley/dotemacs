@@ -1,3 +1,4 @@
+(require 'eieio)
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 
@@ -35,14 +36,13 @@
 
 (require 'cl)
 (require 'pdc-support)
-(require 'eieio)
 (load custom-file)
 (require 'package)
 (add-to-list 'package-archives
              '("ELPA" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
+;(package-initialize)
 
 (require 'initscripts)
 (load custom-file)
@@ -58,6 +58,7 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (regen-autoloads)
 
+(setenv "PATH" (shell-command-to-string "echo $PATH"))
 
 (put 'narrow-to-region 'disabled nil)
 
