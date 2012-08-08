@@ -52,15 +52,6 @@
 [submodule "elisp/external/wgrep"]
 	path = elisp/external/wgrep
 	url = git://github.com/mhayashi1120/Emacs-wgrep.git
-[submodule "elisp/external/wanderlust"]
-	path = elisp/external/wanderlust
-	url = https://github.com/wanderlust/wanderlust.git
-[submodule "elisp/external/apel"]
-	path = elisp/external/apel
-	url = https://github.com/wanderlust/apel.git
-[submodule "elisp/external/flim"]
-	path = elisp/external/flim
-	url = https://github.com/wanderlust/flim.git
 [submodule "elisp/external/semi"]
 	path = elisp/external/semi
 	url = https://github.com/wanderlust/semi.git
