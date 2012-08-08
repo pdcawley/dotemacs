@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# name: troutine
+# name: tra
 # --
-use Test::Routine;
+use Test::Routine::AutoClear;
 use Test::Routine::Util;
 use Test::More;
 

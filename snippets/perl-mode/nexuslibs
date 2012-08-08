@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: nexuslibs
+# --
+use lib 't/lib';
+use lib 'lib/perl';
+

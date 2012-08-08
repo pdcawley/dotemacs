@@ -2,6 +2,6 @@
 # name: before
 # --
 before ${1:BUILD} => sub {
-    my($self, @args) = @_;
+    my ($self, @args) = @_;
     $0
 };

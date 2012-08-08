@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: trr
+# --
+use Test::Routine;
+use Test::More;
+
+$0
