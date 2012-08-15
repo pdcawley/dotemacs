@@ -42,7 +42,7 @@
              '("ELPA" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
-;(package-initialize)
+(package-initialize)
 
 (require 'initscripts)
 (load custom-file)
