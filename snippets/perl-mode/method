@@ -2,6 +2,6 @@
 # name: method
 # --
 sub ${1:method_name} {
-    my($self${2:, ${3:@args}}) = @_;
+    my ($self${2:, ${3:@args}}) = @_;
     $0
 }

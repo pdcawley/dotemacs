@@ -2,6 +2,6 @@
 # name: after
 # --
 after ${1:BUILD} => sub {
-    my($self${2:, ${3:@args}}) = @_;
+    my ($self${2:, ${3:@args}}) = @_;
     $0
 };

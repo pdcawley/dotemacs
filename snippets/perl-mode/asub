@@ -2,7 +2,7 @@
 # name: asub
 # --
 sub ${1:do_stuff} {
-    my($db, $context_params, $$2id, $updates, $field_errors) =
+    my ($db, $context_params, $$2id, $updates, $field_errors) =
         $Argparser->parse(
             'db context_params object_id updates field_errors', \@_
         );

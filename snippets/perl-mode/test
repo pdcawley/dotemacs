@@ -3,6 +3,6 @@
 # key: test
 # --
 test "${1:name}" => sub {
-    ${2:my($self) = @_;
+    ${2:my ($self) = @_;
     }$0
 };
