@@ -55,3 +55,6 @@
 [submodule "elisp/external/semi"]
 	path = elisp/external/semi
 	url = https://github.com/wanderlust/semi.git
+[submodule "elisp/external/bbdb"]
+	path = elisp/external/bbdb
+	url = git://git.savannah.nongnu.org/bbdb.git
