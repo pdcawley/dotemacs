@@ -53,7 +53,6 @@
  '(erc-track-showcount t)
  '(erc-user-full-name "Piers Cawley")
  '(ewd-kp-usage (quote num))
- '(exec-path (cons "~/bin" exec-path))
  '(fill-column 78)
  '(font-lock-support-mode (quote jit-lock-mode))
  '(footnote-section-tag-regexp "Footnotes\\(\\[.\\]\\)?: *")

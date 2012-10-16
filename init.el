@@ -36,6 +36,10 @@
 
 (require 'cl)
 (require 'pdc-support)
+(mapc (lambda (p) (pushnew p exec-path))
+      (reverse (list "~/bin" "~/local/node/bin" "~/perl5/perlbrew/bin"
+                     "/usr/local/bin"
+                     "/usr/local/sbin" "/sbin" "/bin" "/usr/bin" "/usr/sbin")))
 (load custom-file)
 (require 'package)
 (add-to-list 'package-archives

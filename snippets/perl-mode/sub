@@ -2,6 +2,7 @@
 # key: sub
 # --
 sub ${1:function_name} {
-    my (${2:args}) = @_;
-    $0
+     ${2:my (${3:@args}) = @_;
+
+}$0
 }
