@@ -141,6 +141,12 @@
 (global-set-key (kbd "C-c C-'") 'pdc/quote-behind)
 (global-set-key (kbd "C-c \"")  'pdc/doublequote-behind)
 
+(when (require 'buffer-move nil 'noerror)
+  (global-set-key (kbd "C-c C-<left>")  'buf-move-left)
+  (global-set-key (kbd "C-c C-<right>") 'buf-move-right)
+  (global-set-key (kbd "C-c C-<up>")    'buf-move-up)
+  (global-set-key (kbd "C-c C-<down>")  'buf-move-down))
+
 ;; File type bindings - By doing this last, my desired bindings win
 (update-auto-mode-bindings '(("\\.hs\\'"                 . haskell-mode)
                              ("\\.yml\\'"                . yaml-mode)
