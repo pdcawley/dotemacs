@@ -21,16 +21,16 @@
 
 (global-set-key (kbd "C-S-c C-S-c") 'pdc/edit-marks-or-lines)
 
-(defun mc/enable-function (func)
-  "Marks a function as enabled during multi cursor operations"
-  (interactive
-   (list (read-command "Command to enable for mc ops: " last-command)))
-  (put func 'mc--enabled t))
+;;  (defun mc/enable-function (func)
+;;   "Marks a function as enabled during multi cursor operations"
+;;   (interactive
+;;    (list (read-command "Command to enable for mc ops: " last-command)))
+;;   (put func 'mc--enabled t))
 
-(defun mc/disable-function (func)
-  "Marks a function as enabled during multi cursor operations"
-  (interactive
-   (list (read-command "Command to enable for mc ops: " last-command)))
-  (put func 'mc--enabled t))
+;; (defun mc/disable-function (func)
+;;   "Marks a function as enabled during multi cursor operations"
+;;   (interactive
+;;    (list (read-command "Command to enable for mc ops: " last-command)))
+;;   (put func 'mc--enabled t))
 
 (put 'forward-sexp 'mc--enabled t)
