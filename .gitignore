@@ -17,3 +17,8 @@ tramp
 initscripts/99passwords.el
 eshell/history
 eshell/lastdir
+/elisp/external/Emacs-PDE-0.2.16
+/elisp/external/cedet
+/pde
+/semanticdb/!Users!pdcawley!Dropbox!emacs.d!initscripts!semantic.cache
+/srecode-map.el

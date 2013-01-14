@@ -58,3 +58,6 @@
 [submodule "elisp/external/bbdb"]
 	path = elisp/external/bbdb
 	url = git://git.savannah.nongnu.org/bbdb.git
+[submodule "elisp/external/arduino-mode"]
+	path = elisp/external/arduino-mode
+	url = git://github.com/bookest/arduino-mode.git
