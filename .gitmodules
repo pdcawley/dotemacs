@@ -61,3 +61,6 @@
 [submodule "elisp/external/arduino-mode"]
 	path = elisp/external/arduino-mode
 	url = git://github.com/bookest/arduino-mode.git
+[submodule "elisp/external/apel"]
+	path = elisp/external/apel
+	url = https://github.com/wanderlust/apel.git
