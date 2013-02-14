@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: method
+# key: method
 # --
 sub ${1:method_name} {
     my ($self${2:, ${3:@args}}) = @_;

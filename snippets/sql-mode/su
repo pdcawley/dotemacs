@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: su
+# --
+BEGIN;
+
+\set ON_ERROR_STOP
+
+$0
+
+ROLLBACK;

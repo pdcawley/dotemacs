@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: handles
+# key: handles
+# --
+handles => {
+    $1,
+},
