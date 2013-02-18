@@ -97,7 +97,7 @@ Helper method for 'yank' advice"
   (imenu--make-index-alist)
   (let ((name-and-pos '())
         (symbol-names '()))
-    (flet
+    (cl-flet
         ((add-name-and-pos (name position)
                            (unless (or (null name) (null position))
                              (add-to-list 'symbol-names name)
