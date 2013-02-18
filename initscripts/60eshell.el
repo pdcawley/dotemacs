@@ -103,5 +103,5 @@
      (add-to-list 'eshell-command-completions-alist
                   '("gunzip" "gz\\'"))
      (add-to-list 'eshell-command-completions-alist
-                  '("tar" "\\(\\.tar|\\.tgz|\\.tar\\.gz\\)\\'"))
-     (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
+                  '("tar" "\\(\\.tar|\\.tgz|\\.tar\\.gz\\)\\'")))
+;;  (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
