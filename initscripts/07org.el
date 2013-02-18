@@ -1,6 +1,6 @@
 (add-to-list 'load-path (concat dotfiles-dir "org-mode/lisp"))
 (add-to-list 'load-path (concat dotfiles-dir "org-mode/contrib/lisp"))
-(require 'org-install)
+(require 'org)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-log-done t)
 
@@ -644,3 +644,9 @@ Late deadlines first, then scheduled, then non-late deadlines"
           (lambda ()
             (unless org-timer-current-timer
               (org-timer-set-timer '(16)))))
+
+;;; Redmine stuff
+
+(require 'org-redmine)
+(setq org-redmine-uri "http://61.127.104.123/redmine")
+(setq org-redmine-auth-netrc-use t)
