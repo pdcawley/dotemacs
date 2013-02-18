@@ -1,6 +1,14 @@
-(require 'eieio)
+;;(require 'eieio)
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
+(setq externals-dir (concat dotfiles-dir "elisp/external/"))
+
+;; encoding
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
 
 (setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
 (unless (file-exists-p temporary-file-directory)
