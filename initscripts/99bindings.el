@@ -1,4 +1,5 @@
 ;;; 99bindings.el --- Misc. global key bindings
+(require 'paredit)
 ;; Some custom global key bindings
 (global-set-key (kbd "C-c s")  'calendar)
 (global-set-key (kbd "C-c g")  'goto-line)
@@ -11,6 +12,11 @@
 (global-unset-key [insert])
 (global-set-key [M-insert] 'overwrite-mode)
 (global-set-key (kbd "C-c i") 'set-tab-width)
+
+(global-set-key (kbd "<end>") 'move-end-of-line)
+(global-set-key (kbd "S-<end>") 'end-of-buffer)
+(global-set-key (kbd "<home>") 'beginning-of-line)
+(global-set-key (kbd "S-<home>") 'beginning-of-buffer)
 
 ;;(global-set-key (kbd "C-xC-f") 'ido-find-file)
 
@@ -55,7 +61,7 @@
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 
-(windmove-default-keybindings)
+;; (windmove-default-keybindings)
 
 ;; Perly
 (require 'cperl-mode)
@@ -156,3 +162,251 @@
                              ("\\.rnc\\'"                . rnc-mode)
                              ("\\.js\\'"                 . js2-mode)
                              ("\\.psgi\\'"               . cperl-mode)))
+
+(cua-selection-mode 1)
+
+;; (defun pdc/left (&optional n)
+;;   "Move point to the beginning of an active selection or N chars to the left"
+;;   (interactive "^p")
+;;   (cond ((and n (< n 0)) (pdc/right (- 0 n)))
+;;         ((region-active-p)
+;;          (goto-char (region-beginning))
+;;          (deactivate-mark)
+;;          (if n (left-char (- n 1))))
+;;         (t (left-char n))))
+
+;; (defun pdc/right (&optional n)
+;;   "Move point to the end of an active selection or N chars to the right"
+;;   (interactive "^p")
+;;   (cond ((and n (< n 0)) (pdc/right (- 0 n)))
+;;         ((region-active-p)
+;;          (goto-char (region-end))
+;;          (deactivate-mark)
+;;          (if n (right-char (+ n 1))))
+;;         (t (right-char n))))
+
+;; (defun pdc/left (&optional n)
+;;   (interactive "^p")
+;;   (let ((n1 (or n 1)))
+;;     (cond
+;;      ((< n1 0) (pdc/right (- 0 n1)))
+;;      ((and cua-mode this-command-keys-shift-translated)
+;;       (left-char n))
+;;      (mark-active
+;;       (goto-char (region-beginning))
+;;       (left-char (- n 1)))
+;;      (t (left-char n)))))9&9&
+
+;; (defun pdc/right (&optional n)
+;;   (interactive "^p")
+;;   (let ((n1 (or n 1)))
+;;     (cond
+;;      ((< n1 0) (pdc/left (- 0 n1)))
+;;      ((and cua-mode this-command-keys-shift-translated)
+;;       (right-char n))
+;;      (mark-active
+;;       (goto-char (region-end))
+;;       (right-char (- n 1)))
+;;      (t (right-char n)))))
+
+;; ;; (put 'pdc/right 'CUA 'move)
+;; (put 'pdc/left 'CUA 'move)
+;; (put 'pdc/right 'CUA 'move)
+
+;; (global-set-key (kbd "<left>") 'pdc/left)
+;; (global-set-key (kbd "<right>") 'pdc/right)
+
+
+(define-key global-map "\eOd" 'backward-word)
+
+;; ;;; http://www.gnu.org/software/emacs/manual/html_node/viper/Key-Bindings.htm
+;; ;;; ;@@TR: the following needs to be translated to use input-decode-map
+;; ;; terminal/gnu-screen arrow key support
+
+;; (define-key input-decode-map "\e[A" [up])
+;; (define-key input-decode-map "\e[B" [down])
+;; (define-key input-decode-map "\e[C" [right])
+;; (define-key input-decode-map "\e[D" [left])
+
+;; (define-key global-map "\e[1;9A" (kbd "M-<up>"))
+;; (define-key global-map "\e[1;9B" (kbd "M-<down>"))
+;; (define-key global-map "\e[1;9C" (kbd "M-<right>"))
+;; (define-key global-map "\e[1;9D" (kbd "M-<left>"))
+
+;; ;;; shift arrow key support inside of gnu screen / iTerm
+;; (define-key global-map "\eO2D" (kbd "S-<left>"))
+;; (define-key global-map "\eO2C" (kbd "S-<right>"))
+;; (define-key global-map "\eO2A" (kbd "S-<up>"))
+;; (define-key global-map "\eO2B" (kbd "S-<down>"))
+
+;; (define-key global-map "\e[1;2D" (kbd "S-<left>"))
+;; (define-key global-map "\e[1;2C" (kbd "S-<right>"))
+;; (define-key global-map "\e[1;2A" (kbd "S-<up>"))
+;; (define-key global-map "\e[1;2B" (kbd "S-<down>"))
+
+;; ;;; shift arrow in gnu screen / urxvt
+;; (define-key global-map "\e[d" (kbd "S-<left>"))
+;; (define-key global-map "\e[c" (kbd "S-<right>"))
+;; (define-key global-map "\e[a" (kbd "S-<up>"))
+;; (define-key global-map "\e[b" (kbd "S-<down>"))
+
+;; (define-key global-map "\e[1;10D" (kbd "M-S-<left>"))
+;; (define-key global-map "\e[1;10C" (kbd "M-S-<right>"))
+;; (define-key global-map "\e[1;10A" (kbd "M-S-<up>"))
+;; (define-key global-map "\e[1;10B" (kbd "M-S-<down>"))
+
+;; (define-key paredit-mode-map (kbd "C-<right>") 'forward-word)
+;; (define-key paredit-mode-map (kbd "C-<left>") 'backward-word)
+
+;; (define-key ido-common-completion-map "\e[A" 'previous-history-element)
+;; (define-key ido-common-completion-map "\e[B" 'next-history-element)
+;; ;; (define-key ido-common-completion-map (kbd "C-g") 'keyboard-escape-quit)
+
+;; ;;;;;;;;;
+;; ;; this crap is only necessary because of the kbd macro crap above
+;; (define-key ido-common-completion-map "\e[C" 'ido-next-match)
+;; (define-key ido-common-completion-map "\e[D" 'ido-prev-match)
+
+;; ;; (define-key ido-completion-map "\e[C" 'ido-next-match)
+;; ;; (define-key ido-completion-map "\e[D" 'ido-prev-match)
+
+;; (define-key ido-file-dir-completion-map "\e[C" 'ido-next-match)
+;; (define-key ido-file-dir-completion-map "\e[D" 'ido-prev-match)
+;; (define-key ido-file-dir-completion-map "\C-]" 'ido-undo-merge-work-directory)
+
+
+;; (define-key ido-buffer-completion-map "\e[C" 'ido-next-match)
+;; (define-key ido-buffer-completion-map "\e[D" 'ido-prev-match)
+
+
+(define-key key-translation-map [\e] [\M])
+
+(define-key input-decode-map "\e[F" [end])
+(define-key input-decode-map "\e[D" [S-left])
+(define-key input-decode-map "\e[C" [S-right])
+(define-key input-decode-map "\e[A" [S-up])
+(define-key input-decode-map "\e[B" [S-down])
+(define-key input-decode-map "\e[C" [S-right])
+(define-key input-decode-map "\e[I" [prior])
+(define-key input-decode-map "\e[G" [next])
+(define-key input-decode-map "\e[M" [f1])
+(define-key input-decode-map "\e[Y" [S-f1])
+(define-key input-decode-map "\e[k" [C-f1])
+(define-key input-decode-map "\e\e[M" [M-f1])
+(define-key input-decode-map "\e[N" [f2])
+(define-key input-decode-map "\e[Z" [S-f2])
+(define-key input-decode-map "\e[l" [C-f2])
+(define-key input-decode-map "\e\e[N" [M-f2])
+(define-key input-decode-map "\e[O" [f3])
+(define-key input-decode-map "\e[a" [S-f3])
+(define-key input-decode-map "\e[m" [C-f3])
+(define-key input-decode-map "\e\e[O" [M-f3])
+(define-key input-decode-map "\e[P" [f4])
+(define-key input-decode-map "\e[b" [S-f4])
+(define-key input-decode-map "\e[n" [C-f4])
+(define-key input-decode-map "\e\e[P" [M-f4])
+(define-key input-decode-map "\e[Q" [f5])
+(define-key input-decode-map "\e[c" [S-f5])
+(define-key input-decode-map "\e[o" [C-f5])
+(define-key input-decode-map "\e\e[Q" [M-f5])
+(define-key input-decode-map "\e[R" [f6])
+(define-key input-decode-map "\e[d" [S-f6])
+(define-key input-decode-map "\e[p" [C-f6])
+(define-key input-decode-map "\e\e[R" [M-f6])
+(define-key input-decode-map "\e[S" [f7])
+(define-key input-decode-map "\e[e" [S-f7])
+(define-key input-decode-map "\e[q" [C-f7])
+(define-key input-decode-map "\e\e[S" [M-f7])
+(define-key input-decode-map "\e[T" [f8])
+(define-key input-decode-map "\e[f" [S-f8])
+(define-key input-decode-map "\e[r" [C-f8])
+(define-key input-decode-map "\e\e[T" [M-f8])
+(define-key input-decode-map "\e[U" [f9])
+(define-key input-decode-map "\e[g" [S-f9])
+(define-key input-decode-map "\e[s" [C-f9])
+(define-key input-decode-map "\e\e[U" [M-f9])
+(define-key input-decode-map "\e[V" [f10])
+(define-key input-decode-map "\e[h" [S-f10])
+(define-key input-decode-map "\e[_" [C-f10])
+(define-key input-decode-map "\e\e[V" [M-f10])
+(define-key input-decode-map "\e[W" [f11])
+(define-key input-decode-map "\e[i" [S-f11])
+(define-key input-decode-map "\e[u" [C-f11])
+(define-key input-decode-map "\e\e[W" [M-f11])
+(define-key input-decode-map "\e[X" [f12])
+(define-key input-decode-map "\e[j" [S-f12])
+(define-key input-decode-map "\e[v" [C-f12])
+(define-key input-decode-map "\e\e[X" [M-f12])
+(define-key input-decode-map (kbd "A-C-g") (kbd "C-g"))
+
+(global-set-key (kbd "<A-backspace>") (kbd "<backspace>"))
+(global-set-key (kbd "H-a") (beginning-of-line))
+
+;; Movement layer.
+
+(global-set-key (kbd "A-s") 'right-char)
+(global-set-key (kbd "A-n") 'left-char)
+(global-set-key (kbd "A-y") 'previous-line)
+(global-set-key (kbd "A-i") 'next-line)
+(global-set-key (kbd "A-p") 'move-beginning-of-line)
+(global-set-key (kbd "A-c") 'move-end-of-line)
+(global-set-key (kbd "A-b") 'scroll-down-command)
+(global-set-key (kbd "A-f") 'scroll-up-command)
+(global-set-key (kbd "A-C-s") 'right-word)
+(global-set-key (kbd "A-C-n") 'left-word)
+(global-set-key (kbd "A-C-y") 'backward-paragraph)
+(global-set-key (kbd "A-C-i") 'forward-paragraph)
+(global-set-key (kbd "A-C-p") 'backward-sentence)
+(global-set-key (kbd "A-C-c") 'forward-sentence)
+(global-set-key (kbd "A-C-b") 'beginning-of-buffer)
+(global-set-key (kbd "A-C-f") 'end-of-buffer)
+(global-set-key (kbd "A-M-s") 'forward-sexp)
+(global-set-key (kbd "A-M-n") 'backward-sexp)
+(global-set-key (kbd "A-M-y") 'backward-list)
+(global-set-key (kbd "A-M-i") 'forward-list)
+(global-set-key (kbd "A-M-p") 'backward-up-list)
+(global-set-key (kbd "A-M-c") 'up-list)
+(global-set-key (kbd "A-M-b") 'beginning-of-defun)
+(global-set-key (kbd "A-M-f") 'end-of-defun)
+(global-set-key (kbd "A-M-e") 'down-list)
+
+(global-set-key (kbd "A-a") 'ack-and-a-half)
+
+(global-set-key (kbd "A-j") 'fastnav-jump-to-char-forward)
+(global-set-key (kbd "A-J") 'fastnav-jump-to-char-backward)
+(global-set-key (kbd "A-g") 'fastnav-sprint-forward)
+(global-set-key (kbd "A-G") 'fastnav-sprint-backward)
+
+(global-set-key (kbd "A-/") 'isearch-forward-regexp)
+(define-key isearch-mode-map (kbd "A-/") 'isearch-repeat-forward)
+(define-key isearch-mode-map (kbd "A-\\") 'isearch-repeat-backward)
+
+(global-set-key (kbd "C-A-k") 'kill-line)
+(define-key compilation-mode-map (kbd "<A-M-mouse-1>") 'compile-goto-error)
+
+(global-set-key (kbd "A--") 'negative-argument)
+
+(defun pdc/add-movement-keys ()
+  (local-set-key (kbd "i") 'next-line)
+  (local-set-key (kbd "y") 'previous-line))
+
+(mapc (lambda (each) (add-hook each 'pdc/add-movement-keys))
+      '(gnus-summary-mode-hook gnus-group-mode-hook))
+
+(defvar pdc/bindings-file
+  (concat dotfiles-dir "initscripts/99bindings.el"))
+
+(set-register ?b `(file . ,pdc/bindings-file))
+
+;; (defun remember-local-set-key (key command)
+;;   "Like local-set-key, but saves the binding in 99bindings.el"
+;;   (interactive "KSet key locally: \nCSet key %s locally to command")
+;;   (let ((map (currrent-local-map)))
+;;     (unless map (error "There's no local map to add the binding to"))
+;;     (save-excursion
+;;       (find-file pdc/bindings-file)
+;;       (goto-char (point-max))q
+;;       (unless (looking-at "^$") (insert "\n"))
+;;       (let ((binding-command `(define-key ,map ,key ,command)))
+;;         (prin1 binding-command #'insert)
+;;         (insert "\n")))))

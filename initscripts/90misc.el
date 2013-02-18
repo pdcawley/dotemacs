@@ -226,26 +226,80 @@ Helper method for 'yank' advice"
   (interactive)
   (pdc/quote-behind "\""))
 
-(require 'annoying-arrows-mode)
-(global-annoying-arrows-mode)
+;; (require 'annoying-arrows-mode)
+;; (global-annoying-arrows-mode)
 
 
-(aa-add-suggestion 'previous-line 'fastnav-jump-to-char-backward)
-(aa-add-suggestion 'previous-line 'fastnav-sprint-backward)
-(aa-add-suggestion 'next-line 'fastnav-jump-to-char-forward)
-(aa-add-suggestion 'next-line 'fastnav-sprint-forward)
-(aa-add-suggestion 'right-char 'fastnav-jump-to-char-forward)
-(aa-add-suggestion 'right-char 'fastnav-sprint-forward)
-(aa-add-suggestion 'left-char 'fastnav-jump-to-char-backward)
-(aa-add-suggestion 'left-char 'fastnav-sprint-backward)
-(aa-add-suggestion 'backward-delete-char-untabify
-                   'fastnav-zap-up-to-char-backward)
-(aa-add-suggestion 'backward-delete-char
-                   'fastnav-zap-up-to-char-backward)
+;; (aa-add-suggestion 'previous-line 'fastnav-jump-to-char-backward)
+;; (aa-add-suggestion 'previous-line 'fastnav-sprint-backward)
+;; (aa-add-suggestion 'next-line 'fastnav-jump-to-char-forward)
+;; (aa-add-suggestion 'next-line 'fastnav-sprint-forward)
+;; (aa-add-suggestion 'right-char 'fastnav-jump-to-char-forward)
+;; (aa-add-suggestion 'right-char 'fastnav-sprint-forward)
+;; (aa-add-suggestion 'left-char 'fastnav-jump-to-char-backward)
+;; (aa-add-suggestion 'left-char 'fastnav-sprint-backward)
+;; (aa-add-suggestion 'backward-delete-char-untabify
+;;                    'fastnav-zap-up-to-char-backward)
+;; (aa-add-suggestion 'backward-delete-char
+;;                    'fastnav-zap-up-to-char-backward)
 
-(add-annoying-arrows-advice
- delete-char
- '(subword-kill kill-line zap-to-char fastnav-zap-up-to-char-forward))
+;; (add-annoying-arrows-advice
+;;  delete-char
+;;  '(subword-kill kill-line zap-to-char fastnav-zap-up-to-char-forward))
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
+
+(defun pdc/use-region-p ()
+  (or (and (fboundp 'use-region-p) (use-region-p))
+      (and transient-mark-mode mark-active
+           (> (region-end) (region-begining)))))
+
+(defun pdc/default-for-read (&optional thing-type)
+  (unless (pdc/use-region-p)
+    (thing-at-point (or thing-type 'symbol))))
+
+(defun isearch-yank-thing-at-point (thing-type)
+  (let ((thing (thing-at-point thing-type)))
+  (isearch-yank-string
+   (with-temp-buffer
+     (insert thing)
+     (buffer-substring-no-properties (point-min) (point-max))))))
+
+(defun isearch-yank-word-at-point ()
+  "Yank the word at the current point"
+  (interactive)
+  (isearch-yank-thing-at-point 'word))
+
+(defun isearch-yank-symbol-at-point ()
+  "Yank the symbor at the current point"
+  (interactive)
+  (isearch-yank-thing-at-point 'symbol))
+
+(define-key isearch-mode-map (kbd "A-w") 'isearch-yank-word-at-point)
+(define-key isearch-mode-map (kbd "A-W") 'isearch-yank-symbol-at-point)
 
 ;;; Local Variables:
 ;;; lexical-binding: t
