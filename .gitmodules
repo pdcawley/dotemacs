@@ -25,9 +25,6 @@
 [submodule "geiser"]
 	path = geiser
 	url = http://git.sv.gnu.org/r/geiser.git
-[submodule "elisp/external/gist.el"]
-	path = elisp/external/gist.el
-	url = https://github.com/mhayashi1120/gist.el.git
 [submodule "elisp/external/deft"]
 	path = elisp/external/deft
 	url = git://jblevins.org/git/deft.git
