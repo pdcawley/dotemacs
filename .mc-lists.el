@@ -3,15 +3,28 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        backward-sexp
+        c-electric-delete-forward
+        c-electric-paren
+        c-electric-semi&comma
+        c-electric-star
         cperl-electric-backspace
+        cperl-electric-rparen
+        cperl-electric-semi
         cperl-electric-terminator
+        cua-paste
         delete-horizontal-space
+        fastnav-jump-to-char-forward
+        forward-sexp
+        isearch-abort
         match-paren
         nxml-electric-slash
         tempo-x-space
+        yas-expand
         ))
 
 (setq mc/cmds-to-run-once
       '(
         describe-key
+        isearch-forward-regexp
         ))

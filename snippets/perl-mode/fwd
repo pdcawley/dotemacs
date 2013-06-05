@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: fwd
+# key: fwd
+# binding: C-c C-c h
+# --
+${1:method} => '${2:$1$(save-excursion (goto-char (1+ (next-overlay-change (point)))) (if yas/moving-away-p (pdc/align)) yas/text)}',

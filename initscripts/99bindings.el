@@ -18,6 +18,8 @@
 (global-set-key (kbd "<home>") 'beginning-of-line)
 (global-set-key (kbd "S-<home>") 'beginning-of-buffer)
 
+(global-set-key (kbd "C-c /") 'toggle-window-split)
+
 ;;(global-set-key (kbd "C-xC-f") 'ido-find-file)
 
 ;; A few from Steve Yegge that seem to make sense
@@ -83,7 +85,8 @@
 (global-set-key (kbd "A-s") 'save-buffer)
 
 (eval-after-load 'vc
-  (define-key vc-prefix-map (kbd "i")
+  (define-key vc-prefix-map
+    (kbd "i")
     '(lambda () (interactive)
        (if (not (eq 'Git (vc-backend buffer-file-name)))
            (vc-register)
@@ -395,6 +398,10 @@
 
 (defvar pdc/bindings-file
   (concat dotfiles-dir "initscripts/99bindings.el"))
+
+;; Grab a prefix mode hotkey prefix
+
+(global-set-key (kbd "C-c C-c") nil)
 
 (set-register ?b `(file . ,pdc/bindings-file))
 

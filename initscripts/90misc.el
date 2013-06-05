@@ -21,9 +21,13 @@
 
 ;; Can't `diminish' until after the modes are loaded...
 (require 'diminish)
-(diminish 'abbrev-mode)
-(diminish 'hs-minor-mode)
-(diminish 'hbfc-mode)
+(defmacro pdc/after-loading (file &rest body)
+  (declare (indent 1) (debug t))
+  `(eval-after-load ,file '(progn ,@body)))
+
+(pdc/after-loading "hideshow" (diminish 'hs-minor-mode))
+(pdc/after-loading 'abbrev-mode (diminish 'abbrev-mode))
+(pdc/after-loading 'hbfc-mode (diminish 'hbfc-mode))
 
 ;; Steve Yegge tips
 (defun rename-file-and-buffer (new-name)
