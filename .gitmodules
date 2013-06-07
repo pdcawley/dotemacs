@@ -61,6 +61,3 @@
 [submodule "elisp/external/apel"]
 	path = elisp/external/apel
 	url = https://github.com/wanderlust/apel.git
-[submodule "elisp/external/org-redmine"]
-	path = elisp/external/org-redmine
-	url = git://github.com/gongo/org-redmine.git
