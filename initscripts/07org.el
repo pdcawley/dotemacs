@@ -621,15 +621,15 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (add-to-list 'file-coding-system-alist '("\.org" . utf-8))
 
 (require 'appt)
-(defun pdc/org-agenda-to-appt ()
-  (interactive)
-  (setq appt-time-msg-list nil)
-  (org-agenda-to-appt))
+;; (defun pdc/org-agenda-to-appt ()
+;;   (interactive)
+;;   (setq appt-time-msg-list nil)
+;;   (org-agenda-to-appt))
 
-(add-hook 'org-finalize-agenda-hook 'pdc/org-agenda-to-appt)
-(pdc/org-agenda-to-appt)
+;; (add-hook 'org-finalize-agenda-hook 'pdc/org-agenda-to-appt)
+;; (pdc/org-agenda-to-appt)                
 (appt-activate t)
-(run-at-time "24:01" nil 'pdc/org-agenda-to-appt)
+ ;; (run-at-time "24:01" nil 'pdc/org-agenda-to-appt) 
 
 (defun org-wp-linkify ()
   "Turn the region or word at the point into an org Wikipedia link"
@@ -647,6 +647,6 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 ;;; Redmine stuff
 
-(require 'org-redmine)
-(setq org-redmine-uri "http://61.127.104.123/redmine")
-(setq org-redmine-auth-netrc-use t)
+;; (require 'org-redmine)
+;; (setq org-redmine-uri "http://61.127.104.123/redmine")
+;; (setq org-redmine-auth-netrc-use t)
