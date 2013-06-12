@@ -13,7 +13,8 @@
     multi-term nav nterm nzenburn-theme org org-journal org-magit 
     paredit pastebin pcache pcmpl-args perlbrew persistent-soft
     project projectile scss-mode string-utils tt-mode typing ucs-utils
-    undo-tree unicode-enbox wgrep wgrep-ack winpoint yagist yaml-mode
+    undo-tree unicode-enbox
+    winpoint yagist yaml-mode
     zencoding-mode)
   "A list of packages to ensure are installed at launch.")
 
