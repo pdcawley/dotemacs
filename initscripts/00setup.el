@@ -117,10 +117,12 @@ return a new alist whose car is the new pair and cdr is ALIST."
           alist)
       (cons (cons key value) alist))))
 
+(defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
 (let ((pdc/bdir (concat temporary-file-directory "/backups"))
       (pdc/adir (concat temporary-file-directory "/autosaves")))
   (setq backup-directory-alist `((".*" . ,pdc/bdir)))
   (setq auto-save-file-name-transforms `((".*" ,pdc/adir t)))
+  (setq auto-save-list-file-prefix emacs-tmp-dir)
   (unless (file-exists-p pdc/bdir) (make-directory pdc/bdir))
   (unless (file-exists-p pdc/adir) (make-directory pdc/adir)))
 

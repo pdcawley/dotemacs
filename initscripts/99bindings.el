@@ -164,7 +164,8 @@
                              ("\\.gemspec\\'"            . ruby-mode)
                              ("\\.rnc\\'"                . rnc-mode)
                              ("\\.js\\'"                 . js2-mode)
-                             ("\\.psgi\\'"               . cperl-mode)))
+                             ("\\.psgi\\'"               . perl-mode)
+                             ("\\.t\\'"                  . perl-mode)))
 
 (cua-selection-mode 1)
 

@@ -3,7 +3,7 @@
 (add-to-list 'load-path (concat dotfiles-dir "/cperl-mode"))
 
 (defalias 'perl-mode 'cperl-mode)
-(add-to-list 'auto-mode-alist '("\\.t" . perl-mode))
+(add-to-list 'auto-mode-alist '("\\.t\\'" . perl-mode))
 
 (defun pdc:path->perl-module (path)
   (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
