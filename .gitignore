@@ -22,3 +22,5 @@ eshell/lastdir
 /pde
 /semanticdb/!Users!pdcawley!Dropbox!emacs.d!initscripts!semantic.cache
 /srecode-map.el
+/.emacs.desktop
+/.emacs.desktop.lock
