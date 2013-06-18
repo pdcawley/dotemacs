@@ -26,4 +26,5 @@
     ("-o" "StrictHostKeyChecking=no")))
   (tramp-default-port 22)))
 
-(setq tramp-method "scpnox")
+(setq tramp-default-method "scpnox")
+(setq tramp-backup-directory-alist backup-directory-alist)
