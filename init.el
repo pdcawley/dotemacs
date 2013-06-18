@@ -76,7 +76,7 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (set-face-attribute
  'default nil
- :height 160
+ :height 130
  ;; (let ((width (display-pixel-width)))
  ;;           (cond ((= width 2560) 160)
  ;;                 (t 140)))
