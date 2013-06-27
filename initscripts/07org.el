@@ -1,6 +1,8 @@
 (add-to-list 'load-path (concat dotfiles-dir "org-mode/lisp"))
 (add-to-list 'load-path (concat dotfiles-dir "org-mode/contrib/lisp"))
 (require 'org)
+(require 'org-compat)
+(require 'cl)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-log-done t)
 
@@ -108,12 +110,13 @@ Skips capture tasks and tasks with subtasks"
 
 
 (setq org-agenda-files
+      (remove-if-not 'file-exists-p
       (mapcar (lambda (path)
                 (if (string-match-p "^[/~]" path)
                     path
                   (concat org-directory path)))
               '("codex.org" "blog.org" "todo.org" "technology.org"
-                "journal.org" "headforwards.org" "coding.org")))
+                "journal.org" "headforwards.org" "coding.org"))))
 
 (defvar org-journal-file "~/Dropbox/org/journal.org"
   "Path to OrgMode journal file.")
