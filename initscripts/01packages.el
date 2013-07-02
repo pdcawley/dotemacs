@@ -1,5 +1,6 @@
 (defvar prelude-packages
   '(ack-and-a-half align-cljlet anything apache-mode
+    bitly
     asciidoc browse-url-dwim buffer-move clojure-mode coffee-mode
     dropbox el-autoyas erefactor fastnav flymake flymake-easy flymake-haml
     flymake-haskell-multi flymake-hlint flymake-perlcritic flymake-sass
