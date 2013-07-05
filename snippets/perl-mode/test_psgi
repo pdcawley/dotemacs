@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: test_psgi
+# key: testp
+# --
+test_psgi ${1:\$app}, sub {
+    my ($cb) = @_;
+    
+    $0
+};
