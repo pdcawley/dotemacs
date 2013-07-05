@@ -73,6 +73,13 @@
 (when (require 'jabber nil 'noerror)
   (define-key jabber-chat-mode-map (kbd "M-RET") 'newline))
 
+;; windmove
+(when (require 'windmove nil 'noerror)
+  (global-set-key (kbd "s-<left>") 'windmove-left)
+  (global-set-key (kbd "s-<right>") 'windmove-right)
+  (global-set-key (kbd "s-<up>") 'windmove-up)
+  (global-set-key (kbd "s-<down>") 'windmove-down))
+
 ;; Lispy
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
