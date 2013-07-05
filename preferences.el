@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ack-and-a-half-executable "ack" t)
  '(ack-and-a-half-prompt-for-directory t)
  '(ack-prompt-for-directory t)
  '(auto-save-interval 300)
@@ -24,24 +25,25 @@
  '(confluence-save-credentials t)
  '(confluence-url "https://confluence.ntt.eu/rpc/xmlrpc")
  '(cperl-auto-newline nil)
- '(cperl-brace-imaginary-offset 4)
- '(cperl-brace-offset 4)
- '(cperl-close-paren-offset 0)
- '(cperl-continued-statement-offset 4)
- '(cperl-fix-hanging-brace-when-indent nil)
- '(cperl-indent-level 0)
  '(cperl-indent-parens-as-block t)
  '(cperl-indent-subs-specially nil)
- '(cperl-label-offset -4)
  '(cperl-merge-trailing-else nil)
  '(cperl-tab-always-indent t)
  '(cua-enable-cua-keys nil)
  '(cua-keep-region-after-copy t)
  '(cua-remap-control-v nil)
  '(current-language-environment "English")
- '(cursor-type (quote bar) t)
+ '(cursor-type (quote bar))
  '(default-fill-column 78 t)
- '(default-frame-alist (quote ((top . 50) (left . 100) (width . 110) (height . 40) (cursor-color . "#dcdccc") (tool-bar-lines . 0) (menu-bar-lines . 1))))
+ '(default-frame-alist
+    (quote
+     ((top . 50)
+      (left . 100)
+      (width . 110)
+      (height . 40)
+      (cursor-color . "#dcdccc")
+      (tool-bar-lines . 0)
+      (menu-bar-lines . 1))))
  '(default-input-method nil)
  '(default-mime-charset (quote utf-8))
  '(delete-selection-mode nil nil (delsel))
@@ -1180,7 +1182,14 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(require-final-newline t)
  '(safe-local-variable-values
 (quote
- ((ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
+ ((cperl-tab-always-indent . t)
+  (cperl-indent-parens-as-block . t)
+  (cperl-fix-hanging-brace-when-indent)
+  (cperl-close-paren-offset . 0)
+  (cperl-brace-imaginary-offset . 4)
+  (cperl-auto-newline)
+  (ack-and-a-half-executable . "/home/staff/pdc/bin/ack")
+  (ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
   (ffap-perl-module-path mapcar
                          (function expand-path)
                          ("lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))
@@ -1207,6 +1216,9 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
  '(tramp-auto-save-directory "~/.tramp-autosaves")
  '(tramp-encoding-shell "/bin/bash")
+ '(tramp-remote-path
+(quote
+ (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
  '(tramp-sh-extra-args
 (quote
  (("/bash\\'" . "-norc -noprofile")
