@@ -116,7 +116,26 @@
 ;; Tabkey2 and other expansion related malarkey
 ;(require 'tabkey2)
 ;(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
-;(tabkey2-mode 1)
+                                        ;(tabkey2-mode 1)
+
+(global-set-key (kbd "C-h V") 'pdc/apropos-variable)
+(global-set-key (kbd "C-h A") nil)
+(global-set-key (kbd "C-h A v") 'pdc/apropos-variable)
+(global-set-key (kbd "C-h A d") 'apropos-documentation)
+(global-set-key (kbd "C-h A V") 'apropos-value)
+(global-set-key (kbd "C-h A l") 'apropos-library)
+(global-set-key (kbd "C-h A f") 'pdc/apropos-function)
+
+(defun pdc/apropos-variable ()
+  "My apropos lookup for variables"
+  (interactive)
+  (let ((current-prefix-arg (not current-prefix-arg)))
+    (call-interactively 'apropos-variable)))
+
+(defun pdc/apropos-function (pattern)
+  "Apropos lookup for commands and functions"
+  (interactive (list (apropos-read-pattern "command or function")))
+  (apropos-command pattern t))
 
 ;; vi-like %
 (global-set-key "%" 'match-paren)
@@ -229,66 +248,6 @@
 
 
 (define-key global-map "\eOd" 'backward-word)
-
-;; ;;; http://www.gnu.org/software/emacs/manual/html_node/viper/Key-Bindings.htm
-;; ;;; ;@@TR: the following needs to be translated to use input-decode-map
-;; ;; terminal/gnu-screen arrow key support
-
-;; (define-key input-decode-map "\e[A" [up])
-;; (define-key input-decode-map "\e[B" [down])
-;; (define-key input-decode-map "\e[C" [right])
-;; (define-key input-decode-map "\e[D" [left])
-
-;; (define-key global-map "\e[1;9A" (kbd "M-<up>"))
-;; (define-key global-map "\e[1;9B" (kbd "M-<down>"))
-;; (define-key global-map "\e[1;9C" (kbd "M-<right>"))
-;; (define-key global-map "\e[1;9D" (kbd "M-<left>"))
-
-;; ;;; shift arrow key support inside of gnu screen / iTerm
-;; (define-key global-map "\eO2D" (kbd "S-<left>"))
-;; (define-key global-map "\eO2C" (kbd "S-<right>"))
-;; (define-key global-map "\eO2A" (kbd "S-<up>"))
-;; (define-key global-map "\eO2B" (kbd "S-<down>"))
-
-;; (define-key global-map "\e[1;2D" (kbd "S-<left>"))
-;; (define-key global-map "\e[1;2C" (kbd "S-<right>"))
-;; (define-key global-map "\e[1;2A" (kbd "S-<up>"))
-;; (define-key global-map "\e[1;2B" (kbd "S-<down>"))
-
-;; ;;; shift arrow in gnu screen / urxvt
-;; (define-key global-map "\e[d" (kbd "S-<left>"))
-;; (define-key global-map "\e[c" (kbd "S-<right>"))
-;; (define-key global-map "\e[a" (kbd "S-<up>"))
-;; (define-key global-map "\e[b" (kbd "S-<down>"))
-
-;; (define-key global-map "\e[1;10D" (kbd "M-S-<left>"))
-;; (define-key global-map "\e[1;10C" (kbd "M-S-<right>"))
-;; (define-key global-map "\e[1;10A" (kbd "M-S-<up>"))
-;; (define-key global-map "\e[1;10B" (kbd "M-S-<down>"))
-
-;; (define-key paredit-mode-map (kbd "C-<right>") 'forward-word)
-;; (define-key paredit-mode-map (kbd "C-<left>") 'backward-word)
-
-;; (define-key ido-common-completion-map "\e[A" 'previous-history-element)
-;; (define-key ido-common-completion-map "\e[B" 'next-history-element)
-;; ;; (define-key ido-common-completion-map (kbd "C-g") 'keyboard-escape-quit)
-
-;; ;;;;;;;;;
-;; ;; this crap is only necessary because of the kbd macro crap above
-;; (define-key ido-common-completion-map "\e[C" 'ido-next-match)
-;; (define-key ido-common-completion-map "\e[D" 'ido-prev-match)
-
-;; ;; (define-key ido-completion-map "\e[C" 'ido-next-match)
-;; ;; (define-key ido-completion-map "\e[D" 'ido-prev-match)
-
-;; (define-key ido-file-dir-completion-map "\e[C" 'ido-next-match)
-;; (define-key ido-file-dir-completion-map "\e[D" 'ido-prev-match)
-;; (define-key ido-file-dir-completion-map "\C-]" 'ido-undo-merge-work-directory)
-
-
-;; (define-key ido-buffer-completion-map "\e[C" 'ido-next-match)
-;; (define-key ido-buffer-completion-map "\e[D" 'ido-prev-match)
-
 
 (define-key key-translation-map [\e] [\M])
 
