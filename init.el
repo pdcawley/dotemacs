@@ -50,6 +50,7 @@
                      "/usr/local/sbin" "/sbin" "/bin" "/usr/bin" "/usr/sbin")))
 (load custom-file)
 (require 'package)
+
 (add-to-list 'package-archives
              '("ELPA" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives
@@ -57,6 +58,9 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
+
+(package-install 'use-package)
+(require 'use-package)
 
 (require 'initscripts)
 (load custom-file)
