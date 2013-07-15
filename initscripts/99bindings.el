@@ -91,14 +91,6 @@
 
 (global-set-key (kbd "A-s") 'save-buffer)
 
-(eval-after-load 'vc
-  (define-key vc-prefix-map
-    (kbd "i")
-    '(lambda () (interactive)
-       (if (not (eq 'Git (vc-backend buffer-file-name)))
-           (vc-register)
-         (shell-command (format "git add %s" buffer-file-name))
-         (message "Staged changes")))))
 
 (define-key isearch-mode-map (kbd "C-o")
   (lambda () (interactive)
