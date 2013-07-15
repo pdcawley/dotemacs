@@ -54,6 +54,8 @@
              '("ELPA" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 (require 'initscripts)
@@ -76,7 +78,7 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (set-face-attribute
  'default nil
- :height 130
+ :height 120
  ;; (let ((width (display-pixel-width)))
  ;;           (cond ((= width 2560) 160)
  ;;                 (t 140)))

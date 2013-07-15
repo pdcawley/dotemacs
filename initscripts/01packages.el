@@ -2,7 +2,10 @@
   '(ack-and-a-half align-cljlet anything apache-mode
     bitly
     asciidoc browse-url-dwim buffer-move clojure-mode coffee-mode
-    dropbox el-autoyas erefactor fastnav flymake flymake-easy flymake-haml
+    dash
+    dropbox el-autoyas erefactor
+    f
+    fastnav flymake flymake-easy flymake-haml
     flymake-haskell-multi flymake-hlint flymake-perlcritic flymake-sass
     flymake-sass flymake-shell fringe-helper gist git-commit-mode git-gutter
     git-gutter-fringe gitignore-mode gitty go-mode goto-last-change haml-mode
@@ -13,7 +16,9 @@
     magit magit-gh-pulls magithub markdown-mode mediawiki mo-git-blame
     multi-term nav nterm nzenburn-theme org org-journal org-magit 
     paredit pastebin pcache pcmpl-args perlbrew persistent-soft
-    project projectile scss-mode string-utils tt-mode typing ucs-utils
+    project projectile
+    s
+    scss-mode string-utils tt-mode typing ucs-utils
     undo-tree unicode-enbox
     winpoint yagist yaml-mode
     zencoding-mode)
