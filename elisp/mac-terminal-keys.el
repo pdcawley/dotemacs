@@ -28,5 +28,8 @@
 (define-key input-decode-map "\e[1;10C"   [S-M-right])
 (define-key input-decode-map "\e[1;14C"   [C-M-right])
 (define-key input-decode-map "\e[1;15C" [S-C-M-right])
+(define-key input-decode-map "\eOH"          [s-left])
+(define-key input-decode-map "\eOF"         [s-right])
+
 
 (provide 'mac-terminal-keys)
