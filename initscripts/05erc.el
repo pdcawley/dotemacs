@@ -1,5 +1,6 @@
 (require 'erc)
 (require 'erc-track)
+(require 's)
 
 ;; It seems that point 2 "The user is not interested in customizing it" in the
 ;; original documentation comment is wrong. I want mouse-1 to switch in place,
@@ -119,6 +120,30 @@ you'll change the colors used for nicks."
 ;; This adds the ERC message insert hook.
 (add-hook 'erc-insert-modify-hook 'my-erc-colorize-nick)
 
+(defvar pdc/last-addressee nil
+  "The last person we addressed in a channel buffer")
+
+(defun pdc/make-erc-local-variables ()
+  (make-local-variable pdc/last-addressee))
+
+(add-hook 'erc-join-hook 'pdc/make-erc-local-variables)
+
+(defun pdc/parse-addressee (utterance)
+  (let ((match (car (s-match "[^ ]+:" utterance))))
+    (when match
+      (setq pdc/last-addressee match))))
+
+(add-hook 'erc-send-pre-hook 'pdc/parse-addressee)
+
+(defun pdc/insert-last-addressee ()
+  (interactive)
+  (when (and (= (point) erc-input-marker)
+             pdc/last-addressee)
+    (insert pdc/last-addressee " ")))
+
+(defadvice erc-display-prompt (after pdc/erc-convo activate compile)
+  (pdc/insert-last-addressee))
+
 ;; Setup the gear to connect to forge irc.
 (require 'tls)
 (defun start-irc ()
@@ -128,3 +153,4 @@ you'll change the colors used for nicks."
   (erc     :server "irc.filknet.org" :port 6667)
   (erc     :server "irc.runstate.com" :port 6667)
   (erc     :server "irc.freenode.net" :port 6667))
+
