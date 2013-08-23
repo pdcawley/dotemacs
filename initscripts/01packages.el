@@ -2,8 +2,9 @@
   '(ack-and-a-half align-cljlet anything apache-mode
     bitly
     asciidoc browse-url-dwim buffer-move clojure-mode coffee-mode
-    dash
+    dash dash-functional
     dropbox el-autoyas erefactor
+    evil
     f
     fastnav flymake flymake-easy flymake-haml
     flymake-haskell-multi flymake-hlint flymake-perlcritic flymake-sass
@@ -13,7 +14,7 @@
     js2-mode json json-mode
     keyfreq less-css-mode lexbind-mode list-utils load-dir
     log4j-mode logito
-    magit magit-gh-pulls magithub markdown-mode mediawiki mo-git-blame
+    markdown-mode mediawiki mo-git-blame
     multi-term nav nterm nzenburn-theme org org-journal org-magit 
     paredit pastebin pcache pcmpl-args perlbrew persistent-soft
     project projectile

@@ -20,11 +20,10 @@
 (add-to-list 'load-path (concat dotfiles-dir "shime/"))
 (add-to-list 'load-path (concat dotfiles-dir "emacs-color-theme-solarized/"))
 (add-to-list 'load-path (concat dotfiles-dir "elisp/"))
+(add-to-list 'Info-directory-list (concat dotfiles-dir "info"))
 
 ;; Make sure we have font-lock to start withco
 (require 'font-lock)
-(require 'zenburn)
-(color-theme-zenburn)
 (global-hl-line-mode t)
 
 ;; Just say no to splash screens
@@ -125,5 +124,8 @@ return a new alist whose car is the new pair and cdr is ALIST."
   (setq auto-save-list-file-prefix emacs-tmp-dir)
   (unless (file-exists-p pdc/bdir) (make-directory pdc/bdir))
   (unless (file-exists-p pdc/adir) (make-directory pdc/adir)))
+
+(defgroup pdc nil
+  "A group of personal customizations")
 
 ;; end 00setup.el

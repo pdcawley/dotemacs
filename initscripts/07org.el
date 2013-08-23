@@ -16,7 +16,8 @@
 
 
 (setq org-link-abbrev-alist
-      '(("cpan" . "http://search.cpan.org/dist/")
+      '(("FB" . "http://www.thermeon.com/fogbugz/default.asp?")
+        ("cpan" . "http://search.cpan.org/dist/")
         ("cpansearch" . "http://search.cpan.org/search?mode=module&query=")
         ("jira" . "https://jira.dev.bbc.co.uk/browse/")
         ("MS"   . "https://jira.dev.bbc.co.uk/browse/MEDIASELECTOR-")

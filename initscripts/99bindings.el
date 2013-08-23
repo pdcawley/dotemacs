@@ -33,9 +33,6 @@
 (defalias 'rr  'replace-regexp)
 
 ;; More, inspired by the Emacs Starter Kit
-(defgroup pdc nil
-  "Group for customizing pdc/* utility functions"
-  :tag "Personal customizations")
 
 (defcustom pdc/spruce-up-hook nil
   "Normal hook run after basic spruce up commands"
@@ -363,6 +360,14 @@
 (global-set-key (kbd "C-c C-c") nil)
 
 (set-register ?b `(file . ,pdc/bindings-file))
+
+;; Multicursor stuff
+(when (require 'multiple-cursors nil 'noerror)
+  (global-set-key (kbd "C-S-c") nil)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
+  (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines))
+
 
 ;; (defun remember-local-set-key (key command)
 ;;   "Like local-set-key, but saves the binding in 99bindings.el"
