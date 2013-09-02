@@ -1,1 +1,1 @@
-(load-file (concat dotfiles-dir "geiser/elisp/geiser.el"))
+(use-package geiser :ensure geiser)

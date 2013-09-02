@@ -1,6 +1,6 @@
 ;; 02ido.el -- Customization for ido
 ;; -*- lexical-binding: t -*-
-
+(require 'use-package)
 (use-package ido
   :init
   (progn
@@ -12,4 +12,4 @@
       (define-key ido-completion-map "\C-f" 'ido-next-match)
       (define-key ido-completion-map "\C-p" 'ido-prev-match)
       (define-key ido-completion-map "\C-b" 'ido-prev-match)
-      (define-key ido-completion-map " "    'ido-exit-minibuffer)))
+      (define-key ido-completion-map " "    'ido-exit-minibuffer))))

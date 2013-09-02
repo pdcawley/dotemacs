@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'erc)
 (require 'erc-track)
 (require 's)
@@ -123,12 +124,15 @@ you'll change the colors used for nicks."
 (defvar pdc/last-addressee nil
   "The last person we addressed in a channel buffer")
 
+(setq prepped-line nil)
+
 (defun pdc/make-erc-local-variables ()
   (make-local-variable pdc/last-addressee))
 
 (add-hook 'erc-join-hook 'pdc/make-erc-local-variables)
 
 (defun pdc/parse-addressee (utterance)
+  (setq prepped-line t)
   (let ((match (car (s-match "[^ ]+:" utterance))))
     (when match
       (setq pdc/last-addressee match))))

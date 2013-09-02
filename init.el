@@ -80,13 +80,14 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (put 'narrow-to-region 'disabled nil)
 
-(set-face-attribute
- 'default nil
- :height 120
- ;; (let ((width (display-pixel-width)))
- ;;           (cond ((= width 2560) 160)
- ;;                 (t 140)))
- :family "Menlo")
+(when window-system
+  (set-face-attribute
+   'default nil
+   :height 120
+   ;; (let ((width (display-pixel-width)))
+   ;;           (cond ((= width 2560) 160)
+   ;;                 (t 140)))
+   :family "Menlo"))
 
 (require 'zenburn)
 (color-theme-zenburn)

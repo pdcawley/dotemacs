@@ -28,6 +28,9 @@
 (pdc/after-loading "hideshow" (diminish 'hs-minor-mode))
 (pdc/after-loading 'abbrev-mode (diminish 'abbrev-mode))
 (pdc/after-loading 'hbfc-mode (diminish 'hbfc-mode))
+(pdc/after-loading "undo-tree"
+  (diminish 'undo-tree-mode))
+(pdc/after-loading 'yasnippet (diminish 'yas-minor-mode))
 
 ;; Steve Yegge tips
 (defun rename-file-and-buffer (new-name)
@@ -312,6 +315,9 @@ Helper method for 'yank' advice"
 (define-key isearch-mode-map (kbd "A-w") 'isearch-yank-word-at-point)
 (define-key isearch-mode-map (kbd "A-W") 'isearch-yank-symbol-at-point)
 
+
+
 ;;; Local Variables:
 ;;; lexical-binding: t
 ;;; End:
+
