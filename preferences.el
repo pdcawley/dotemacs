@@ -1080,6 +1080,9 @@
  '(mac-key-mode t)
  '(mac-key-mode-hook nil)
  '(mac-wheel-button-is-mouse-2 t t)
+ '(magit-emacsclient-executable "emacsclient")
+ '(magit-git-executable "git")
+ '(magit-gitk-executable "gitk")
  '(max-specpdl-size 10000)
  '(message-send-mail-function (quote smtpmail-send-it))
  '(minibuffer-eldef-shorten-default t)
@@ -1089,71 +1092,66 @@
       ((column-number-mode
         (10
          #("(%03l,%03c)" 0 9
-           (local-map
-            (keymap
-             (mode-line keymap
-                        (down-mouse-1 keymap
-                                      (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                                          (:toggle . column-number-mode))
-                                      (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                                        (:toggle . line-number-mode))
-                                      "Toggle Line and Column Number Display")))
-            mouse-face mode-line-highlight help-echo "Line number and Column number
-mouse-1: Display Line and Column Mode Menu")))
+           (help-echo "Line number and Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
+(keymap
+ (mode-line keymap
+            (down-mouse-1 keymap
+                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+                                              (:toggle . column-number-mode))
+                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+                                            (:toggle . line-number-mode))
+                          "Toggle Line and Column Number Display"))))))
         (6
          #(" L%l" 0 4
-           (local-map
-            (keymap
-             (mode-line keymap
-                        (down-mouse-1 keymap
-                                      (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                                          (:toggle . column-number-mode))
-                                      (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                                        (:toggle . line-number-mode))
-                                      "Toggle Line and Column Number Display")))
-            mouse-face mode-line-highlight help-echo "Line Number
-mouse-1: Display Line and Column Mode Menu")))))
+           (help-echo "Line Number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
+(keymap
+ (mode-line keymap
+            (down-mouse-1 keymap
+                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+                                              (:toggle . column-number-mode))
+                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+                                            (:toggle . line-number-mode))
+                          "Toggle Line and Column Number Display"))))))))
       ((column-number-mode
         (5
          #(" C%c" 0 4
-           (local-map
-            (keymap
-             (mode-line keymap
-                        (down-mouse-1 keymap
-                                      (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                                          (:toggle . column-number-mode))
-                                      (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                                        (:toggle . line-number-mode))
-                                      "Toggle Line and Column Number Display")))
-            mouse-face mode-line-highlight help-echo "Column number
-mouse-1: Display Line and Column Mode Menu"))))))
+           (help-echo "Column number
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
+(keymap
+ (mode-line keymap
+            (down-mouse-1 keymap
+                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+                                              (:toggle . column-number-mode))
+                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+                                            (:toggle . line-number-mode))
+                          "Toggle Line and Column Number Display")))))))))
      "["
      (-3
       #("%p" 0 2
-        (local-map
-         (keymap
-          (mode-line keymap
-                     (down-mouse-1 keymap
-                                   (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                                       (:toggle . column-number-mode))
-                                   (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                                     (:toggle . line-number-mode))
-                                   "Toggle Line and Column Number Display")))
-         mouse-face mode-line-highlight help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu")))
+        (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
+(keymap
+ (mode-line keymap
+            (down-mouse-1 keymap
+                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+                                              (:toggle . column-number-mode))
+                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+                                            (:toggle . line-number-mode))
+                          "Toggle Line and Column Number Display"))))))
      (size-indication-mode
       #("/%I" 0 3
-        (local-map
-         (keymap
-          (mode-line keymap
-                     (down-mouse-1 keymap
-                                   (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                                       (:toggle . column-number-mode))
-                                   (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                                     (:toggle . line-number-mode))
-                                   "Toggle Line and Column Number Display")))
-         mouse-face mode-line-highlight help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu")))
+        (help-echo "Size indication mode
+mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
+(keymap
+ (mode-line keymap
+            (down-mouse-1 keymap
+                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+                                              (:toggle . column-number-mode))
+                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+                                            (:toggle . line-number-mode))
+                          "Toggle Line and Column Number Display"))))))
      "]")) t)
  '(mode-require-final-newline (quote visit-save))
  '(mouse-region-delete-keys (quote ([delete] [deletechar] [backspace])))
@@ -1169,48 +1167,48 @@ mouse-1: Display Line and Column Mode Menu")))
  '(nxml-bind-meta-tab-to-complete-flag t)
  '(nxml-slash-auto-complete-flag t)
  '(org-agenda-files
-   (quote
-    ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
+(quote
+ ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
  '(org-link-abbrev-alist
-   (quote
-    (("cpan" . "http://search.cpan.org/dist/")
-     ("cpansearch" . "http://search.cpan.org/search?mode=module&query=")
-     ("jira" . "https://jira.dev.bbc.co.uk/browse/")
-     ("gmap" . "http://maps.google.com/maps?q=%s"))))
+(quote
+ (("cpan" . "http://search.cpan.org/dist/")
+  ("cpansearch" . "http://search.cpan.org/search?mode=module&query=")
+  ("jira" . "https://jira.dev.bbc.co.uk/browse/")
+  ("gmap" . "http://maps.google.com/maps?q=%s"))))
  '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
  '(org-modules
-   (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-checklist org-drill org-elisp-symbol org-eshell org-git-link org-man org-screen org-jsinfo org-habit org-inlinetask org-irc org-mac-message org-mew org-mhe org-protocol org-rmail org-vm org-wl org-w3m org-mouse org-annotate-file org-mac-iCal org-mac-link-grabber org-timer)))
+(quote
+ (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-checklist org-drill org-elisp-symbol org-eshell org-git-link org-man org-screen org-jsinfo org-habit org-inlinetask org-irc org-mac-message org-mew org-mhe org-protocol org-rmail org-vm org-wl org-w3m org-mouse org-annotate-file org-mac-iCal org-mac-link-grabber org-timer)))
  '(org-protocol-default-template-key "w")
  '(org-startup-indented t)
  '(org-timer-default-timer 25)
  '(org-todo-keywords
-   (quote
-    ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
-     (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
-     (sequence "OPEN(O)" "|" "CLOSED(C)"))))
+(quote
+ ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
+  (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
+  (sequence "OPEN(O)" "|" "CLOSED(C)"))))
  '(overflow-newline-into-fringe t)
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
-   (quote
-    (forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace cperl-electric-lbrace)))
+(quote
+ (forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace cperl-electric-lbrace cperl-electric-backspace cperl-electric-paren cperl-electric-rparen)))
  '(rails-always-use-text-menus t)
  '(read-mail-command (quote gnus))
  '(require-final-newline t)
  '(safe-local-variable-values
-   (quote
-    ((cperl-tab-always-indent . t)
-     (cperl-indent-parens-as-block . t)
-     (cperl-fix-hanging-brace-when-indent)
-     (cperl-close-paren-offset . 0)
-     (cperl-brace-imaginary-offset . 4)
-     (cperl-auto-newline)
-     (ack-and-a-half-executable . "/home/staff/pdc/bin/ack")
-     (ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
-     (ffap-perl-module-path mapcar
-                            (function expand-path)
-                            ("lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))
-     (ffap-perl-module-path "lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))))
+(quote
+ ((cperl-tab-always-indent . t)
+  (cperl-indent-parens-as-block . t)
+  (cperl-fix-hanging-brace-when-indent)
+  (cperl-close-paren-offset . 0)
+  (cperl-brace-imaginary-offset . 4)
+  (cperl-auto-newline)
+  (ack-and-a-half-executable . "/home/staff/pdc/bin/ack")
+  (ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
+  (ffap-perl-module-path mapcar
+                         (function expand-path)
+                         ("lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))
+  (ffap-perl-module-path "lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))))
  '(scroll-conservatively 0)
  '(scroll-preserve-screen-position t)
  '(scroll-step 0)
@@ -1229,17 +1227,17 @@ mouse-1: Display Line and Column Mode Menu")))
  '(text-mode-hook (quote (text-mode-hook-identify pdc/turn-on-abbrev-mode)))
  '(tls-checktrust (quote ask))
  '(tls-program
-   (quote
-    ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
+(quote
+ ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
  '(tramp-auto-save-directory "~/.tramp-autosaves")
  '(tramp-encoding-shell "/bin/bash")
  '(tramp-remote-path
-   (quote
-    (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
+(quote
+ (tramp-own-remote-path tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin")))
  '(tramp-sh-extra-args
-   (quote
-    (("/bash\\'" . "-norc -noprofile")
-     ("/zsh\\'" . "-d -f"))))
+(quote
+ (("/bash\\'" . "-norc -noprofile")
+  ("/zsh\\'" . "-d -f"))))
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-ignore-buffers-re "^\\*")
  '(uniquify-separator ":")
@@ -1265,6 +1263,7 @@ mouse-1: Display Line and Column Mode Menu")))
  '(hi-edebug-x-debug-line ((t (:inherit zenburn-highlight-subtle))))
  '(hi-edebug-x-stop ((t (:background "#2e4440"))))
  '(latex-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "Lucida Grande"))) t)
+ '(magit-item-highlight ((t (:inherit zenburn-highlight-damp))))
  '(mm/master-face ((t (:background "#2e3330"))))
  '(mm/mirror-face ((t (:background "#2e3330"))))
  '(org-clock-overlay ((t (:background "#366060"))))
