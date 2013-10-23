@@ -1,4 +1,9 @@
 ;;(require 'eieio)
+(setq message-log-max 16384)
+(defconst emacs-start-time (current-time))
+
+(load (expand-file-name "load-path" (file-name-directory load-file-name)))
+
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
 (setq externals-dir (concat dotfiles-dir "elisp/external/"))
@@ -9,6 +14,12 @@
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+
+;;;_ , Utility macros and functions
+
+(defmacro hook-into-modes (func modes)
+  `(dolist (mode-hook ,modes)
+     (add-hook mode-hook ,func)))
 
 (setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
 (unless (file-exists-p temporary-file-directory)
@@ -30,6 +41,7 @@
 
 (extend-load-path-respecting-subdirs "~/lisp" dotfiles-dir)
 (extend-load-path-respecting-subdirs (concat dotfiles-dir "yasnippet"))
+(add-to-list 'load-path (concat dotfiles-dir "cperl-mode"))
 (setq custom-file (concat dotfiles-dir "preferences.el")
       autoload-file (concat dotfiles-dir "loaddefs.el"))
 
@@ -78,7 +90,13 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
 
-(put 'narrow-to-region 'disabled nil)
+(defun pdc/enable-commands (cmds)
+  (dolist (cmd cmds)
+    (put cmd 'disabled nil)))
+
+(pdc/enable-commands
+ '(downcase-region erase-buffer eval-expression
+   narrow-to-page narrow-to-region set-goal-column upcase-region))
 
 (when window-system
   (set-face-attribute

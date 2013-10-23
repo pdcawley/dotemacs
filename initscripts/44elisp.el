@@ -1,7 +1,12 @@
 ;;; 47elisp.el --- Custom emacs-lisp-mode configuration
 
 (require 'lisp-mode)
-(require 'nukneval)
+(use-package nukneval)
+(use-package paredit
+  :init (progn (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+               (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+               (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)))
+(use-package redshank)
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
@@ -44,4 +49,22 @@
                                     (concat dotfiles-dir "/elpa-to-submit"))))
   (load autoload-file))
 
+(defun align-code (beg end &optional arg)
+  (interactive "rP")
+  (if (null arg)
+      (align beg end)
+    (let ((end-mark (copy-marker end)))
+      (indent-region beg end-mark nil)
+      (align beg end-mark))))
 
+(use-package eval-expr
+  :bind ("M-:" . eval-expr)
+  :config
+  (progn
+    (setq eval-expr-print-function 'pp
+          eval-expr-print-level 20
+          eval-expr-print-length 100)
+
+    (defun eval-expr-minibuffer-setup ()
+      (set-syntax-table emacs-lisp-mode-syntax-table)
+      (paredit-mode))))

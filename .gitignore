@@ -24,3 +24,8 @@ eshell/lastdir
 /srecode-map.el
 /.emacs.desktop
 /.emacs.desktop.lock
+ac-comphist.dat
+recentf
+cus-load.el
+autoloads.el
+cus-dirs.el

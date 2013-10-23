@@ -11,7 +11,7 @@
 ;;; Code:
 
 (require 'tree-widget)
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 (defvar sepia-tree-use-image nil
   "*If non-nil, show tree-widget with icons.")

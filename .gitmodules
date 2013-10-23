@@ -61,3 +61,7 @@
 [submodule "cperl-mode"]
 	path = cperl-mode
 	url = git@github.com:pdcawley/cperl-mode.git
+[submodule "elisp/external/eval-expr"]
+	path = elisp/external/eval-expr
+	url = https://github.com/jwiegley/eval-expr.git
+

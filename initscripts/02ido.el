@@ -1,6 +1,5 @@
 ;; 02ido.el -- Customization for ido
 ;; -*- lexical-binding: t -*-
-(require 'use-package)
 (use-package ido
   :init
   (progn

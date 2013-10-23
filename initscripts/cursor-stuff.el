@@ -1,12 +1,3 @@
-(require 'inline-string-rectangle)
-(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
-
-(require 'mark-more-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-M-m") 'mc/mark-more-like-this)
-(global-set-key (kbd "C-*") 'mc/mark-all-like-this)
-
 (require 'multiple-cursors)
 
 ;; (defun pdc/edit-marks-or-lines ()
@@ -38,6 +29,16 @@
 
 ;;customize-mark-to-save
 
+(defcustom pdc/mc-cmds
+  '(forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace
+                 cperl-electric-lbrace)
+  "A list of commands that we're happy to use with multi cursors"
+  :type
+  '(repeat (restricted-sexp :match-alternatives (commandp)))
+  :set 'pdc/reset-mc-cmds
+  :initialize 'custom-initialize-reset
+  )
+
 (defadvice mc/mark-supported-cmd (after pdc/remember-mc-supported-cmds activate)
   "Remember that we support this command next run"
   (when pdc/mc-cmds
@@ -52,12 +53,8 @@
         (set-default option cmds))
     (ad-activate 'mc/mark-supported-cmd )))
 
-(defcustom pdc/mc-cmds
-  '(forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace
-                 cperl-electric-lbrace)
-  "A list of commands that we're happy to use with multi cursors"
-  :type
-  '(repeat (restricted-sexp :match-alternatives (commandp)))
-  :set 'pdc/reset-mc-cmds
-  :initialize 'custom-initialize-reset
-  )
+(use-package cursor-chg
+  :init
+  (progn
+    (change-cursor-mode 1)
+    (toggle-cursor-type-when-idle 1)))

@@ -103,8 +103,8 @@
 (define-key isearch-mode-map [backspace] 'isearch-delete-char)
 
 ;; Tabkey2 and other expansion related malarkey
-;(require 'tabkey2)
-;(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
+                                        ;(require 'tabkey2)
+                                        ;(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
                                         ;(tabkey2-mode 1)
 
 (global-set-key (kbd "C-h V") 'pdc/apropos-variable)
@@ -367,6 +367,64 @@
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
   (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
   (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines))
+
+;; Bookmark stuff
+(global-set-key (kbd "C-x p S") 'pdc/bookmark-magit-status)
+
+;;
+
+(bind-key "M-'" 'insert-pair)
+(bind-key "M-\"" 'insert-pair)
+(bind-key "<C-M-backspace>" 'backward-kill-sexp)
+
+(bind-key "C-x B" 'ido-switch-buffer-other-window)
+(bind-key "C-x C-e" 'pp-eval-last-sexp)
+(bind-key "C-c <tab>" 'ff-find-other-file)
+(bind-key "C-c SPC" 'just-one-space)
+
+(defun do-eval-buffer ()
+  (interactive)
+  (call-interactively 'eval-buffer)
+  (message "Buffer has been evaluated"))
+
+(defvar lisp-modes '(emacs-lisp-mode
+                     inferior-emacs-lisp-mode
+                     ielm-mode
+                     lisp-mode
+                     inferior-lisp-mode
+                     lisp-interaction-mode
+                     slime-repl-mode))
+
+(defvar lisp-mode-hooks
+  (mapcar (function
+           (lambda (mode)
+             (intern
+              (concat (symbol-name mode) "-hook"))))
+          lisp-modes))
+
+(defun scratch ()
+  (interactive)
+  (let ((current-mode major-mode))
+    (switch-to-buffer-other-window (get-buffer-create "*scratch*"))
+    (goto-char (point-min))
+    (when (looking-at ";")
+      (forward-line 4)
+      (delete-region (point-min) (point)))
+    (goto-char (point-max))
+    (if (memq current-mode lisp-modes)
+        (funcall current-mode))))
+
+(bind-key "C-c e b" 'do-eval-buffer)
+(bind-key "C-c e c" 'cancel-debug-on-entry)
+(bind-key "C-c e d" 'debug-on-entry)
+(bind-key "C-c e e" 'toggle-debug-on-error)
+(bind-key "C-c e f" 'emacs-lisp-byte-compile-and-load)
+(bind-key "C-c e j" 'emacs-lisp-mode)
+(bind-key "C-c e l" 'find-library)
+(bind-key "C-c e r" 'eval-region)
+(bind-key "C-c e s" 'scratch)
+
+
 
 
 ;; (defun remember-local-set-key (key command)

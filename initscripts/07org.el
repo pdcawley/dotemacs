@@ -1,6 +1,9 @@
-(add-to-list 'load-path (concat dotfiles-dir "org-mode/lisp"))
-(add-to-list 'load-path (concat dotfiles-dir "org-mode/contrib/lisp"))
+(eval-when-compile
+  (progn
+    (require 'package)
+    (package-initialize)))
 (require 'org)
+(require 'org-journal)
 (require 'org-compat)
 (require 'cl)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -19,9 +22,7 @@
       '(("FB" . "http://www.thermeon.com/fogbugz/default.asp?")
         ("cpan" . "http://search.cpan.org/dist/")
         ("cpansearch" . "http://search.cpan.org/search?mode=module&query=")
-        ("jira" . "https://jira.dev.bbc.co.uk/browse/")
-        ("MS"   . "https://jira.dev.bbc.co.uk/browse/MEDIASELECTOR-")
-        ("gmap" . "http://maps.google.com/maps?q=%s")))
+        ("gmap" . "http://maps.google.com/mas?q=%s")))
 (setq org-startup-indented t)
 (setq org-directory "~/Dropbox/org/")
 (setq org-default-notes-file (concat org-directory "/codex.org"))
@@ -117,33 +118,7 @@ Skips capture tasks and tasks with subtasks"
                     path
                   (concat org-directory path)))
               '("codex.org" "blog.org" "todo.org" "technology.org"
-                "journal.org" "headforwards.org" "coding.org"))))
-
-(defvar org-journal-file "~/Dropbox/org/journal.org"
-  "Path to OrgMode journal file.")
-(defvar org-journal-date-format "%Y-%m-%d"
-  "Date format string for journal headings.")
-
-(defun org-journal-entry ()
-  "Create a new diary entry for today or append to an existing one."
-  (interactive)
-  (switch-to-buffer (find-file org-journal-file))
-  (widen)
-  (let ((today (format-time-string org-journal-date-format)))
-    (beginning-of-buffer)
-    (unless (org-goto-local-search-headings today nil t)
-      ((lambda () 
-         (org-insert-heading)
-         (insert today)
-         (insert "\n\n  \n"))))
-    (beginning-of-buffer)
-    (org-show-entry)
-    (org-narrow-to-subtree)
-    (end-of-buffer)
-    (backward-char 2)
-    (unless (= (current-column) 2)
-      (insert "\n\n  "))))
-
+                "coding.org" "work.org"))))
 
 ;; Export using pygments
 (defun org-export-blocks-format-pygments (body &rest headers)
@@ -270,7 +245,7 @@ Skips capture tasks and tasks with subtasks"
                             (car org-clock-history))))
     (org-with-point-at clock-in-to-task
       (org-clock-in nil))))
-                                    
+
 
 (add-hook 'org-clock-out-hook 'pdc/clock-out-maybe 'append)
 (setq org-time-stamp-rounding-minutes '(1 15))
@@ -424,7 +399,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
      ((pdc/agenda-sort-test 'pdc/is-scheduled-today a b))
      ((pdc/agenda-sort-test-num 'pdc/is-pending-deadline '< a b))
      (t (setq result nil)))
-    result))    
+    result))
 
 (defmacro pdc/agenda-sort-test (fn a b)
   "Test for agenda sort"
@@ -537,7 +512,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
   (interactive)
   (org-insert-time-stamp nil t t nil nil nil))
 
-(defun org-return-follows-link t)
+(defun org-return-follows-link () t)
 
 (add-to-list 'Info-default-directory-list (concat dotfiles-dir "org-mode/doc"))
 (setq org-read-date-prefer-future nil)
@@ -582,11 +557,11 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 ; Grab C-c o as a global org mode prefix for this stuff
 (global-set-key (kbd "C-c o") nil)
-(global-set-key (kbd "C-c o j") 'org-journal-entry)
+(global-set-key (kbd "C-c o j") 'org-journal-new-entry)
 (global-set-key (kbd "C-c o c") 'org-capture)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "<f5>") 'pdc/org-todo)    
+(global-set-key (kbd "<f5>") 'pdc/org-todo)
 (global-set-key (kbd "<S-f5>") 'pdc/widen)
 (global-set-key (kbd "<f9> t") 'pdc/insert-inactive-timestamp)
 
@@ -631,9 +606,9 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;;   (org-agenda-to-appt))
 
 ;; (add-hook 'org-finalize-agenda-hook 'pdc/org-agenda-to-appt)
-;; (pdc/org-agenda-to-appt)                
+;; (pdc/org-agenda-to-appt)
 (appt-activate t)
- ;; (run-at-time "24:01" nil 'pdc/org-agenda-to-appt) 
+ ;; (run-at-time "24:01" nil 'pdc/org-agenda-to-appt)
 
 (defun org-wp-linkify ()
   "Turn the region or word at the point into an org Wikipedia link"

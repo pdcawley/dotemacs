@@ -23,7 +23,7 @@ supercedes a .el file of the same name."
           (apply 'append
                  (mapcar
                   (lambda (dir)
-                    (directory-files dir nil "^[0-9][0-9].*\\.elc?$" t))
+                    (directory-files dir nil "^.*\\.elc?$" t))
                   paths)))
 
          ;; Now strip the directory portion, remove any .el or .elc

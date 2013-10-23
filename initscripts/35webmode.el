@@ -11,6 +11,9 @@
     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))))
 
-(defun pdc/web-mode-hook
+(defun pdc/web-mode-hook ()
   "Hooks for web-mode"
   (setq web-mode-markup-indent-offset 2))
+
+(use-package css-mode
+  :mode ("\\.css\\'" . css-mode))

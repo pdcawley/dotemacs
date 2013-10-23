@@ -8,18 +8,6 @@
 ;; run early-on
 
 ;; TODO: make this generic
-
-(add-to-list 'load-path (concat dotfiles-dir "ruby/"))
-(add-to-list 'load-path (concat dotfiles-dir "misc/"))
-(add-to-list 'load-path (concat dotfiles-dir "Emacs/"))
-(add-to-list 'load-path (concat dotfiles-dir "html5-el/"))
-(add-to-list 'load-path (concat dotfiles-dir "coffee-mode/"))
-(add-to-list 'load-path (concat dotfiles-dir "twittering-mode/"))
-(add-to-list 'load-path (concat dotfiles-dir "yasnippet/"))
-(add-to-list 'load-path (concat dotfiles-dir "gnus/lisp/"))
-(add-to-list 'load-path (concat dotfiles-dir "shime/"))
-(add-to-list 'load-path (concat dotfiles-dir "emacs-color-theme-solarized/"))
-(add-to-list 'load-path (concat dotfiles-dir "elisp/"))
 (add-to-list 'Info-directory-list (concat dotfiles-dir "info"))
 
 ;; Make sure we have font-lock to start withco

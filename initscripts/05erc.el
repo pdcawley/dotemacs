@@ -1,4 +1,8 @@
 ;; -*- lexical-binding: t -*-
+(eval-when-compile
+  (progn
+    (require 'package)
+    (package-initialize)))
 (require 'erc)
 (require 'erc-track)
 (require 's)

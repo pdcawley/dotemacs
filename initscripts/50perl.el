@@ -6,6 +6,8 @@
   (defalias 'perl-mode 'cperl-mode)
   :init
   (progn
+    (setq cperl-sub-keywords (list "sub" "method" "class"))
+    (setq cperl-sub-regexp (regexp-opt cperl-sub-keywords))
     (add-to-list 'auto-mode-alist '("\\.t\\'" . perl-mode))
 
     (defun pdc:path->perl-module (path)
