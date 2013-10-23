@@ -57,7 +57,7 @@
 (global-set-key (kbd "C-A-s") 'isearch-forward)
 (global-set-key (kbd "C-A-r") 'isearch-backward)
 
-(global-set-key (kbd "C-c y") 'bury-buffer)
+(global-set-key (kbd "C-c y y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 
 ;; (windmove-default-keybindings)
@@ -140,7 +140,7 @@
 (require 'fastnav)
 (global-set-key (kbd "M-z") 'fastnav-zap-up-to-char-forward)
 (global-set-key (kbd "M-Z") 'fastnav-zap-up-to-char-backward)
-(global-set-key (kbd "M-s") 'fastnav-jump-to-char-forward)
+;;(global-set-key (kbd "M-s") 'fastnav-jump-to-char-forward)
 (global-set-key (kbd "M-S") 'fastnav-jump-to-char-backward)
 (global-set-key (kbd "M-F") 'fastnav-jump-to-char-forward)
 (global-set-key (kbd "M-B") 'fastnav-jump-to-char-backward)
@@ -386,21 +386,6 @@
   (interactive)
   (call-interactively 'eval-buffer)
   (message "Buffer has been evaluated"))
-
-(defvar lisp-modes '(emacs-lisp-mode
-                     inferior-emacs-lisp-mode
-                     ielm-mode
-                     lisp-mode
-                     inferior-lisp-mode
-                     lisp-interaction-mode
-                     slime-repl-mode))
-
-(defvar lisp-mode-hooks
-  (mapcar (function
-           (lambda (mode)
-             (intern
-              (concat (symbol-name mode) "-hook"))))
-          lisp-modes))
 
 (defun scratch ()
   (interactive)

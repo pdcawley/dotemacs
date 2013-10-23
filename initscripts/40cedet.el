@@ -15,9 +15,13 @@
 ;(global-ede-mode nil)
 ;(setq ede-arduino-appdir "/Applications/Arduino.app/Contents/Resources/Java")
 
-(add-to-list 'load-path (concat externals-dir "arduino-mode/"))
-(setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
-(autoload 'arduino-mode "arduino-mode" "Arduino editing mode" t)
+(use-package arduino-mode
+  :mode ("\\.\\(pde\\|\\ino\\)$" . arduino-mode)
+  :commands arduino-mode
+  :init
+  (setq ede-arduino-appdir
+  "/Applications/Arduino.app/Contents/Resources/Java"))
+
 
 
 ;; ECB

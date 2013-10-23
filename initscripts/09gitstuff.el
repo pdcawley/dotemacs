@@ -1,6 +1,20 @@
 (require 'eieio)
-(require 'gist)
-(setq gist-authenticate-function 'gist-oauth2-authentication)
+(use-package gist
+  :init (setq gist-authenticate-function 'gist-oauth2-authentication)
+  :bind ("C-c G" . gist-region-or-buffer))
+
+(use-package git-blame
+  :commands git-blame-mode)
+
+(use-package git-gutter+
+  :diminish git-gutter+-mode
+  :config
+  (progn
+    (use-package git-gutter-fringe+
+      :config
+      (git-gutter-fr+-minimal))
+    (global-git-gutter+-mode 1)))
+
 (require 'magit)
 (require 'vc-git)
 (defun pdc/bookmark-magit-status (bookmark)

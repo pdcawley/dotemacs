@@ -1,12 +1,27 @@
 ;;(require 'eieio)
 (setq message-log-max 16384)
 (defconst emacs-start-time (current-time))
+(defvar lisp-modes '(emacs-lisp-mode
+                     inferior-emacs-lisp-mode
+                     ielm-mode
+                     lisp-mode
+                     inferior-lisp-mode
+                     lisp-interaction-mode
+                     slime-repl-mode))
+
+(defvar lisp-mode-hooks
+  (mapcar (function
+           (lambda (mode)
+             (intern
+              (concat (symbol-name mode) "-hook"))))
+          lisp-modes))
 
 (load (expand-file-name "load-path" (file-name-directory load-file-name)))
 
 (setq dotfiles-dir (file-name-directory
                     (or (buffer-file-name) load-file-name)))
-(setq externals-dir (concat dotfiles-dir "elisp/external/"))
+
+(require 'autoinsert)
 
 ;; encoding
 (setq locale-coding-system 'utf-8)
@@ -25,22 +40,6 @@
 (unless (file-exists-p temporary-file-directory)
   (make-directory temporary-file-directory t))
 
-(defun extend-load-path-respecting-subdirs (&rest dirs)
-  "Add DIRs to load-path and follow 'subdirs.el' directives"
-  (let ((tail dirs) dir)
-    (while tail
-      (setq dir (car tail))
-      (when (not (member dir load-path))
-        (push dir load-path)
-        (let ((default-directory dir))
-          (load (expand-file-name "subdirs.el") t t t))
-        (let ((default-directory dir))
-          (load (expand-file-name "leim-list.el") t t t)))
-      (setq tail (cdr tail)))))
-
-
-(extend-load-path-respecting-subdirs "~/lisp" dotfiles-dir)
-(extend-load-path-respecting-subdirs (concat dotfiles-dir "yasnippet"))
 (add-to-list 'load-path (concat dotfiles-dir "cperl-mode"))
 (setq custom-file (concat dotfiles-dir "preferences.el")
       autoload-file (concat dotfiles-dir "loaddefs.el"))
@@ -86,8 +85,6 @@ If no argument and at end of line, the previous two chars are exchanged."
   (and (null arg) (or (looking-at "['\"]") (eolp)) (forward-char -1))
   (transpose-subr 'forward-char (prefix-numeric-value arg)))
 
-(regen-autoloads)
-
 (setenv "PATH" (shell-command-to-string "echo $PATH"))
 
 (defun pdc/enable-commands (cmds)
@@ -109,3 +106,15 @@ If no argument and at end of line, the previous two chars are exchanged."
 
 (require 'zenburn)
 (color-theme-zenburn)
+(when window-system
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+  (add-hook 'after-init-hook
+            `(lambda ()
+               (let ((elapsed (float-time (time-subtract (current-time)
+                                                         emacs-start-time))))
+                 (message "Loading %s...done (%.3fs) [after-init]"
+                          ,load-file-name elapsed)))
+            t))

@@ -58,10 +58,16 @@
 [submodule "elisp/external/apel"]
 	path = elisp/external/apel
 	url = https://github.com/wanderlust/apel.git
-[submodule "cperl-mode"]
-	path = cperl-mode
+[submodule "elisp/external/cperl-mode"]
+	path = elisp/external/cperl-mode
 	url = git@github.com:pdcawley/cperl-mode.git
 [submodule "elisp/external/eval-expr"]
 	path = elisp/external/eval-expr
 	url = https://github.com/jwiegley/eval-expr.git
 
+[submodule "elisp/external/springboard"]
+	path = elisp/external/springboard
+	url = http://github.com/jwiegley/springboard
+[submodule "elisp/external/info-lookmore"]
+	path = elisp/external/info-lookmore
+	url = https://github.com/emacsmirror/info-lookmore.git

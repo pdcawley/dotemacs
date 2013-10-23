@@ -1,16 +1,173 @@
-;;; 47elisp.el --- Custom emacs-lisp-mode configuration
+;;; 44elisp.el --- Custom emacs-lisp-mode configuration
+(use-package yasnippet)
+(use-package lisp-mode
+  :init
+  (progn
+    (mapc (lambda (major-mode)
+            (font-lock-add-keywords
+             major-mode
+             '(("(\\(lambda\\)\\>"
+                (0 (ignore
+                    (compose-region (match-beginning 1)
+                                    (match-end 1) ?λ))))
+               ("(\\(ert-deftest\\)\\>[ 	'(]*\\(setf[ 	]+\\sw+\\|\\sw+\\)?"
+                (1 font-lock-keyword-face)
+                (2 font-lock-function-name-face
+                   nil t)))))
+          lisp-modes)
 
-(require 'lisp-mode)
+    (defvar slime-mode nil)
+    (defvar lisp-mode-initialized nil)
+
+    (defun initialize-lisp-mode ()
+      (unless lisp-mode-initialized
+        (setq lisp-mode-initialized t)
+
+        (use-package redshank
+          :diminish redshank-mode)
+
+        (use-package elisp-slime-nav
+          :diminish elisp-slime-nav-mode)
+
+        (use-package edebug)
+
+        (use-package eldoc
+          :diminish eldoc-mode
+          :defer t
+          :init
+          (use-package eldoc-extension
+            :disabled t
+            :defer t
+            :init
+            (add-hook 'emacs-lisp-mode-hook
+                      #'(lambda () (require 'eldoc-extension)) t))
+
+          :config
+          (eldoc-add-command 'paredit-backward-delete
+                             'paredit-close-round))
+
+        (use-package cldoc
+          :diminish cldoc-mode)
+
+        (use-package ert
+          :commands ert-run-tests-interactively
+          :bind ("C-c e t" . ert-run-tests-interactively))
+
+        (use-package elint
+          :commands 'elint-initialize
+          :init
+          (defun elint-current-buffer ()
+            (interactive)
+            (elint-initialize)
+            (elint-current-buffer))
+
+          :config
+          (progn
+            (add-to-list 'elint-standard-variables 'current-prefix-arg)
+            (add-to-list 'elint-standard-variables 'command-line-args-left)
+            (add-to-list 'elint-standard-variables 'buffer-file-coding-system)
+            (add-to-list 'elint-standard-variables 'emacs-major-version)
+            (add-to-list 'elint-standard-variables 'window-system)))
+
+        (use-package highlight-cl
+          :ensure t
+          :init
+          (mapc (function
+                 (lambda (mode-hook)
+                   (add-hook mode-hook
+                             'highlight-cl-add-font-lock-keywords)))
+                lisp-mode-hooks))
+
+        (defun my-elisp-indent-or-complete (&optional arg)
+          (interactive "p")
+          (call-interactively 'lisp-indent-line)
+          (unless (or (looking-back "^\\s-*")
+                      (bolp)
+                      (not (looking-back "[-A-Z-a-z0-9_*+/=<>!?]+")))
+            (call-interactively 'lisp-complete-symbol)))
+
+        (defun my-lisp-indent-or-complete (optional arg)
+          (interactive "p")
+          (if (or (looking-back "^\\s-*") (bolp))
+              (call-interactively 'lisp-indent-line)
+            (call-interactively 'slime-indent-and-complete-symbol)))
+
+        (defun my-byte-recompile-file ()
+          (save-excursion
+            (byte-recompile-file buffer-file-name)))
+
+        (use-package info-lookmore
+          :init
+          (progn
+            (info-lookmore-elisp-cl)
+            (info-lookmore-elisp-userlast)
+            (info-lookmore-elisp-gnus)
+            (info-lookmore-apropos-elisp)))
+
+        (mapc #'(lambda (mode)
+                  (info-lookup-add-help
+                   :mode mode
+                   :regexp "[^][()'\" \t\n]+"
+                   :ignore-case t
+                   :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
+              lisp-modes)))
+
+    (defun my-lisp-mode-hook ()
+      (initialize-lisp-mode)
+
+      (auto-fill-mode 1)
+      (paredit-mode 1)
+      (redshank-mode 1)
+      (elisp-slime-nav-mode 1)
+
+      (local-set-key (kbd "<return>") 'paredit-newline)
+
+      (add-hook 'after-save-hook 'check-parens nil t)
+
+      (if (memq major-mode
+                '(emacs-lisp-mode inferior-emacs-lisp-mode ielm-mode))
+          (progn
+            (bind-key "<M-return>" 'outline-insert-heading emacs-lisp-mode-map)
+            (bind-key "<tab>" 'my-elisp-indent-or-complete emacs-lisp-mode-map))
+        (turn-on-cldoc-mode)
+
+        (bind-key "<tab>" 'my-lisp-indent-or-complete lisp-mode-map)
+        (bind-key "M-q" 'slime-reindent-defun lisp-mode-map)
+        (bind-key "M-l" 'slime-selector lisp-mode-map))
+
+      (yas-minor-mode 1))
+
+    (hook-into-modes #'my-lisp-mode-hook lisp-mode-hooks)))
+
 (use-package nukneval)
 (use-package paredit
   :init (progn (add-hook 'lisp-mode-hook 'enable-paredit-mode)
                (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
                (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)))
-(use-package redshank)
 
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+(use-package ielm
+  :bind ("C-c :" . ielm)
+  :config
+  (progn
+    (defun my-ielm-return ()
+      (interactive)
+      (let ((end-of-sexp (save-excursion
+                           (goto-char (point-max))
+                           (skip-chars-backward " \t\n\r")
+                           (point))))
+        (if (>= (point) end-of-sexp)
+            (progn
+              (goto-char (point-max))
+              (skip-chars-backward " \t\n\r")
+              (delete-region (point) (point-max))
+              (call-interactively #'ielm-return))
+          (call-interactively #'paredit-newline))))
+
+    (add-hook 'ielm-mode-hook
+              (function
+               (lambda ()
+                 (bind-key "<return>" 'my-ielm-return ielm-map)))
+              t)))
 
 (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-zap-associated-elc)
 
@@ -36,19 +193,6 @@
   "Face used to dim parentheses."
   :group 'pdc-faces)
 
-(defun regen-autoloads ()
-  "Regenerate the autoload definitions file if necessary and load it."
-  (interactive)
-  (if (or (not (file-exists-p autoload-file))
-          ;; TODO: make this more readable
-          (< (+ (car (nth 5 (file-attributes autoload-file))) 20)
-             (car (current-time))))
-      (let ((generated-autoload-file autoload-file))
-        (message "Updating autoloads...")
-        (update-directory-autoloads dotfiles-dir
-                                    (concat dotfiles-dir "/elpa-to-submit"))))
-  (load autoload-file))
-
 (defun align-code (beg end &optional arg)
   (interactive "rP")
   (if (null arg)
@@ -68,3 +212,38 @@
     (defun eval-expr-minibuffer-setup ()
       (set-syntax-table emacs-lisp-mode-syntax-table)
       (paredit-mode))))
+
+
+(use-package paredit
+  :commands paredit-mode
+  :diminish paredit-mode
+  :config
+  (progn
+    (use-package paredit-ext)
+
+    (bind-key "C-M-l" 'paredit-recentre-on-sexp paredit-mode-map)
+
+    (bind-key ")" 'paredit-close-round-and-newline paredit-mode-map)
+    (bind-key "M-)" 'paredit-close-round paredit-mode-map)
+
+    (bind-key "M-k" 'paredit-raise-sexp paredit-mode-map)
+    ;; (bind-key "M-h" 'mark-containing-sexp paredit-mode-map)
+    (bind-key "M-I" 'paredit-splice-sexp paredit-mode-map)
+
+    (unbind-key "M-r" paredit-mode-map)
+    (unbind-key "M-s" paredit-mode-map)
+
+    (bind-key "C-. d" 'paredit-forward-down paredit-mode-map)
+    (bind-key "C-. B" 'paredit-splice-sexp-killing-backward paredit-mode-map)
+    (bind-key "C-. C" 'paredit-convolute-sexp paredit-mode-map)
+    (bind-key "C-. F" 'paredit-splice-sexp-killing-forward paredit-mode-map)
+    (bind-key "C-. a" 'paredit-add-to-next-list paredit-mode-map)
+    (bind-key "C-. A" 'paredit-add-to-previous-list paredit-mode-map)
+    (bind-key "C-. j" 'paredit-join-with-next-list paredit-mode-map)
+    (bind-key "C-. J" 'paredit-join-with-previous-list paredit-mode-map)
+
+    (add-hook 'allout-mode-hook
+              #'(lambda ()
+                  (bind-key "M-k" 'paredit-raise-sexp allout-mode-map)
+                  ;; (bind-key "M-h" 'mark-containing-sexp allout-mode-map)
+                  ))))

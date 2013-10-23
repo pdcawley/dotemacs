@@ -1,4 +1,16 @@
-(require 'multiple-cursors)
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+
+         ("C->"         . mc/mark-next-like-this)
+         ("C-<"         . mc-mark-previous-like-this)
+         ("C-c C-<"     . mc/mark-all-like-this))
+  :init
+  (progn
+    (setq mc/list-file (expand-file-name "mc-lists.el" user-data-directory))
+    (put 'forward-sexp 'mc--enabled t)
+    (put 'cperl-electric-lbrace 'mc--enabled t)
+    (put 'cperl-electric-brace 'mc--enabled t)
+    (put 'cperl-electric-semi 'mc--enabled t)))
 
 ;; (defun pdc/edit-marks-or-lines ()
 ;;   (interactive)
@@ -29,29 +41,29 @@
 
 ;;customize-mark-to-save
 
-(defcustom pdc/mc-cmds
-  '(forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace
-                 cperl-electric-lbrace)
-  "A list of commands that we're happy to use with multi cursors"
-  :type
-  '(repeat (restricted-sexp :match-alternatives (commandp)))
-  :set 'pdc/reset-mc-cmds
-  :initialize 'custom-initialize-reset
-  )
+;; (defcustom pdc/mc-cmds
+;;   '(forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace
+;;                  cperl-electric-lbrace)
+;;   "A list of commands that we're happy to use with multi cursors"
+;;   :type
+;;   '(repeat (restricted-sexp :match-alternatives (commandp)))
+;;   :set 'pdc/reset-mc-cmds
+;;   :initialize 'custom-initialize-reset
+;;   )
 
-(defadvice mc/mark-supported-cmd (after pdc/remember-mc-supported-cmds activate)
-  "Remember that we support this command next run"
-  (when pdc/mc-cmds
-    (customize-save-variable 'pdc/mc-cmds (adjoin (ad-get-arg 0) pdc/mc-cmds))))
+;; (defadvice mc/mark-supported-cmd (after pdc/remember-mc-supported-cmds activate)
+;;   "Remember that we support this command next run"
+;;   (when pdc/mc-cmds
+;;     (customize-save-variable 'pdc/mc-cmds (adjoin (ad-get-arg 0) pdc/mc-cmds))))
 
-(defun pdc/reset-mc-cmds (option cmds)
-  "Mark the list of commands as enabled for mc"
-  (unwind-protect
-      (progn
-        (ad-deactivate 'mc/mark-supported-cmd)
-        (mapc #'mc/mark-supported-cmd cmds)
-        (set-default option cmds))
-    (ad-activate 'mc/mark-supported-cmd )))
+;; (defun pdc/reset-mc-cmds (option cmds)
+;;   "Mark the list of commands as enabled for mc"
+;;   (unwind-protect
+;;       (progn
+;;         (ad-deactivate 'mc/mark-supported-cmd)
+;;         (mapc #'mc/mark-supported-cmd cmds)
+;;         (set-default option cmds))
+;;     (ad-activate 'mc/mark-supported-cmd )))
 
 (use-package cursor-chg
   :init

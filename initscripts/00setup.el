@@ -8,7 +8,6 @@
 ;; run early-on
 
 ;; TODO: make this generic
-(add-to-list 'Info-directory-list (concat dotfiles-dir "info"))
 
 ;; Make sure we have font-lock to start withco
 (require 'font-lock)

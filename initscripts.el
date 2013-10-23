@@ -54,9 +54,11 @@ supercedes a .el file of the same name."
       ;; ordering.
       (mapcar
        (lambda (file)
+         ;; (load file nil)
          (condition-case ()
              (load file nil)
-           (error (message "Error while loading %s" file))))
+           (error (message "Error while loading %s" file)))
+         )
        base-names)
       ;; restore the old load-path -- including any new paths added by
       ;; files loaded in directory traversal.

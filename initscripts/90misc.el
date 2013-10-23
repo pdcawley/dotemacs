@@ -315,6 +315,27 @@ Helper method for 'yank' advice"
 (define-key isearch-mode-map (kbd "A-w") 'isearch-yank-word-at-point)
 (define-key isearch-mode-map (kbd "A-W") 'isearch-yank-symbol-at-point)
 
+;;;_ , various loads
+
+(use-package image-file
+  :disabled t
+  :init
+  (auto-image-file-mode 1))
+
+(use-package macrostep
+  :ensure t
+  :bind ("C-c e m" . macrostep-expand))
+
+(use-package per-window-point
+  :init
+  (pwp-mode 1))
+
+(use-package projectile
+  :ensure t
+  :diminish projectile-mode
+  :init
+  (projectile-global-mode))
+
 
 
 ;;; Local Variables:
