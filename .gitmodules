@@ -1,27 +1,6 @@
-[submodule "cucumber-mode"]
-	path = cucumber-mode
-	url = git://github.com/michaelklishin/cucumber.el.git
-[submodule "coffee-mode"]
-	path = coffee-mode
-	url = https://github.com/defunkt/coffee-mode.git
-[submodule "html5-el"]
-	path = html5-el
-	url = https://github.com/hober/html5-el.git
-[submodule "twittering-mode"]
-	path = twittering-mode
-	url = https://github.com/hayamiz/twittering-mode.git
-[submodule "shime"]
-	path = shime
-	url = https://github.com/jschaf/shime.git
 [submodule "gnus"]
 	path = gnus
 	url = https://github.com/emacsmirror/gnus.git
-[submodule "emacs-color-theme-solarized"]
-	path = emacs-color-theme-solarized
-	url = https://github.com/sellout/emacs-color-theme-solarized.git
-[submodule "geiser"]
-	path = geiser
-	url = http://git.sv.gnu.org/r/geiser.git
 [submodule "elisp/external/deft"]
 	path = elisp/external/deft
 	url = git://jblevins.org/git/deft.git
