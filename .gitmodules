@@ -10,9 +10,6 @@
 [submodule "twittering-mode"]
 	path = twittering-mode
 	url = https://github.com/hayamiz/twittering-mode.git
-[submodule "yasnippet"]
-	path = yasnippet
-	url = https://github.com/emacsmirror/yasnippet.git
 [submodule "shime"]
 	path = shime
 	url = https://github.com/jschaf/shime.git
