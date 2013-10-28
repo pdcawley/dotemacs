@@ -514,7 +514,6 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (defun org-return-follows-link () t)
 
-(add-to-list 'Info-default-directory-list (concat dotfiles-dir "org-mode/doc"))
 (setq org-read-date-prefer-future nil)
 
 (setq org-list-demote-modify-bullet
@@ -543,8 +542,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (defun pdc/org-info ()
   (interactive)
-  (let ((local-info-file (concat dotfiles-dir "org-mode/doc/org")))
-    (info (if (file-exists-p local-info-file) local-info-file "org"))))
+  (info "org"))
 
 (defun pdc/go-to-scratch ()
   (interactive)

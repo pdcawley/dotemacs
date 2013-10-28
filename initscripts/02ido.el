@@ -5,12 +5,19 @@
             ido-require-match
             ido-selected
             ido-final-text
-            ido-show-confirm-message)
+            ido-show-confirm-message
+            ido-show-dot-for-dired)
   :init
-  (ido-mode 'all)
+  (progn
+    (setq ido-show-dot-for-dired t)
+    (ido-mode 'all))
 
   :config
   (progn
+    (use-package ido-complete-space-or-hyphen
+      :config
+      (ido-complete-space-or-hyphen-enable))
+
     (use-package ido-hacks
       :init
       (ido-hacks-mode 1))
@@ -43,10 +50,10 @@
                            ido-final-text ido-text)))))
         (exit-minibuffer)))
 
-    (add-hook 'ido-minibuffer-setup-hook
-              #'(lambda ()
-                  (bind-key "<return>" 'ido-smart-select-text
-                            ido-file-completion-map)))
+    ;; (add-hook 'ido-minibuffer-setup-hook
+    ;;           #'(lambda ()
+    ;;               (bind-key "<return>" 'ido-smart-select-text
+    ;;                         ido-file-completion-map)))
 
     (defun ido-switch-buffer-tiny-frame (buffer)
       (interactive (list (ido-read-buffer "Buffer: " nil t)))

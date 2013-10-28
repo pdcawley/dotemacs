@@ -1,18 +1,14 @@
+(eval-when-compile 
+  (require 'pdc-utils))
 (use-package yasnippet
   :if (not noninteractive)
   :diminish yas-minor-mode
   :commands (yas-minor-mode yas-expand)
   :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
-  :init
-  (hook-into-modes #'(lambda () (yas-minor-mode 1))
-                   '(prog-mode-hook
-                     org-mode-hook
-                     ruby-mode-hook
-                     message-mode-hook
-                     gud-mode-hook
-                     erc-mode-hook))
+
   :config
   (progn
+    (yas-global-mode t)
     (yas-load-directory (expand-file-name "snippets/" user-emacs-directory))
 
     (bind-key "<tab>" 'yas-next-field-or-maybe-expand yas-keymap)

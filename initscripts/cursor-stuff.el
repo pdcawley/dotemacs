@@ -66,6 +66,7 @@
 ;;     (ad-activate 'mc/mark-supported-cmd )))
 
 (use-package cursor-chg
+  :disabled t
   :init
   (progn
     (change-cursor-mode 1)

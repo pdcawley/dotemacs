@@ -1,8 +1,20 @@
 ;;; 44elisp.el --- Custom emacs-lisp-mode configuration
+(eval-when-compile 
+  (require 'pdc-utils))
+
 (use-package yasnippet)
 (use-package lisp-mode
+  :bind (("C-h e c" . finder-commentary)
+         ("C-h e e" . view-echo-area-messages)
+         ("C-h e f" . find-function)
+         ("C-h e F" . find-face-definition))
   :init
   (progn
+    (defvar lisp-find-map)
+    (define-prefix-command 'lisp-find-map)
+
+    (bind-key "C-h e" 'lisp-find-map)
+    
     (mapc (lambda (major-mode)
             (font-lock-add-keywords
              major-mode
@@ -42,13 +54,13 @@
             (add-hook 'emacs-lisp-mode-hook
                       #'(lambda () (require 'eldoc-extension)) t))
 
-          :config
+          :config 
           (eldoc-add-command 'paredit-backward-delete
                              'paredit-close-round))
 
         (use-package cldoc
           :diminish cldoc-mode)
-
+        
         (use-package ert
           :commands ert-run-tests-interactively
           :bind ("C-c e t" . ert-run-tests-interactively))
@@ -103,6 +115,13 @@
             (info-lookmore-elisp-userlast)
             (info-lookmore-elisp-gnus)
             (info-lookmore-apropos-elisp)))
+
+        (defun emacs-lisp-rebuild-associated-elc ()
+          "If you're saving an elisp file, likely the .elc is no longer valid"
+          (make-local-variable 'after-save-hook)
+          (add-hook 'after-save-hook 'my-byte-recompile-file))
+
+        (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
 
         (mapc #'(lambda (mode)
                   (info-lookup-add-help
@@ -168,16 +187,6 @@
                (lambda ()
                  (bind-key "<return>" 'my-ielm-return ielm-map)))
               t)))
-
-(add-hook 'emacs-lisp-mode-hook 'emacs-lisp-zap-associated-elc)
-
-(defun emacs-lisp-zap-associated-elc ()
-  "If you're saving an elisp file, likely the .elc is no longer valid"
-  (make-local-variable 'after-save-hook)
-  (add-hook 'after-save-hook
-            (lambda ()
-              (if (file-exists-p (concat buffer-file-name "c"))
-                  (delete-file (concat buffer-file-name "c"))))))
 
 (font-lock-add-keywords 'emacs-lisp-mode
                         '(("(\\|)" . 'paren-face)))

@@ -1,8 +1,5 @@
 ;; 47ruby.el --- Custom ruby-mode configuration
 
-(add-to-list 'load-path (concat dotfiles-dir "rinari"))
-(add-to-list 'load-path (concat dotfiles-dir "rinari/util"))
-
 ;; Set those modes!
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 

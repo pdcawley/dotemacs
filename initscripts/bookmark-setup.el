@@ -1,6 +1,4 @@
 (use-package bookmark
-  :disabled t
-  :defer t
   :config
   (progn
     (use-package bookmark+)

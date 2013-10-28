@@ -1,3 +1,4 @@
+(eval-when-compile (require 'autoinsert))
 ;;; 99bindings.el --- Misc. global key bindings
 (require 'paredit)
 ;; Some custom global key bindings
@@ -65,10 +66,6 @@
 ;; Perly
 (require 'cperl-mode)
 (define-key cperl-mode-map (kbd "RET") 'newline-and-indent)
-
-;; jabbery
-(when (require 'jabber nil 'noerror)
-  (define-key jabber-chat-mode-map (kbd "M-RET") 'newline))
 
 ;; windmove
 (when (require 'windmove nil 'noerror)
@@ -182,7 +179,7 @@
                              ("\\.psgi\\'"               . perl-mode)
                              ("\\.t\\'"                  . perl-mode)))
 
-(cua-selection-mode 1)
+;;(cua-selection-mode 1)
 
 ;; (defun pdc/left (&optional n)
 ;;   "Move point to the beginning of an active selection or N chars to the left"
@@ -235,8 +232,6 @@
 ;; (global-set-key (kbd "<left>") 'pdc/left)
 ;; (global-set-key (kbd "<right>") 'pdc/right)
 
-
-(define-key global-map "\eOd" 'backward-word)
 
 (define-key key-translation-map [\e] [\M])
 
@@ -352,14 +347,9 @@
 (mapc (lambda (each) (add-hook each 'pdc/add-movement-keys))
       '(gnus-summary-mode-hook gnus-group-mode-hook))
 
-(defvar pdc/bindings-file
-  (concat dotfiles-dir "initscripts/99bindings.el"))
-
 ;; Grab a prefix mode hotkey prefix
 
 (global-set-key (kbd "C-c C-c") nil)
-
-(set-register ?b `(file . ,pdc/bindings-file))
 
 ;; Multicursor stuff
 (when (require 'multiple-cursors nil 'noerror)
@@ -369,7 +359,7 @@
   (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines))
 
 ;; Bookmark stuff
-(global-set-key (kbd "C-x p S") 'pdc/bookmark-magit-status)
+(bind-key "C-x p S" 'pdc/bookmark-magit-status)
 
 ;;
 
@@ -380,7 +370,6 @@
 (bind-key "C-x B" 'ido-switch-buffer-other-window)
 (bind-key "C-x C-e" 'pp-eval-last-sexp)
 (bind-key "C-c <tab>" 'ff-find-other-file)
-(bind-key "C-c SPC" 'just-one-space)
 
 (defun do-eval-buffer ()
   (interactive)
@@ -409,18 +398,50 @@
 (bind-key "C-c e r" 'eval-region)
 (bind-key "C-c e s" 'scratch)
 
+(defvar ctl-period-map)
+(define-prefix-command 'ctl-period-map)
+(bind-key "C-." 'ctl-period-map)
+
+(bind-key "<C-return>" 'other-window)
+
+(defun collapse-or-expand ()
+  (interactive)
+  (if (> (length (window-list)) 1)
+      (delete-other-windows)
+    (bury-buffer)))
+
+(bind-key "C-z" 'collapse-or-expand)
+
+(defadvice async-shell-command (before uniquify-running-shell-command
+                                       activate)
+  (let ((buf (get-buffer "*Async Shell Command*")))
+    (if buffer (let ((proc (get-buffer-process buf)))
+                 (if (and proc (eq 'run (process-state proc)))
+                     (with-current-buffer buf (rename-uniquely)))))))
+
+(bind-key "M-!" 'async-shell-command)
+(bind-key "M-/" 'dabbrev-expand)
+(bind-key "M-'" 'insert-pair)
+(bind-key "M-\"" 'insert-pair)
+
+(bind-key "M-[" 'align-code)
+(bind-key "M-`" 'other-frame)
+
+(defun mark-line (&optional arg)
+  (interactive "p")
+  (beginning-of-line)
+  (let ((here (point)))
+    (dotimes (i arg)
+      (end-of-line))
+    (set-mark (point))
+    (goto-char here)))
+
+(bind-key "M-L" 'mark-line)
 
 
+(defun mark-sentence (&optional arg)
+  (interactive "p")
+  (backward-sentence)
+  (mark-end-of-sentence arg))
 
-;; (defun remember-local-set-key (key command)
-;;   "Like local-set-key, but saves the binding in 99bindings.el"
-;;   (interactive "KSet key locally: \nCSet key %s locally to command")
-;;   (let ((map (currrent-local-map)))
-;;     (unless map (error "There's no local map to add the binding to"))
-;;     (save-excursion
-;;       (find-file pdc/bindings-file)
-;;       (goto-char (point-max))q
-;;       (unless (looking-at "^$") (insert "\n"))
-;;       (let ((binding-command `(define-key ,map ,key ,command)))
-;;         (prin1 binding-command #'insert)
-;;         (insert "\n")))))
+(bind-key "<C-M-backspace>" 'backward-kill-sexp)

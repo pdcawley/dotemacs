@@ -1,3 +1,4 @@
+;;; lexical-binding: t
 ;;; 90misc.el --- Miscellaneous definitions
 
 ;; Some custom commands
@@ -336,9 +337,6 @@ Helper method for 'yank' advice"
   :init
   (projectile-global-mode))
 
-
-
-;;; Local Variables:
-;;; lexical-binding: t
-;;; End:
-
+(use-package ace-jump-mode
+  :ensure t
+  :bind ("C-c SPC" . ace-jump-mode))

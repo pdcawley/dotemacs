@@ -11,7 +11,6 @@
 
 ;; Make sure we have font-lock to start withco
 (require 'font-lock)
-(global-hl-line-mode t)
 
 ;; Just say no to splash screens
 (setq inhibit-startup-message t)
@@ -48,34 +47,20 @@
 
 
 ;; RELAX-NG editing
-(require 'rnc-mode)
-(update-auto-mode-binding '("\\.rnc\\'" . rnc-mode))
+(use-package rnc-mode
+  :mode ("\\.rnc\\'" . rnc-mode))
 
 ;; SVN
 (require 'vc)
 (require 'vc-git)
 
-(add-to-list 'load-path (concat dotfiles-dir "/yasnippet"))
 (require 'cl)
-(require 'yasnippet)
-(yas/global-mode 1)
-(setq yas/window-system-popup-function
-      'yas/x-popup-menu-for-template)
+;; (setq yas/window-system-popup-function
+;;       'yas/x-popup-menu-for-template)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (require 'align)
-
-(setq pdc:elisp-external-dir
-      (expand-file-name "elisp/external" dotfiles-dir))
-
-(dolist (project (directory-files pdc:elisp-external-dir t "\\w+"))
-  (when (file-directory-p project)
-    (add-to-list 'load-path project)))
-
-(add-to-list 'load-path (concat pdc:elisp-external-dir "/wanderlust/wl"))
-(add-to-list 'load-path (concat pdc:elisp-external-dir "/wanderlust/elmo"))
-
 
 ;; Utility functions etc...
 

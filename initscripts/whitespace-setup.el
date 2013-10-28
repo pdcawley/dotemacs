@@ -1,3 +1,5 @@
+(eval-when-compile 
+  (require 'pdc-utils))
 (use-package whitespace
   :diminish (global-whitespace-mode
              whitespace-mode

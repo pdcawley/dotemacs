@@ -8,6 +8,8 @@
   (expand-file-name "lib/" user-emacs-directory))
 (defconst user-site-lisp-directory
   (expand-file-name "site-lisp/" user-emacs-directory))
+(defconst user-external-lisp-directory
+  (expand-file-name "elisp/external/" user-emacs-directory))
 (defconst user-override-directory
   (expand-file-name "override/" user-emacs-directory))
 (defconst user-initscripts-directory
@@ -21,7 +23,8 @@
               (list user-override-directory
                     user-lisp-directory
                     user-lib-directory
-                    user-site-lisp-directory)))
+                    user-site-lisp-directory
+                    user-external-lisp-directory)))
   (dolist (entry (nreverse (directory-files-and-attributes dir)))
     (if (cadr entry)
         (add-to-load-path (car entry) dir))))

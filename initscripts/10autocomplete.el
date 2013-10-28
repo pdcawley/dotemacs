@@ -3,11 +3,13 @@
   :init
   (progn
     (use-package pos-tip)
-    (ac-config-default))
+    (ac-config-default)
+    (setq ac-show-menu-immediately-on-auto-complete nil)
+;    (global-auto-complete-mode -1)
+    )
   :config
   (progn
     (ac-set-trigger-key "TAB")
     (setq ac-use-menu-map t)
-
     (bind-key "C-s-?" 'ac-last-help)
     (unbind-key "C-s" ac-completing-map)))

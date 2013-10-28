@@ -18,9 +18,6 @@
 
 (load (expand-file-name "load-path" (file-name-directory load-file-name)))
 
-(setq dotfiles-dir (file-name-directory
-                    (or (buffer-file-name) load-file-name)))
-
 (require 'autoinsert)
 
 ;; encoding
@@ -32,17 +29,43 @@
 
 ;;;_ , Utility macros and functions
 
-(defmacro hook-into-modes (func modes)
-  `(dolist (mode-hook ,modes)
-     (add-hook mode-hook ,func)))
-
+(require 'pdc-utils)
 (setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
 (unless (file-exists-p temporary-file-directory)
   (make-directory temporary-file-directory t))
 
-(add-to-list 'load-path (concat dotfiles-dir "cperl-mode"))
-(setq custom-file (concat dotfiles-dir "preferences.el")
-      autoload-file (concat dotfiles-dir "loaddefs.el"))
+(defvar running-alternate-emacs nil)
+
+
+(if (string-match (concat "/Applications/\\(Misc/\\)?"
+                          "Emacs\\([A-Za-z]+\\).app/Contents/MacOS/")
+                  invocation-directory)
+    (let ((settings (with-temp-buffer
+                      (insert-file-contents
+                       (expand-file-name "preferences.el" user-emacs-directory))
+                      (goto-char (point-min))
+                      (read (current-buffer))))
+          (suffix (downcase (match-string 2 invocation-directory))))
+
+      (setq running-alternate-emacs t
+            user-data-directory
+            (replace-regexp-in-string "/data/" (format "/data-%s/" suffix)
+                                      user-data-directory))
+
+      (let* ((regexp "/\\.emacs\\.d/data/")
+             (replace (format "/.emacs.d/data-%s/" suffix)))
+        (dolist (setting settings)
+          (let ((value (and (stringp value)
+                            (string-match regexp value))
+                       (setcar (nthcdr 1 (nth 1 setting)))))
+            (if (and (stringp value)
+                     (string-match regexp value))
+                (setcar (nthcdr 1 (nth 1 setting))
+                        (replace-regexp-in-string regexp replace value)))))
+
+        (eval settings)))
+
+  (load (expand-file-name "preferences" user-emacs-directory)))
 
 (setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
 
@@ -59,7 +82,9 @@
       (reverse (list "~/bin" "~/local/node/bin" "~/perl5/perlbrew/bin"
                      "/usr/local/bin"
                      "/usr/local/sbin" "/sbin" "/bin" "/usr/bin" "/usr/sbin")))
-(load custom-file)
+;;(load custom-file)
+
+(setq custom-file (expand-file-name "preferences.el" user-emacs-directory))
 (require 'package)
 
 (add-to-list 'package-archives
@@ -74,7 +99,7 @@
 (require 'use-package)
 
 (require 'initscripts)
-(load custom-file)
+;;(load custom-file)
 
 (defun transpose-chars (arg)
   "Interchange characters around point, moving forward one character.

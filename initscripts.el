@@ -71,6 +71,6 @@ supercedes a .el file of the same name."
                         load-path))))
         (setq load-path (append add-on-package-paths old-load-path))))))
 
-(debian-run-directories (concat dotfiles-dir "/initscripts"))
+(debian-run-directories (expand-file-name "initscripts/" user-emacs-directory))
 
 (provide 'initscripts)
