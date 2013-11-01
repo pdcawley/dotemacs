@@ -14,8 +14,8 @@
       (mapc #'update-auto-mode-binding alist)
     (update-automode-binding alist)))
 
-(require 'cl)
-(unless (boundp 'cl-flet)
-  (defalias 'cl-flet 'flet))
+;; (require 'cl)
+;; (unless (boundp 'cl-flet)
+;;   (defalias 'cl-flet 'flet))
 
 (provide 'pdc-support)

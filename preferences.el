@@ -17,6 +17,7 @@
  '(buffers-menu-show-directories (quote unless-uniquify))
  '(coffee-command "/usr/local/share/npm/bin/coffee")
  '(coffee-tab-width 4)
+ '(column-number-mode t)
  '(comint-buffer-maximum-size 20000)
  '(comint-input-ignoredups t)
  '(comint-input-ring-size 5000)
@@ -42,9 +43,10 @@
  '(cua-remap-control-v nil)
  '(current-language-environment "English")
  '(cursor-type (quote bar))
+ '(custom-enabled-themes (quote (pdc-zenburn)))
  '(custom-safe-themes
    (quote
-    ("4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
+    ("5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -52,8 +54,7 @@
       (left . 100)
       (width . 110)
       (height . 40)
-      (cursor-color . "#dcdccc")
-      (tool-bar-lines . 0))))
+      (cursor-color . "#dcdccc"))))
  '(default-input-method nil)
  '(default-mime-charset (quote utf-8))
  '(delete-selection-mode nil nil (delsel))
@@ -277,6 +278,7 @@ mouse-1: Display Line and Column Mode Menu")))
  '(tls-program
    (quote
     ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
+ '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-ignore-buffers-re "^\\*")
  '(uniquify-separator ":")
@@ -294,18 +296,4 @@ mouse-1: Display Line and Column Mode Menu")))
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))))
- '(confluence-code-face ((t (:inherit zenburn-lowlight-2))))
- '(confluence-panel-face ((t (:inherit zenburn-primary-2))))
- '(cperl-array-face ((t (:inherit font-lock-variable-name :weight bold))))
- '(cperl-hash-face ((t (:inherit font-lock-variable-name-face))))
- '(hi-edebug-x-debug-line ((t (:inherit zenburn-highlight-subtle))))
- '(hi-edebug-x-stop ((t (:background "#2e4440"))))
- '(latex-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "Lucida Grande"))) t)
- '(magit-item-highlight ((t (:inherit zenburn-highlight-damp))))
- '(mm/master-face ((t (:background "#2e3330"))))
- '(mm/mirror-face ((t (:background "#2e3330"))))
- '(org-clock-overlay ((t (:background "#366060"))))
- '(org-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
- '(text-mode-default ((t (:inherit autoface-default :stipple nil :strike-through nil :underline nil :slant normal :weight normal :height 140 :width normal :family "TheSansMonoCd Office"))) t)
- '(textile-link-face ((t (:inherit link)))))
+ '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))) t))

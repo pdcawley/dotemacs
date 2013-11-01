@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: src
+# --
+#+BEGIN_SRC ${1:${2:emacs-lisp} :tangle ${3:no}} ${4::noweb ${5:yes}}
+    $0
+#+END_SRC

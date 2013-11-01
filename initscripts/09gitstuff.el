@@ -1,4 +1,7 @@
 (require 'eieio)
+(use-package magit
+  :bind ("C-. g s" . magit-status))
+
 (use-package gist
   :init (setq gist-authenticate-function 'gist-oauth2-authentication)
   :bind ("C-c G" . gist-region-or-buffer))
@@ -14,32 +17,6 @@
       :config
       (git-gutter-fr+-minimal))
     (global-git-gutter+-mode 1)))
-
-(use-package magit
-  :init
-  (progn
-    (defvar pdc/magit-map)
-    (define-prefix-command 'pdc/magit-map)
-
-    (bind-key "C-. g" 'pdc/magit-map)
-    (bind-key "C-. g s" 'magit-status))
-  :config
-  (progn
-    (defadvice magit-status (before magit-status-local-gitexec activate)
-      "Apply dir locals before running magit"
-      (hack-dir-local-variables-non-file-buffer))
-
-    (defadvice magit-git-lines (before magit-git-lines-local-gitexec activate)
-      (hack-dir-local-variables-non-file-buffer))
-
-    (defadvice magit-git-string (before magit-git-string-local-gitexec
-                                        activate)
-      (hack-dir-local-variables-non-file-buffer))
-
-    (defadvice magit-cmd-insert (before magit-cmd-insert-local-gitexec
-                                        activate)
-      (hack-dir-local-variables-non-file-buffer))
-    ))
 
 (require 'vc-git)
 (defun pdc/bookmark-magit-status (bookmark)

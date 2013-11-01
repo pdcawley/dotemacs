@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: src_tmpl
+# --
+${1:Template}
+:PROPERTIES:
+:noweb-ref: ${2:ref}
+:END:
+#+BEGIN_SRC emacs-lisp ${2::tangle no} :noweb yes
+$0
+#+END_SRC

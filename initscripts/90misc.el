@@ -287,6 +287,8 @@ Helper method for 'yank' advice"
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+(bind-key "C-. C-<return>" 'toggle-window-split)
+
 (defun pdc/use-region-p ()
   (or (and (fboundp 'use-region-p) (use-region-p))
       (and transient-mark-mode mark-active

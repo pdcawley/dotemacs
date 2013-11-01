@@ -13,7 +13,7 @@
     (defvar containing-sexp nil)
     (defvar p nil)
     (defvar what nil)
-    
+
     (defun cperl-backward-to-start-of-continued-exp (lim)
       (goto-char containing-sexp)
       (let ((sexp-start (following-char)))
@@ -21,7 +21,7 @@
         (skip-chars-forward " \t\n")
         (if (memq sexp-start (append "([" nil))
             (backward-char cperl-continued-statement-offset))))
-    
+
     (defun pdc:path->perl-module (path)
       (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
           (let ((module (match-string 1 path)))
@@ -29,7 +29,23 @@
               (setq module (replace-match "::" nil nil module)))
             module)
         nil))
-    
+
+    (defun pdc/package-type ()
+      "Determines the perl package type.
+Returns one of the following symbols `moose-role' `moose-class' `module'
+      `class' `role'"
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (cond ((re-search-forward "use +Moops;" (point-max) t)
+               (if (re-search-forward "^\\(class\\|role\\) " (point-max) t)
+                   (intern (match-string 1))
+                 'moops))
+              ((re-search-forward "use +Moose::Role;" (point-max) t) 'moose-role)
+              ((re-search-forward "use +Moose;" (point-max) t) 'moose-class)
+              (t 'module))))
+
+
     (defun pdc/indent-cperl-indentable (i parse-data)
       (cond            ;;; [indentable terminator start-pos is-block]
        ((eq 'terminator (elt i 1)) ; Lone terminator of "indentable string"
@@ -62,7 +78,7 @@
            (current-column)))
        (t
         (error "Unrecognized value of indent: %s" i))))
-    
+
     (pushnew '(indentable pdc/indent-cperl-indentable)
     cperl-indent-rules-alist)
 
@@ -77,7 +93,7 @@
       (auto-complete-mode 1)
       (yas-minor-mode-on)
       (bug-reference-prog-mode 1)
-      
+
       (bind-key "C-c P" 'insert-counting-printf cperl-mode-map)
 
       (auto-complete-mode 1)
@@ -94,7 +110,7 @@
       (unbind-key "<tab>" ac-completing-map)
       (bind-key "<tab>" 'yas-expand-from-trigger-key cperl-mode-map)
       )
-    
+
     (add-hook 'cperl-mode-hook 'pdc/cperl-mode-hook))
   :config
   (defalias 'perl-mode 'cperl-mode))

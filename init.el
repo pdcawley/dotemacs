@@ -1,6 +1,13 @@
 ;;(require 'eieio)
 (setq message-log-max 16384)
 (defconst emacs-start-time (current-time))
+;; encoding
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
 (defvar lisp-modes '(emacs-lisp-mode
                      inferior-emacs-lisp-mode
                      ielm-mode
@@ -16,121 +23,109 @@
               (concat (symbol-name mode) "-hook"))))
           lisp-modes))
 
-(load (expand-file-name "load-path" (file-name-directory load-file-name)))
 
 (require 'autoinsert)
+(require 'cl)
+(require 'saveplace)
+(require 'ffap)
 
-;; encoding
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+
+(setq package-archives
+      '(("gnu"       . "http://elpa.gnu.org/packages/")
+        ("original"  . "http://tromey.com/elpa")
+        ("org"       . "http://orgmode.org/elpa/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa"     . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
+
+(defvar pdc/required-packages
+  (list 'yasnippet 'use-package))
+
+(let ((yas-bundle-desc (assq 'yasnippet-bundle package-alist)))
+  (when yas-bundle-desc
+    (package-delete "yasnippet-bundle"
+                    (package-version-join
+                     (package-desc-vers (cdr yas-bundle-desc))))))
+
+(unless package-archive-contents
+  (package-refresh-contents))
+(dolist (package pdc/required-packages)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(require 'use-package)
+
+(load (expand-file-name "load-path" (file-name-directory load-file-name)))
+
+;;; Work around a bug on OS X where system-name is FQDN.
+(if (or (eq system-type 'darwin)
+        (eq system-type 'berkeley-unix))
+    (setq system-name (car (split-string system-name "\\."))))
+
+
 
 ;;;_ , Utility macros and functions
-
-(require 'pdc-utils)
-(setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
-(unless (file-exists-p temporary-file-directory)
-  (make-directory temporary-file-directory t))
-
-(defvar running-alternate-emacs nil)
-
-
-(if (string-match (concat "/Applications/\\(Misc/\\)?"
-                          "Emacs\\([A-Za-z]+\\).app/Contents/MacOS/")
-                  invocation-directory)
-    (let ((settings (with-temp-buffer
-                      (insert-file-contents
-                       (expand-file-name "preferences.el" user-emacs-directory))
-                      (goto-char (point-min))
-                      (read (current-buffer))))
-          (suffix (downcase (match-string 2 invocation-directory))))
-
-      (setq running-alternate-emacs t
-            user-data-directory
-            (replace-regexp-in-string "/data/" (format "/data-%s/" suffix)
-                                      user-data-directory))
-
-      (let* ((regexp "/\\.emacs\\.d/data/")
-             (replace (format "/.emacs.d/data-%s/" suffix)))
-        (dolist (setting settings)
-          (let ((value (and (stringp value)
-                            (string-match regexp value))
-                       (setcar (nthcdr 1 (nth 1 setting)))))
-            (if (and (stringp value)
-                     (string-match regexp value))
-                (setcar (nthcdr 1 (nth 1 setting))
-                        (replace-regexp-in-string regexp replace value)))))
-
-        (eval settings)))
-
-  (load (expand-file-name "preferences" user-emacs-directory)))
-
-(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
 
 (setq server-auth-dir (expand-file-name "~/server/"))
 (setq-default gc-cons-threshold 10000000)
 
-(defun pdc/turn-on-abbrev-mode ()
-  "A boring hook to turn abbrev mode on"
-  (abbrev-mode 1))
-
-(require 'cl)
-(require 'pdc-support)
-(mapc (lambda (p) (pushnew p exec-path))
-      (reverse (list "~/bin" "~/local/node/bin" "~/perl5/perlbrew/bin"
-                     "/usr/local/bin"
-                     "/usr/local/sbin" "/sbin" "/bin" "/usr/bin" "/usr/sbin")))
+;; (mapc (lambda (p) (pushnew p exec-path))
+;;       (reverse (list "~/bin" "~/local/node/bin" "~/perl5/perlbrew/bin"
+;;                      "/usr/local/bin"
+;;                      "/usr/local/sbin" "/sbin" "/bin" "/usr/bin" "/usr/sbin")))
 ;;(load custom-file)
+
+(defun remove-extension (name)
+             (string-match "\\(.*?\\)\.\\(org\\(\\.el\\)?\\|el\\)\\(\\.gpg\\)?$" name)
+             (match-string 1 name))
+
+;;; * Load User/System Specific Files
+(cl-flet* ((sk-load-babel (file)
+             (condition-case ()
+                 (org-babel-load-file file)
+               (error (message "Error while loading %s" file))))
+           (sk-load-el (file)
+             (condition-case ()
+                 (load file)
+               (error (message "Error while loading %s" file))))
+           (sk-load (base)
+             (let* ((path          (expand-file-name base user-emacs-directory))
+                    (literate      (concat path ".org"))
+                    (encrypted-org (concat path ".org.pg"))
+                    (plain         (concat path ".el"))
+                    (encrypted-el  (concat path ".el.gpg")))
+               (cond
+                ((file-exists-p encrypted-org) (sk-load-babel encrypted-org))
+                ((file-exists-p encrypted-el)  (sk-load-el encrypted-el))
+                ((file-exists-p literate)      (sk-load-babel literate))
+                ((file-exists-p plain)         (sk-load-el plain)))))
+           (remove-extension (name)
+             (string-match "\\(.*?\\)\.\\(org\\(\\.el\\)?\\|el\\)\\(\\.gpg\\)?$" name)
+             (match-string 1 name)))
+      (let ((user-dir (expand-file-name user-login-name user-emacs-directory)))
+        (dolist (default-directory (nreverse
+                                    (list user-override-directory
+                                          user-lisp-directory
+                                          user-lib-directory
+                                          user-site-lisp-directory
+                                          user-external-lisp-directory)))
+          (when (file-exists-p default-directory)
+            (normal-top-level-add-subdirs-to-load-path)))
+        (sk-load system-name)
+        (sk-load user-login-name)
+        (dolist (dir (list user-dir user-initscripts-directory))
+          (when (file-exists-p dir)
+            (add-to-list 'load-path dir)
+            (mapc #'sk-load
+                  (remove-duplicates
+                   (mapcar #'remove-extension
+                           (directory-files dir t ".*\.\\(org\\|el\\)\\(\\.gpg\\)?$"))
+                   :test #'string=))))))
+
 
 (setq custom-file (expand-file-name "preferences.el" user-emacs-directory))
-(require 'package)
+(load-file custom-file)
 
-(add-to-list 'package-archives
-             '("ELPA" . "http://tromey.com/elpa/"))
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-
-(package-install 'use-package)
-(require 'use-package)
-
-(require 'initscripts)
-;;(load custom-file)
-
-(defun transpose-chars (arg)
-  "Interchange characters around point, moving forward one character.
-With prefix arg ARG, effect is to take character before point
-and drag it forward past ARG other characters (backward if ARG negative).
-If no argument and at end of line, the previous two chars are exchanged."
-  (interactive "*P")
-  (and (null arg) (or (looking-at "['\"]") (eolp)) (forward-char -1))
-  (transpose-subr 'forward-char (prefix-numeric-value arg)))
-
-(setenv "PATH" (shell-command-to-string "echo $PATH"))
-
-(defun pdc/enable-commands (cmds)
-  (dolist (cmd cmds)
-    (put cmd 'disabled nil)))
-
-(pdc/enable-commands
- '(downcase-region erase-buffer eval-expression
-   narrow-to-page narrow-to-region set-goal-column upcase-region))
-
-(when window-system
-  (set-face-attribute
-   'default nil
-   :height 120
-   ;; (let ((width (display-pixel-width)))
-   ;;           (cond ((= width 2560) 160)
-   ;;                 (t 140)))
-   :family "Menlo"))
-
-(require 'zenburn)
-(color-theme-zenburn)
 (when window-system
   (let ((elapsed (float-time (time-subtract (current-time)
                                             emacs-start-time))))

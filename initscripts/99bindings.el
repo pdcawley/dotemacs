@@ -398,10 +398,6 @@
 (bind-key "C-c e r" 'eval-region)
 (bind-key "C-c e s" 'scratch)
 
-(defvar ctl-period-map)
-(define-prefix-command 'ctl-period-map)
-(bind-key "C-." 'ctl-period-map)
-
 (bind-key "<C-return>" 'other-window)
 
 (defun collapse-or-expand ()

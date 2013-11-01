@@ -622,6 +622,30 @@ Late deadlines first, then scheduled, then non-late deadlines"
             (unless org-timer-current-timer
               (org-timer-set-timer '(16)))))
 
+(use-package org-publish
+  :config
+  (progn
+    (setq org-publish-project-alist
+          '(("org-blog-content"
+             :base-directory "~/Documents/Blog/org"
+             :base-extension "org"
+
+             :publishing-directory "~/Documents/Blog/jekyll"
+             :recursive t
+             :publishing-function org-publish-org-to-html
+             :headline-levels 4
+             :html-extension "html"
+             :body-only t)
+            ("org-blog-static"
+             :base-directory "~/Documents/Blog/org"
+             :base-extension
+             "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
+             :publishing-directory "~/Documents/Blog"
+             :recursive t
+             :publishing-function org-publish-attachement)
+            ("blog" :components ("org-blog-content" "org-blog-static"))))))
+
+
 ;;; Redmine stuff
 
 ;; (require 'org-redmine)

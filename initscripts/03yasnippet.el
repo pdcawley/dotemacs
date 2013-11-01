@@ -1,4 +1,4 @@
-(eval-when-compile 
+(eval-when-compile
   (require 'pdc-utils))
 (use-package yasnippet
   :if (not noninteractive)
@@ -13,24 +13,24 @@
 
     (bind-key "<tab>" 'yas-next-field-or-maybe-expand yas-keymap)
 
-    (defun yas-new-snippet (&optional choose-instead-of-guess)
-      (interactive "P")
-      (let ((guessed-directories (yas-guess-snippet-directories)))
-        (switch-to-buffer "*new snippet*")
-        (erase-buffer)
-        (kill-all-local-variables)
-        (snippet-mode)
-        (set (make-local-variable 'yas-guessed-modes)
-             (mapcar #'(lambda (d)
-                         (intern (yas-table-name (car d))))
-                     guessed-directories))
-        (unless (and choose-instead-of-guess
-                     (not (y-or-n-p "Insert a snippet with useful headers? ")))
-          (yas-expand-snippet "\
-  # -*- mode: snippet -*-
-  # name: $1
-  # --
-  $0"))))
+    ;; (defun yas-new-snippet (&optional choose-instead-of-guess)
+  ;;     (interactive "P")
+  ;;     (let ((guessed-directories (yas--guess-snippet-directories)))
+  ;;       (switch-to-buffer "*new snippet*")
+  ;;       (erase-buffer)
+  ;;       (kill-all-local-variables)
+  ;;       (snippet-mode)
+  ;;       (set (make-local-variable 'yas-guessed-modes)
+  ;;            (mapcar #'(lambda (d)
+  ;;                        (intern (yas-table-name (car d))))
+  ;;                    guessed-directories))
+  ;;       (unless (and choose-instead-of-guess
+  ;;                    (not (y-or-n-p "Insert a snippet with useful headers? ")))
+  ;;         (yas-expand-snippet "\
+  ;; # -*- mode: snippet -*-
+  ;; # name: $1
+  ;; # --
+  ;; $0"))))
 
     (bind-key "C-c y TAB" 'yas-expand)
     (bind-key "C-c y n" 'yas-new-snippet)
