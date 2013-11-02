@@ -1,0 +1,61 @@
+#+TITLE: Cursor manipulation
+
+* Multiple Cursors
+:PROPERTIES:
+:noweb-ref: multiple-cursors
+:END:
+Multiple cursors are awesome!
+
+** Bindings                                                          :drill:
+:PROPERTIES:
+:noweb-ref: multiple-cursors-bindings
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+("C-. m e" . mc/edit-lines)
+("C-. m >" . mc/mark-next-like-this)
+("C-. m <" . mc/mark-previous-line-like-this)
+("C-. m a" . mc/mark-all-like-this)
+#+END_SRC
+
+** Loading Template
+Don't fiddle with this too much...
+#+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  (eval `(use-package multiple-cursors
+       ,@(cl-loop
+          for forms in '((:if         
+ <<multiple-cursors-if>>)
+                         (:load-path   
+<<multiple-cursors-load-path>>)
+                         (:bind        
+<<multiple-cursors-bindings>>)
+                         (:diminish
+<<multiple-cursors-diminish>>)
+                         (:commands
+<<multiple-cursors-commands>>)
+                         (:mode
+<<multiple-cursors-mode>>)
+                         (:interpreter
+<<multiple-cursors-interpreter>>)
+                         (:defines
+<<multiple-cursors-defines>>))
+          append (let ((keyword (car forms))
+                        (body (cdr forms)))
+                    (cond ((null body) '())
+                          ((eq 1 (length body)) forms)
+                          (t (list keyword body)))))
+       ,@(cl-loop
+          for forms in '((:pre-load 
+<<multiple-cursors-preload>>)
+                         (:init
+<<multiple-cursors-init>>)
+                         (:config 
+<<multiple-cursors-config>>)
+                         (:idle 
+<<multiple-cursors-idle>>))
+          append (let ((keyword (car forms))
+                       (body (cdr forms)))
+                   (cond ((null body) '())
+                         ((eq 1 (length body)) forms)
+                         (t `(,keyword (progn ,@body))))))))
+  
+#+END_SRC

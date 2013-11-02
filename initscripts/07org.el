@@ -645,6 +645,13 @@ Late deadlines first, then scheduled, then non-late deadlines"
              :publishing-function org-publish-attachement)
             ("blog" :components ("org-blog-content" "org-blog-static"))))))
 
+(defun org-entry-get-parent (pom property)
+  "Get the parent entry's property"
+  (save-excursion
+    (outline-up-heading 1)
+    (org-entry-get pom property t)))
+
+
 
 ;;; Redmine stuff
 

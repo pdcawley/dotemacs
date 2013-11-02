@@ -337,7 +337,12 @@ Helper method for 'yank' advice"
   :ensure t
   :diminish projectile-mode
   :init
-  (projectile-global-mode))
+  (projectile-global-mode)
+  :config
+  (progn
+    (defadvice projectile-project-root (after projectile-project-root-has-final-slash activate)
+      (setq ad-return-value (replace-regexp-in-string "/?$" "/" ad-return-value)))))
+
 
 (use-package ace-jump-mode
   :ensure t

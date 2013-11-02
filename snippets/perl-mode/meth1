@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: meth
+# key: meth
+# condition: (not (member (pdc/package-type) '(class role)))
+# --
+sub ${1:method_name} {
+    my ($self${2:, ${3:@args}}) = @_;
+    $0
+}

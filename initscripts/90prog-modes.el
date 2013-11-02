@@ -68,7 +68,7 @@
       (unbind-key "M-j" c-mode-base-map)
       (bind-key "C-c C-i" 'c-includes-current-file c-mode-base-map)
       (bind-key "C-c C-y" 'my-paste-as-check c-mode-base-map)
-      
+
       (set (make-local-variable 'parens-require-spaces) nil)
       (setq indicate-empty-lines t)
       (setq fill-column 72)
@@ -94,8 +94,8 @@
 
 (defun insert-counting-printf (arg)
   (interactive "P")
-  (setq printf-index (if arg 0 (1+ printf-index)))
-  (let (fstr (cond ((string= mode-name "CPerl")
-                    "say(STDERR 'step %d..');\n")
-                   (t  "printf(\"step %d..\\n\");\n")))
+  (setq printf-index (if arg 1 (1+ printf-index)))
+  (let ((fstr (cond ((string= mode-name "CPerl")
+                     "say(STDERR 'step %d..');\n")
+                    (t  "printf(\"step %d..\\n\");\n"))))
     (insert (format fstr printf-index))))

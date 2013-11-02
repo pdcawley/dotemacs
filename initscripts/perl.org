@@ -1,0 +1,207 @@
+#+TITLE: Perl settings
+#+OPTIONS: toc:nil num:nil
+
+I program in perl a great deal, so it's worth setting up my environment right.
+
+* Loading Cperl Mode
+:PROPERTIES:
+:noweb-ref: cperl-mode
+:END:
+
+** Mode bindings
+:PROPERTIES:
+:noweb-ref: cperl-mode-mode
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    ("\\.t\\'" . perl-mode)
+#+END_SRC
+
+** Initialization
+:PROPERTIES:
+:noweb-ref: cperl-mode-init
+:END:
+
+*** Adding the Moops/p5-mop keywords to the mode
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+  (setq cperl-sub-keywords (list "sub" "method" "class" "role" "fun"))
+  (setq cperl-sub-regexp (regexp-opt cperl-sub-keywords))
+#+END_SRC
+
+*** Yasnippet helpers
+It can be helpful to know something about the state of the buffer that you're
+expanding a snippet in, either so that you can turn the snippet off in a given
+context or for use in an expansion.
+
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+        (defun pdc:path->perl-module (path)
+      (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
+          (let ((module (match-string 1 path)))
+            (while (string-match "/" module)
+              (setq module (replace-match "::" nil nil module)))
+            module)
+        nil))
+
+    (defun pdc/package-type ()
+      "Determines the perl package type.
+Returns one of the following symbols `moose-role' `moose-class' `module'
+      `class' `role'"
+      (interactive)
+      (save-excursion
+        (goto-char (point-min))
+        (cond ((re-search-forward "use +Moops;" (point-max) t)
+               (if (re-search-forward "^\\(class\\|role\\) " (point-max) t)
+                   (intern (match-string 1))
+                 'moops))
+              ((re-search-forward "use +Moose::Role;" (point-max) t) 'moose-role)
+              ((re-search-forward "use +Moose;" (point-max) t) 'moose-class)
+              (t 'module))))
+#+END_SRC
+
+** Configuration
+:PROPERTIES:
+:noweb-ref: cperl-mode-config
+:END:
+
+*** Hooks
+When I hit tab, I want to indent first, then trigger autocomplete and let it
+fall back to expanding a snippet. Also, I want to turn on various handy minor
+modes and set up a few key bindings
+
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+  (defun pdc/cperl-indent-or-complete ()
+    (interactive)
+    (when (zerop (call-interactively 'cperl-indent-command))
+      (call-interactively 'ac-trigger-key-command)))
+  
+  (defun pdc/turn-on-perl-mode-bindings ()
+    (bind-key "C-c P" 'insert-counting-printf cperl-mode-map)
+    (bind-key "<M-tab>" 'ac-complete cperl-mode-map)
+    (bind-key "<return>" 'newline-and-indent cperl-mode-map)
+  
+    (set (make-local-variable 'yas-fallback-behavior)
+         ('apply pdc/cperl-indent-or-complete . nil))
+    (make-local-variable 'ac-completing-map)
+    (unbind-key "<tab>" ac-completing-map)
+    (bind-key "<tab>" 'yas-expand-from-trigger-key cperl-mode-map))
+  
+  
+  
+  (defun pdc/cperl-mode-hook ()
+    (abbrev-mode 1)
+    (which-function-mode 1)
+    (auto-complete-mode 1)
+    (yas-minor-mode-on)
+    (bug-reference-prog-mode 1)
+    (setq ac-sources '(ac-source-abbrev
+                       ac-source-imenu
+                       ac-source-words-in-same-mode-buffers
+                       ac-source-yasnippet))
+    (pdc/turn-on-perl-mode-bindings))
+  
+  
+  (add-hook 'cperl-mode-hook 'pdc/cperl-mode-hook)
+#+END_SRC
+
+*** We don't want to use perl-mode
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    (defalias 'perl-mode 'cperl-mode)
+#+END_SRC
+
+
+*** Monkey Patch cperl-mode
+I can't quite remember why the default
+=cperl-backward-to-start-of-continued-exp= in cperl-mode doesn't cut the
+mustard, but here's a monkey patched one that does.
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    (defun cperl-backward-to-start-of-continued-exp (lim)
+      (goto-char containing-sexp)
+      (let ((sexp-start (following-char)))
+        (forward-char)
+        (skip-chars-forward " \t\n")
+        (if (memq sexp-start (append "([" nil))
+            (backward-char cperl-continued-statement-offset))))
+#+END_SRC
+
+The indentation rules at Thermeon are somewhat idiosyncratic, to the extent
+that, to get them to work, I've add to fiddle with the way that I indent an
+=indentable= 
+
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+        (defun pdc/indent-cperl-indentable (i parse-data)
+      (cond            ;;; [indentable terminator start-pos is-block]
+       ((eq 'terminator (elt i 1)) ; Lone terminator of "indentable string"
+        (goto-char (elt i 3))   ; prev line
+        (current-indentation))
+       ((eq 'first-line (elt i 1)); [indentable first-line start-pos]
+        (goto-char (elt i 2))
+        (+ cperl-continued-statement-offset
+           (current-indentation)))
+       ((eq 'cont-line (elt i 1)); [indentable cont-line pos prev-pos first-char start-pos]
+        ;; Indent as the level after closing parens
+        (goto-char (elt i 2))   ; indent line
+        (skip-chars-forward " \t)") ; Skip closing parens
+        (setq p (point))
+        (goto-char (elt i 3))   ; previous line
+        (skip-chars-forward " \t)") ; Skip closing parens
+        ;; Number of parens in between:
+        (setq p (nth 0 (parse-partial-sexp (point) p))
+              what (elt i 4))   ; First char on current line
+        (goto-char (elt i 3))   ; previous line
+        (+ (* p (or cperl-regexp-indent-step cperl-indent-level))
+           (cond ((eq what ?\) )
+                  (- cperl-close-paren-offset)) ; compensate
+                 ((eq what ?\| )
+                  (- (or cperl-regexp-indent-step cperl-indent-level)))
+                 (t 0))
+           (if (eq (following-char) ?\| )
+               (or cperl-regexp-indent-step cperl-indent-level)
+             0)
+           (current-column)))
+       (t
+        (error "Unrecognized value of indent: %s" i))))
+
+    (pushnew '(indentable pdc/indent-cperl-indentable)
+    cperl-indent-rules-alist)
+#+END_SRC
+
+** Template
+#+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  (eval `(use-package cperl-mode
+       ,@(cl-loop
+          for forms in '((:if          
+<<cperl-mode-if>>)
+                         (:load-path
+   <<cperl-mode-load-path>>)
+                         (:bind       
+ <<cperl-mode-bindings>>)
+                         (:diminish  
+  <<cperl-mode-diminish>>)
+                         (:commands   
+ <<cperl-mode-commands>>)
+                         (:mode       
+ <<cperl-mode-mode>>)
+                         (:interpreter
+ <<cperl-mode-interpreter>>)
+                         (:defines    
+ <<cperl-mode-defines>>))
+          append (let ((keyword (car forms))
+                        (body (cdr forms)))
+                    (cond ((null body) '())
+                          ((eq 1 (length body)) forms)
+                          (t (list keyword forms)))))
+       ,@(cl-loop
+          for forms in '((:pre-load 
+<<cperl-mode-preload>>)
+                         (:init 
+<<cperl-mode-init>>)
+                         (:config 
+<<cperl-mode-config>>)
+                         (:idle
+ <<cperl-mode-idle>>))
+          append (let ((keyword (car forms))
+                       (body (cdr forms)))
+                   (cond ((null body) '())
+                         ((eq 1 (length body)) forms)
+                         (t `(,keyword (progn ,@body))))))))
+  
+#+END_SRC

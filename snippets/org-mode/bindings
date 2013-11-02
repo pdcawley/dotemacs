@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: bindings
+# key: bindings
+# --
+${1:Bindings}
+`(org-entry-put (point)
+                "noweb-ref" (concat (org-entry-get-parent (point) "noweb-ref")
+                                         "-bindings"))`$0
