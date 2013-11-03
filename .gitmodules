@@ -47,3 +47,6 @@
 [submodule "elisp/external/info-lookmore"]
 	path = elisp/external/info-lookmore
 	url = https://github.com/emacsmirror/info-lookmore.git
+[submodule "elisp/external/artbollocks-mode"]
+	path = elisp/external/artbollocks-mode
+	url = https://github.com/sachac/artbollocks-mode.git

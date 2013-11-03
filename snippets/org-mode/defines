@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: defines
+# key: defines
+# --
+${1:Defines}
+`(org-entry-put (point)
+                "noweb-ref" (concat (org-entry-get-parent (point) "noweb-ref")
+                                         "-defines"))`$0#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    $0
+#+END_SRC

@@ -3,6 +3,8 @@
 # key: bindings
 # --
 ${1:Bindings}
-`(org-entry-put (point)
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+  $0
+#+END_SRC`(org-entry-put (point)
                 "noweb-ref" (concat (org-entry-get-parent (point) "noweb-ref")
-                                         "-bindings"))`$0
+                                         "-bindings"))`

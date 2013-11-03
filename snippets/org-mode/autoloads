@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: autoloads
+# key: autoloads
+# --
+${1:Autoloads}
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    $0
+#+END_SRC`(org-entry-put (point) "noweb-ref" 
+           (concat (org-entry-get-parent (point) "noweb-ref") "-commands"))`

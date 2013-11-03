@@ -32,3 +32,6 @@ cus-dirs.el
 projectile-bookmarks.eld
 /initscripts/cursor.el
 /initscripts/perl.el
+/initscripts/03yasnippet.el
+/initscripts/ido-setup.el
+/initscripts/07org.el

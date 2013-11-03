@@ -1,0 +1,114 @@
+#+TITLE: YASnippet setup
+
+* YASnippet Setup
+:PROPERTIES:
+:noweb-ref: yasnippet
+:END:
+
+YASnippet is just fabulously useful; I'm only just beginning to plumb its
+capabilities. Once you start evaluating arbitrary elisp in your snippets,
+things get remarkably powerful.
+
+
+** Bindings                                                          :drill:
+:PROPERTIES:
+:noweb-ref: yasnippet-bindings
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+  ("C-c y TAB" . yas-expand)
+  ( "C-c y n"  . yas-new-snippet)
+  ( "C-c y f"  . yas-find-snippets)
+  ( "C-c y r"  . yas-reload-all)
+  ( "C-c y v"  . yas-visit-snippet-file)
+#+END_SRC
+
+** Bind modes to files
+:PROPERTIES:
+:noweb-ref: yasnippet-mode
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    ("/\\.emacs\\.d/snippets/" . snippet-mode)
+#+END_SRC
+
+** Configuration
+:PROPERTIES:
+:noweb-ref: yasnippet-config
+:END:
+Load our local snippets, and turn snippets on everywhere.
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+(yas-load-directory (expand-file-name "snippets/" user-emacs-directory))
+(yas-global-mode t)
+#+END_SRC
+
+
+
+
+** Only load snippets in interactive mode
+:PROPERTIES:
+:noweb-ref: yasnippet-if
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    (not noninteractive)
+#+END_SRC
+
+
+** Diminish minor modes
+:PROPERTIES:
+:noweb-ref: yasnippet-diminish
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    yas-minor-mode
+#+END_SRC
+
+** Autoloads
+:PROPERTIES:
+:noweb-ref: yasnippet-commands
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+    (yas-minor-mode yas-expand)
+#+END_SRC
+
+
+** Template
+#+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+(eval-when-compile (require 'pdc-utils))
+  (eval `(use-package yasnippet
+       ,@(cl-loop
+          for forms in '((:if         
+ <<yasnippet-if>>)
+                         (:load-path   
+<<yasnippet-load-path>>)
+                         (:bind        
+<<yasnippet-bindings>>)
+                         (:diminish
+<<yasnippet-diminish>>)
+                         (:commands
+<<yasnippet-commands>>)
+                         (:mode
+<<yasnippet-mode>>)
+                         (:interpreter
+<<yasnippet-interpreter>>)
+                         (:defines
+<<yasnippet-defines>>))
+          append (let ((keyword (car forms))
+                        (body (cdr forms)))
+                    (cond ((null body) '())
+                          ((eq 1 (length body)) forms)
+                          (t (list keyword body)))))
+       ,@(cl-loop
+          for forms in '((:pre-load 
+<<yasnippet-preload>>)
+                         (:init
+<<yasnippet-init>>)
+                         (:config 
+<<yasnippet-config>>)
+                         (:idle 
+<<yasnippet-idle>>))
+          append (let ((keyword (car forms))
+                       (body (cdr forms)))
+                   (cond ((null body) '())
+                         ((eq 1 (length body)) forms)
+                         (t `(,keyword (progn ,@body))))))))
+  
+#+END_SRC
+
