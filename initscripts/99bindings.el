@@ -441,3 +441,7 @@
   (mark-end-of-sentence arg))
 
 (bind-key "<C-M-backspace>" 'backward-kill-sexp)
+
+(bind-key "D F" 'describe-face help-map)
+(bind-key "D b" 'describe-bindings help-map)
+

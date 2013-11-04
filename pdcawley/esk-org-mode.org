@@ -24,20 +24,6 @@ See more at [[http://orgmode.org/workg][worg]], an dogfooded Org-mode wiki.
     <<org-setup>>)
 #+END_SRC
 
-** Init code
-:PROPERTIES:
-:noweb-ref: org-init-sexps
-:END:
-
-*** Template
-:PROPERTIES:
-:noweb-ref: org-setup
-:END:
-#+begin_src emacs-lisp :tangle no :noweb yes
-  :init
-  (progn <<org-init-sexps>>)
-#+end_src
-
 ** Config code
 :PROPERTIES:
 :CUSTOM_ID: config
@@ -82,4 +68,18 @@ Turn off babel confirmation.
 :config (progn
   <<org-config-sexps>>
 )
+#+end_src
+
+** Init code
+:PROPERTIES:
+:noweb-ref: org-init-sexps
+:END:
+
+*** Template
+:PROPERTIES:
+:noweb-ref: org-setup
+:END:
+#+begin_src emacs-lisp :tangle no :noweb yes
+  :init
+  (progn <<org-init-sexps>>)
 #+end_src

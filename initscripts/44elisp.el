@@ -1,5 +1,5 @@
 ;;; 44elisp.el --- Custom emacs-lisp-mode configuration
-(eval-when-compile 
+(eval-when-compile
   (require 'pdc-utils))
 
 (use-package yasnippet)
@@ -14,7 +14,7 @@
     (define-prefix-command 'lisp-find-map)
 
     (bind-key "C-h e" 'lisp-find-map)
-    
+
     (mapc (lambda (major-mode)
             (font-lock-add-keywords
              major-mode
@@ -22,7 +22,7 @@
                 (0 (ignore
                     (compose-region (match-beginning 1)
                                     (match-end 1) ?λ))))
-               ("(\\(ert-deftest\\)\\>[ 	'(]*\\(setf[ 	]+\\sw+\\|\\sw+\\)?"
+               ("(\\(ert-deftest\\)\\>[     '(]*\\(setf[    ]+\\sw+\\|\\sw+\\)?"
                 (1 font-lock-keyword-face)
                 (2 font-lock-function-name-face
                    nil t)))))
@@ -54,13 +54,13 @@
             (add-hook 'emacs-lisp-mode-hook
                       #'(lambda () (require 'eldoc-extension)) t))
 
-          :config 
+          :config
           (eldoc-add-command 'paredit-backward-delete
                              'paredit-close-round))
 
-        (use-package cldoc
-          :diminish cldoc-mode)
-        
+        ;; (use-package cldoc
+        ;;   :diminish cldoc-mode)
+
         (use-package ert
           :commands ert-run-tests-interactively
           :bind ("C-c e t" . ert-run-tests-interactively))
@@ -148,7 +148,7 @@
           (progn
             (bind-key "<M-return>" 'outline-insert-heading emacs-lisp-mode-map)
             (bind-key "<tab>" 'my-elisp-indent-or-complete emacs-lisp-mode-map))
-        (turn-on-cldoc-mode)
+        ;; (turn-on-cldoc-mode)
 
         (bind-key "<tab>" 'my-lisp-indent-or-complete lisp-mode-map)
         (bind-key "M-q" 'slime-reindent-defun lisp-mode-map)

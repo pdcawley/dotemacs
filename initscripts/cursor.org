@@ -17,6 +17,17 @@ Multiple cursors are awesome!
 ("C-. m a" . mc/mark-all-like-this)
 #+END_SRC
 
+** Bindings
+:PROPERTIES:
+:noweb-ref: multiple-cursors-bindings
+:END:
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+  
+#+END_SRC
+
+
+
+
 ** Loading Template
 Don't fiddle with this too much...
 #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes

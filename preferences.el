@@ -46,7 +46,7 @@
  '(custom-enabled-themes (quote (pdc-zenburn)))
  '(custom-safe-themes
    (quote
-    ("5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
+    ("66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -59,6 +59,7 @@
  '(default-mime-charset (quote utf-8))
  '(delete-selection-mode nil nil (delsel))
  '(dictionary-default-popup-strategy "soundex")
+ '(diff-switches "-u")
  '(display-buffer-reuse-frames nil)
  '(ecb-options-version "2.33beta1")
  '(enable-recursive-minibuffers t)

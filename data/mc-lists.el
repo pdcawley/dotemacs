@@ -24,6 +24,8 @@
         nxml-electric-slash
         tempo-x-space
         yas-expand
+        paredit-forward-kill-word
+
         ))
 
 (setq mc/cmds-to-run-once

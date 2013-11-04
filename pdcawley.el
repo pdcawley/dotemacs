@@ -17,11 +17,6 @@
 
 (require 'pdc-support)
 
-
-
-;;(require 'initscripts)
-;;(load custom-file)
-
 (defun transpose-chars (arg)
   "Interchange characters around point, moving forward one character.
 With prefix arg ARG, effect is to take character before point

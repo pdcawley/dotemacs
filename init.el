@@ -91,7 +91,7 @@
            (sk-load (base)
              (let* ((path          (expand-file-name base user-emacs-directory))
                     (literate      (concat path ".org"))
-                    (encrypted-org (concat path ".org.pg"))
+                    (encrypted-org (concat path ".org.gpg"))
                     (plain         (concat path ".el"))
                     (encrypted-el  (concat path ".el.gpg")))
                (cond
