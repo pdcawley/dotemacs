@@ -35,4 +35,6 @@
 (define-key input-decode-map "\eOH"          [s-left])
 (define-key input-decode-map "\eOF"         [s-right])
 
+(define-key input-decode-map "\e[25;1~" "C-.")
+
 (provide 'mac-terminal-keys)
