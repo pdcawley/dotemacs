@@ -18,8 +18,10 @@
         fastnav-jump-to-char-forward
         forward-sexp
         isearch-abort
+        kill-sexp
         match-paren
         nxml-electric-slash
+        paredit-backward-barf-sexp
         paredit-forward
         paredit-forward-delete
         paredit-forward-kill-word
