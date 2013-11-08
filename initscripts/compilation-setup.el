@@ -9,7 +9,7 @@
         (switch-to-buffer-other-window compile-buf)
       (call-interactively 'compile))))
 
-(bind-key "M-O" 'show-compilation)
+;(bind-key "M-O" 'show-compilation)
 
 (use-package smart-compile
   :disabled t

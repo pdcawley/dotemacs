@@ -421,7 +421,7 @@
 (bind-key "M-'" 'insert-pair)
 (bind-key "M-\"" 'insert-pair)
 
-(bind-key "M-[" 'align-code)
+(bind-key "C-. [" 'align-code)
 (bind-key "M-`" 'other-frame)
 
 (defun mark-line (&optional arg)
