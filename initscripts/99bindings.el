@@ -53,13 +53,14 @@
 (if (fboundp 'ido-goto-symbol)
     (global-set-key (kbd "C-x TAB") 'ido-goto-symbol))
 
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-A-s") 'isearch-forward)
-(global-set-key (kbd "C-A-r") 'isearch-backward)
+(bind-key "C-s" 'isearch-forward-regexp)
+(bind-key "C-r" 'isearch-backward-regexp)
+(bind-key "C-A-s" 'isearch-forward)
+(bind-key "C-A-r" 'isearch-backward)
 
-(global-set-key (kbd "C-c y y") 'bury-buffer)
-(global-set-key (kbd "C-c r") 'revert-buffer)
+(bind-key "C-c y y" 'bury-buffer)
+(bind-key "C-. y" 'bury-buffer)
+(bind-key "C-c r" 'revert-buffer)
 
 ;; (windmove-default-keybindings)
 

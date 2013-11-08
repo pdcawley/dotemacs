@@ -79,7 +79,7 @@ modes and set up a few key bindings
     (bind-key "<return>" 'newline-and-indent cperl-mode-map)
   
     (set (make-local-variable 'yas-fallback-behavior)
-         ('apply pdc/cperl-indent-or-complete . nil))
+         '(apply pdc/cperl-indent-or-complete . nil))
     (make-local-variable 'ac-completing-map)
     (unbind-key "<tab>" ac-completing-map)
     (bind-key "<tab>" 'yas-expand-from-trigger-key cperl-mode-map))

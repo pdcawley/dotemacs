@@ -20,7 +20,7 @@ See more at [[http://orgmode.org/workg][worg]], an dogfooded Org-mode wiki.
 :noweb-ref: nil
 :END:
 #+BEGIN_SRC emacs-lisp :noweb yes :tangle yes
-  (use-package org-mode
+  (use-package org
     <<org-setup>>)
 #+END_SRC
 

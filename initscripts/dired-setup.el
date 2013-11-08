@@ -27,6 +27,7 @@
 
         (bind-key "l" 'dired-up-directory dired-mode-map)
         (bind-key "H" 'dired-details-toggle dired-mode-map)
+        (bind-key "W" 'wdired-change-to-wdired-mode dired-mode-map)
 
         (defun my-dired-switch-window ()
           (interactive)
