@@ -50,3 +50,9 @@
 [submodule "elisp/external/artbollocks-mode"]
 	path = elisp/external/artbollocks-mode
 	url = https://github.com/sachac/artbollocks-mode.git
+[submodule "elisp/external/predictive"]
+	path = elisp/external/predictive
+	url = http://www.dr-qubit.org/git/predictive.git
+[submodule "elisp/external/structured-haskell-mode"]
+	path = elisp/external/structured-haskell-mode
+	url = git@github.com:chrisdone/structured-haskell-mode.git
