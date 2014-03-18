@@ -5,6 +5,6 @@ has ${1:attrib} => (
     traits => [qw(Getopt$2)],
     is => '${3:ro}',
     isa => ${4:Str},
-    cmd_aliases => [qw(${5:${1:$(pdc/dasherize text)}})],
+    cmd_aliases => [qw(${5:${1:$(pdc/dasherize yas-text)}})],
     ${6:required => 1,}$0
 );

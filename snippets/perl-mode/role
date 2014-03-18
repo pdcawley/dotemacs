@@ -3,6 +3,9 @@
 # --
 package ${1:`(pdc:path->perl-module (buffer-file-name))`};
 use Moose::Role;
+use v5.16;
+use common::sense;
+use namespace::sweep;
 
 $0
 

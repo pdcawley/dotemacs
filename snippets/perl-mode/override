@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: override
+# --
+override ${1:method} => sub {
+    my ($self${2:, ${3:@args}}) = @_;
+    $0
+};
