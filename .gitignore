@@ -30,10 +30,4 @@ cus-load.el
 autoloads.el
 cus-dirs.el
 projectile-bookmarks.eld
-/initscripts/cursor.el
-/initscripts/perl.el
-/initscripts/03yasnippet.el
-/initscripts/ido-setup.el
-/initscripts/07org.el
-/initscripts/writing.el
 esk-org-mode.el
