@@ -13,7 +13,7 @@
           ido-use-faces t
           ido-create-new-buffer 'always
           ido-use-filename-at-point 'guess)
-    (ido-mode 'buffer))
+    (ido-mode 'files))
   :config
   (progn
     (use-package ido-better-flex
@@ -27,7 +27,7 @@
     (use-package ido-vertical-mode
       :ensure t
       :config
-      (ido-vertical-mode))
+      (ido-vertical-mode t))
 
     (use-package ido-ubiquitous
       :ensure t
