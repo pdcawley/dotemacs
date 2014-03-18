@@ -1,6 +1,14 @@
 (require 'eieio)
 (use-package magit
-  :bind ("C-. g s" . magit-status))
+  :bind ("C-. g s" . magit-status)
+  :config
+  (progn
+    (defun pdc/bookmark-magit-status (bookmark)
+      "Run magit-status on the bookmarked file"
+      (interactive
+       (list (bookmark-completing-read "Status of bookmark"
+                                       (bmkp-default-bookmark-name))))
+      (magit-status (bookmark-prop-get bookmark 'filename)))))
 
 (use-package gist
   :init (setq gist-authenticate-function 'gist-oauth2-authentication)
@@ -16,14 +24,19 @@
     (use-package git-gutter-fringe+
       :config
       (git-gutter-fr+-minimal))
+
     (global-git-gutter+-mode 1)))
 
-(require 'vc-git)
-(defun pdc/bookmark-magit-status (bookmark)
-  "Run magit-status on the bookmarked file"
-  (interactive (list (bookmark-completing-read "Status of bookmark" (bmkp-default-bookmark-name))))
-  (magit-status (bookmark-prop-get bookmark 'filename)))
+(use-package vc-git
+  :init
+  (setq vc-git-diff-switches "-b")
+  :config
+  (progn
+    (defun vc-git-annotate-command (file buff &optional rev)
+      (let ((name (file-relative-name file)))
+        (vc-git-command buff 'async nil "blame" "-w" "--date-iso" "-C" "-C" rev "--" name)))))
 
-(defun vc-git-annotate-command (file buff &optional rev)
-  (let ((name (file-relative-name file)))
-    (vc-git-command buf 'async nil "blame" "-w" "--date-iso" "-C" "-C" rev "--" name)))
+
+
+
+
