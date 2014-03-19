@@ -29,7 +29,6 @@
 (require 'saveplace)
 (require 'ffap)
 
-
 (setq package-archives
       '(("gnu"       . "http://elpa.gnu.org/packages/")
         ("original"  . "http://tromey.com/elpa")
@@ -52,8 +51,6 @@
 (dolist (package pdc/required-packages)
   (unless (package-installed-p package)
     (package-install package)))
-
-(require 'use-package)
 
 (load (expand-file-name "load-path" (file-name-directory load-file-name)))
 
@@ -114,7 +111,10 @@
         (sk-load system-name)
         (sk-load user-login-name)
         (dolist (dir (list user-dir user-initscripts-directory))
-          (when (file-exists-p dir)
+          (when (and (file-exists-p dir)
+                     (not (equal (file-name-as-directory
+                                  (expand-file-name user-emacs-directory))
+                                 dir)))
             (add-to-list 'load-path dir)
             (mapc #'sk-load
                   (remove-duplicates
