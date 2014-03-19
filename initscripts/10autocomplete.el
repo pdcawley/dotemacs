@@ -10,6 +10,7 @@
   :config
   (progn
     (ac-set-trigger-key "TAB")
+    (ac-set-trigger-key "<tab>")
     (setq ac-use-menu-map t)
     (bind-key "C-s-?" 'ac-last-help)
     (unbind-key "C-s" ac-completing-map)))
