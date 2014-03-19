@@ -7,16 +7,23 @@ INIT_SOURCE = $(wildcard *.el)
 LIB_SOURCE = $(wildcard override/*.el) $(wildcard lib/*.el) \
 			 $(wildcard elisp/*.el) $(wildcard site-lisp/*.el) \
 			 $(wildcard initscripts/*.el) $(wildcard initscripts/external/*.el)
-TARGET = autoloads.elc $(patsubst %.el,%.elc, $(LIB_SOURCE))
+INIT_ORG_FILES = $(wildcard initscripts/*.org) \
+				 $(wildcard $(USER)/*.org)
+INIT_ORG_FILESO = $(INIT_ORG_FILES:.org=.el)
+
+TARGET = autoloads.elc $(patsubst %.el,%.elc, $(LIB_SOURCE) $(INIT_ORG_FILESO))
 EMACS = emacs
 EMACS_BATCH = $(EMACS) -Q -batch
-MY_LOADPATH = -L . $(patsubst %,-L %,$(DIRS)) --eval "(progn (require 'package) (package-initialize) (require 'use-package))" -l pdc-utils
+MY_LOADPATH = -L . $(patsubst %,-L %,$(DIRS)) -l pdc-utils
 BATCH_LOAD = $(EMACS_BATCH) $(MY_LOADPATH)
 
-all: $(SPECIAL) $(TARGET)
+all: el $(SPECIAL) $(TARGET)
 		for dir in $(DIRS); do \
 			$(BATCH_LOAD) -f batch-byte-recompile-directory $$dir; \
 		done
+
+el: $(INIT_ORG_FILES)
+		$(BATCH_LOAD) -l load-path --eval '(mapc (lambda (x) (org-babel-load-file (symbol-name x))) (quote ($(INIT_ORG_FILES))))'
 
 cus-dirs.el: Makefile $(LIB_SOURCE)
 		$(EMACS_BATCH) -l cus-dep -f custom-make-dependencies $(DIRS)
@@ -33,6 +40,9 @@ autoloads.elc: autoloads.el
 
 %.elc: %.el
 		$(BATCH_LOAD) -l load-path -f batch-byte-compile $<
+
+%.el: %.org
+		$(BATCH_LOAD) -l load-path -f batch-byte-compile
 
 init.elc: init.el
 		@rm -f $@
