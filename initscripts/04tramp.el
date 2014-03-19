@@ -26,7 +26,7 @@
     ("-o" "StrictHostKeyChecking=no")))
   (tramp-default-port 22)))
 
-(setq tramp-default-method "scpnox")
+;;(setq tramp-default-method "scpnox")
 (setq tramp-backup-directory-alist backup-directory-alist)
 
 (use-package tramp
@@ -34,7 +34,9 @@
   (progn
     (setq tramp-auto-save-directory "~/.tramp-autosaves"
           tramp-encoding-shell "/bin/bash"
-          tramp-remote-path '(tramp-default-remote-path
+          tramp-use-ssh-controlmaster-options nil
+          tramp-remote-path '("/home/staff/pdc/bin"
+                              tramp-default-remote-path
                               tramp-own-remote-path)
           tramp-sh-extra-args '(("/bash\\'" . "-norc -noprofile")
                                 ("/zsh\\'"  . "-d -f")))))
