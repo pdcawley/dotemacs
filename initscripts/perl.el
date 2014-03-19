@@ -1,19 +1,17 @@
 (use-package cperl-mode
   :mode
-  (("\\.t\\'" . perl-mode)
+  (("\\.t\\'"     . perl-mode)
    ("cpanfile\\'" . perl-mode))
   :init
   (progn
+    (require 's)
+
     (setq cperl-sub-keywords (list "sub" "method" "class" "role" "fun")
           cperl-sub-regexp (regexp-opt cperl-sub-keywords))
 
     (defun pdc:path->perl-module (path)
       (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
-          (let ((module
-                 (match-string 1 path)))
-            (while (string-match "/" module)
-              (setq module (replace-match "::" nil nil module)))
-            module)
+          (s-replace "/" "::" match-string 1 path)
         nil))
 
     (defun pdc/package-type ()
@@ -84,25 +82,25 @@ Returns one of the following symbols `moose-role' `moose-class' `module'
             (backward-char cperl-continued-statement-offset))))
 
     (defun pdc/indent-cperl-indentable (i parse-data)
-      (cond            ;;; [indentable terminator start-pos is-block]
-       ((eq 'terminator (elt i 1)) ; Lone terminator of "indentable string"
-        (goto-char (elt i 3))   ; prev line
+      (cond ;;; [indentable terminator start-pos is-block]
+       ((eq 'terminator (elt i 1))    ; Lone terminator of "indentable string"
+        (goto-char (elt i 3))         ; prev line
         (current-indentation))
-       ((eq 'first-line (elt i 1)); [indentable first-line start-pos]
+       ((eq 'first-line (elt i 1))      ; [indentable first-line start-pos]
         (goto-char (elt i 2))
         (+ cperl-continued-statement-offset
            (current-indentation)))
-       ((eq 'cont-line (elt i 1)); [indentable cont-line pos prev-pos first-char start-pos]
+       ((eq 'cont-line (elt i 1)) ; [indentable cont-line pos prev-pos first-char start-pos]
         ;; Indent as the level after closing parens
-        (goto-char (elt i 2))   ; indent line
-        (skip-chars-forward " \t)") ; Skip closing parens
+        (goto-char (elt i 2))           ; indent line
+        (skip-chars-forward " \t)")     ; Skip closing parens
         (setq p (point))
-        (goto-char (elt i 3))   ; previous line
-        (skip-chars-forward " \t)") ; Skip closing parens
+        (goto-char (elt i 3))           ; previous line
+        (skip-chars-forward " \t)")     ; Skip closing parens
         ;; Number of parens in between:
         (setq p (nth 0 (parse-partial-sexp (point) p))
-              what (elt i 4))   ; First char on current line
-        (goto-char (elt i 3))   ; previous line
+              what (elt i 4))           ; First char on current line
+        (goto-char (elt i 3))           ; previous line
         (+ (* p (or cperl-regexp-indent-step cperl-indent-level))
            (cond ((eq what ?\) )
                   (- cperl-close-paren-offset)) ; compensate
@@ -116,7 +114,7 @@ Returns one of the following symbols `moose-role' `moose-class' `module'
        (t
         (error "Unrecognized value of indent: %s" i)))
 
-    (pushnew '(indentable pdc/indent-cperl-indentable)
-             cperl-indent-rules-alist))))
+      (pushnew '(indentable pdc/indent-cperl-indentable)
+               cperl-indent-rules-alist))))
 
 
