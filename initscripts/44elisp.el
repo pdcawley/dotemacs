@@ -90,20 +90,6 @@
                              'highlight-cl-add-font-lock-keywords)))
                 lisp-mode-hooks))
 
-        (defun my-elisp-indent-or-complete (&optional arg)
-          (interactive "p")
-          (call-interactively 'lisp-indent-line)
-          (unless (or (looking-back "^\\s-*")
-                      (bolp)
-                      (not (looking-back "[-A-Z-a-z0-9_*+/=<>!?]+")))
-            (call-interactively 'lisp-complete-symbol)))
-
-        (defun my-lisp-indent-or-complete (optional arg)
-          (interactive "p")
-          (if (or (looking-back "^\\s-*") (bolp))
-              (call-interactively 'lisp-indent-line)
-            (call-interactively 'slime-indent-and-complete-symbol)))
-
         (defun my-byte-recompile-file ()
           (save-excursion
             (byte-recompile-file buffer-file-name)))
@@ -147,10 +133,9 @@
                 '(emacs-lisp-mode inferior-emacs-lisp-mode ielm-mode))
           (progn
             (bind-key "<M-return>" 'outline-insert-heading emacs-lisp-mode-map)
-            (bind-key "<tab>" 'my-elisp-indent-or-complete emacs-lisp-mode-map))
+          )
         ;; (turn-on-cldoc-mode)
 
-        (bind-key "<tab>" 'my-lisp-indent-or-complete lisp-mode-map)
         (bind-key "M-q" 'slime-reindent-defun lisp-mode-map)
         (bind-key "M-l" 'slime-selector lisp-mode-map))
 
@@ -228,7 +213,7 @@
   :diminish paredit-mode
   :config
   (progn
-    (use-package paredit-ext)
+    ;; (use-package paredit-ext)
 
     (bind-key "C-M-l" 'paredit-recentre-on-sexp paredit-mode-map)
 
