@@ -1,6 +1,3 @@
-[submodule "gnus"]
-	path = gnus
-	url = https://github.com/emacsmirror/gnus.git
 [submodule "elisp/external/deft"]
 	path = elisp/external/deft
 	url = git://jblevins.org/git/deft.git
