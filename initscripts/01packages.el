@@ -16,9 +16,9 @@
     log4j-mode logito
     markdown-mode mediawiki mo-git-blame
     magit
-    multi-term nav nterm nzenburn-theme org org-journal org-magit 
+    multi-term nav nterm nzenburn-theme org org-journal org-magit
     paredit pastebin pcache pcmpl-args perlbrew persistent-soft
-    project projectile
+    project
     s
     scss-mode string-utils tt-mode typing ucs-utils
     undo-tree unicode-enbox

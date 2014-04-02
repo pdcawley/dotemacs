@@ -11,7 +11,7 @@
 
     (defun pdc:path->perl-module (path)
       (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
-          (s-replace "/" "::" match-string 1 path)
+          (s-replace "/" "::" (match-string 1 path))
         nil))
 
     (defun pdc/package-type ()

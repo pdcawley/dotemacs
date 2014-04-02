@@ -5,11 +5,15 @@
 (setq mc/cmds-to-run-for-all
       '(
         backward-sexp
+        c-electric-colon
         c-electric-delete-forward
         c-electric-paren
         c-electric-semi&comma
         c-electric-star
         cperl-electric-backspace
+        cperl-electric-brace
+        cperl-electric-lbrace
+        cperl-electric-paren
         cperl-electric-rparen
         cperl-electric-semi
         cperl-electric-terminator
@@ -17,14 +21,20 @@
         delete-horizontal-space
         fastnav-jump-to-char-forward
         forward-sexp
+        insert-register
         isearch-abort
+        isearch-printing-char
         kill-sexp
         match-paren
         nxml-electric-slash
         paredit-backward-barf-sexp
+        paredit-doublequote
         paredit-forward
         paredit-forward-delete
         paredit-forward-kill-word
+        paredit-meta-doublequote
+        paredit-wrap-round
+        smarter-move-beginning-of-line
         tempo-x-space
         transpose-sexps
         yas-expand
@@ -34,4 +44,5 @@
       '(
         describe-key
         isearch-forward-regexp
+        kmacro-end-or-call-macro
         ))

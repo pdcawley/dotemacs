@@ -31,3 +31,5 @@ autoloads.el
 cus-dirs.el
 projectile-bookmarks.eld
 esk-org-mode.el
+/games
+/var

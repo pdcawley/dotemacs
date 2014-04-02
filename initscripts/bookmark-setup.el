@@ -5,7 +5,7 @@
 
     (defun my-bookmark-set ()
       (interactive)
-      (flet ((bmkp-completing-read-lax
+      (cl-flet ((bmkp-completing-read-lax
               (prompt &optional default alist pred hist)
               (completing-read prompt alist pred ni nil hist default)))
         (call-interactively #'bookmark-set)))

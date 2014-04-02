@@ -446,3 +446,5 @@
 (bind-key "D F" 'describe-face help-map)
 (bind-key "D b" 'describe-bindings help-map)
 
+(bind-key "C-. P l" 'package-list-packages)
+(bind-key "C-. I" 'toggle-input-method)

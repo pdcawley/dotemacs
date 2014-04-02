@@ -36,17 +36,22 @@
 ;; Steve Yegge tips
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
+  (interactive "FNew name: ")
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)
       (if (get-buffer new-name)
           (message "A buffer named '%s' already exists!" new-name)
-        (progn   (rename-file name new-name 1)
-                 (rename-buffer new-name)
-                 (set-visited-file-name new-name)
-                 (set-buffer-modified-p nil))))))
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t   (rename-file name new-name 1)
+              (rename-buffer new-name)
+              (set-visited-file-name new-name)
+              (set-buffer-modified-p nil)))))))
+
+(bind-key "C-c R" 'rename-file-and-buffer)
+
 ;;
 ;; Never understood why Emacs doesn't have this function, either.
 ;;
@@ -333,17 +338,109 @@ Helper method for 'yank' advice"
   :init
   (pwp-mode 1))
 
-(use-package projectile
-  :ensure t
-  :diminish projectile-mode
-  :init
-  (projectile-global-mode)
-  :config
-  (progn
-    (defadvice projectile-project-root (after projectile-project-root-has-final-slash activate)
-      (setq ad-return-value (replace-regexp-in-string "/?$" "/" ad-return-value)))))
+
 
 
 (use-package ace-jump-mode
   :ensure t
   :bind ("C-c SPC" . ace-jump-mode))
+
+(defun bmi (weight height)
+  (let ((pounds (* 1.0 (if (listp weight)
+                           (+ (* 14 (car weight)) (cadr weight))
+                         weight)))
+        (inches (* 1.0 (if (listp height)
+                          (+ (* 12 (car height)) (cadr height))
+                        height))))
+    (* 703.00 (/ pounds (* inches inches)))))
+
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (pp (eval (read (current-kill 0)))
+          (current-buffer))
+    (error (message "Invalid expression")
+           (insert (current-kill 0)))))
+
+(bind-key "C-c e R" 'eval-and-replace)
+
+(defun smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at its beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(defun smart-open-line ()
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode."
+  (interactive)
+  (move-end-of-line nil)
+  (newline-and-indent))
+
+(bind-key "S-<return>" 'smart-open-line)
+(bind-key "M-o" 'smart-open-line)
+(bind-key "M-O" 'smart-open-line-above)
+
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of hte line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If point
+reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
+
+(defun start-or-switch-to (function buffer-name)
+  "Invoke FUNCTION if there is no buffer with BUFFER-NAME.
+Otherwise switch to the buffer named BUFFER-NAME. Don't clobber
+the current buffer."
+  (if (not (get-buffer buffer-name))
+      (progn
+        (split-window-sensibly (selected-window))
+        (other-window 1)
+        (funcall function))
+    (switch-to-buffer-other-window buffer-name)))
+
+
+(defun visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (start-or-switch-to (lambda ()
+                        'ansi-term (getenv "SHELL"))
+                      "*ansi-term*"))
+
+
+(defun visit-ielm ()
+  "Switch to default `ielm' buffer.
+Start `ielm' if it's not already running"
+  (interactiqve)
+  (start-or-switch-to 'ielm "*ielm*"))
+
+
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))

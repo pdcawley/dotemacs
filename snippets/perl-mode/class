@@ -2,8 +2,11 @@
 # name: class
 # --
 package ${1:`(pdc:path->perl-module (buffer-file-name))`};
+
 use Moose;
 use autodie;
+use namespace::sweep;
+use common::sense;
 
 $0
 

@@ -1,5 +1,7 @@
 ;;; load-path.el
 
+(setq pdc/load-path-before load-path)
+
 (defconst user-data-directory
   (expand-file-name "data/" user-emacs-directory))
 (defconst user-lisp-directory
@@ -29,10 +31,10 @@
     (if (cadr entry)
         (add-to-load-path (car entry) dir))))
 
+
 (mapc #'add-to-load-path
       (nreverse
        (list
-        user-emacs-directory
 
         "ruby/"
         "misc/"
@@ -47,12 +49,18 @@
         "/usr/local/share/emacs/site-lisp"
         "/usr/local/opt/git/share/git-core/contrib/emacs/")))
 
-(let ((cl-p load-path))
-  (while cl-p
-    (setcar cl-p (file-name-as-directory
-                  (expand-file-name (car cl-p))))
-    (setq cl-p (cdr cl-p))))
+(require 'package)
+(package-initialize)
+(require 'ert)
+(require 'use-package)
 
-(setq load-path (delete-dups load-path))
+(setq load-path
+      (delete-dups
+       (delete
+	(file-name-as-directory (expand-file-name user-emacs-directory))
+	(mapcar (lambda (dir)
+		  (file-name-as-directory
+		   (expand-file-name dir)))
+		load-path))))
 
 ()

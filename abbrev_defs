@@ -554,7 +554,7 @@
     ("howerver" "however" nil 0)
     ("hsa" "has" nil 0)
     ("hsi" "his" nil 0)
-    ("hte" "the" nil 0)
+    ("hte" "the" nil 1)
     ("htere" "there" nil 0)
     ("htese" "these" nil 0)
     ("htey" "they" nil 0)
@@ -888,7 +888,7 @@
     ("stopry" "story" nil 0)
     ("stoyr" "story" nil 0)
     ("stpo" "stop" nil 0)
-    ("strentgh" "strength" nil 0)
+    ("strentgh" "strength" nil 1)
     ("stroy" "story" nil 0)
     ("struggel" "struggle" nil 0)
     ("strugle" "struggle" nil 0)
@@ -975,7 +975,7 @@
     ("udnerstand" "understand" nil 0)
     ("understnad" "understand" nil 0)
     ("undert he" "under the" nil 0)
-    ("unicode" "Unicode" nil 0)
+    ("unicode" "Unicode" nil 8)
     ("unitedstates" "United States" nil 0)
     ("unliek" "unlike" nil 0)
     ("unpleasently" "unpleasantly" nil 0)
@@ -988,7 +988,7 @@
     ("virtualyl" "virtually" nil 0)
     ("vrey" "very" nil 0)
     ("vulnerible" "vulnerable" nil 0)
-    ("waht" "what" nil 0)
+    ("waht" "what" nil 1)
     ("warrent" "warrant" nil 0)
     ("wasnt" "wasn't" nil 0)
     ("watn" "want" nil 0)
@@ -1006,7 +1006,7 @@
     ("wief" "wife" nil 0)
     ("wierd" "weird" nil 0)
     ("wihch" "which" nil 0)
-    ("wiht" "with" nil 0)
+    ("wiht" "with" nil 1)
     ("willbe" "will be" nil 0)
     ("windoes" "windows" nil 0)
     ("witha" "with a" nil 0)
@@ -1086,6 +1086,8 @@
 
 (define-abbrev-table 'magit-mode-abbrev-table '())
 
+(define-abbrev-table 'magit-process-mode-abbrev-table '())
+
 (define-abbrev-table 'magit-reflog-mode-abbrev-table '())
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
@@ -1138,10 +1140,7 @@
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'prog-mode-abbrev-table
-  '(
-    ("i" nil nil 0)
-   ))
+(define-abbrev-table 'prog-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
@@ -1177,7 +1176,7 @@
 
 (define-abbrev-table 'text-mode-abbrev-table
   '(
-    ("i" "I" nil 0)
+    ("i" "I" nil 5)
    ))
 
 (define-abbrev-table 'tree-mode-abbrev-table '())

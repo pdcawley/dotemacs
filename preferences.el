@@ -60,6 +60,7 @@
  '(delete-selection-mode nil nil (delsel))
  '(dictionary-default-popup-strategy "soundex")
  '(diff-switches "-u")
+ '(dired-use-ls-dired nil)
  '(display-buffer-reuse-frames nil)
  '(ecb-options-version "2.33beta1")
  '(enable-recursive-minibuffers t)
@@ -75,16 +76,7 @@
  '(global-auto-revert-mode t)
  '(global-mark-ring-max 60)
  '(global-whitespace-mode nil)
- '(gnus-select-method
-   (quote
-    (nnimap "thermeon"
-            (nnimap-server-port 993)
-            (nnimap-authenticator
-             (quote login))
-            (nnimap-expunge-on-close never)
-            (nnimap-stream ssl)
-            (nnimap-address "eu-mail.car-rental-world.com")
-            (nnimap-user "pdc"))))
+ '(gnus-novice-user nil)
  '(grep-command "grep -n -e")
  '(haskell-program-name "ghci")
  '(hippie-expand-try-functions-list
@@ -102,20 +94,6 @@
  '(ispell-program-name "/usr/local/bin/aspell")
  '(ispell-silently-savep t)
  '(iswitchb-default-method (quote samewindow))
- '(jabber-account-list
-   (quote
-    (("piers.cawley@headforwards.com"
-      (:network-server . "xmpp.atlasit.com")))))
- '(jabber-alert-info-message-hooks (quote (jabber-info-display)))
- '(jabber-message-alert-same-buffer nil)
- '(jabber-mode-line-mode t)
- '(jabber-muc-autojoin
-   (quote
-    ("ntteodevroom@conference.atlasit.com" "ehportal@conference.atlasit.com")))
- '(jabber-muc-default-nicknames
-   (quote
-    (("ntteodevroom@conference.atlasit.com" . "Piers Cawley")
-     ("ehportal@conference.atlasit.com" . "Piers Cawley"))))
  '(javascript-indent-level 2)
  '(js2-auto-indent-flag nil)
  '(js2-indent-on-enter-key nil)
@@ -128,10 +106,12 @@
  '(mac-key-mode t)
  '(mac-key-mode-hook nil)
  '(mac-wheel-button-is-mouse-2 t t)
- '(magit-emacsclient-executable "emacsclient")
  '(magit-git-executable "/u/virtual/pdc/bin/git")
- '(magit-gitk-executable "gitk")
  '(max-specpdl-size 10000)
+ '(mediawiki-site-alist
+   (quote
+    (("Wikipedia" "http://en.wikipedia.org/w/" "username" "password" "Main Page")
+     ("ThermeonWiki" "https://wiki.thermeon.eu/" "" "" ""))))
  '(message-send-mail-function (quote smtpmail-send-it))
  '(minibuffer-eldef-shorten-default t)
  '(mode-line-position
@@ -208,36 +188,42 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(ns-alternate-modifier (quote meta))
  '(ns-command-modifier (quote super))
  '(ns-function-modifier (quote alt))
+ '(ns-pop-up-frames nil)
  '(ns-right-alternate-modifier (quote alt))
  '(ns-use-native-fullscreen nil)
  '(ns-use-qd-smoothing nil)
  '(ns-use-system-highlight-color nil t)
  '(nxml-bind-meta-tab-to-complete-flag t)
  '(nxml-slash-auto-complete-flag t)
- '(org-agenda-files
+'(org-agenda-files
 (quote
  ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
+ '(org-default-notes-file "codex.org")
+ '(org-directory "~/Dropbox/org")
+ '(org-html-doctype "html5")
+ '(org-html-html5-fancy t)
+ '(org-html-indent nil)
  '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
- '(org-modules
+'(org-modules
 (quote
- (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-eshell org-jsinfo org-habit org-inlinetask org-irc org-mac-message org-mew org-mhe org-protocol org-rmail org-vm org-wl org-w3m org-mouse org-mac-iCal org-timer)))
+ (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-eshell org-habit org-inlinetask org-irc org-mhe org-protocol org-rmail org-w3m org-mouse org-mac-iCal org-timer)))
  '(org-protocol-default-template-key "w")
  '(org-startup-indented t)
  '(org-timer-default-timer 25)
- '(org-todo-keywords
+'(org-todo-keywords
 (quote
  ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
   (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
   (sequence "OPEN(O)" "|" "CLOSED(C)"))))
  '(overflow-newline-into-fringe t)
  '(pc-selection-mode nil)
- '(pdc/mc-cmds
+'(pdc/mc-cmds
 (quote
  (forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace cperl-electric-lbrace cperl-electric-backspace cperl-electric-paren cperl-electric-rparen)))
  '(rails-always-use-text-menus t)
  '(read-mail-command (quote gnus))
  '(require-final-newline t)
- '(safe-local-variable-values
+'(safe-local-variable-values
 (quote
  ((magit-git-executable . "/home/staff/pdc/git/bin/git")
   (cperl-close-paren-offset . -1)
@@ -271,15 +257,14 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(temp-buffer-resize-mode nil)
  '(text-mode-hook (quote (text-mode-hook-identify pdc/turn-on-abbrev-mode)))
  '(tls-checktrust (quote ask))
- '(tls-program
+'(tls-program
 (quote
  ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
  '(tool-bar-mode nil)
+ '(tramp-verbose 4)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-ignore-buffers-re "^\\*")
  '(uniquify-separator ":")
- '(vc-git-diff-switches "-b")
- '(vc-git-program "/u/virtual/pdc/bin/git")
  '(visible-bell nil)
  '(visual-scroll-margin nil)
  '(w3m-command "/opt/local/bin/w3m")

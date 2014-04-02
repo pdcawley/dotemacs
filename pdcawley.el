@@ -1,4 +1,4 @@
-(when (memq window-system '(mac-ns))
+(when (memq window-system '(mac-ns ns))
   (use-package exec-path-from-shell
     :ensure t
     :config
@@ -31,6 +31,14 @@ If no argument and at end of line, the previous two chars are exchanged."
 (defun pdc/enable-commands (cmds)
   (dolist (cmd cmds)
     (put cmd 'disabled nil)))
+
+(defun show-messages ()
+  "Show the messages buffer"
+  (interactive)
+  (switch-to-buffer "*Messages*"))
+
+(bind-key "C-h M" 'show-messages)
+
 
 (pdc/enable-commands
  '(downcase-region erase-buffer eval-expression
