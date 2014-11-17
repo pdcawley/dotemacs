@@ -9,6 +9,7 @@
         c-electric-delete-forward
         c-electric-paren
         c-electric-semi&comma
+        c-electric-slash
         c-electric-star
         cperl-electric-backspace
         cperl-electric-brace
@@ -27,14 +28,19 @@
         kill-sexp
         match-paren
         nxml-electric-slash
+        paredit-backslash
         paredit-backward-barf-sexp
+        paredit-close-round-and-newline
         paredit-doublequote
         paredit-forward
         paredit-forward-delete
         paredit-forward-kill-word
         paredit-meta-doublequote
+        paredit-open-round
         paredit-wrap-round
+        pp-eval-last-sexp
         smarter-move-beginning-of-line
+        smex
         tempo-x-space
         transpose-sexps
         yas-expand
@@ -45,4 +51,6 @@
         describe-key
         isearch-forward-regexp
         kmacro-end-or-call-macro
+        reindent-then-newline-and-indent
+        smart-open-line-above
         ))

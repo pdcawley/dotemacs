@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: prob
+# key: prob
+# --
+(if (< (random) ${1:prob})
+    $0)

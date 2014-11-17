@@ -724,6 +724,9 @@
  '(which-func ((t (:foreground "#bfebbf"))))
  '(yascroll:thumb-text-area ((t (:background "#2b2b2b"))))
  '(yascroll:thumb-fringe ((t (:background "#2b2b2b" :foreground "#2b2b2b"))))
+ '(ediff-current-diff-A ((t (:background "#2f2525"))))
+ '(ediff-current-diff-B ((t (:background "#2e3330"))))
+ '(ediff-current-diff-C ((t (:inherit zenburn-highlight-subtle))))
  `(default ((t (:foreground ,zenburn-fg :background ,zenburn-bg)))))
 
 (provide-theme 'pdc-zenburn)

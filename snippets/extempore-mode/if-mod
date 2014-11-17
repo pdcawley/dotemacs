@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: if-mod
+# key: im
+# --
+(if (${1:=} (modulo beat ${2:1}) ${3:0})$0)

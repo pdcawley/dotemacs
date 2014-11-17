@@ -1,6 +1,7 @@
 (require 'eieio)
 (use-package magit
-  :bind ("C-. g s" . magit-status)
+  :bind (("M-," . pdc/vc-status)
+         ("C-. g s" . magit-status))
   :config
   (progn
     (defun pdc/bookmark-magit-status (bookmark)
@@ -8,7 +9,19 @@
       (interactive
        (list (bookmark-completing-read "Status of bookmark"
                                        (bmkp-default-bookmark-name))))
-      (magit-status (bookmark-prop-get bookmark 'filename)))))
+      (magit-status (bookmark-prop-get bookmark 'filename)))
+    (defun pdc/vc-status ()
+      (interactive)
+      (cond ((magit-get-top-dir default-directory)
+             (call-interactively 'magit-status))
+            (t
+             (call-interactively 'dired))))
+    (use-package magit-gitflow
+      :ensure magit-gitflow
+      :config
+      (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))))
+
+
 
 (use-package gist
   :init (setq gist-authenticate-function 'gist-oauth2-authentication)

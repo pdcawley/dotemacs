@@ -4,9 +4,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ack-and-a-half-arguments (quote ("--nopager")))
- '(ack-and-a-half-executable "/u/virtual/pdc/bin/ack" t)
+ '(ack-and-a-half-executable "/u/virtual/pdc/bin/ack")
  '(ack-and-a-half-prompt-for-directory t)
  '(ack-prompt-for-directory t)
+ '(ansi-color-names-vector
+   ["#3f3f3f" "#cc9393" "#7f9f7f" "#f0dfaf" "#8cd0d3" "#dc8cc3" "#93e0e3" "#dcdccc"])
  '(auto-save-interval 300)
  '(bitly-access-token "7148af4682ed05084192d937d9e9ada306a316bd")
  '(blink-cursor-mode nil)
@@ -46,7 +48,7 @@
  '(custom-enabled-themes (quote (pdc-zenburn)))
  '(custom-safe-themes
    (quote
-    ("35290fcff26737b6f0d7674deebc6701e43f2e281ce73a235c9d08e9630a4a5c" "8fc9387bf6302020929ba8f8524cd92d6825bfb2e76f09a19fe59f6cc435b773" "66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
+    ("0261d8aca24a5b0e1f9138c49c758a9c7215b60736c7f51b130f81d7aed03884" "35290fcff26737b6f0d7674deebc6701e43f2e281ce73a235c9d08e9630a4a5c" "8fc9387bf6302020929ba8f8524cd92d6825bfb2e76f09a19fe59f6cc435b773" "66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -57,7 +59,7 @@
       (cursor-color . "#dcdccc"))))
  '(default-input-method nil)
  '(default-mime-charset (quote utf-8))
- '(delete-selection-mode nil nil (delsel))
+ '(delete-selection-mode t nil (delsel))
  '(dictionary-default-popup-strategy "soundex")
  '(diff-switches "-u")
  '(dired-use-ls-dired nil)
@@ -66,6 +68,7 @@
  '(enable-recursive-minibuffers t)
  '(enable-remote-dir-locals t)
  '(ewd-kp-usage (quote num))
+ '(fci-rule-color "#383838")
  '(fill-column 78)
  '(font-lock-support-mode (quote jit-lock-mode))
  '(footnote-section-tag-regexp "Footnotes\\(\\[.\\]\\)?: *")
@@ -76,6 +79,7 @@
  '(global-auto-revert-mode t)
  '(global-mark-ring-max 60)
  '(global-whitespace-mode nil)
+ '(gnus-default-nntp-server "news.merula.co.uk")
  '(gnus-novice-user nil)
  '(grep-command "grep -n -e")
  '(haskell-program-name "ghci")
@@ -88,7 +92,7 @@
  '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote right))
  '(indicate-empty-lines t)
- '(inferior-lisp-program "/usr/local/bin/openmcl -K utf-8")
+ '(inferior-lisp-program "/usr/local/bin/openmcl -K utf-8" t)
  '(initial-major-mode (quote lisp-interaction-mode))
  '(ispell-extra-args (quote ("--sug-mode=ultra")))
  '(ispell-program-name "/usr/local/bin/aspell")
@@ -114,73 +118,6 @@
      ("ThermeonWiki" "https://wiki.thermeon.eu/" "" "" ""))))
  '(message-send-mail-function (quote smtpmail-send-it))
  '(minibuffer-eldef-shorten-default t)
- '(mode-line-position
-   (quote
-    ((line-number-mode
-      ((column-number-mode
-        (10
-         #("(%03l,%03c)" 0 9
-           (help-echo "Line number and Column number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
-(keymap
- (mode-line keymap
-            (down-mouse-1 keymap
-                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                              (:toggle . column-number-mode))
-                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                            (:toggle . line-number-mode))
-                          "Toggle Line and Column Number Display"))))))
-        (6
-         #(" L%l" 0 4
-           (help-echo "Line Number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
-(keymap
- (mode-line keymap
-            (down-mouse-1 keymap
-                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                              (:toggle . column-number-mode))
-                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                            (:toggle . line-number-mode))
-                          "Toggle Line and Column Number Display"))))))))
-      ((column-number-mode
-        (5
-         #(" C%c" 0 4
-           (help-echo "Column number
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
-(keymap
- (mode-line keymap
-            (down-mouse-1 keymap
-                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                              (:toggle . column-number-mode))
-                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                            (:toggle . line-number-mode))
-                          "Toggle Line and Column Number Display")))))))))
-     "["
-     (-3
-      #("%p" 0 2
-        (help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
-(keymap
- (mode-line keymap
-            (down-mouse-1 keymap
-                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                              (:toggle . column-number-mode))
-                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                            (:toggle . line-number-mode))
-                          "Toggle Line and Column Number Display"))))))
-     (size-indication-mode
-      #("/%I" 0 3
-        (help-echo "Size indication mode
-mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local-map
-(keymap
- (mode-line keymap
-            (down-mouse-1 keymap
-                          (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-                                              (:toggle . column-number-mode))
-                          (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-                                            (:toggle . line-number-mode))
-                          "Toggle Line and Column Number Display"))))))
-     "]")) t)
  '(mode-require-final-newline (quote visit-save))
  '(mouse-region-delete-keys (quote ([delete] [deletechar] [backspace])))
  '(next-line-add-newlines nil)
@@ -195,56 +132,55 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(ns-use-system-highlight-color nil t)
  '(nxml-bind-meta-tab-to-complete-flag t)
  '(nxml-slash-auto-complete-flag t)
-'(org-agenda-files
-(quote
- ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
+ '(org-agenda-files
+   (quote
+    ("~/Dropbox/org/codex.org" "~/Dropbox/org/blog.org" "~/Dropbox/org/todo.org" "~/Dropbox/org/technology.org" "~/Dropbox/org/journal.org")))
  '(org-default-notes-file "codex.org")
  '(org-directory "~/Dropbox/org")
  '(org-html-doctype "html5")
  '(org-html-html5-fancy t)
  '(org-html-indent nil)
  '(org-mobile-inbox-for-pull "~/Dropbox/org/from-mobile.org")
-'(org-modules
-(quote
- (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-eshell org-habit org-inlinetask org-irc org-mhe org-protocol org-rmail org-w3m org-mouse org-mac-iCal org-timer)))
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-id org-info org-protocol org-eshell org-habit org-inlinetask org-irc org-mhe org-protocol org-rmail org-w3m org-mouse org-mac-iCal org-timer)))
  '(org-protocol-default-template-key "w")
  '(org-startup-indented t)
  '(org-timer-default-timer 25)
-'(org-todo-keywords
-(quote
- ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
-  (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
-  (sequence "OPEN(O)" "|" "CLOSED(C)"))))
+ '(org-todo-keywords
+   (quote
+    ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)" "WONTFIX(W@/!)")
+     (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
+     (sequence "OPEN(O)" "|" "CLOSED(C)"))))
  '(overflow-newline-into-fringe t)
  '(pc-selection-mode nil)
-'(pdc/mc-cmds
-(quote
- (forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace cperl-electric-lbrace cperl-electric-backspace cperl-electric-paren cperl-electric-rparen)))
+ '(pdc/mc-cmds
+   (quote
+    (forward-sexp backward-sexp cperl-electric-semi cperl-electric-brace cperl-electric-lbrace cperl-electric-backspace cperl-electric-paren cperl-electric-rparen)))
  '(rails-always-use-text-menus t)
  '(read-mail-command (quote gnus))
  '(require-final-newline t)
-'(safe-local-variable-values
-(quote
- ((magit-git-executable . "/home/staff/pdc/git/bin/git")
-  (cperl-close-paren-offset . -1)
-  (cperl-brace-imaginary-offset . 0)
-  (cperl-tab-always-indent . t)
-  (cperl-indent-parens-as-block . t)
-  (cperl-fix-hanging-brace-when-indent)
-  (cperl-close-paren-offset . 0)
-  (cperl-brace-imaginary-offset . 4)
-  (cperl-auto-newline)
-  (ack-and-a-half-executable . "/home/staff/pdc/bin/ack")
-  (ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
-  (ffap-perl-module-path mapcar
-                         (function expand-path)
-                         ("lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))
-  (ffap-perl-module-path "lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))))
+ '(safe-local-variable-values
+   (quote
+    ((magit-git-executable . "/home/staff/pdc/git/bin/git")
+     (cperl-close-paren-offset . -1)
+     (cperl-brace-imaginary-offset . 0)
+     (cperl-tab-always-indent . t)
+     (cperl-indent-parens-as-block . t)
+     (cperl-fix-hanging-brace-when-indent)
+     (cperl-close-paren-offset . 0)
+     (cperl-brace-imaginary-offset . 4)
+     (cperl-auto-newline)
+     (ack-and-a-half-executable . "/home/staff/pdc/bin/ack")
+     (ffap-perl-module-path "/scpc:grebe:/home/piers.cawley/Projects/nexus/lib/perl" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/nboss-customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/customer-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/partner-portal" "/scpc:grebe:/home/piers.cawley/Projects/nexus/gui/sir")
+     (ffap-perl-module-path mapcar
+                            (function expand-path)
+                            ("lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))
+     (ffap-perl-module-path "lib/perl" "gui/nboss-customer-portal" "gui/customer-portal" "gui/partner-portal" "gui/sir"))))
  '(scroll-conservatively 0)
  '(scroll-preserve-screen-position t)
  '(scroll-step 0)
  '(server-mode t)
- '(server-use-tcp nil)
  '(shell-prompt-pattern "^[^$>
 ]*[#$%>] *\\([[0-9;]*[a-zA-Z] *\\)*")
  '(show-paren-style (quote parenthesis))
@@ -257,21 +193,81 @@ mouse-1: Display Line and Column Mode Menu" mouse-face mode-line-highlight local
  '(temp-buffer-resize-mode nil)
  '(text-mode-hook (quote (text-mode-hook-identify pdc/turn-on-abbrev-mode)))
  '(tls-checktrust (quote ask))
-'(tls-program
-(quote
- ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
+ '(tls-program
+   (quote
+    ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
  '(tool-bar-mode nil)
  '(tramp-verbose 4)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-ignore-buffers-re "^\\*")
  '(uniquify-separator ":")
+ '(vc-annotate-background "#2b2b2b")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#bc8383")
+     (40 . "#cc9393")
+     (60 . "#dfaf8f")
+     (80 . "#d0bf8f")
+     (100 . "#e0cf9f")
+     (120 . "#f0dfaf")
+     (140 . "#5f7f5f")
+     (160 . "#7f9f7f")
+     (180 . "#8fb28f")
+     (200 . "#9fc59f")
+     (220 . "#afd8af")
+     (240 . "#bfebbf")
+     (260 . "#93e0e3")
+     (280 . "#6ca0a3")
+     (300 . "#7cb8bb")
+     (320 . "#8cd0d3")
+     (340 . "#94bff3")
+     (360 . "#dc8cc3"))))
+ '(vc-annotate-very-old-color "#dc8cc3")
  '(visible-bell nil)
  '(visual-scroll-margin nil)
  '(w3m-command "/opt/local/bin/w3m")
  '(w3m-use-cookies t)
  '(wdired-allow-to-change-permissions (quote advanced))
+ '(wg-mode-line-on nil)
+ '(whitespace-action (quote (auto-cleanup)))
+ '(whitespace-line-column nil)
  '(whitespace-style (quote (tabs trailing space-before-tab)))
- '(woman-use-own-frame nil))
+ '(woman-use-own-frame nil)
+ '(zenburn-bg "#3f3f3f" t)
+ '(zenburn-bg+1 "#4f4f4f" t)
+ '(zenburn-bg+2 "#5f5f5f" t)
+ '(zenburn-bg+3 "#6f6f6f" t)
+ '(zenburn-bg-05 "#383838" t)
+ '(zenburn-bg-1 "#2b2b2b" t)
+ '(zenburn-blue "#8cd0d3" t)
+ '(zenburn-blue+1 "#94bff3" t)
+ '(zenburn-blue-1 "#7cb8bb" t)
+ '(zenburn-blue-2 "#6ca0a3" t)
+ '(zenburn-blue-3 "#5c888b" t)
+ '(zenburn-blue-4 "#4c7073" t)
+ '(zenburn-blue-5 "#366060" t)
+ '(zenburn-cyan "#93e0e3" t)
+ '(zenburn-fg "#dcdccc" t)
+ '(zenburn-fg-1 "#656555" t)
+ '(zenburn-green "#7f9f7f" t)
+ '(zenburn-green+1 "#8fb28f" t)
+ '(zenburn-green+2 "#9fc59f" t)
+ '(zenburn-green+3 "#afd8af" t)
+ '(zenburn-green+4 "#bfebbf" t)
+ '(zenburn-green-1 "#5f7f5f" t)
+ '(zenburn-magenta "#dc8cc3" t)
+ '(zenburn-orange "#dfaf8f" t)
+ '(zenburn-red "#cc9393" t)
+ '(zenburn-red+1 "#dca3a3" t)
+ '(zenburn-red-1 "#bc8383" t)
+ '(zenburn-red-2 "#ac7373" t)
+ '(zenburn-red-3 "#9c6363" t)
+ '(zenburn-red-4 "#8c5353" t)
+ '(zenburn-region "#7f073f" t)
+ '(zenburn-violet "#6c71c4" t)
+ '(zenburn-yellow "#f0dfaf" t)
+ '(zenburn-yellow-1 "#e0cf9f" t)
+ '(zenburn-yellow-2 "#d0bf8f" t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

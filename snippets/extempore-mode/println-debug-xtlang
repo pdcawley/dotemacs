@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: println-debug-xtlang
+# key: pldx
+# --
+(println ${1:$$(extempore-yas-println-debug-expander yas-text "\\"%s:\\" %s")})

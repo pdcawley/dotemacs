@@ -9,7 +9,7 @@
 (unless (file-exists-p temporary-file-directory)
   (make-directory temporary-file-directory t))
 
-(setq server-socket-dir (format "/tmp/emacs%d" (user-uid)))
+(setq server-socket-dir (format (expand-file-name "~/tmp/emacs%d") (user-uid)))
 
 (defun pdc/turn-on-abbrev-mode ()
   "A boring hook to turn abbrev mode on"

@@ -1,4 +1,12 @@
-;;(require 'eieio)
+(setq package-archives
+      '(("gnu"       . "http://elpa.gnu.org/packages/")
+        ("original"  . "http://tromey.com/elpa")
+        ("org"       . "http://orgmode.org/elpa/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa"     . "http://melpa.milkbox.net/packages/")))
+
+(setq package-enable-at-start nil)
+(package-initialize)
 (setq message-log-max 16384)
 (defconst emacs-start-time (current-time))
 ;; encoding
@@ -28,14 +36,6 @@
 (require 'cl)
 (require 'saveplace)
 (require 'ffap)
-
-(setq package-archives
-      '(("gnu"       . "http://elpa.gnu.org/packages/")
-        ("original"  . "http://tromey.com/elpa")
-        ("org"       . "http://orgmode.org/elpa/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("melpa"     . "http://melpa.milkbox.net/packages/")))
-(package-initialize)
 
 (defvar pdc/required-packages
   (list 'yasnippet 'use-package))
@@ -77,24 +77,16 @@
              (match-string 1 name))
 
 ;;; * Load User/System Specific Files
-(cl-flet* ((sk-load-babel (file)
-             (condition-case ()
-                 (org-babel-load-file file)
-               (error (message "Error while loading %s" file))))
-           (sk-load-el (file)
+(cl-flet* ((sk-load-el (file)
              (condition-case ()
                  (load file)
                (error (message "Error while loading %s" file))))
            (sk-load (base)
              (let* ((path          (expand-file-name base user-emacs-directory))
-                    (literate      (concat path ".org"))
-                    (encrypted-org (concat path ".org.gpg"))
                     (plain         (concat path ".el"))
                     (encrypted-el  (concat path ".el.gpg")))
                (cond
-                ((file-exists-p encrypted-org) (sk-load-babel encrypted-org))
                 ((file-exists-p encrypted-el)  (sk-load-el encrypted-el))
-                ((file-exists-p literate)      (sk-load-babel literate))
                 ((file-exists-p plain)         (sk-load-el plain)))))
            (remove-extension (name)
              (string-match "\\(.*?\\)\.\\(org\\(\\.el\\)?\\|el\\)\\(\\.gpg\\)?$" name)
@@ -138,3 +130,4 @@
                  (message "Loading %s...done (%.3fs) [after-init]"
                           ,load-file-name elapsed)))
             t))
+(put 'dired-find-alternate-file 'disabled nil)

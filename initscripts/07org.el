@@ -626,8 +626,6 @@ Late deadlines first, then scheduled, then non-late deadlines"
               (org-timer-set-timer '(16)))))
 
 (setq org-export-with-section-numbers nil)
-(setq org-html-include-timestamps nil)
-
 
 (use-package org-publish
   :config

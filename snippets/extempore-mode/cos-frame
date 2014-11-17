@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cos-frame
+# key: cosf
+# --
+(+ ${1:.5} (* ${2:.5} (cos (* STWOPI ${3:freq} (/ (convert frame) ${4:30.})))))
