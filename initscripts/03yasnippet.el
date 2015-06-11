@@ -5,6 +5,7 @@
   :bind
   (("C-c y TAB" . yas-expand)
    ("C-c y C-TAB" . yas-next-field)
+   ("C-c y <C-tab>" . yas-next-field)
    ("C-c y n" . yas-new-snippet)
    ("C-c y f" . yas-find-snippets)
    ("C-c y r" . yas-reload-all)
@@ -16,9 +17,9 @@
   ("/\\.emacs\\.d/snippets/" . snippet-mode)
   :config
   (progn
-    ; Load local snippets
+                                        ; Load local snippets
     (yas-load-directory
      (expand-file-name "snippets/" user-emacs-directory))
-    ; ... and use them everywhere
+                                        ; ... and use them everywhere
     (yas-global-mode t)))
 
