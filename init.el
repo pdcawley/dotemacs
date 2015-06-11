@@ -77,20 +77,20 @@
              (match-string 1 name))
 
 ;;; * Load User/System Specific Files
-(cl-flet* ((sk-load-el (file)
-             (condition-case ()
-                 (load file)
-               (error (message "Error while loading %s" file))))
-           (sk-load (base)
-             (let* ((path          (expand-file-name base user-emacs-directory))
-                    (plain         (concat path ".el"))
-                    (encrypted-el  (concat path ".el.gpg")))
-               (cond
-                ((file-exists-p encrypted-el)  (sk-load-el encrypted-el))
-                ((file-exists-p plain)         (sk-load-el plain)))))
-           (remove-extension (name)
-             (string-match "\\(.*?\\)\.\\(org\\(\\.el\\)?\\|el\\)\\(\\.gpg\\)?$" name)
-             (match-string 1 name)))
+(cl-flet ((sk-load (base)
+         (let* ((path          (expand-file-name base user-emacs-directory))
+                (literate      (concat path ".org"))
+                (encrypted-org (concat path ".org.gpg"))
+                (plain         (concat path ".el"))
+                (encrypted-el  (concat path ".el.gpg")))
+           (cond
+            ((file-exists-p encrypted-org) (org-babel-load-file encrypted-org))
+            ((file-exists-p encrypted-el)  (load encrypted-el))
+            ((file-exists-p literate)      (org-babel-load-file literate))
+            ((file-exists-p plain)         (load plain)))))
+       (remove-extension (name)
+         (string-match "\\(.*?\\)\.\\(org\\(\\.el\\)?\\|el\\)\\(\\.gpg\\)?$" name)
+         (match-string 1 name)))
       (let ((user-dir (expand-file-name user-login-name user-emacs-directory)))
         (dolist (default-directory (nreverse
                                     (list user-override-directory
@@ -108,7 +108,7 @@
                                   (expand-file-name user-emacs-directory))
                                  dir)))
             (add-to-list 'load-path dir)
-            (mapc #'sk-load
+            (mapc (lambda (x) (sk-load x))
                   (remove-duplicates
                    (mapcar #'remove-extension
                            (directory-files dir t ".*\.\\(org\\|el\\)\\(\\.gpg\\)?$"))
