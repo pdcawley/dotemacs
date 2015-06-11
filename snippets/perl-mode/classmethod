@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: classmethod
+# key: classmethod
+# --
+sub ${1:method} {
+    my($class${2:, ${3:@args}}) = @_;
+    $0
+}
