@@ -36,3 +36,4 @@ esk-org-mode.el
 /el-get/
 .cask
 --help
+network-security.data
