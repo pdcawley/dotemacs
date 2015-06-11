@@ -461,7 +461,6 @@
 (require 'comint)
 (require 'org)
 (require 'fm)
-(require 'sunrise-commander)
 (require 'window-numbering)
 
 (defvar f2-map (make-sparse-keymap))
@@ -537,8 +536,8 @@
 (bind-key "<f4> y" 'dss/mark-string)
 (bind-key "<f4> m" 'mark-sexp)
 (bind-key "<f4> '" (kbd "\""))
-(bind-key "<f4> ," 'sunrise-cd)
 (bind-key "<f4> ;" 'goto-last-change)
+(bind-key "<f4> <f4>" 'kmacro-end-or-call-macro)
 
 (defvar *dss-iedit-auto-complete-was-on* nil)
 (make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)

@@ -14,6 +14,12 @@
           (s-replace "/" "::" (match-string 1 path))
         nil))
 
+    ;;; CPD refactoring
+    (defun cpd-related-driver (path)
+      (let ((parts (f-split path)))
+        ))
+
+
     (defun pdc/package-type ()
       "Determines the perl package type.
 Returns one of the following symbols `moose-role' `moose-class' `module'
@@ -43,19 +49,22 @@ Returns one of the following symbols `moose-role' `moose-class' `module'
             (cperl-indent-level . 0)
             (cperl-indent-parens-as-block . t)
             (cperl-label-offset . -4)
+            (cperl-merge-trailing-else)
             (cperl-tab-always-indent . t))
           cperl-style-alist)
     (push '("ThermeonNew"
-            '(cperl-auto-newline)
-            '(cperl-close-paren-offset . -4)
-            '(cperl-continued-statement-offset . 4)
-            '(cperl-fix-hanging-brace-when-indent)
-            '(cperl-indent-level . 4)
-            '(cperl-indent-parens-as-block  . t)
-            '(cperl-indent-subs-specially)
-            '(cperl-label-offset . -4)
-            '(cperl-merge-trailing-else)
-            '(cperl-tab-always-indent . t)
+            (cperl-auto-newline)
+            (cperl-brace-imaginary-offset . 0)
+            (cperl-brace-offset . 0)
+            (cperl-close-paren-offset . -4)
+            (cperl-continued-statement-offset . 4)
+            (cperl-fix-hanging-brace-when-indent)
+            (cperl-indent-level . 4)
+            (cperl-indent-parens-as-block  . t)
+            (cperl-indent-subs-specially)
+            (cperl-label-offset . -4)
+            (cperl-merge-trailing-else)
+            (cperl-tab-always-indent . t)
             )
           cperl-style-alist)
 

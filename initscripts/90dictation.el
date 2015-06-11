@@ -1,6 +1,14 @@
 (require 'dss-codenav-helpers)
 (require 'dss-tmp-files)
 
+(defun pdc/fix-prior-space ()
+  (interactive)
+  (save-excursion
+    (if (string-equal (char-to-string (char-before)) " ")
+        (progn (backward-word)
+               (dss/del-last-space " "))
+      (dss/del-last-space " "))))
+
 
 
 ;; (defun pdc/paredit-backward-delete ()

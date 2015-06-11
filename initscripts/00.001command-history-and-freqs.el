@@ -6,6 +6,8 @@
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 (savehist-mode 1)
 
+(require 'tramp)
+
 (require 'saveplace)
 (setq save-place-file (concat dss-ephemeral-dir "saveplace"))
 (setq-default save-place t)

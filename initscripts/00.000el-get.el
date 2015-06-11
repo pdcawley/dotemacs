@@ -3,9 +3,9 @@
 (unless (require 'el-get nil t)
   (with-current-buffer (url-retrieve-synchronously
                         "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (end-of-buffer)
-    (eval-print-last-sexp))
-  (load-library "el-get"))
+    (goto-char (point-max))
+    (eval-print-last-sexp)
+    (load-library "el-get")))
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes/")
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get/el-get/recipes/")
@@ -20,7 +20,7 @@
 
 ;;; load packages
 (setq el-get-byte-compile t
-      el-get-generate-autoloads t
+      el-get-use-autoloads t
       el-get-sources '(
                              ;; (:name yasnippet
                              ;;        :website "https://github.com/capitaomorte/yasnippet.git"
@@ -29,42 +29,42 @@
                              ;;        :pkgname "capitaomorte/yasnippet"
                              ;;        :features "yasnippet"
                              ;;        :compile "yasnippet.el")
-                             (:name yasnippet
-                                    :website "http://code.google.com/p/yasnippet/"
-                                    :description "YASnippet is a template system for Emacs."
-                                    :type git
-                                    :url "https://github.com/capitaomorte/yasnippet.git"
-                                    :features "yasnippet"
-                                    :prepare (lambda ()
-                                               ;; Set up the default snippets directory
-                                               ;;
-                                               ;; Principle: don't override any user settings
-                                               ;; for yas/snippet-dirs, whether those were made
-                                               ;; with setq or customize.  If the user doesn't
-                                               ;; want the default snippets, she shouldn't get
-                                               ;; them!
-                                               (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
-                                                 (setq yas/snippet-dirs
-                                                       (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
+                             ;; (:name yasnippet
+                             ;;        :website "http://code.google.com/p/yasnippet/"
+                             ;;        :description "YASnippet is a template system for Emacs."
+                             ;;        :type git
+                             ;;        :url "https://github.com/capitaomorte/yasnippet.git"
+                             ;;        :features "yasnippet"
+                             ;;        :prepare (lambda ()
+                             ;;                   ;; Set up the default snippets directory
+                             ;;                   ;;
+                             ;;                   ;; Principle: don't override any user settings
+                             ;;                   ;; for yas/snippet-dirs, whether those were made
+                             ;;                   ;; with setq or customize.  If the user doesn't
+                             ;;                   ;; want the default snippets, she shouldn't get
+                             ;;                   ;; them!
+                             ;;                   (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
+                             ;;                     (setq yas/snippet-dirs
+                             ;;                           (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
 
-                                    :post-init (lambda ()
-                                                 ;; Trick customize into believing the standard
-                                                 ;; value includes the default snippets.
-                                                 ;; yasnippet would probably do this itself,
-                                                 ;; except that it doesn't include an
-                                                 ;; installation procedure that sets up the
-                                                 ;; snippets directory, and thus doesn't know
-                                                 ;; where those snippets will be installed.  See
-                                                 ;; http://code.google.com/p/yasnippet/issues/detail?id=179
-                                                 (put 'yas/snippet-dirs 'standard-value
-                                                      ;; as cus-edit.el specifies, "a cons-cell
-                                                      ;; whose car evaluates to the standard
-                                                      ;; value"
-                                                      (list (list 'quote
-                                                                  (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
-                                    ;; byte-compile load vc-svn and that fails
-                                    ;; see https://github.com/dimitri/el-get/issues/200
-                                    :compile nil)
+                             ;;        :post-init (lambda ()
+                             ;;                     ;; Trick customize into believing the standard
+                             ;;                     ;; value includes the default snippets.
+                             ;;                     ;; yasnippet would probably do this itself,
+                             ;;                     ;; except that it doesn't include an
+                             ;;                     ;; installation procedure that sets up the
+                             ;;                     ;; snippets directory, and thus doesn't know
+                             ;;                     ;; where those snippets will be installed.  See
+                             ;;                     ;; http://code.google.com/p/yasnippet/issues/detail?id=179
+                             ;;                     (put 'yas/snippet-dirs 'standard-value
+                             ;;                          ;; as cus-edit.el specifies, "a cons-cell
+                             ;;                          ;; whose car evaluates to the standard
+                             ;;                          ;; value"
+                             ;;                          (list (list 'quote
+                             ;;                                      (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
+                             ;;        ;; byte-compile load vc-svn and that fails
+                             ;;        ;; see https://github.com/dimitri/el-get/issues/200
+                             ;;        :compile nil)
                              ;; (:name wanderlust :type git
                              ;;        :url "https://github.com/wanderlust/wanderlust.git"
                              ;;        :load-path ("site-lisp/wl" "elmo")
@@ -94,7 +94,7 @@
                                     :type git
                                     :url "http://github.com/auto-complete/auto-complete.git"
                                     :load-path "."
-                                    :post-init (lambda ()
+                                    :post-init (progn
                                                  (require 'auto-complete)
                                                  (add-to-list 'ac-dictionary-directories (expand-file-name "dict" pdir))
                                                  ;; the elc is buggy for some reason
@@ -212,7 +212,7 @@
 
 (setq dss-el-get-packages
       '(ac-dabbrev
-        ac-slime
+        ;; ac-slime
         ace-jump-mode
         ack-and-a-half
         align-cljlet
@@ -258,7 +258,7 @@
         git-commit-mode
         git-gutter
         git-gutter-fringe
-        go-mode
+        ;; go-mode
         goto-last-change
         haml-mode
         haskell-mode
@@ -296,7 +296,7 @@
         org-magit
         org-mode
         paredit
-        pastebin
+        ;; pastebin
         pbcopy
         pcache
         pcmpl-args
@@ -311,6 +311,7 @@
         powerline
         pretty-mode
         project
+        protbuf
         rainbow-delimiters
         rainbow-mode
         rect+
@@ -321,8 +322,8 @@
         scss-mode
         session
         highlight-chars
-        slime
-        slime-js
+        ;; slime
+        ;; slime-js
         smex
         ssh-config-mode
         string-inflection

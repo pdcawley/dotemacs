@@ -4,6 +4,7 @@
   :if (not noninteractive)              ; no point in batch mode
   :bind
   (("C-c y TAB" . yas-expand)
+   ("C-c y C-TAB" . yas-next-field)
    ("C-c y n" . yas-new-snippet)
    ("C-c y f" . yas-find-snippets)
    ("C-c y r" . yas-reload-all)

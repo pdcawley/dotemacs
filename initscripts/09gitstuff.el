@@ -2,6 +2,8 @@
 (use-package magit
   :bind (("M-," . pdc/vc-status)
          ("C-. g s" . magit-status))
+  :pre-load
+  (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (progn
     (defun pdc/bookmark-magit-status (bookmark)
