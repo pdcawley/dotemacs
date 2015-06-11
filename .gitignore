@@ -34,3 +34,5 @@ esk-org-mode.el
 /games
 /var
 /el-get/
+.cask
+--help

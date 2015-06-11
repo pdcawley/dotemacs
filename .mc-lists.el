@@ -20,6 +20,7 @@
         cperl-electric-terminator
         cua-paste
         delete-horizontal-space
+        electric-newline-and-maybe-indent
         fastnav-jump-to-char-forward
         forward-sexp
         insert-register
