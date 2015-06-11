@@ -86,7 +86,7 @@
 
 (custom-theme-set-faces
  'pdc-zenburn
-; `(custom-group-tag ((t (:height 1.2 :weight bold :foreground ,zenburn-red+1 :inherit variable-pitch))))
+                                        ; `(custom-group-tag ((t (:height 1.2 :weight bold :foreground ,zenburn-red+1 :inherit variable-pitch))))
  '(button ((t (:underline t))))
  '(link ((t (:foreground "#f0dfaf" :underline t :weight bold))))
  '(link-visited ((t (:foreground "#d0bf8f" :underline t :weight normal))))
@@ -643,7 +643,7 @@
  '(whitespace-indentation ((t (:background "#f0dfaf" :foreground "#cc9393"))))
  '(whitespace-empty ((t (:background "#f0dfaf"))))
  '(whitespace-space-after-tab ((t (:background "#f0dfaf" :foreground
- "#cc9393"))))
+                                               "#cc9393"))))
  '(plain-widget-button
    ((t (:weight bold))))
  '(plain-widget-button-pressed
@@ -727,6 +727,7 @@
  '(ediff-current-diff-A ((t (:background "#2f2525"))))
  '(ediff-current-diff-B ((t (:background "#2e3330"))))
  '(ediff-current-diff-C ((t (:inherit zenburn-highlight-subtle))))
+ '(visible-mark-face ((t (:foreground "#3f3f3f" :background "#d0bf8f"))))
  `(default ((t (:foreground ,zenburn-fg :background ,zenburn-bg)))))
 
 (provide-theme 'pdc-zenburn)
