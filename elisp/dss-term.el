@@ -1,6 +1,6 @@
 (require 'multi-term)
 (require 'comint)
-(require 'dss-vc)
+;; (require 'dss-vc)
 
 ;;; study this http://snarfed.org/why_i_run_shells_inside_emacs
 ;;; and this http://snarfed.org/emacsclient_in_tramp_remote_shells
@@ -14,7 +14,7 @@
 
 ;; multi-term
 (autoload 'multi-term "multi-term")
-(setq multi-term-program "/bin/bash")
+(setq multi-term-program "/bin/zsh")
 (setq multi-term-program-switches "-l")
 (setq multi-term-switch-after-close nil)
 
