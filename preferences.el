@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ack-and-a-half-arguments (quote ("--nopager")))
- '(ack-and-a-half-executable "/u/virtual/pdc/bin/ack")
+ '(ack-and-a-half-executable "/u/virtual/pdc/bin/ack" t)
  '(ack-and-a-half-prompt-for-directory t)
  '(ack-prompt-for-directory t)
  '(ansi-color-names-vector
@@ -48,7 +48,7 @@
  '(custom-enabled-themes (quote (pdc-zenburn)))
  '(custom-safe-themes
    (quote
-    ("0261d8aca24a5b0e1f9138c49c758a9c7215b60736c7f51b130f81d7aed03884" "35290fcff26737b6f0d7674deebc6701e43f2e281ce73a235c9d08e9630a4a5c" "8fc9387bf6302020929ba8f8524cd92d6825bfb2e76f09a19fe59f6cc435b773" "66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
+    ("f72c55281f894898c88fba03d84e0a8d64b4c7039e4249da91cf0f4577ba1124" "0261d8aca24a5b0e1f9138c49c758a9c7215b60736c7f51b130f81d7aed03884" "35290fcff26737b6f0d7674deebc6701e43f2e281ce73a235c9d08e9630a4a5c" "8fc9387bf6302020929ba8f8524cd92d6825bfb2e76f09a19fe59f6cc435b773" "66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -67,6 +67,8 @@
  '(ecb-options-version "2.33beta1")
  '(enable-recursive-minibuffers t)
  '(enable-remote-dir-locals t)
+ '(eval-expression-print-length nil)
+ '(eval-expression-print-level nil)
  '(ewd-kp-usage (quote num))
  '(fci-rule-color "#383838")
  '(fill-column 78)
@@ -153,6 +155,9 @@
      (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
      (sequence "OPEN(O)" "|" "CLOSED(C)"))))
  '(overflow-newline-into-fringe t)
+ '(package-selected-packages
+   (quote
+    (ocodo-svg-modelines racket-mode znc zencoding-mode yaml-mode yagist xcscope workgroups winpoint window-numbering whole-line-or-region whitespace-cleanup-mode wgrep websocket web-mode visual-regexp-steroids visible-mark virtualenv use-package unipoint unicode-enbox unfill unbound ucs-cmds typing tt-mode time-ext thingatpt+ thing-cmds textmate-to-yas textile-mode tex-math-preview tagedit syslog-mode sws-mode swift-mode sunrise-x-modeline sunrise-x-checkpoints string-inflection ssh-config-mode ssh spaces smex smart-compile slime-js session scss-mode scratch-palette save-packages sauron sackspace s-buffer runner reveal-in-finder restclient requirejs-mode request regex-tool rect+ rainbow-mode rainbow-delimiters project-persist project-mode project-local-variables project pretty-mode powerline popup-kill-ring perlbrew pcre2el pcmpl-args pbcopy pastebin packed package ox-textile ox-reveal ox-html5slide ox-asciidoc osx-pseudo-daemon osx-plist osx-location osx-clipboard osx-browse org2blog org-screenshot org-repo-todo org-protocol-jekyll org-present org-pandoc org-mobile-sync org-magit org-mac-link org-mac-iCal org-journal org-jekyll org-elisp-help org-drill-table org-context org-bullets org-blog org-agenda-property openwith objc-font-lock ob-translate ob-sml ob-browser oauth2 o-blog nzenburn-theme nterm nrepl nginx-mode nav multi-term moz monky mo-git-blame mmm-mode melpa-upstream-visit mediawiki mc-extras mb-depth+ math-symbols markdown-mode+ mark-tools mark-multiple map-regexp magit-gitflow magit-gh-pulls magit-find-file macrostep macro-utils lusty-explorer loop log4j-mode load-dir list-register lexbind-mode lcs latex-preview-pane latex-pretty-symbols lang-refactor-perl keywiz keymap-utils keyfreq json-mode js3-mode js2-refactor js-comint jquery-doc jenkins-watch itail isend-mode isearch+ ipython instapaper info+ inflections iflipb iedit ido-vertical-mode ido-ubiquitous ido-hacks ido-gnus ido-complete-space-or-hyphen idle-highlight-mode ibuffer-vc httpcode http-twiddle htmlize ht howdoi highlight-symbol highlight-cl highlight-chars hi2 handlebars-mode haml-mode ham-mode gtags graphviz-dot-mode goto-last-change gotest golint go-snippets go-projectile go-play go-errcheck go-direx go-autocomplete gntp gitty gitignore-mode gitconfig-mode gitconfig git-gutter-fringe git-gutter-fringe+ git-blame git gist ghci-completion ghc geiser foreign-regexp fm flymake-yaml flymake-shell flymake-sass flymake-ruby flymake-perlcritic flymake-less flymake-json flymake-hlint flymake-haskell-multi flymake-haml flymake-go flymake-coffee flycheck-tip flycheck-hdevtools flycheck-haskell flycheck-color-mode-line flx-ido fliptext find-file-in-repository feature-mode fastnav express expand-region exec-path-from-shell evil-surround evil-paredit evil-numbers evil-nerd-commenter evil-leader etags-select ess erlang erefactor emr emamux elnode elixir-yasnippets elixir-mode elixir-mix elisp-slime-nav elein electric-case eldoc-extension el-autoyas edebug-x ebib dropbox dot-mode dockerfile-mode discover dired-efap dired-dups dired-details+ dired+ diff-hl diff-git dict-tree deft dedicated db-pg dash-functional dash-at-point cus-edit+ cursor-chg csv-nav csv-mode command-t combinators color-theme color-moccur coffee-mode clojure-test-mode cdlatex cache butler bufshow buffer-move browse-kill-ring bookmark+ bm bibslurp bibretrieve bang backtrace-mode autopair auto-yasnippet auto-complete-etags auto-async-byte-compile auctex-latexmk asciidoc applescript-mode apache-mode anything ansi align-cljlet adoc-mode ack-menu ack-and-a-half ace-jump-mode ac-slime ac-nrepl ac-math ac-js2 ac-dabbrev abc-mode 2048-game)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
@@ -162,7 +167,20 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((magit-git-executable . "/home/staff/pdc/git/bin/git")
+    ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
+           (add-hook
+            (quote write-contents-functions)
+            (lambda nil
+              (delete-trailing-whitespace)
+              nil))
+           (require
+            (quote whitespace))
+           "Sometimes the mode needs to be toggled off and on."
+           (whitespace-mode 0)
+           (whitespace-mode 1))
+     (whitespace-line-column . 80)
+     (whitespace-style face tabs trailing lines-tail)
+     (magit-git-executable . "/home/staff/pdc/git/bin/git")
      (cperl-close-paren-offset . -1)
      (cperl-brace-imaginary-offset . 0)
      (cperl-tab-always-indent . t)
@@ -181,6 +199,7 @@
  '(scroll-preserve-screen-position t)
  '(scroll-step 0)
  '(server-mode t)
+ '(session-use-package t nil (session))
  '(shell-prompt-pattern "^[^$>
 ]*[#$%>] *\\([[0-9;]*[a-zA-Z] *\\)*")
  '(show-paren-style (quote parenthesis))
