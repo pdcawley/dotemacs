@@ -1,6 +1,7 @@
+(el-get-init 'use-package)
+(require 'use-package)
 (when (memq window-system '(mac-ns ns))
   (use-package exec-path-from-shell
-    :ensure t
     :config
     (exec-path-from-shell-initialize)))
 
