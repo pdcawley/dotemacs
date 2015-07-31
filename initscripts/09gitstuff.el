@@ -2,7 +2,7 @@
 (use-package magit
   :bind (("M-," . pdc/vc-status)
          ("C-. g s" . magit-status))
-  :pre-load
+  :init
   (setq magit-last-seen-setup-instructions "1.4.0")
   :config
   (progn
@@ -19,7 +19,6 @@
             (t
              (call-interactively 'dired))))
     (use-package magit-gitflow
-      :ensure magit-gitflow
       :config
       (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))))
 
@@ -50,8 +49,3 @@
     (defun vc-git-annotate-command (file buff &optional rev)
       (let ((name (file-relative-name file)))
         (vc-git-command buff 'async nil "blame" "-w" "--date-iso" "-C" "-C" rev "--" name)))))
-
-
-
-
-

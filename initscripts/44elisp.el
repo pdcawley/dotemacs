@@ -96,7 +96,6 @@
             (add-to-list 'elint-standard-variables 'window-system)))
 
         (use-package highlight-cl
-          :ensure t
           :init
           (mapc (function
                  (lambda (mode-hook)
@@ -109,6 +108,7 @@
             (byte-recompile-file buffer-file-name)))
 
         (use-package info-lookmore
+          :disabled t
           :init
           (progn
             (info-lookmore-elisp-cl)
@@ -123,13 +123,14 @@
 
         (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
 
-        (mapc #'(lambda (mode)
-                  (info-lookup-add-help
-                   :mode mode
-                   :regexp "[^][()'\" \t\n]+"
-                   :ignore-case t
-                   :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
-              lisp-modes)))
+        ;; (mapc #'(lambda (mode)
+        ;;           (info-lookup-add-help
+        ;;            :mode mode
+        ;;            :regexp "[^][()'\" \t\n]+"
+        ;;            :ignore-case t
+        ;;            :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
+        ;;       lisp-modes)
+	))
 
     (defun dss/goto-match-paren (arg)
       "Go to the matching parenthesis if on parenthesis. Else go to the

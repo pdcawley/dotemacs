@@ -1,5 +1,4 @@
 (use-package web-mode
-  :ensure web-mode
   :config
   (progn
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))

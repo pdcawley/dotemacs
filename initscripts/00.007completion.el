@@ -112,7 +112,7 @@ advice like this:
 
 (use-package auto-complete-config
   :diminish auto-complete-mode
-  :pre-load
+  :preface
   (use-package go-autocomplete)
   :init
   (progn
@@ -276,6 +276,3 @@ advice like this:
       (setq ac-sources '(ac-source-words-in-buffer ac-source-functions
       ac-source-variables ac-source-symbols ac-source-features
       ac-source-yasnippet)))))
-
-
-

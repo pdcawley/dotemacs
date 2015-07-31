@@ -1,1 +1,1 @@
-(use-package geiser :ensure geiser)
+(use-package geiser)

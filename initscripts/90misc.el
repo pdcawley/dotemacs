@@ -331,18 +331,16 @@ Helper method for 'yank' advice"
   (auto-image-file-mode 1))
 
 (use-package macrostep
-  :ensure t
   :bind ("C-c e m" . macrostep-expand))
 
 (use-package per-window-point
-  :init
+  :config
   (pwp-mode 1))
 
 
 
 
 (use-package ace-jump-mode
-  :ensure t
   :bind ("C-c SPC" . ace-jump-mode))
 
 (defun bmi (weight height)

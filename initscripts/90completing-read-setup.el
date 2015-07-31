@@ -26,12 +26,10 @@
       (ido-complete-space-or-hyphen-enable))
 
     (use-package ido-vertical-mode
-      :ensure t
       :config
       (ido-vertical-mode t))
 
     (use-package ido-ubiquitous
-      :ensure t
       :config
       (ido-ubiquitous-mode t))
 
@@ -41,7 +39,6 @@
       (ido-hacks-mode 1))
 
     (use-package projectile
-      :ensure t
       :diminish projectile-mode
       :bind
       ("C-c f" . projectile-find-file)
@@ -106,7 +103,6 @@
                 (ibuffer-switch-to-saved-filter-groups "default"))))
 
 (use-package smex
-  :ensure t
   :bind (("M-x" . smex)
          ("M-X" . smex-update-and-run)
          )
@@ -128,7 +124,3 @@
                            smex-ido-cache))
          initial-input)))
     (smex-initialize)))
-
-
-
-

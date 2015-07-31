@@ -1,5 +1,5 @@
 (use-package bm
-  :pre-init
+  :init
   (progn
     (defvar ctl-period-breadcrumb-map)
     (define-prefix-command 'ctl-period-breadcrumb-map)

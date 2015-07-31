@@ -1,6 +1,5 @@
 (use-package lusty-explorer
   :disabled t
-  :ensure t
   :bind ("C-x C-f" . lusty-file-explorer)
   :config
   (progn
