@@ -131,6 +131,7 @@
         auto-complete
         auto-complete-etags
         auto-complete-extension
+        auto-async-byte-compile
         autopair
         bm
         breadcrumb
@@ -142,6 +143,7 @@
         color-theme
         column-marker
         dash
+        dedicated
         desktop-recover
         diminish
         el-autoyas
@@ -166,7 +168,7 @@
         gist
         git-gutter
         git-gutter-fringe
-        ;; go-mode
+        go-mode
         goto-last-change
         haml-mode
         haskell-mode
@@ -184,8 +186,9 @@
         json
         json-mode
         keyfreq
+        kv
         less-css-mode
-        ;; lexbind-mode
+        lexbind-mode
         lineker
         list-register
         list-utils
@@ -198,47 +201,40 @@
         mediawiki
         mo-git-blame
         monky
-        ;; moz
         multi-term
         nav
         nterm
-        ;; nzenburn-theme
-        ;; org-journal
         org-magit
         org-mode
         paredit
-        ;; pastebin
+        pastebin
         pbcopy
         pcache
-        ;; pcmpl-args
         pcre2el
-        ;; perlbrew
         persistent-soft
         per-window-point
         pg
         popup
         popup-kill-ring
         pos-tip
-        pos-tip ;; required by popup-kill-ring
         powerline
         pretty-mode
-        ;; project
+        project-buffer-mode
+        project-explorer
+        project-local-variables
+        project-mode
+        project-root
         protbuf
         rainbow-delimiters
         rainbow-mode
-        ;; rect+
         restclient
         s
-        ;; s-buffer
-        ;; sackspace
         scss-mode
         session
         highlight-chars
-        ;; slime
-        ;; slime-js
+        slime
         smex
-        ;; ssh-config-mode
-        ;; string-inflection
+        ssh-config
         string-utils
         swift-mode
         tabulated-list
@@ -246,28 +242,23 @@
         thing-cmds
         thingatpt+
         transpose-frame
-        ;; trie
-        ;; tt-mode
         ucs-utils
         unbound
         undo-tree
-        ;; unfill
         unicode-enbox
         use-package
-        ;; unipoint
-        ;; virtualenv
-        ;; virtualenv ;;pylookup
         visible-mark
         visual-regexp
         vline
-        ;; whitespace-cleanup-mode
+        whitespace
         whole-line-or-region
         window-numbering
         winpoint
         workgroups
         yagist
         yaml-mode
-        zencoding-mode))
+        zencoding-mode
+        ))
 
 (unless (require 'filladapt nil t)
   (add-to-list 'dss-el-get-packages 'filladapt))

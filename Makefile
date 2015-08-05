@@ -1,6 +1,6 @@
 ### -*- mode: makefile-gmake -*-
 
-DIRS = override lib elisp site-lisp initscripts elisp/external
+DIRS = override lib elisp site-lisp el-get initscripts elisp/external
 SPECIAL = cus-dirs.el autoloads.el
 ELPA = elpa
 INIT_SOURCE = $(wildcard *.el)

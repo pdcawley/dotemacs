@@ -1,3 +1,6 @@
+(add-to-list 'load-path (expand-file-name "elisp/" user-emacs-directory))
+(require 'pdc-packages-and-paths)
+
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -13,9 +16,6 @@
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
-
-(add-to-list 'load-path (expand-file-name "elisp/" user-emacs-directory))
-(require 'pdc-packages-and-paths)
 
 (defvar lisp-modes '(emacs-lisp-mode
              inferior-emacs-lisp-mode
