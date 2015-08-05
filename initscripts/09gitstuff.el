@@ -22,8 +22,6 @@
       :config
       (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))))
 
-
-
 (use-package gist
   :init (setq gist-authenticate-function 'gist-oauth2-authentication)
   :bind ("C-c G" . gist-region-or-buffer))
@@ -32,14 +30,15 @@
   :commands git-blame-mode)
 
 (use-package git-gutter+
+  :if (window-system)
   :diminish git-gutter+-mode
   :config
   (progn
     (use-package git-gutter-fringe+
       :config
-      (git-gutter-fr+-minimal))
+      (git-gutter-fr+-minimal)))
 
-    (global-git-gutter+-mode 1)))
+  (global-git-gutter+-mode 1))
 
 (use-package vc-git
   :init

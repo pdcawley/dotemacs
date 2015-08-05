@@ -317,6 +317,7 @@
  '(git-gutter-fr:added ((t (:foreground "#7f9f7f" :weight bold))))
  '(git-gutter-fr:deleted ((t (:foreground "#cc9393" :weight bold))))
  '(git-gutter-fr:modified ((t (:foreground "#dc8cc3" :weight bold))))
+ `(git-commit-summary-face ((t (:foreground ,zenburn-yellow :weight bold))))
  '(gnus-group-mail-1 ((t (:bold t :inherit gnus-group-mail-1-empty))))
  '(gnus-group-mail-1-empty ((t (:inherit gnus-group-news-1-empty))))
  '(gnus-group-mail-2 ((t (:bold t :inherit gnus-group-mail-2-empty))))

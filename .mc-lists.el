@@ -50,6 +50,8 @@
 (setq mc/cmds-to-run-once
       '(
         describe-key
+        ido-complete
+        ido-hacks-execute-extended-command
         isearch-forward-regexp
         kmacro-end-or-call-macro
         reindent-then-newline-and-indent

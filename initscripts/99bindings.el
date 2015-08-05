@@ -1,6 +1,7 @@
 (eval-when-compile (require 'autoinsert))
 ;;; 99bindings.el --- Misc. global key bindings
 (require 'paredit)
+(require 'pdc-support)
 ;; Some custom global key bindings
 (global-set-key (kbd "C-c s")  'calendar)
 (global-set-key (kbd "C-c g")  'goto-line)
@@ -169,7 +170,7 @@
   (global-set-key (kbd "C-c C-<up>")    'buf-move-up)
   (global-set-key (kbd "C-c C-<down>")  'buf-move-down))
 
-;; File type bindings - By doing this last, my desired bindings win
+;; File type bindcings - By doing this last, my desired bindings win
 (update-auto-mode-bindings '(("\\.hs\\'"                 . haskell-mode)
                              ("\\.yml\\'"                . yaml-mode)
                              ("\\.rb\\'"                 . ruby-mode)

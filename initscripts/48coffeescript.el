@@ -1,4 +1,5 @@
 (use-package cperl-mode
+  :disabled (not window-system)
   :init
   (progn
     (bind-key "C-x C-e" 'slime-js-coffee-eval-current coffee-mode-map)
