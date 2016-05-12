@@ -1,1 +1,2 @@
-(use-package elixir-mode)
+(use-package elixir-mode
+  :ensure t)

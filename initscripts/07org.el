@@ -3,7 +3,8 @@
     (require 'package)
     (package-initialize)))
 (require 'org)
-(require 'org-journal)
+(use-package org-journal
+  :ensure t)
 (require 'org-compat)
 (require 'cl)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -627,6 +628,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (setq org-export-with-section-numbers nil)
 
 (use-package org-publish
+  :ensure t
   :config
   (progn
     (setq org-publish-project-alist

@@ -1,4 +1,5 @@
 (use-package go-mode
+  :ensure t
   :config
   (progn
     (defun pdc/go-mode-hook ()
@@ -10,11 +11,13 @@
     (bind-key "C-j" 'newline go-mode-map)
     (bind-key "C-c C-r" 'go-remove-unused-imports go-mode-map)
     (use-package pretty-mode
+      :ensure t
       :config
       (pretty-add-keywords 'go-mode
                            '(("<-" . ?←))))
 
     (use-package flycheck
+      :ensure t
       :config
       (progn
         (flycheck-define-checker go-gofmt

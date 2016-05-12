@@ -10,7 +10,7 @@ With no \\[universal-argument], find the project root directory;
 with one \\[universal-arguement], return `default-directory`;
 otherwise, interactively choose a directory"
       (ack-default-directory (cond ((not arg) 4)
-                                   ((= arg 4) nil)
+                                   ((= (prefix-numeric-value arg) 4) nil)
                                    (t arg))))
     (setq ack-default-directory-function 'pdc-ack-default-directory)
     (setq ack-and-a-half-executable (expand-file-name "~/bin/ack"))))

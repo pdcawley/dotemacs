@@ -1,4 +1,5 @@
 (use-package cperl-mode
+  :ensure t
   :disabled (not window-system)
   :init
   (progn

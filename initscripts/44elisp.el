@@ -16,7 +16,7 @@
   (message string))
 
 
-(use-package yasnippet)
+(use-package yasnippet :ensure t)
 
 (use-package lisp-mode
   :bind (("C-h e c" . finder-commentary)
@@ -50,15 +50,15 @@
       (unless lisp-mode-initialized
         (setq lisp-mode-initialized t)
 
-        (use-package redshank
+        (use-package redshank :ensure t
           :diminish redshank-mode)
 
-        (use-package elisp-slime-nav
+        (use-package elisp-slime-nav :ensure t
           :diminish elisp-slime-nav-mode)
 
-        (use-package edebug)
+        (use-package edebug :ensure t)
 
-        (use-package eldoc
+        (use-package eldoc :ensure t
           :diminish eldoc-mode
           :defer t
           :init
@@ -76,11 +76,11 @@
         ;; (use-package cldoc
         ;;   :diminish cldoc-mode)
 
-        (use-package ert
+        (use-package ert :ensure t
           :commands ert-run-tests-interactively
           :bind ("C-c e t" . ert-run-tests-interactively))
 
-        (use-package elint
+        (use-package elint :ensure t
           :commands 'elint-initialize
           :init
           (defun elint-current-buffer ()
@@ -172,7 +172,8 @@
 
       (local-set-key (kbd "<return>") 'paredit-newline)
 
-      (add-hook 'after-save-hook 'check-parens nil t)
+      (add-hook 'after-save-hook 'check-parens
+                nil t)
 
       (if (memq major-mode
                 '(emacs-lisp-mode inferior-emacs-lisp-mode ielm-mode))
@@ -199,7 +200,7 @@
     (setq emacs-lisp-mode-hook (cl-remove 'lexbind-mode emacs-lisp-mode-hook))
     ))
 
-(use-package ielm
+(use-package ielm :ensure t
   :bind ("C-c :" . ielm)
   :config
   (progn
@@ -209,7 +210,7 @@
                            (goto-char (point-max))
                            (skip-chars-backward " \t\n\r")
                            (point))))
-        (if (>= (point) end-of-sexp)q
+        (if (>= (point) end-of-sexp)
             (progn
               (goto-char (point-max))
               (skip-chars-backward " \t\n\r")
@@ -295,7 +296,7 @@
 
 
 
-(use-package paredit
+(use-package paredit :ensure t
   :commands paredit-mode
   :diminish "PE"
   :config

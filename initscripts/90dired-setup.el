@@ -21,8 +21,9 @@
     (defun dired-package-initialize ()
       (unless (featurep 'runner)
         (use-package dired-x)
-        (use-package runner)
+        (use-package runner :ensure t)
         (use-package dired-details
+          :ensure t
           :commands dired-details-toggle)
 
         (bind-key "l" 'dired-up-directory dired-mode-map)
@@ -119,6 +120,7 @@
     (bind-key "C-c J" 'dired-double-jump)))
 
 (use-package recentf
+  :ensure t
   :if (not noninteractive)
   :init
   (progn

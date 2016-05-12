@@ -1,4 +1,5 @@
 (use-package powerline
+  :ensure t
   :init
   (setq powerline-default-separator 'brace
         powerline-height 24)

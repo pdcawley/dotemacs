@@ -1,4 +1,5 @@
 (use-package artbollocks-mode
+  :ensure t
   :init
   (progn
     (setq artbollocks-weasel-words-regex

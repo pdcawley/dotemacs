@@ -1,4 +1,5 @@
 (use-package web-mode
+  :ensure t
   :config
   (progn
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -15,4 +16,5 @@
   (setq web-mode-markup-indent-offset 2))
 
 (use-package css-mode
+  :ensure t
   :mode ("\\.css\\'" . css-mode))

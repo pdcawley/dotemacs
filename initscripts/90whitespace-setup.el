@@ -1,6 +1,6 @@
 (eval-when-compile
   (require 'pdc-utils))
-(use-package whitespace
+(use-package whitespace :ensure t
   :diminish (global-whitespace-mode
              whitespace-mode
              whitespace-newline-mode)

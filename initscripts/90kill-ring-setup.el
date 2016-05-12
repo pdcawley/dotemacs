@@ -1,1 +1,1 @@
-(use-package browse-kill-ring)
+(use-package browse-kill-ring :ensure t)

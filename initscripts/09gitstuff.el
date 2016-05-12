@@ -1,5 +1,6 @@
 (require 'eieio)
 (use-package magit
+  :ensure t
   :bind (("M-," . pdc/vc-status)
          ("C-. g s" . magit-status))
   :init
@@ -19,28 +20,34 @@
             (t
              (call-interactively 'dired))))
     (use-package magit-gitflow
+      :ensure t
       :config
       (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))))
 
 (use-package gist
+  :ensure t
   :init (setq gist-authenticate-function 'gist-oauth2-authentication)
   :bind ("C-c G" . gist-region-or-buffer))
 
 (use-package git-blame
+  :ensure t
   :commands git-blame-mode)
 
 (use-package git-gutter+
+  :ensure t
   :if (window-system)
   :diminish git-gutter+-mode
   :config
   (progn
     (use-package git-gutter-fringe+
+      :ensure t
       :config
       (git-gutter-fr+-minimal)))
 
   (global-git-gutter+-mode 1))
 
 (use-package vc-git
+  :ensure t
   :init
   (setq vc-git-diff-switches "-b")
   :config

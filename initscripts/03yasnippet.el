@@ -1,6 +1,7 @@
 (eval-when-compile (require 'pdc-utils))
 
 (use-package yasnippet
+  :ensure t
   :if (not noninteractive)              ; no point in batch mode
   :bind
   (("C-c y TAB" . yas-expand)

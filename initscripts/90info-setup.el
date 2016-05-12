@@ -11,4 +11,5 @@
           (delete-window)))))
 
 (use-package info-look
+  :ensure t
   :commands info-lookup-add-help)

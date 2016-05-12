@@ -81,6 +81,7 @@
 
 ;; RELAX-NG editing
 (use-package rnc-mode
+  :ensure t
   :mode ("\\.rnc\\'" . rnc-mode))
 
 ;; SVN

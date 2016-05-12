@@ -1,4 +1,5 @@
 (use-package swift-mode
+  :ensure t
   :init
   (progn
     (setq flycheck-swift-sdk-path nil

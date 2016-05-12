@@ -2,6 +2,7 @@
 ;;; 'completing read' situations. So... set 'em all up here.
 
 (use-package swiper
+  :ensure t
   :bind
   (("C-s" . swiper)
    ;;("M-x" . counsel-M-x)

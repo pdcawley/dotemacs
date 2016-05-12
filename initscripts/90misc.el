@@ -297,7 +297,7 @@ Helper method for 'yank' advice"
 (defun pdc/use-region-p ()
   (or (and (fboundp 'use-region-p) (use-region-p))
       (and transient-mark-mode mark-active
-           (> (region-end) (region-begining)))))
+           (> (region-end) (region-beginning)))))
 
 (defun pdc/default-for-read (&optional thing-type)
   (unless (pdc/use-region-p)
@@ -331,6 +331,7 @@ Helper method for 'yank' advice"
   (auto-image-file-mode 1))
 
 (use-package macrostep
+  :ensure t
   :bind ("C-c e m" . macrostep-expand))
 
 (use-package per-window-point
@@ -341,6 +342,7 @@ Helper method for 'yank' advice"
 
 
 (use-package ace-jump-mode
+  :ensure t
   :bind ("C-c SPC" . ace-jump-mode))
 
 (defun bmi (weight height)
@@ -435,7 +437,7 @@ the current buffer."
 (defun visit-ielm ()
   "Switch to default `ielm' buffer.
 Start `ielm' if it's not already running"
-  (interactiqve)
+  (interactive)
   (start-or-switch-to 'ielm "*ielm*"))
 
 

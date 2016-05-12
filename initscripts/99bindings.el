@@ -542,6 +542,7 @@
 (defvar *dss-iedit-auto-complete-was-on* nil)
 (make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)
 (use-package iedit
+  :ensure t
   :bind ("<f4> e" . dss/iedit-toggle)
   :config
   (progn
@@ -597,6 +598,7 @@
 (bind-key "<f6> k" 'dss/kill-buffer)
 
 (use-package swiper
+  :ensure t
   :bind
   (("C-s" . swiper))
   :config

@@ -1,4 +1,5 @@
 (use-package bm
+  :ensure t
   :init
   (progn
     (defvar ctl-period-breadcrumb-map)

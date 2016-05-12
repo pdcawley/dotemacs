@@ -16,6 +16,7 @@
 ;(setq ede-arduino-appdir "/Applications/Arduino.app/Contents/Resources/Java")
 
 (use-package arduino-mode
+  :ensure t
   :mode ("\\.\\(pde\\|\\ino\\)$" . arduino-mode)
   :commands arduino-mode
   :init

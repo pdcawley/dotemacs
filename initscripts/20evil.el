@@ -1,4 +1,5 @@
 (use-package evil
+  :ensure t
   :config
   (progn
     (bind-key "C-h" 'evil-backward-char evil-normal-state-map)

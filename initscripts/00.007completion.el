@@ -28,6 +28,7 @@
   :diminish auto-complete-mode
   :preface
   (use-package go-autocomplete)
+  :ensure t
   :init
   (progn
     (add-to-list 'ac-dictionary-directories (concat dss-dotfiles-dir
