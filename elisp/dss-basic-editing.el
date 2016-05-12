@@ -1,10 +1,10 @@
 (require 'diminish)
-(require 'filladapt)
+;(require 'filladapt)
 (require 'flymake)
 (setq flymake-log-level 0)
 
-(setq-default filladapt-mode t)
-(diminish 'filladapt-mode "")
+;(setq-default filladapt-mode t)
+;(diminish 'filladapt-mode "")
 (diminish 'abbrev-mode "Ab.")
 
 (setq visible-bell nil)
@@ -102,5 +102,12 @@
      (list (line-beginning-position)
            (line-beginning-position 2)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun dss/apply-to-region (func)
+  (when (region-active-p)
+    (insert (funcall func (delete-and-extract-region
+                           (region-beginning)
+                           (region-end))))))
+
 
 (provide 'dss-basic-editing)

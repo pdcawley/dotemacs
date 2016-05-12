@@ -1,7 +1,8 @@
-(setq user-extempore-directory "/usr/local/opt/extempore/")
+(setq extempore-share-directory "/usr/local/share/extempore/")
 
-(autoload 'extempore-mode (concat user-extempore-directory "extras/extempore.el") "" t)
-(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
+(autoload 'extempore-mode
+  (concat extempore-share-directory "extras/extempore.el") "" t)
+(add-to-list 'auto-mode-alist '("\\.xtm" . extempore-mode))
 
 (setq extempore-tab-completion nil)
 
@@ -15,7 +16,7 @@
 
 (add-hook 'extempore-mode-hook 'pdc/extempore-mode-hook)
 
-(autoload #'llvm-mode (concat user-extempore-directory "extras/llvm-mode.el")
+(autoload #'llvm-mode (concat extempore-share-directory "extras/llvm-mode.el")
   "Major mode for editing LLVM IR files" t)
 (add-to-list 'auto-mode-alist '("\\.ir$" . llvm-mode))
 (add-to-list 'auto-mode-alist '("\\.ll$" . llvm-mode))
@@ -76,7 +77,7 @@
   (if (not (string= pl-str ""))
       (mapconcat (lambda (name) (format format-str name name))
                  (cl-remove-if (lambda (x) (or (string-match "^'.*:$" x)
-                                               (string-match "^\".*:\"$" x)))
+                                          (string-match "^\".*:\"$" x)))
                                (split-string pl-str " "))
                  " ")
     pl-str))
@@ -113,6 +114,3 @@
             (cadr res)
           (caddr res))
       "")))
-
-
-

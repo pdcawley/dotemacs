@@ -67,7 +67,7 @@
 
     (if (featurep 'icicles)
         (defadvice lusty-file-explorer (around lusty-file-explorer-without-icy activate)
-          (flet ((message (&rest ignore)))
+          (cl-flet ((message (&rest ignore)))
             (let ((icy-was-on icicle-mode))
               (if icy-was-on (icy-mode 0))
               (unwind-protect

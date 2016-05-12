@@ -30,7 +30,7 @@
 (setq tramp-backup-directory-alist backup-directory-alist)
 
 (use-package tramp
-  :config
+  :init
   (progn
     (setq tramp-auto-save-directory "~/.tramp-autosaves"
           tramp-encoding-shell "/bin/bash"
@@ -39,6 +39,7 @@
                               tramp-default-remote-path
                               tramp-own-remote-path)
           tramp-sh-extra-args '(("/bash\\'" . "-norc -noprofile")
-                                ("/zsh\\'"  . "-d -f")))))
+                                ("/zsh\\'"  . "-d -f"))
+          tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$>\n]*#?[]#$%>] *\\([][][0-9;]*[a-zA-Z] *?\\)")))
 
 

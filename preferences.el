@@ -4,9 +4,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ack-and-a-half-arguments (quote ("--nopager")))
- '(ack-and-a-half-executable "/u/virtual/pdc/bin/ack" t)
+ '(ack-and-a-half-executable "ack" t)
  '(ack-and-a-half-prompt-for-directory t)
  '(ack-prompt-for-directory t)
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#3f3f3f" "#cc9393" "#7f9f7f" "#f0dfaf" "#8cd0d3" "#dc8cc3" "#93e0e3" "#dcdccc"])
  '(auto-save-interval 300)
@@ -45,10 +47,10 @@
  '(cua-remap-control-v nil)
  '(current-language-environment "English")
  '(cursor-type (quote bar))
- '(custom-enabled-themes (quote (pdc-zenburn)))
+ '(custom-enabled-themes (quote (zenburn)))
  '(custom-safe-themes
    (quote
-    ("0576c2197ec944b60ae9f543b42955135aa693939260901c620571c61a486ae0" "f72c55281f894898c88fba03d84e0a8d64b4c7039e4249da91cf0f4577ba1124" "0261d8aca24a5b0e1f9138c49c758a9c7215b60736c7f51b130f81d7aed03884" "35290fcff26737b6f0d7674deebc6701e43f2e281ce73a235c9d08e9630a4a5c" "8fc9387bf6302020929ba8f8524cd92d6825bfb2e76f09a19fe59f6cc435b773" "66bd972acaaffbe24ac94c6a81e71c33d7ff87746c5e08c51920005a8113fe53" "92f744d9a97bb8f99565fade6bf093787466e22e6d1be4b0cf68e07c73f93f19" "5359fb73898840ada2ae5d69877f2d817a1672185013049955672fc6438a4bd4" "83cffe882af5fdb996897f17b68cf2b309ca618afc0fba0eae3884bfee890429" "2a954a51b071b4e63d62acf6381f2ddbea9a528c94360d797f82319a78a2c57b" "4c9ba94db23a0a3dea88ee80f41d9478c151b07cb6640b33bfc38be7c2415cc4" default)))
+    ("0c01de11a478d411fcbd5c16e4757900dc34b1d859d46ab320d4b4452765923d" "c0d743b59ef10a9d8f21a6b0447ed729f1ff7136b14968f2f76a7e1bb9600366" "58ede9ae92e608cc051fa7c64cd648405b77cee62970e3ae55179e0e5486240a" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -155,6 +157,9 @@
      (sequence "WAITING(w@/!)" "SOMEDAY(s!)" "|" "CANCELLED(c@/!)")
      (sequence "OPEN(O)" "|" "CLOSED(C)"))))
  '(overflow-newline-into-fringe t)
+ '(package-selected-packages
+   (quote
+    (ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
@@ -164,7 +169,19 @@
  '(require-final-newline t)
  '(safe-local-variable-values
    (quote
-    ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
+    ((eval font-lock-add-keywords nil
+           (quote
+            (("defexamples\\|def-example-group\\| => "
+              (0
+               (quote font-lock-keyword-face))))))
+     (standard-indent . 2)
+     (hc-highlight-other-chars-p)
+     (hc-highlight-hard-hyphens-p)
+     (hc-highlight-hard-spaces-p)
+     (hc-highlight-trailing-whitespace-p)
+     (hc-highlight-tabs-p)
+     (whitespace-style face tabs spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark)
+     (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook"
            (add-hook
             (quote write-contents-functions)
             (lambda nil
@@ -241,54 +258,27 @@
  '(vc-annotate-very-old-color "#dc8cc3")
  '(visible-bell nil)
  '(visual-scroll-margin nil)
- '(w3m-command "/opt/local/bin/w3m")
+ '(w3m-command "/opt/local/bin/w3m" t)
  '(w3m-use-cookies t)
  '(wdired-allow-to-change-permissions (quote advanced))
+ '(web-mode-attr-indent-offset 2)
+ '(web-mode-code-indent-offset 2)
+ '(web-mode-css-indent-offset 2)
+ '(web-mode-enable-auto-expanding t)
+ '(web-mode-indent-style 2)
+ '(web-mode-markup-indent-offset 2)
  '(wg-mode-line-on nil)
  '(whitespace-action (quote (auto-cleanup)))
  '(whitespace-line-column nil)
  '(whitespace-style (quote (tabs trailing space-before-tab)))
  '(woman-use-own-frame nil)
- '(xterm-mouse-mode t)
- '(zenburn-bg "#3f3f3f" t)
- '(zenburn-bg+1 "#4f4f4f" t)
- '(zenburn-bg+2 "#5f5f5f" t)
- '(zenburn-bg+3 "#6f6f6f" t)
- '(zenburn-bg-05 "#383838" t)
- '(zenburn-bg-1 "#2b2b2b" t)
- '(zenburn-blue "#8cd0d3" t)
- '(zenburn-blue+1 "#94bff3" t)
- '(zenburn-blue-1 "#7cb8bb" t)
- '(zenburn-blue-2 "#6ca0a3" t)
- '(zenburn-blue-3 "#5c888b" t)
- '(zenburn-blue-4 "#4c7073" t)
- '(zenburn-blue-5 "#366060" t)
- '(zenburn-cyan "#93e0e3" t)
- '(zenburn-fg "#dcdccc" t)
- '(zenburn-fg-1 "#656555" t)
- '(zenburn-green "#7f9f7f" t)
- '(zenburn-green+1 "#8fb28f" t)
- '(zenburn-green+2 "#9fc59f" t)
- '(zenburn-green+3 "#afd8af" t)
- '(zenburn-green+4 "#bfebbf" t)
- '(zenburn-green-1 "#5f7f5f" t)
- '(zenburn-magenta "#dc8cc3" t)
- '(zenburn-orange "#dfaf8f" t)
- '(zenburn-red "#cc9393" t)
- '(zenburn-red+1 "#dca3a3" t)
- '(zenburn-red-1 "#bc8383" t)
- '(zenburn-red-2 "#ac7373" t)
- '(zenburn-red-3 "#9c6363" t)
- '(zenburn-red-4 "#8c5353" t)
- '(zenburn-region "#7f073f" t)
- '(zenburn-violet "#6c71c4" t)
- '(zenburn-yellow "#f0dfaf" t)
- '(zenburn-yellow-1 "#e0cf9f" t)
- '(zenburn-yellow-2 "#d0bf8f" t))
+ '(xterm-mouse-mode t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))) t))
+ '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))) t)
+ '(hc-tab ((t (:inherit whitespace-tab))))
+ '(web-mode-html-tag-bracket-face ((t (:inherit zenburn-green-4)))))

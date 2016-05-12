@@ -1,11 +1,16 @@
-(autoload 'ack-and-a-half-same "ack-and-a-half" nil t)
-(autoload 'ack-and-a-half "ack-and-a-half" nil t)
-(autoload 'ack-and-a-half-find-file-same "ack-and-a-half" nil t)
-(autoload 'ack-and-a-half-find-file "ack-and-a-half" nil t)
-(defalias 'ack 'ack-and-a-half)
-(defalias 'ack-same 'ack-and-a-half-same)
-(defalias 'ack-find-file 'ack-and-a-half-find-file)
-(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-(setq ack-and-a-half-executable (expand-file-name "~/bin/ack"))
-
-(bind-key "C-. s" 'ack)
+(use-package ack
+  :ensure t
+  :bind
+  (("C-. s" . ack))
+  :init
+  (progn
+    (defun pdc-ack-default-directory (arg)
+      "A function for `ack-default-directory-function`.
+With no \\[universal-argument], find the project root directory;
+with one \\[universal-arguement], return `default-directory`;
+otherwise, interactively choose a directory"
+      (ack-default-directory (cond ((not arg) 4)
+                                   ((= arg 4) nil)
+                                   (t arg))))
+    (setq ack-default-directory-function 'pdc-ack-default-directory)
+    (setq ack-and-a-half-executable (expand-file-name "~/bin/ack"))))

@@ -22,13 +22,10 @@ http://www.emacswiki.org/emacs/DeskTop
         (if (string= "comm" (car attr))
             (setq cmd (cdr attr))))
       (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
-(require 'desktop-recover)
-
 
 (defun dss/desktop-reset ()
   (interactive)
-  (desktop-remove)
-  (desktop-recover-do-saves-automatically))
+  (desktop-remove))
 
 (desktop-save-mode 1)
 

@@ -1,5 +1,5 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: real->integer
+# name: real2integer
 # key: ri
 # binding: direct-keybinding
 # --

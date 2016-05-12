@@ -484,13 +484,12 @@
   (interactive)
   (if (not ac-completing)
       (call-interactively 'hippie-expand)
-    (ac-expand)))
+    (ac-expand nil)))
+
 (bind-key "M-/" 'dss/hippie-expand)
 (bind-key "M-TAB" 'dabbrev-expand)
 (bind-key "C-M-l" 'dss/sync-point-all-windows)
 
-(bind-key "C-x C-r" 'dss/ido-choose-from-recentf)
-(bind-key "C-x C-p" 'dss/ido-find-file-at-point)
 (bind-key "C-x C-v" 'revert-buffer)
 
 
@@ -596,3 +595,47 @@
 (bind-key "<f6> o" 'fm-occur)
 (bind-key "<f6> ;" 'string-rectangle)
 (bind-key "<f6> k" 'dss/kill-buffer)
+
+(use-package swiper
+  :bind
+  (("C-s" . swiper))
+  :config
+  (progn
+    (bind-keys
+     :map ivy-mode-map
+     ("C-m"   . ivy-alt-done)
+     ("<return>" . ivy-alt-done)
+     ("C-M-m" . ivy-call)
+     ("C-j"   . ivy-done)
+     ("C-M-j" . ivy-immediate-done)
+     ("C-7"   . swiper-mc))))
+
+(defun swiper-mc ()
+  (interactive)
+  (unless (require 'multiple-cursors nil t)
+    (error "multiple-cursors isn't installed"))
+  (let ((cands (nreverse ivy--old-cands)))
+    (unless (string= ivy-text "")
+      (ivy-set-action
+       (lambda (_)
+         (let (cand)
+           (while (setq cand (pop cands))
+             (swiper--action cand)
+             (when cands
+               (mc/create-fake-cursor-at-point))))
+         (mc/maybe-multiple-cursors-mode)))
+      (setq ivy-exit 'done)
+      (exit-minibuffer))))
+
+(use-package counsel
+  :init
+  (progn
+    (setq ivy-re-builders-alist
+          '((t . ivy--regex-plus))))
+  :config
+  (progn
+    (setf (alist-get 'counsel-M-x ivy-initial-inputs-alist) "")
+    (counsel-mode)
+))
+
+(electric-indent-mode -1)

@@ -129,6 +129,59 @@
    `(secondary-selection ((t (:foreground nil :background ,zenburn-bg+2))))
    `(tool-bar ((t (:background ,zenburn-bg+2))))
 
+   ;; widgetry
+    '(plain-widget-button
+      ((t (:weight bold))))
+    '(plain-widget-button-pressed
+      ((t (:inverse-video t))))
+    '(plain-widget-documentation
+      ((t (:inherit font-lock-doc))))
+    `(plain-widget-field
+      ((t (:background ,zenburn-bg+2))))
+    '(plain-widget-inactive
+      ((t (:strike-through t))))
+    `(plain-widget-single-line-field
+      ((t (:background ,zenburn-bg+2))))
+
+    `(fancy-widget-button
+      ((t (:background ,zenburn-bg+1
+                       :box (:line-width 2 :style released-button)))))
+    `(fancy-widget-button-pressed
+      ((t (:background ,zenburn-bg+1
+                       :box (:line-width 2 :style pressed-button)))))
+    `(fancy-widget-button-highlight
+      ((t (:background ,zenburn-bg+1
+                       :box (:line-width 2 :style released-button)))))
+    `(fancy-widget-button-pressed-highlight
+      ((t (:background ,zenburn-bg+1
+                       :box (:line-width 2 :style pressed-button)))))
+    '(fancy-widget-documentation
+      ((t (:inherit font-lock-doc))))
+    `(fancy-widget-field
+      ((t (:background ,zenburn-bg+2))))
+    '(fancy-widget-inactive
+      ((t (:strike-through t))))
+    `(fancy-widget-single-line-field
+      ((t (:background ,zenburn-bg+2))))
+
+    '(widget-button
+      ((t (:inherit plain-widget-button))))
+    '(widget-button-pressed
+      ((t (:inherit fancy-widget-button-pressed))))
+    '(widget-button-highlight
+      ((t (:inherit fancy-widget-button-highlight))))
+    '(widget-button-pressed-highlight
+      ((t (:inherit fancy-widget-button-pressed-highlight))))
+    '(widget-documentation
+      ((t (:inherit fancy-widget-documentation))))
+    '(widget-field
+      ((t (:inherit fancy-widget-field))))
+    '(widget-inactive
+      ((t (:inherit fancy-widget-inactive))))
+    '(widget-single-line-field
+      ((t (:inherit fancy-widget-single-line-field))))
+
+
    ;; apt-utils
    '(apt-utils-normal-package ((t (:inherit zenburn-primary-1))))
    '(apt-utils-virtual-package ((t (:inherit zenburn-primary-2))))
@@ -275,7 +328,6 @@
 
    ;; cperl-fixes
    '(cperl-array-face ((t (:inherit font-lock-variable-name :weight bold))))
-
    '(cperl-hash-face ((t (:inherit font-lock-variable-name-face))))
 
 
@@ -356,6 +408,8 @@
 
    ;; hightlight the current line
    `(hl-line ((t (:inherit nil :background ,zenburn-bg-1))))
+   ;; highlight the current column
+   `(col-highlight ((t (:inherit nil :background ,zenburn-bg-1))))
 
    ;; holiday
    '(holiday ((t (:underline t :inherit zenburn-primary-4))))
@@ -586,6 +640,11 @@
    '(w3m-image-face ((t (:inherit zenburn-primary-3))))
    '(w3m-form-face ((t (:inherit widget-field))))
 
+   ;; web-mode
+   '(web-mode-html-tag-bracket-face ((t (:inherit zenburn-green-1))))
+   '(web-mode-html-tag-face ((t (:inherit zenburn-green))))
+   '(web-mode-html-attr-name-face ((t (:inherit web-mode-html-tag-face))))
+   '(web-mode-html-attr-equal-face ((t (:inherit web-mode-html-tag-face))))
    ;; which
    '(which-func ((t (:inherit mode-line))))
 
@@ -618,13 +677,14 @@
    `(wl-highlight-thread-indent-face ((t (:foreground ,zenburn-magenta))))
    '(wl-highlight-summary-refiled-face ((t (:inherit zenburn-lowlight-2))))
    '(wl-highlight-summary-displaying-face ((t (:underline t :weight bold))))
-   ))
+
+   ;; visible-mark mode
+   `(visible-mark-face ((t (:foreground ,zenburn-bg :background ,zenburn-yellow-2))))
+   '(helm-visible-mark ((t (:inherit visible-mark-face))))))
 
 (provide-theme 'zenburn)
 
 
-;; (deftheme pdc-zenburn
-;;   "Created 2013-10-30.")
 
 ;; (defvar zenburn-fg "#dcdccc")
 ;; (defvar zenburn-fg-1 "#656555")
@@ -1412,11 +1472,7 @@
 ;;  '(ediff-current-diff-A ((t (:background "#2f2525"))))
 ;;  '(ediff-current-diff-B ((t (:background "#2e3330"))))
 ;;  '(ediff-current-diff-C ((t (:inherit zenburn-highlight-subtle))))
-;;  '(visible-mark-face ((t (:foreground "#3f3f3f" :background "#d0bf8f"))))
 ;;  `(default ((t (:foreground ,zenburn-fg :background ,zenburn-bg)))))
-
-;; (provide-theme 'pdc-zenburn)
-
 
 ;; Local Variables:
 ;; no-byte-compile: t

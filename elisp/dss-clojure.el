@@ -504,7 +504,7 @@ is defined in your current Emacs buffer.
   (save-window-excursion
     (slime-switch-to-output-buffer)
     (slime-repl-clear-buffer)
-    (end-of-buffer)
+    (goto-char (point-max))
     (dss/sync-point-all-windows)))
 
 (defun dss/clojure-jump-to-project ()

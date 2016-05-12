@@ -1,1 +1,1 @@
-(require 'dss-desktop)
+;; (require 'dss-desktop)

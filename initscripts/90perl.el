@@ -1,3 +1,4 @@
+;;; lexical-binding: t
 (use-package cperl-mode
   :mode
   (("\\.t\\'"     . perl-mode)
@@ -7,14 +8,18 @@
     (require 's)
 
     (setq cperl-sub-keywords (list "sub" "method" "class" "role" "fun")
-          cperl-sub-regexp (regexp-opt cperl-sub-keywords))
+          cperl-sub-regexp (regexp-opt cperl-sub-keywords)
+          cperl-qualified-name-rex
+          "\\(::[a-zA-Z_0-9:']+\\|[a-zA-Z_'][a-zA-Z_0-9:']*\\)")
+
+    (require 'rx)
 
     (defun pdc:path->perl-module (path)
       (if (string-match "\\(?:/gui/[^/]+/\\|/lib/\\(?:perl/\\)?\\)\\(.*\\)\\.pm" path)
           (s-replace "/" "::" (match-string 1 path))
         nil))
 
-    ;;; CPD refactoring
+;;; CPD refactoring
     (defun cpd-related-driver (path)
       (let ((parts (f-split path)))
         ))
@@ -91,7 +96,61 @@ Returns one of the following symbols `moose-role' `moose-class' `module'
                          ac-source-yasnippet))
       (pdc/turn-on-perl-mode-bindings))
 
+    (defun rx-perl-tokens (&rest sexps)
+      (let ((WS `(regexp ,cperl-white-and-comment-rex)))
+        `(: ,WS ,@(-interpose WS (--map `(regexp ,it)
+                                        sexps)))))
+
+    (let ((rx-constituents
+           (cons `(WS . ,cperl-white-and-comment-rex) rx-constituents)))
+      (setq cperl-after-moops-method
+            (rx-to-string
+             `(0+ WS
+                  (| (: "using" WS (| "Moops" "Moose"))
+                     (: (| "with" "extends")
+                        ,(rx-perl-tokens cperl-qualified-name-rex))
+                     (: "types" ,(rx-perl-tokens cperl-qualified-name-rex)
+                        (0+ ,(rx-perl-tokens cperl-qualified-name-rex)))))))
+
+      (setq cperl-imenu--function-name-regexp-perl
+            (rx-to-string
+             `(: bol
+                 (group
+                  (| (group (0+ blank) "package"
+                            (group ,(rx-perl-tokens
+                            cperl-qualified-name-rex)))
+                     (group (0+ blank)
+                            (: (regexp ,cperl-sub-regexp)
+                               (regexp ,(cperl-after-sub-regexp 'named nil))
+                               (regexp ,cperl-after-moops-method)
+                               (regexp ,cperl-maybe-white-and-comment-rex)))
+                     (: "=head"
+                        (group (any "1-4"))
+                        (0+ blank)
+                        (group (0+ (not (any "\n"))))
+                        eol))))))
+
+      (setq cperl-outline-regexp
+            (rx-to-string `(| (regexp ,cperl-imenu--function-name-regexp-perl)
+                              string-start)))
+
+      (setq pdc/cperl-defun-prompt-regexp
+            (rx-to-string
+             `(: (regexp "^[ \t]*")
+                 (submatch
+                  (| (: (regexp ,cperl-sub-regexp)
+                        (regexp ,(cperl-after-sub-regexp 'named 'attr-groups))
+                        (regexp ,cperl-after-moops-method))
+                     (| "BEGIN" "UNITCHECK" "CHECK" "INIT" "END" "AUTOLOAD"
+                        "DESTROY"))
+                  (regexp ,cperl-maybe-white-and-comment-rex))))))
+
+    (defun pdc/fix-cperl-defun-match ()
+      "Fixup defun-prompt-regexp to play nice with Moops"
+      (setq defun-prompt-regexp pdc/cperl-defun-prompt-regexp))
+
     (add-hook 'cperl-mode-hook 'pdc/cperl-mode-hook)
+    (add-hook 'cperl-mode-hook 'pdc/fix-cperl-defun-match)
 
     (defalias 'perl-mode 'cperl-mode)
 
@@ -138,5 +197,3 @@ Returns one of the following symbols `moose-role' `moose-class' `module'
 
       (pushnew '(indentable pdc/indent-cperl-indentable)
                cperl-indent-rules-alist))))
-
-

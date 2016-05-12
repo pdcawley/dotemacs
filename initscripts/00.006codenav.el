@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (require 'dss-basic-editing)
 (require 'k2-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -265,8 +267,8 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
                                   (setq position (get-text-property 1 'org-imenu-marker symbol))))
 
                                 (unless (or (null position) (null name))
-                                  (add-to-list 'symbol-names name)
-                                  (add-to-list 'name-and-pos (cons name position))))))))
+                                  (push name 'symbol-names)
+                                  (push (cons name position) 'name-and-pos)))))))
       (addsymbols imenu--index-alist))
     ;; If there are matching symbols at point, put them at the beginning of `symbol-names'.
     (let ((symbol-at-point (thing-at-point 'symbol)))
@@ -279,40 +281,9 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
             (sort matching-symbols (lambda (a b) (> (length a) (length b))))
             (mapc (lambda (symbol) (setq symbol-names (cons symbol (delete symbol symbol-names))))
                   matching-symbols)))))
-    (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
+    (let* ((selected-symbol (completing-read "Symbol? " symbol-names))
            (position (cdr (assoc selected-symbol name-and-pos))))
       (goto-char position))))
-
-;; ; http://nflath.com/2009/07/imenu/
-;; (require 'imenu)
-;; (setq imenu-auto-rescan t)
-;; (defun ido-goto-symbol ()
-;;   "Will update the imenu index and then use ido to select a symbol to navigate to"
-;;   (interactive)
-;;   (imenu--make-index-alist)
-;;   (let ((name-and-pos '())
-;;         (symbol-names '()))
-;;     (flet ((addsymbols (symbol-list)
-;;                        (when (listp symbol-list)
-;;                          (dolist (symbol symbol-list)
-;;                            (let ((name nil) (position nil))
-;;                              (cond
-;;                               ((and (listp symbol) (imenu--subalist-p symbol))
-;;                                (addsymbols symbol))
-;;                               ((listp symbol)
-;;                                (setq name (car symbol))
-;;                                (setq position (cdr symbol)))
-;;                               ((stringp symbol)
-;;                                (setq name symbol)
-;;                                (setq position (get-text-property 1 'org-imenu-marker symbol))))
-;;                              (unless (or (null position) (null name))
-;;                                (add-to-list 'symbol-names name)
-;;                                (add-to-list 'name-and-pos (cons name position))))))))
-;;       (addsymbols imenu--index-alist))
-;;     (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
-;;               (position (cdr (assoc selected-symbol name-and-pos))))
-;;       (if (markerp position)
-;;             (goto-char position) (goto-char (overlay-start position))))))
 
 (setq imenu-auto-rescan t)
 
@@ -338,7 +309,12 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   ;; (font-lock-add-keywords
   ;;  nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|@@TR\\|REFACTOR\\)*:"
   ;;         1 font-lock-warning-face t)))
-  (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?" 'font-lock-warning-face))
+  (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?"
+                    'font-lock-warning-face))
+
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-codenav-helpers)

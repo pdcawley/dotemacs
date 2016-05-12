@@ -8,101 +8,15 @@
 (if (file-exists-p abbrev-file-name)
     (read-abbrev-file abbrev-file-name t))
 
+;; (use-package swiper
+;;   :config
+;;   (progn
+;;     (ivy-mode t)
+;;     (setq magit-completing-read 'ivy-completing-read)
+;;     (setq ivy-re-builders-alist
+;;           '((ivy-switch-buffer . ivy--regex-plus)
+;;             (t . ivy--regex-fuzzy)))))
 
-(use-package ido
-  :config
-  (progn
-    (ido-mode t)
-    (ido-everywhere t)
-    (setq ido-enable-flex-matching t)
-    (setq ido-auto-merge-work-directories-length -1)
-
-    (setq
-     ido-ignore-buffers  '("\\` "  "^\*Back" ".*Completions\*" "^\*Ido" "^\*trace"
-                           "^\*compilation" "^\*GTAGS" "^session\.*")
-                                        ;ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
-     ido-case-fold  t
-     ido-enable-last-directory-history t ; remember last used dirs
-     ido-max-work-file-list      50   ; remember many
-     ido-use-filename-at-point nil
-     ido-use-url-at-point nil
-                                        ;ido-max-prospects 8              ; don't spam my minibuffer
-                                        ;ido-confirm-unique-completion t ; wait for RET, even with unique completion
-     ido-save-directory-list-file (concat dss-ephemeral-dir "ido.last"))
-
-    (defvar dss-minibuffer-truncate-lines t)
-    (defun dss/minibuffer-setup-hook ()
-      (when dss-minibuffer-truncate-lines
-        (setq truncate-lines t)))
-
-    (add-hook 'minibuffer-setup-hook 'dss/minibuffer-setup-hook)
-
-    (defun dss/ido-find-file-at-point ()
-      (interactive)
-      (let ((ido-use-filename-point t)
-            (ido-use-url-at-point t))
-        (call-interactively 'ido-find-file)))
-
-    (defvar ido-enable-replace-completing-read t
-      "If t, use ido-completing-read instead of completing-read if possible.
-
-Set it to nil using let in around-advice for functions where the
-original completing-read is required.  For example, if a function
-foo absolutely must use the original completing-read, define some
-advice like this:
-
-\(defadvice foo (around original-completing-read-only activate)
-  (let (ido-enable-replace-completing-read) ad-do-it))")
-
-    (defadvice completing-read
-        (around use-ido-when-possible activate)
-      (if (or (not ido-enable-replace-completing-read)
-              (boundp 'ido-cur-list))
-          ad-do-it
-        (let ((allcomp (all-completions "" collection predicate)))
-          (if allcomp
-              (setq ad-return-value
-                    (ido-completing-read prompt
-                                         allcomp
-                                         nil require-match initial-input hist
-                                         def))
-            ad-do-it))) " ")
-    (defun dss/where-is ()
-      "wrapper around where-is that doesn't use ido for completion"
-      (interactive)
-      (let (ido-enable-replace-completing-read)
-        (call-interactively 'where-is)))
-
-    (defun dss/execute-extended-command ()
-      "wrapper around execute-extended-command that doesn't use ido for completion"
-      (interactive)
-      (let (ido-enable-replace-completing-read)
-        (call-interactively 'execute-extended-command)))
-
-    (defun dss/load-library ()
-      "wrapper around load-library that doesn't use ido for completion"
-      (interactive)
-      (let (ido-enable-replace-completing-read)
-        (call-interactively 'load-library)))
-
-    (defun dss/ido-search-file (dir pattern ex-pattern)
-      (let* ((file-list
-              (split-string
-               (shell-command-to-string
-                (concat
-                 "DIR=" dir ";"
-                 "find $DIR -type f -regex '" pattern "'"
-                 " -not -regex '" ex-pattern "' "
-                 "| sed -e's#'$DIR'##'"))))
-             (choice (ido-completing-read "Which file: " file-list)))
-        (find-file (concat dir choice))))
-
-                                        ;http://www.rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/
-    (defun dss/insert-path (file)
-      "insert file"
-      (interactive "FPath: ")
-      (insert (replace-regexp-in-string (getenv "HOME")
-                                        "~" (expand-file-name file))))))
 
 (setq-default dabbrev-case-replace nil)
 (setq-default hippie-expand-try-functions-list

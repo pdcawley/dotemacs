@@ -382,7 +382,7 @@ Position the cursor at its beginning, according to the current mode."
 
 (when window-system
   (bind-key "S-<return>" 'smart-open-line)
-  (bind-key "M-o" 'smarta-open-line)
+  (bind-key "M-o" 'smart-open-line)
   (bind-key "M-O" 'smart-open-line-above))
 
 (defun smarter-move-beginning-of-line (arg)

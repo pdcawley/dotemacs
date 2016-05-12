@@ -37,3 +37,5 @@ esk-org-mode.el
 .cask
 --help
 network-security.data
+/elpa
+/tutorial

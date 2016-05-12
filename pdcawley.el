@@ -1,9 +1,10 @@
-(el-get-init 'use-package)
 (require 'use-package)
 (when (memq window-system '(mac-ns ns))
   (use-package exec-path-from-shell
     :config
-    (exec-path-from-shell-initialize)))
+    (progn
+      (exec-path-from-shell-initialize)
+      (exec-path-from-shell-copy-env "GOPATH"))))
 
 (require 'pdc-utils)
 (setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))

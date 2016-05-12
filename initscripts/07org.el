@@ -106,7 +106,6 @@ Skips capture tasks and tasks with subtasks"
      ("a" "technology" entry (file (concat org-directory "/technology.org"))
       "* %U %?\n\n  %i\n  %a")))
 
-(setq org-completion-use-ido t)
 (setq org-refile-targets '((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5)))
 (setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)

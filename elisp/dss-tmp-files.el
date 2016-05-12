@@ -24,14 +24,21 @@
   "Location of backups of the *scratch* buffer contents for
     persistent-scratch.")
 
+;; (defun make-persistent-scratch-backup-name ()
+;;   "Create a filename to backup the current scratch file by
+;;   concatenating PERSISTENT-SCRATCH-BACKUP-DIRECTORY with the
+;;   current date and time."
+;;   (concat
+;;    persistent-scratch-backup-directory
+;;    (replace-regexp-in-string
+;;     (regexp-quote " ") "-" (current-time-string))))
+
 (defun make-persistent-scratch-backup-name ()
-  "Create a filename to backup the current scratch file by
-  concatenating PERSISTENT-SCRATCH-BACKUP-DIRECTORY with the
-  current date and time."
-  (concat
-   persistent-scratch-backup-directory
-   (replace-regexp-in-string
-    (regexp-quote " ") "-" (current-time-string))))
+  "Create a filename to backup the current scratch file
+This simple minded variant just tacks \"~\" onto on
+PERSISTENT-SCRATCH-FILENAME"
+  (concat persistent-scratch-filename "~"))
+
 
 (defun save-persistent-scratch ()
   "Write the contents of *scratch* to the file name
@@ -54,8 +61,8 @@
         (delete-region (point-min) (point-max))
         (insert (dss/file-to-string persistent-scratch-filename)))))
 
-(load-persistent-scratch)
-(push #'save-persistent-scratch kill-emacs-hook)
+;; (load-persistent-scratch)
+;; (push #'save-persistent-scratch kill-emacs-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-tmp-files)

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: golambda
+# key: golambda
+# --
+go func($1) {
+    $0
+}($2)

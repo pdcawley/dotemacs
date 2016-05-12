@@ -8,7 +8,7 @@
 
 (defun dss/ess-end-of-buffer ()
   (with-current-buffer "*R*"
-    (end-of-buffer)
+    (goto-char (point-max))
     (dss/sync-point-all-windows)))
 
 (defun dss/ess-load-file ()

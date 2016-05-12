@@ -177,7 +177,7 @@
 
 (defun dss/window-list-data ()
   (let ((cur-win (selected-window)))
-    (flet ((win-num (w f) (dss/window-numbering-get-number w f)))
+    (cl-flet ((win-num (w f) (dss/window-numbering-get-number w f)))
       (loop for f in (dss/window-sorted-frames)
             collect
             (list
@@ -201,7 +201,7 @@
 
 (defun dss/-window-list ()
   (let (frame-start)
-    (flet ((red (s) (propertize s 'face '(:foreground "red")))
+    (cl-flet ((red (s) (propertize s 'face '(:foreground "red")))
            (yellow (s) (propertize s 'face '(:foreground "yellow")))
            (grey (s) (propertize s 'face '(:foreground "#999999")))
            (current (s) (propertize
@@ -237,7 +237,7 @@
 (defun dss/window-list-enter ()
   (interactive)
   (dss/tmp-screen-switch
-   (string-to-int (get-text-property (point) 'frame-name)))
+   (string-to-number (get-text-property (point) 'frame-name) 10))
   (quit-window))
 
 (defun dss/window-list ()

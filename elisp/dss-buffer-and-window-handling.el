@@ -177,7 +177,7 @@
 
 (defun dss/window-list-data ()
   (let ((cur-win (selected-window)))
-    (flet ((win-num (w f) (dss/window-numbering-get-number w f)))
+    (cl-flet ((win-num (w f) (dss/window-numbering-get-number w f)))
       (loop for f in (dss/window-sorted-frames)
             collect
             (list

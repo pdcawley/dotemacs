@@ -54,8 +54,11 @@
 (add-hook 'shell-mode-hook 'set-scroll-conservatively)
 
 ;; make it harder to kill my shell buffers
-(require 'protbuf)
-(add-hook 'shell-mode-hook 'protect-process-buffer-from-kill-mode)
+(ignore-errors
+ (use-package protbuf
+   :config
+   (add-hook 'shell-mode-hook 'protect-process-buffer-from-kill-mode)))
+
 
 (defun enter-again-if-enter ()
   "Make the return key select the current item in minibuf and shell history isearch.
@@ -80,7 +83,7 @@ comint-replace-by-expanded-history-before-point."
   "When I press enter, jump to the end of the *buffer*, instead of the end of
 the line, to capture multiline input. (This only has effect if
 `comint-eol-on-send' is non-nil."
-  (flet ((end-of-line () (end-of-buffer)))
+  (cl-flet ((end-of-line () (goto-char (point-max))))
     ad-do-it))
 
 ;; not sure why, but comint needs to be reloaded from the source (*not*

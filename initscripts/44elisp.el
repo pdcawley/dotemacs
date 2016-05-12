@@ -8,6 +8,7 @@
 (defun dss/init ()
   (linum-mode t)
   (paredit-mode +1)
+  (lispy-mode 1)
   (run-hooks dss-lisp-modes-hook))
 
 (defun dss/test-mini-buffer (string)
@@ -95,13 +96,13 @@
             (add-to-list 'elint-standard-variables 'emacs-major-version)
             (add-to-list 'elint-standard-variables 'window-system)))
 
-        (use-package highlight-cl
-          :init
-          (mapc (function
-                 (lambda (mode-hook)
-                   (add-hook mode-hook
-                             'highlight-cl-add-font-lock-keywords)))
-                lisp-mode-hooks))
+        ;; (use-package highlight-cl
+        ;;   :init
+        ;;   (mapc (function
+        ;;          (lambda (mode-hook)
+        ;;            (add-hook mode-hook
+        ;;                      'highlight-cl-add-font-lock-keywords)))
+        ;;         lisp-mode-hooks))
 
         (defun my-byte-recompile-file ()
           (save-excursion
@@ -130,7 +131,7 @@
         ;;            :ignore-case t
         ;;            :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
         ;;       lisp-modes)
-	))
+    ))
 
     (defun dss/goto-match-paren (arg)
       "Go to the matching parenthesis if on parenthesis. Else go to the
@@ -165,6 +166,7 @@
 
       (auto-fill-mode 1)
       (paredit-mode +1)
+      (lispy-mode 1)
       (redshank-mode 1)
       (elisp-slime-nav-mode 1)
 
@@ -193,9 +195,9 @@
               try-complete-lisp-symbol
               try-complete-lisp-symbol-partially
               try-expand-dabbrev)))
-    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())))
-
-(use-package nukneval)
+    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+    (setq emacs-lisp-mode-hook (cl-remove 'lexbind-mode emacs-lisp-mode-hook))
+    ))
 
 (use-package ielm
   :bind ("C-c :" . ielm)
@@ -207,7 +209,7 @@
                            (goto-char (point-max))
                            (skip-chars-backward " \t\n\r")
                            (point))))
-        (if (>= (point) end-of-sexp)
+        (if (>= (point) end-of-sexp)q
             (progn
               (goto-char (point-max))
               (skip-chars-backward " \t\n\r")

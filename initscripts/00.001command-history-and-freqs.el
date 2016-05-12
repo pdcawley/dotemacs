@@ -23,20 +23,6 @@
           (lambda ()
             (linum-mode +1)))
 
-(defun dss/ido-choose-from-recentf ()
-  ;;from http://www.xsteve.at/prg/emacs/power-user-tips.html
-  "Use ido to select a recently opened file from the `recentf-list'"
-  (interactive)
-  (let ((home (expand-file-name (getenv "HOME"))))
-    (find-file
-     (ido-completing-read "Recentf open: "
-                          (mapcar (lambda (path)
-                                    (replace-regexp-in-string
-                                     (concat home "/") "~/"
-                                     path))
-                                  recentf-list)
-                          nil t))))
-
 (require 'session)
 (add-hook 'after-init-hook 'session-initialize)
 (setq session-save-file (concat dss-ephemeral-dir "session"))
