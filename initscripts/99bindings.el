@@ -600,17 +600,33 @@
 (use-package swiper
   :ensure t
   :bind
-  (("C-s" . swiper))
-  :config
+  (("C-s" . swiper)
+   ("C-x 4 C-f" . pdc-find-file-other-window)
+   ("C-x 4 f" . pdc-find-file-other-window))
+  :init
   (progn
-    (bind-keys
-     :map ivy-mode-map
-     ("C-m"   . ivy-alt-done)
-     ("<return>" . ivy-alt-done)
-     ("C-M-m" . ivy-call)
-     ("C-j"   . ivy-done)
-     ("C-M-j" . ivy-immediate-done)
-     ("C-7"   . swiper-mc))))
+    (defun pdc-find-file-other-window (&optional initial-input)
+      "Forward to `find-file-other-window'.
+When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
+      (interactive)
+      (ivy-read "Find file: " 'read-file-name-internal
+                :matcher #'counsel--find-file-matcher
+                :initial-input initial-input
+                :action
+                (lambda (x)
+                  (with-ivy-window
+                    (find-file-other-window
+                     (expand-file-name x
+                                       ivy--directory))))
+                :preselect (when counsel-find-file-at-point
+                             (require 'ffap)
+                             (let ((f (ffap-guesser)))
+                               (when f (expand-file-name f))))
+                :require-match 'confirm-after-completion
+                :history 'file-name-history
+                :keymap counsel-find-file-map
+                :caller 'counsel-find-file)))x)
+
 
 (defun swiper-mc ()
   (interactive)
@@ -630,6 +646,7 @@
       (exit-minibuffer))))
 
 (use-package counsel
+  :diminish counsel-mode
   :init
   (progn
     (setq ivy-re-builders-alist
