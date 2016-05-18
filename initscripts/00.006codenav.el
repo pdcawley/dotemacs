@@ -312,6 +312,14 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?"
                     'font-lock-warning-face))
 
+(use-package avy
+  :ensure t
+  :bind
+  (("C-. b" . avy-goto-char)
+   ("C-. '" . avy-goto-char-2)
+   ("C-. l" . avy-goto-line)
+   ("C-. w" . avy-goto-word-1))
+  )
 
 
 

@@ -339,19 +339,13 @@ Helper method for 'yank' advice"
   (pwp-mode 1))
 
 
-
-
-(use-package ace-jump-mode
-  :ensure t
-  :bind ("C-c SPC" . ace-jump-mode))
-
 (defun bmi (weight height)
   (let ((pounds (* 1.0 (if (listp weight)
                            (+ (* 14 (car weight)) (cadr weight))
                          weight)))
         (inches (* 1.0 (if (listp height)
-                          (+ (* 12 (car height)) (cadr height))
-                        height))))
+                           (+ (* 12 (car height)) (cadr height))
+                         height))))
     (* 703.00 (/ pounds (* inches inches)))))
 
 (defun eval-and-replace ()
