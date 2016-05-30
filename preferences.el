@@ -159,7 +159,7 @@
  '(overflow-newline-into-fringe t)
  '(package-selected-packages
    (quote
-    (artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
+    (el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
@@ -212,8 +212,9 @@
  '(scroll-conservatively 0)
  '(scroll-preserve-screen-position t)
  '(scroll-step 0)
+ '(sentence-end-double-space nil)
  '(server-mode t)
- '(session-use-package t nil (session))
+; '(session-use-package t nil (session))
  '(shell-prompt-pattern "^[^$>
 ]*[#$%>] *\\([[0-9;]*[a-zA-Z] *\\)*")
  '(show-paren-style (quote parenthesis))

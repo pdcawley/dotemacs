@@ -49,11 +49,6 @@
         "/usr/local/share/emacs/site-lisp"
         "/usr/local/opt/git/share/git-core/contrib/emacs/")))
 
-(require 'package)
-(package-initialize)
-(require 'ert)
-(require 'use-package)
-
 (setq load-path
       (delete-dups
        (delete

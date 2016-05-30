@@ -1,16 +1,16 @@
 ;;; see https://github.com/purcell/emacs.d for more ideas
 
-(require 'package)
-(setq package-user-dir
-      (expand-file-name "elpa" emacs-d))
-(add-to-list 'package-archives
-         '("melpa" . "http://melpa.org/packages/") t)
+;(require 'package)
+;(setq package-user-dir
+;      (expand-file-name "elpa" emacs-d))
+;(add-to-list 'package-archives
+;         '("melpa" . "http://melpa.org/packages/") t)
 
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+;(when (< emacs-major-version 24)
+;  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 
-(package-initialize)
-(package-refresh-contents)
+;(package-initialize)
+;(package-refresh-contents)
 ;; (el-get-elpa-build-local-recipes)
 ;;(require 'dash)
 ;;; load packages
@@ -167,9 +167,6 @@
         yaml-mode
         zencoding-mode
         ))
-
-(unless (require 'filladapt nil t)
-  (add-to-list 'pdc-packages 'filladapt))
 
 (defun pdc-fetch-new-packages ()
   "Fetch any packages added to pdc-packages"

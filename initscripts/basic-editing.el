@@ -93,5 +93,3 @@
     (insert (funcall func (delete-and-extract-region
                            (region-beginning)
                            (region-end))))))
-
-(provide 'dss-basic-editing)

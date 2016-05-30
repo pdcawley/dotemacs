@@ -53,3 +53,6 @@
 [submodule "elisp/external/structured-haskell-mode"]
 	path = elisp/external/structured-haskell-mode
 	url = git@github.com:chrisdone/structured-haskell-mode.git
+[submodule "elisp/external/mode-compile"]
+	path = elisp/external/mode-compile
+	url = https://github.com/icathing/mode-compile.git

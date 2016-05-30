@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (require 'dss-basic-editing)
 (require 'k2-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,7 +81,7 @@ Do nothing if not in string."
   (dss/beginning-of-string)
   (forward-char))
 
-;@@TR: I should add some similar functions for working with comments etc.
+                                        ;@@TR: I should add some similar functions for working with comments etc.
 
 (defun dss/out-sexp (&optional level forward syntax)
   "Skip out of any nested brackets.
@@ -91,8 +93,8 @@ Do nothing if not in string."
       (dss/beginning-of-string))
   (progn
     (let* ((depth (syntax-ppss-depth (or syntax (syntax-ppss))))
-          (level (or level depth))
-          (forward (if forward -1 1)))
+           (level (or level depth))
+           (forward (if forward -1 1)))
       (unless (zerop depth)
         (if (> depth 0)
             ;; Skip forward out of nested brackets.
@@ -230,8 +232,8 @@ Do nothing if not in string."
   "If at end of line, insert character pair without surrounding spaces.
    Otherwise, just insert the typed character."
   (interactive)
-  ;(if (eolp) (let (parens-require-spaces) (insert-pair))
-  ;  (self-insert-command 1)))
+                                        ;(if (eolp) (let (parens-require-spaces) (insert-pair))
+                                        ;  (self-insert-command 1)))
   (if (or (dss/in-string-p)
           (dss/in-comment-p))
       (self-insert-command 1)
@@ -240,80 +242,6 @@ Do nothing if not in string."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'imenu)
-(defun ido-imenu ()
-  "Update the imenu index and then use ido to select a symbol to navigate to.
-Symbols matching the text at point are put first in the completion list.
-Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.el"
-  (interactive)
-  (imenu--make-index-alist)
-  (let ((name-and-pos '())
-        (symbol-names '()))
-    (flet ((addsymbols (symbol-list)
-                       (when (listp symbol-list)
-                         (dolist (symbol symbol-list)
-                           (let ((name nil) (position nil))
-                             (cond
-                              ((and (listp symbol) (imenu--subalist-p symbol))
-                               (addsymbols symbol))
-
-                              ((listp symbol)
-                               (setq name (car symbol))
-                               (setq position (cdr symbol)))
-
-                              ((stringp symbol)
-                               (setq name symbol)
-                               (setq position (get-text-property 1 'org-imenu-marker symbol))))
-
-                             (unless (or (null position) (null name))
-                               (add-to-list 'symbol-names name)
-                               (add-to-list 'name-and-pos (cons name position))))))))
-      (addsymbols imenu--index-alist))
-    ;; If there are matching symbols at point, put them at the beginning of `symbol-names'.
-    (let ((symbol-at-point (thing-at-point 'symbol)))
-      (when symbol-at-point
-        (let* ((regexp (concat (regexp-quote symbol-at-point) "$"))
-               (matching-symbols (delq nil (mapcar (lambda (symbol)
-                                                     (if (string-match regexp symbol) symbol))
-                                                   symbol-names))))
-          (when matching-symbols
-            (sort matching-symbols (lambda (a b) (> (length a) (length b))))
-            (mapc (lambda (symbol) (setq symbol-names (cons symbol (delete symbol symbol-names))))
-                  matching-symbols)))))
-    (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
-           (position (cdr (assoc selected-symbol name-and-pos))))
-      (goto-char position))))
-
-;; ; http://nflath.com/2009/07/imenu/
-;; (require 'imenu)
-;; (setq imenu-auto-rescan t)
-;; (defun ido-goto-symbol ()
-;;   "Will update the imenu index and then use ido to select a symbol to navigate to"
-;;   (interactive)
-;;   (imenu--make-index-alist)
-;;   (let ((name-and-pos '())
-;;         (symbol-names '()))
-;;     (flet ((addsymbols (symbol-list)
-;;                        (when (listp symbol-list)
-;;                          (dolist (symbol symbol-list)
-;;                            (let ((name nil) (position nil))
-;;                              (cond
-;;                               ((and (listp symbol) (imenu--subalist-p symbol))
-;;                                (addsymbols symbol))
-;;                               ((listp symbol)
-;;                                (setq name (car symbol))
-;;                                (setq position (cdr symbol)))
-;;                               ((stringp symbol)
-;;                                (setq name symbol)
-;;                                (setq position (get-text-property 1 'org-imenu-marker symbol))))
-;;                              (unless (or (null position) (null name))
-;;                                (add-to-list 'symbol-names name)
-;;                                (add-to-list 'name-and-pos (cons name position))))))))
-;;       (addsymbols imenu--index-alist))
-;;     (let* ((selected-symbol (ido-completing-read "Symbol? " symbol-names))
-;;               (position (cdr (assoc selected-symbol name-and-pos))))
-;;       (if (markerp position)
-;;             (goto-char position) (goto-char (overlay-start position))))))
-
 (setq imenu-auto-rescan t)
 
 (defun dss/line-jump (n)
@@ -338,7 +266,20 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   ;; (font-lock-add-keywords
   ;;  nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|@@TR\\|REFACTOR\\)*:"
   ;;         1 font-lock-warning-face t)))
-  (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?" 'font-lock-warning-face))
+  (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?"
+                    'font-lock-warning-face))
+
+(req-package avy
+  :ensure t
+  :bind
+  (("C-. b" . avy-goto-char)
+   ("C-. '" . avy-goto-char-2)
+   ("C-. l" . avy-goto-line)
+   ("C-. w" . avy-goto-word-1))
+  )
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-codenav-helpers)
