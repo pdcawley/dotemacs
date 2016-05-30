@@ -29,8 +29,3 @@
 	    (lambda ()
 	      (linum-mode +1))))
 
-(req-package session
-  :config
-  (add-hook 'after-init-hook 'session-initialize)
-  (setq session-save-file (concat dss-ephemeral-dir "session"))
-  (setq session-save-file-coding-system 'utf-8))

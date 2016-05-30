@@ -1,8 +1,10 @@
 ;;; 44elisp.el --- Custom emacs-lisp-mode configuration
 (eval-when-compile
-  (require 'pdc-utils)
-  (require 'req-package))
-)
+  (require 'cl))
+(require 'pdc-utils)
+(require 's)
+(require 'dash)
+
 (defvar lisp-modes '(emacs-lisp-mode
                      inferior-emacs-lisp-mode
                      ielm-mode
@@ -20,13 +22,8 @@
 
 
 (req-package autoinsert)
-(req-package cl)
 (req-package saveplace)
 (req-package ffap)
-
-(eval-when-compile
-  (require 'pdc-utils)
-  (require 'cl))
 
 (defvar dss-lisp-modes-hook nil)
 
@@ -42,6 +39,7 @@
 
 (req-package lisp-mode
   :require yasnippet
+  :force t
   :bind (("C-h e" . nil)
          ("C-h e c" . finder-commentary)
          ("C-h e e" . view-echo-area-messages)
@@ -49,11 +47,6 @@
          ("C-h e F" . find-face-definition))
   :init
   (progn
-    ;; (defvar lisp-find-map)
-    ;; (define-prefix-command 'lisp-find-map)
-
-    ;; (bind-key "C-h e" 'lisp-find-map)
-
     (mapc (lambda (major-mode)
             (font-lock-add-keywords
              major-mode
@@ -133,11 +126,12 @@
 
       (yas-minor-mode 1))
 
+
     (hook-into-modes #'my-lisp-mode-hook lisp-mode-hooks)
 
     (defun pdc/elisp-mode-hook ()
       (eldoc-mode 1)
-      (setq mode-name "EL: ")
+      (setq mode-name "EL:")
       (setq hippie-expand-try-functions-list
             '(try-expand-dabbrev-visible
               try-complete-lisp-symbol
@@ -205,7 +199,7 @@
   :init
   (mapc (function
          (lambda (mode-hook)
-           (add-hook mode-hook
+           (add-hook-exec mode-hook
                      'highlight-cl-add-font-lock-keywords)))
         lisp-mode-hooks))
 
@@ -316,7 +310,16 @@
   :require lisp-mode
   :bind
   (:map emacs-lisp-mode-map
-        ("<M-return>" . outline-insert-heading)))
+        ("<M-return>" . outline-insert-heading)
+        ("M-." . dcc/find-function-at-point))
+  :config
+  (defun dss/find-function-at-point ()
+    "Find directly the fuction at point in the current window."
+    (interactive)
+    (let ((symb (function-called-at-point)))
+      (when symb
+        (find-function symb)))))
+
 
 
 (req-package paredit
@@ -450,11 +453,4 @@
     (defun dss/in-slime-repl-p ()
       (equal mode-name "REPL"))))
 
-(defun dss/find-function-at-point ()
-  "Find directly the fuction at point in the current window."
-  (interactive)
-  (let ((symb (function-called-at-point)))
-    (when symb
-      (find-function symb))))
-
-(bind-key "M-." 'dss/find/function-at-point emacs-lisp-mode-map)
+(provide 'init-elisp)
