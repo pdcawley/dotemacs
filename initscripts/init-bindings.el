@@ -23,9 +23,19 @@
 
 ;;(global-set-key (kbd "C-xC-f") 'ido-find-file)
 
+(defun pdc/execute-extended-command-short (prefixarg &optional function)
+  "A massively simplified execute-extended-command"
+  (interactive "P\nCcommand: ")
+  (setq this-command function)
+  (setq real-this-command function)
+  (let ((prefix-arg prefixarg))
+    (command-execute function 'record)))
+
+
+
 ;; A few from Steve Yegge that seem to make sense
-(global-set-key (kbd "C-x C-m") 'execute-extended-command)
-(global-set-key (kbd "C-c C-m") 'execute-extended-command)
+(global-set-key (kbd "C-x C-m") 'pdc/execute-extended-command-short)
+(global-set-key (kbd "C-c C-m") 'pdc/execute-extended-command-short)
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x t") 'beginning-of-buffer)
@@ -53,7 +63,6 @@
 (if (fboundp 'ido-goto-symbol)
     (global-set-key (kbd "C-x TAB") 'ido-goto-symbol))
 
-(bind-key "C-s" 'isearch-forward-regexp)
 (bind-key "C-r" 'isearch-backward-regexp)
 (bind-key "C-A-s" 'isearch-forward)
 (bind-key "C-A-r" 'isearch-backward)

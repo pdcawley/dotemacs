@@ -62,7 +62,14 @@ When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
 (req-package ack-and-a-half
   :bind ("C-. s" . ack-and-a-half)
   :init
-  (setq ack-and-a-half-executable (expand-file-name "~/bin/ack")))
+  (setq ack-and-a-half-executable (expand-file-name "~/bin/ack"))
+  :config
+  (defalias 'ack 'ack-and-a-half))
+
+(req-package visual-regexp
+  :require multiple-cursors visual-regexp-steroids
+  :bind (("C-c m" . vr/mc-mark)))
+
 
 
 (provide 'init-search)

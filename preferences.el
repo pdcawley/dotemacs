@@ -159,7 +159,7 @@
  '(overflow-newline-into-fringe t)
  '(package-selected-packages
    (quote
-    (peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
+    (visual-regexp-steroids visual-regexp peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
