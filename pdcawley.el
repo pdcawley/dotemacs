@@ -1,6 +1,6 @@
-(require 'use-package)
+(require 'req-package)
 (when (memq window-system '(mac-ns ns))
-  (use-package exec-path-from-shell
+  (req-package exec-path-from-shell
     :config
     (progn
       (exec-path-from-shell-initialize)

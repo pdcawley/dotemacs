@@ -89,6 +89,8 @@
   (setq load-dir-recursive t)
   :config
   (load-dir-one my-init-dir)
+  (load (expand-file-name system-name emacs-d) t)
+  (load (expand-file-name user-login-name emacs-d) t)
   (req-package-finish)
   ;(funcall 'select-theme)
   )
