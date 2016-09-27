@@ -1,3 +1,5 @@
+(require 'init-leaders)
+
 (req-package ibuffer
   :config
   (defalias 'list-buffers 'ibuffer)
@@ -9,30 +11,44 @@
   :require ibuffer
   :config
   (setq ibuffer-formats
-	'(
-	  (mark dss-modified vc-status-mini " "
-		(name 35 35 :left :elide)
-		;; " " (mode 10 10 :left :elide)
-		" " filename-and-process)
-	  ;; (mark modified read-only " " (name 18 18 :left :elide)
-	  ;;       " " (size 9 -1 :right)
-	  ;;       " " (mode 16 16 :left :elide) " " filename-and-process)
-	  (mark " " (name 16 -1) " " filename)))
+    '(
+      (mark dss-modified vc-status-mini " "
+        (name 35 35 :left :elide)
+        ;; " " (mode 10 10 :left :elide)
+        " " filename-and-process)
+      ;; (mark modified read-only " " (name 18 18 :left :elide)
+      ;;       " " (size 9 -1 :right)
+      ;;       " " (mode 16 16 :left :elide) " " filename-and-process)
+      (mark " " (name 16 -1) " " filename)))
 
   (define-ibuffer-column dss-modified (:name "M" :inline t)
     (if (buffer-modified-p)
-	(propertize "-" 'face '(:foreground "yellow"))
+    (propertize "-" 'face '(:foreground "yellow"))
       " ")))
 
 ;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (req-package window-numbering
   :require dash
+  :general
+  (:prefix window-leader-key
+   "1" 'select-window-1
+   "2" 'select-window-2
+   "3" 'select-window-3
+   "4" 'select-window-4
+   "5" 'select-window-5
+   "6" 'select-window-6
+   "7" 'select-window-7
+   "8" 'select-window-8)
   :config
+  (defun window-numbering-install-mode-line (&optional position)
+    "Do nothing, the display is handled by spaceline.")
+  ;; (setq window-numbering-auto-assign-0-to-minibuffer nil)
   (-map (lambda (map)
-	  (bind-key "M-0" 'bm-next map)
-	  (bind-key "M-9" 'bm-previous))
-	(list global-map window-numbering-keymap))  
+          (bind-key "M-0" 'bm-next map)
+          (bind-key "M-9" 'bm-previous))
+        (list global-map window-numbering-keymap))
   (window-numbering-mode 1))
+
 
 (req-package uniquify
   :config
@@ -273,9 +289,30 @@
 
 (defun dss/kill-buffer ()
   (interactive)
-  (let ((buf (current-buffer)))
-    (kill-buffer buf)))
+  (kill-this-buffer))
+
+(general-define-key
+ :prefix "C-x"
+  "k" 'kill-this-buffer)
+
+(req-package windmove
+  :loader :built-in
+  :general
+  ("s-<left>" 'windmove-left
+   "s-<right>" 'windmove-right
+   "s-<up>" 'windmove-up
+   "s-<down>" 'windmove-down
+   :prefix window-leader-key
+   "j" 'windmove-left
+   "l" 'windmove-right
+   "k" 'windmove-up
+   "i" 'windmove-down
+   "m" 'flymake-goto-prev-error
+   "," 'flymake-goto-next-error
+   "[" 'isearch-forward-at-point
+   "=" 'magit-status
+   "-" 'magit-diff))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'dss-buffer-and-window-handling)
+(provide 'init-buffer-and-window-handling)

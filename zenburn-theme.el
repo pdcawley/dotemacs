@@ -95,7 +95,7 @@
    '(zenburn-title ((t (:inherit variable-pitch :weight bold))))
 
    ;; basics
-   '(Bold ((t (:weight bold))))
+   '(bold ((t (:weight bold))))
    '(bold-italic ((t (:slant italic :weight bold))))
    `(default ((t (:background ,zenburn-bg :foreground ,zenburn-fg))))
    '(fixed-pitch ((t (:weight bold))))
@@ -249,14 +249,14 @@
    '(dictionary-word-entry ((t (:inherit font-lock-keyword))))
 
    ;; diff
-   '(diff-header-face ((t (:inherit zenburn-highlight-subtle))))
-   '(diff-index-face ((t (:inherit bold))))
-   '(diff-file-header-face ((t (:inherit bold))))
-   '(diff-hunk-header-face ((t (:inherit zenburn-highlight-subtle))))
-   '(diff-added-face ((t (:inherit zenburn-primary-3))))
-   '(diff-removed-face ((t (:inherit zenburn-blue))))
-   '(diff-context-face ((t (:inherit font-lock-comment))))
-   '(diff-refine-change-face ((t (:inherit zenburn-background-2))))
+   '(diff-header ((t (:inherit zenburn-highlight-subtle))))
+   '(diff-index ((t (:inherit bold))))
+   '(diff-file-header ((t (:inherit bold))))
+   '(diff-hunk-header ((t (:inherit zenburn-highlight-subtle))))
+   '(diff-added ((t (:inherit zenburn-primary-3))))
+   '(diff-removed ((t (:inherit zenburn-blue))))
+   '(diff-context ((t (:inherit font-lock-comment))))
+   '(diff-refine-change ((t (:inherit zenburn-background-2))))
 
    ;; emms
    `(emms-pbi-song ((t (:foreground ,zenburn-yellow))))

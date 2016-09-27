@@ -37,8 +37,8 @@
                                  "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("sunrise" . "http://joseito.republika.pl/sunrise-commander/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 (defconst my-init-dir (expand-file-name "initscripts" emacs-d))
 (defconst emacs-major-version-rad 1000000)
@@ -50,7 +50,9 @@
 (unless (has-emacs-version 24 0)
   (add-to-list 'package-archives '("gnu" . "http://elpa.org/packages")))
 
-(eval-when-compile (package-initialize))
+(message "package-archives configured")
+(package-initialize)
+(message "ELPA initialized")
 
 (defun require-package (package)
   "refresh package archives, check package presence and install if it's not installed"
@@ -65,32 +67,86 @@
 ;; el-get
 (require-package 'use-package)
 (require 'use-package)
+(message "Got use-package")
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-d))
 (require-package 'el-get)
 (use-package el-get
   :config
   (add-to-list 'el-get-recipe-path (expand-file-name "el-get/el-get/recipes" emacs-d))
   (el-get 'sync))
-
+(message "Got el-get")
 
 ;; req-package
-(require-package 'req-package)
-(require 'req-package)
-(req-package--log-set-level 'trace)
+(use-package req-package
+  :ensure t
+  :config
+  (req-package--log-set-level 'debug))
 
+
+(message "got req-package")
+
+;; (require-package 'which-key)
+;; (require 'which-key)
+(req-package which-key
+  :force t
+  :diminish " Ⓚ"
+  :config
+  (let ((new-descriptions
+         '(("select-window-\\(0-9\\)" . "window \\1")
+           ("avy-goto-word-or-subword-1" . "avy word")
+           ("shell-command" . "shell cmd")
+           ("avy-goto-line" "avy line")
+           ("universal-argument" . "universal arg")
+           ("er/expand-region" . "expand region"))))
+    (dolist (nd new-descriptions)
+      (push (cons (concat "\\`" (car nd) "\\'") (cdr nd))
+            which-key-description-replacement-alist)))
+  (setq which-key-special-keys nil
+        which-key-echo-keystrokes 0.02
+        which-key-max-description-length 32
+        which-key-sort-order 'which-key-key-order-alpha
+        which-key-idle-delay 0.4)
+  (which-key-mode))
+
+(defvar leader-map (make-sparse-keymap))
+(defvar leader-key "M-m")
+(global-set-key (kbd leader-key) nil)
+(req-package general
+  :requires which-key
+  :force t)
+
+(defun bindings|expand-define-prefix (desc key docstr)
+  (let* ((variable-name (intern (format "%s-leader-key" (symbol-name desc))))
+         (doc (or docstr (symbol-name desc))))
+    `(progn
+       (defvar ,variable-name (format "%s %s" leader-key ,key)
+         ,(format "Prefix for %s" doc))
+       (general-define-key ,variable-name '(nil :which-key ,(symbol-name desc)))
+       )))
+
+(defmacro bindings|define-prefix (desc key &optional docstr)
+  (declare (indent 1))
+  (bindings|expand-define-prefix desc key docstr))
+
+
+(bindings|define-prefix jump   "j" "jumping around")
+(bindings|define-prefix search "s" "searching")
+(bindings|define-prefix files  "f")
+(bindings|define-prefix window "w" "windows")
 
 ;; init.d
 (random t)
 (req-package load-dir
-  :force true
+  :force t
   :init
-  (setq force-load-messages t)
-  (setq load-dir-debug t)
-  (setq load-dir-recursive t)
+  (setq force-load-messages t
+        load-dir-debug t
+        load-dir-recursive t)
   :config
-  (load-dir-one my-init-dir)
-  (load (expand-file-name system-name emacs-d) t)
-  (load (expand-file-name user-login-name emacs-d) t)
-  (req-package-finish)
-  ;(funcall 'select-theme)
-  )
+  (let ((load-path (cons my-init-dir load-path)))
+    (load-dir-one my-init-dir)
+    (load (expand-file-name system-name emacs-d) t)
+    (load (expand-file-name user-login-name emacs-d) t)
+    (req-package-finish)))
+
+(provide 'init-real)

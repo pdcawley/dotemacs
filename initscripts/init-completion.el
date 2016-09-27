@@ -4,16 +4,16 @@
 
 
 (req-package abbrev
-  :diminish "Ab."
+  :diminish " ⓐ"
   :init
   (progn
     (setq-default abbrev-mode t)
     (setq save-abbrevs t)
     (if (file-exists-p abbrev-file-name)
-        (read-abbrev-file abbrev-file-name t))))
+        (read-abbrev-file abbrev-file-name t)))
 
 
-(setq-default dabbrev-case-replace nil)
+  (setq-default dabbrev-case-replace nil))
 (setq-default hippie-expand-try-functions-list
               '(try-expand-abbrev
                 try-expand-dabbrev-visible
@@ -23,7 +23,7 @@
 
 (req-package auto-complete-config
   :requires auto-complete
-  :diminish auto-complete-mode
+  :diminish (auto-complete-mode " Ⓐ")
   :init
   (progn
     (add-to-list 'ac-dictionary-directories (concat dss-dotfiles-dir

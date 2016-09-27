@@ -1,6 +1,8 @@
 (eval-when-compile (require 'autoinsert))
 ;;; 99bindings.el --- Misc. global key bindings
 (require 'pdc-support)
+(require 'init-leaders)
+
 ;; Some custom global key bindings
 (global-set-key (kbd "C-c s")  'calendar)
 (global-set-key (kbd "C-c g")  'goto-line)
@@ -78,11 +80,7 @@
 (define-key cperl-mode-map (kbd "RET") 'newline-and-indent)
 
 ;; windmove
-(when (require 'windmove nil 'noerror)
-  (global-set-key (kbd "s-<left>") 'windmove-left)
-  (global-set-key (kbd "s-<right>") 'windmove-right)
-  (global-set-key (kbd "s-<up>") 'windmove-up)
-  (global-set-key (kbd "s-<down>") 'windmove-down))
+
 
 ;; Lispy
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
@@ -170,7 +168,7 @@
 (global-set-key (kbd "C-c C-'") 'pdc/quote-behind)
 (global-set-key (kbd "C-c \"")  'pdc/doublequote-behind)
 
-(req-package buffer-mode
+(req-package buffer-move
   :bind
   (("C-c C-<left>"  . buf-move-left)
    ("C-c C-<right>" . buf-move-right)
@@ -315,13 +313,6 @@
 
 (global-set-key (kbd "C-c C-c") nil)
 
-;; Multicursor stuff
-(req-package multiple-cursors
-  :bind
-  (("C-S-c" . nil)
-   ("C-S-c C-S-c" . mc/edit-lines)
-   ("C-S-c C-e" . mc/edit-ends-of-lines)
-   ("C-S-c C-a" . mc/edit-beginnings-of-lines)))
 
 ;; Bookmark stuff
 (bind-key "C-x p S" 'pdc/bookmark-magit-status)
@@ -333,7 +324,7 @@
 (bind-key "<C-M-backspace>" 'backward-kill-sexp)
 
 (bind-key "C-x B" 'ido-switch-buffer-other-window)
-(bind-key "C-x C-e" 'pp-eval-last-sexp)
+;; (bind-key "C-x C-e" 'pp-eval-last-sexp)
 (bind-key "C-c <tab>" 'ff-find-other-file)
 
 (defun do-eval-buffer ()
@@ -445,23 +436,10 @@
 
 (bind-key "C-x C-v" 'revert-buffer)
 
-
-(req-package dss-bookmarks-registers
+(req-package list-register
   :bind
-  (("C-x r b" . dss/bookmark-jump)
-   ("C-x r v" . list-register)))
+   ("C-x r v" . list-register))
 
-
-(bind-key "<f2>" f2-map)
-(bind-key "<f2> j" 'windmove-left)
-(bind-key "<f2> l" 'windmove-right)
-(bind-key "<f2> k" 'windmove-up)
-(bind-key "<f2> i" 'windmove-down)
-(bind-key "<f2> m" 'flymake-goto-prev-error)
-(bind-key "<f2> ," 'flymake-goto-next-error)
-(bind-key "<f2> [" 'isearch-forward-at-point)
-(bind-key "<f2> =" 'magit-status)
-(bind-key "<f2> -" 'magit-diff)
 
 (defun dss/eval-region-or-last-sexp ()
   (interactive)
@@ -469,28 +447,29 @@
       (call-interactively 'eval-region)
     (call-interactively 'eval-last-sexp)))
 
-(bind-key "<f4>" f4-map)
-(bind-key "<f4> ." 'dss/grep-project)
-(bind-key "<f4> t" 'etags-select-find-tag-at-point)
-(bind-key "<f4> r" 'etags-select-find-tag)
-(bind-key "<f4> <space>" 'fixup-whitespace)
-(bind-key "<f4> s" 'dss/eval-region-or-last-sexp)
-(bind-key "<f4> d" 'dss/eval-defun)
-(bind-key "<f4> x" 'dss/magit-or-monky)
-(bind-key "<f4> v" 'dss/magit-or-monky)
-(bind-key "<f4> q" 'monky-queue)
-(bind-key "<f4> 3" 'dss/out-sexp)
-(bind-key "<f4> 8" 'dss/out-one-sexp)
-(bind-key "<f4> 9" 'paredit-wrap-round)
-(bind-key "<f4> 0" 'paredit-close-round-and-newline)
-(bind-key "<f4> <f4>" (kbd "TAB"))
-(bind-key "<f4> i" 'yank)
-(bind-key "<f4> u" 'undo)
-(bind-key "<f4> y" 'dss/mark-string)
-(bind-key "<f4> m" 'mark-sexp)
-(bind-key "<f4> '" (kbd "\""))
-(bind-key "<f4> ;" 'goto-last-change)
-(bind-key "<f4> <f4>" 'kmacro-end-or-call-macro)
+(general-define-key
+ :prefix "<f4>"
+  ""         f4-map
+  "."       'dss/grep-project
+  "t"       'etags-select-find-tag-at-point
+  "r"       'etags-select-find-tag
+  "<space>" 'fixup-whitespace
+  "s"       'dss/eval-region-or-last-sexp
+  "d"       'dss/eval-defun
+  "x"       'dss/magit-or-monky
+  "v"       'dss/magit-or-monky
+  "q"       'monky-queue
+  "3"       'dss/out-sexp
+  "8"       'dss/out-one-sexp
+  "9"       'paredit-wrap-round
+  "0"       'paredit-close-round-and-newline
+  "i"       'yank
+  "u"       'undo
+  "y"       'dss/mark-string
+  "m"       'mark-sexp
+  "'"       (kbd "\"")
+  ";"       'goto-last-change
+  "<f4>"    'kmacro-end-or-call-macro)
 
 (defvar *dss-iedit-auto-complete-was-on* nil)
 (make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)
@@ -539,15 +518,20 @@
   (other-window 1)
   (fm-start))
 
-(bind-key "<f6>" f6-map)
 
-(bind-key "<f6> `" 'open-next-line)
-(bind-key "<f6> <f6>" 'open-next-line)
-(bind-key "<f6> 1" 'replace-string)
-(bind-key "<f6> i" 'dss/insert-todo)
-(bind-key "<f6> l" 'linum-mode)
-(bind-key "<f6> o" 'fm-occur)
-(bind-key "<f6> ;" 'string-rectangle)
-(bind-key "<f6> k" 'dss/kill-buffer)
+(general-define-key
+ :prefix "<f6>"
+ ""     '(nil :which-key "+lines")
+ "`"    'open-next-line
+ "<f6>" 'open-next-line
+ "1"    'replace-string
+ "i"    'dss/insert-todo
+ "l"    'linum-mode
+ "o"    'fm-occur
+ ";"    'string-rectangle
+ "k"    'kill-this-buffer)
 
 (electric-indent-mode -1)
+
+(provide 'init-bindings)
+

@@ -7,9 +7,6 @@
       (exec-path-from-shell-copy-env "GOPATH"))))
 
 (require 'pdc-utils)
-(setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
-(unless (file-exists-p temporary-file-directory)
-  (make-directory temporary-file-directory t))
 
 (setq server-socket-dir (format (expand-file-name "~/tmp/emacs%d") (user-uid)))
 
@@ -54,6 +51,11 @@ If no argument and at end of line, the previous two chars are exchanged."
    ;;           (cond ((= width 2560) 160)
    ;;                 (t 140)))
    :family "Menlo"))
+
+(when (fboundp 'set-fontset-font)
+  (set-fontset-font "fontset-default"
+                    '(#x1F600 . #x1F64F)
+                    (font-spec :name "Apple Color Emoji") nil 'prepend))
 
 ;;(load-theme 'nzenburn)
 ;; (require 'zenburn)

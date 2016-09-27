@@ -1,3 +1,8 @@
+(when (memq window-system '(mac ns))
+  (setq ns-use-srgb-colorspace nil))
+
+
+
 (defun debian-unique-strings (strings)
   "Takes a list of strings and returns the list with *adjacent*
 duplicates removed."

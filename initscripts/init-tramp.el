@@ -1,4 +1,4 @@
-(req-package tramp
+(use-package tramp
   :init
   (progn
     (setq tramp-backup-directory-alist backup-directory-alist)
@@ -10,7 +10,7 @@
                               tramp-own-remote-path)
           tramp-sh-extra-args '(("/bash\\'" . "-norc -noprofile")
                                 ("/zsh\\'"  . "-d -f"))
-          tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$>\n]*#?[]#$%>] *\\([][][0-9;]*[a-zA-Z] *?\\)"))
+          tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$>\n]*#?[]#$%>] *\\([][][0-9;]*[a-zA-Z] *?\\)*"))
   :config
   (add-to-list
  'tramp-methods
@@ -39,5 +39,3 @@
     ("-o" "UserKnownHostsFile=/dev/null")
     ("-o" "StrictHostKeyChecking=no")))
   (tramp-default-port 22))))
-
-

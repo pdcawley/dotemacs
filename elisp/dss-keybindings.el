@@ -4,11 +4,10 @@
 (require 'org)
 (require 'fm)
 (require 'sunrise-commander)
-(require 'dss-buffer-and-window-handling)
+(require 'init-buffer-and-window-handling)
 (require 'dss-command-history-and-freqs)
 (require 'dss-lisps)
 (require 'dss-completion)
-(require 'dss-bookmarks-registers)
 (require 'window-numbering)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -67,7 +66,6 @@
 (global-set-key (kbd "C-x C-p") 'dss/ido-find-file-at-point)
 (global-set-key (kbd "C-x C-v") 'revert-buffer)
 
-(global-set-key (kbd "C-x r b") 'dss/bookmark-jump)
 (global-set-key (kbd "C-x r v") 'list-register)
 
 (define-key help-map "." 'find-function)

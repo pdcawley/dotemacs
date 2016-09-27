@@ -1,11 +1,12 @@
+
 (eval-when-compile
   (require 'req-package))
 
 (req-package whitespace
   :require dash
-  :diminish (global-whitespace-mode
-             whitespace-mode
-             whitespace-newline-mode)
+  :diminish ((global-whitespace-mode . " Ⓦ")
+             (whitespace-mode . " ⓦ")
+             (whitespace-newline-mode . " ␤"))
   :commands (whitespace-buffer
              whitespace-cleanup
              whitespace-mode)

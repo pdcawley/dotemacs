@@ -270,7 +270,7 @@ Do nothing if not in string."
                     'font-lock-warning-face))
 
 (req-package avy
-  :ensure t
+  :force t
   :bind
   (("C-. b" . avy-goto-char)
    ("C-. '" . avy-goto-char-2)

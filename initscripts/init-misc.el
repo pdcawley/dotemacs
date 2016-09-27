@@ -26,12 +26,15 @@
   (declare (indent 1) (debug t))
   `(eval-after-load ,file '(progn ,@body)))
 
-(pdc/after-loading "hideshow" (diminish 'hs-minor-mode))
-(pdc/after-loading 'abbrev-mode (diminish 'abbrev-mode))
-(pdc/after-loading 'hbfc-mode (diminish 'hbfc-mode))
-(pdc/after-loading "undo-tree"
-  (diminish 'undo-tree-mode))
-(pdc/after-loading 'yasnippet (diminish 'yas-minor-mode))
+;; (pdc/after-loading "hideshow" (diminish 'hs-minor-mode))
+;; (pdc/after-loading 'abbrev-mode (diminish 'abbrev-mode))
+;; (pdc/after-loading 'hbfc-mode (diminish 'hbfc-mode))
+;; (pdc/after-loading "undo-tree"
+;;   (diminish 'undo-tree-mode))
+;; (pdc/after-loading 'yasnippet (diminish 'yas-minor-mode))
+
+(diminish 'auto-fill-function " Ⓕ")
+
 
 ;; Steve Yegge tips
 (defun rename-file-and-buffer (new-name)

@@ -158,19 +158,20 @@
         initial
         ido-current-directory
         (ido-enable-last-directory-history nil))
-    (when (and match-at-point
-               (setq fn (with-no-warnings
-                          (if (eq ido-use-filename-at-point 'guess)
-                              (ffap-guesser)
-                            (ffap-string-at-point))))
-               (not (string-match "^http:/" fn))
-               (let ((absolute-fn (expand-file-name fn)))
-                 (setq d (if (file-directory-p absolute-fn)
-                             (file-name-as-directory absolute-fn)
-                           (file-name-directory absolute-fn))))
-               (file-directory-p d))
-      (setq ido-current-directory d)
-      (setq initial (file-name-nondirectory fn)))
+    (let (d)
+      (when (and match-at-point
+                 (setq fn (with-no-warnings
+                            (if (eq ido-use-filename-at-point 'guess)
+                                (ffap-guesser)
+                              (ffap-string-at-point))))
+                 (not (string-match "^http:/" fn))
+                 (let ((absolute-fn (expand-file-name fn)))
+                   (setq d (if (file-directory-p absolute-fn)
+                               (file-name-as-directory absolute-fn)
+                             (file-name-directory absolute-fn))))
+                 (file-directory-p d))
+        (setq ido-current-directory d)
+        (setq initial (file-name-nondirectory fn))))
     (let* ((result (funcall ido-fn
                             "path: "
                             ido-current-directory nil nil
@@ -370,7 +371,7 @@ echo \"tramp initialized\"
                        (term-send-raw-string "\C-x\C-e")))
                                         ;("C-p" . term-send-raw);previous-line)
                                         ;("C-n" . term-send-raw);next-line)
-        ("C-s" . isearch-forward)
+        ("C-s" . swiper)
         ("C-r" . dss/term-reverse-search)
         ("C-m" . term-send-raw)
 

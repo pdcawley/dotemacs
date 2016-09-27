@@ -2,6 +2,8 @@
   :config
   (setq flymake-log-level 0))
 
+(req-package subword)
+
 
 (setq visible-bell nil)
 (defun dss/set-undo-boundary ()

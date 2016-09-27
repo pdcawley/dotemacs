@@ -53,22 +53,6 @@
   (set (make-local-variable 'scroll-conservatively) 10))
 (add-hook 'shell-mode-hook 'set-scroll-conservatively)
 
-;; make it harder to kill my shell buffers
-(ignore-errors
- (req-package protbuf
-   :config
-   (add-hook 'shell-mode-hook 'protect-process-buffer-from-kill-mode)))
-
-
-(defun enter-again-if-enter ()
-  "Make the return key select the current item in minibuf and shell history isearch.
-An alternate approach would be after-advice on isearch-other-meta-char."
-  (when (and (not isearch-mode-end-hook-quit)
-             (equal (this-command-keys-vector) [13])) ; == return
-    (cond ((active-minibuffer-window) (minibuffer-complete-and-exit))
-          ((member (buffer-name) my-shells) (comint-send-input)))))
-(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
-
 (defadvice comint-previous-matching-input
     (around suppress-history-item-messages activate)
   "Suppress the annoying 'History item : NNN' messages from shell history isearch.

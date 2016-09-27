@@ -82,7 +82,7 @@
   :ensure t
   :mode ("\\.rnc\\'" . rnc-mode))
 
-(require 'cl)
+(eval-when-compile (require 'cl))
 ;; (setq yas/window-system-popup-function
 ;;       'yas/x-popup-menu-for-template)
 
@@ -114,6 +114,7 @@ return a new alist whose car is the new pair and cdr is ALIST."
           alist)
       (cons (cons key value) alist))))
 
+(eval-when-compile (require 'dss-tmp-files))
 (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
 (let ((pdc/bdir (concat temporary-file-directory "/backups"))
       (pdc/adir (concat temporary-file-directory "/autosaves")))
@@ -129,21 +130,6 @@ return a new alist whose car is the new pair and cdr is ALIST."
 
 (set-default major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(mapc (lambda (m)
-        (add-hook m (lambda () (linum-mode 1))))
-      '(text-mode-hook
-        help-mode-hook
-        apropos-mode-hook
-        diff-mode-hook
-        grep-mode-hook
-        occur-mode-hook
-        conf-mode-hook
-        bookmark-bmenu-mode-hook
-        c-mode-hook
-        sh-mode-hook
-        java-mode-hook
-        cperl-mode-hook))
-
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 

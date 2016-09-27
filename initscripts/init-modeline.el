@@ -1,46 +1,53 @@
+(eval-when-compile (require 'req-package))
+
+(req-package which-func)
+
+(req-package spaceline
+  :config
+  (require 'spaceline-config))
+
 (req-package powerline
-  :ensure t
+  :require which-func spaceline
   :init
-  (setq powerline-default-separator 'brace
+  (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
         powerline-height 24)
   :config
-  (progn
-    (defun powerline-ben-theme ()
-      "Ben's powerline theme, based on \\[powerline-default-theme]"
-      (interactive)
-      (setq-default mode-line-format
-                    '("%e"
-                      (:eval
-                       (let* ((active (powerline-selected-window-active))
-                              (mode-line (if active 'mode-line 'mode-line-inactive))
-                              (face1 (if active 'powerline-active1 'powerline-inactive1))
-                              (face2 (if active 'powerline-active2 'powerline-inactive2))
-                              (separator-left (intern (format "powerline-%s-%s"
-                                                              powerline-default-separator
-                                                              (car powerline-default-separator-dir))))
-                              (separator-right (intern (format "powerline-%s-%s"
-                                                               powerline-default-separator
-                                                               (cdr powerline-default-separator-dir))))
-                              (lhs (list (powerline-raw "%*" nil 'l)
-                                         (powerline-buffer-id nil 'l)
-                                         (when (and (boundp 'which-func-mode) which-func-mode)
-                                           (powerline-raw which-func-format nil 'l))
-                                         (powerline-raw " ")
-                                         (funcall separator-left mode-line face1)
-                                         (when (boundp 'erc-modified-channels-object)
-                                           (powerline-raw erc-modified-channels-object face1 'l))
-                                         (powerline-major-mode face1 'l)
-                                         (powerline-process face1)
-                                         (powerline-minor-modes face1 'l)
-                                         (powerline-narrow face1 'l)
-                                         (powerline-raw " " face1)
-                                         (funcall separator-left face1 face2)))
-                              (rhs (list (powerline-raw global-mode-string face2 'r)
-                                         (funcall separator-right face1 mode-line)
-                                         (powerline-raw " ")
-                                         (powerline-raw "%6p" nil 'r)
-                                         (powerline-hud face2 face1))))
-                         (concat (powerline-render lhs)
-                                 (powerline-fill face2 (powerline-width rhs))
-                                 (powerline-render rhs)))))))
-    (powerline-ben-theme)))
+  (defun pdc/customize-powerline-faces ()
+    "Alter powerline faces to make them work with more themes"
+    (set-face-attribute 'powerline-inactive2 nil
+                        :inherit 'font-lock-comment-face))
+  (pdc/customize-powerline-faces)
+  (defun pdc//restore-powerline (buffer)
+    "Restore the powerline in buffer"
+    (with-current-buffer buffer
+      (setq-local mode-line-format (default-value 'mode-line-format))
+      (powerline-set-selected-window)
+      (powerline-reset)))
+
+  ;; (dolist (spec '((minor-modes "tmm")
+  ;;                 (major-mode "tmM")
+  ;;                 (version-control "tmv")
+  ;;                 (new-version "tmV")
+  ;;                 (point-position "tmp")
+  ;;                 (org-clock "tmc")))
+  ;;   (let* ((segment (car spec))
+  ;;          (status-var (intern (format "spaceline-%S-p" segment))))
+  ;;     (eval `(spacemacs|add-toggle ,(intern (format "mode-line-%S" segment))
+  ;;                                  :status ,status-var
+  ;;                                  :on (setq ,status-var t)
+  ;;                                  :off (setq ,status-var nil)
+  ;;                                  :documentation ,(format "Show %s in the mode-line."
+  ;;                                                          (replace-regexp-in-string
+  ;;                                                           "-" " " (format "%S" segment)))
+  ;;                                  :evil-leader ,(cadr spec)))))
+  (setq spaceline-org-clock-p nil)
+
+  (defun pdc//prepare-diminish ()
+    (when spaceline-minor-modes-p
+      (setq spaceline-minor-modes-separator
+            (if (display-graphic-p) "" " "))))
+  (add-hook 'spaceline-pre-hook 'pdc//prepare-diminish)
+  (spaceline-toggle-hud-on)
+  (spaceline-toggle-line-column-off)
+  (spaceline-emacs-theme))
+

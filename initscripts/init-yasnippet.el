@@ -11,7 +11,7 @@
    ("C-c y f" . yas-find-snippets)
    ("C-c y r" . yas-reload-all)
    ("C-c y v" . yas-visit-snippet-file))
-  :diminish yas-minor-mode
+  :diminish (yas-minor-mode " Ⓨ")
   :commands
   (yas-minor-mode yas-expand)
   :mode

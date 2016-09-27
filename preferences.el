@@ -50,7 +50,7 @@
  '(custom-enabled-themes (quote (zenburn)))
  '(custom-safe-themes
    (quote
-    ("0c01de11a478d411fcbd5c16e4757900dc34b1d859d46ab320d4b4452765923d" "c0d743b59ef10a9d8f21a6b0447ed729f1ff7136b14968f2f76a7e1bb9600366" "58ede9ae92e608cc051fa7c64cd648405b77cee62970e3ae55179e0e5486240a" default)))
+    ("8f38b83b7e288db29f028100cff1063892d2179fd6b799210425aa671ba2cd24" "a56b3df97105dd6a955461670e0d6c33b2255a05d4983470ad8f2b438317c511" "0c01de11a478d411fcbd5c16e4757900dc34b1d859d46ab320d4b4452765923d" "c0d743b59ef10a9d8f21a6b0447ed729f1ff7136b14968f2f76a7e1bb9600366" "58ede9ae92e608cc051fa7c64cd648405b77cee62970e3ae55179e0e5486240a" default)))
  '(default-fill-column 78 t)
  '(default-frame-alist
     (quote
@@ -133,6 +133,7 @@
  '(ns-right-alternate-modifier (quote alt))
  '(ns-use-native-fullscreen nil)
  '(ns-use-qd-smoothing nil)
+ '(ns-use-srgb-colorspace nil)
  '(ns-use-system-highlight-color nil t)
  '(nxml-bind-meta-tab-to-complete-flag t)
  '(nxml-slash-auto-complete-flag t)
@@ -159,7 +160,7 @@
  '(overflow-newline-into-fringe t)
  '(package-selected-packages
    (quote
-    (visual-regexp-steroids visual-regexp peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
+    (cider spaceline-config spaceline yasnippet yaml-mode highlight-chars css-mode web-mode multi-term geiser ruby-mode rainbow-delimiters powerline macrostep lusty-explorer browse-kill-ring js2-mode iflipb pretty-mode gist magit evil paredit highlight-cl ert eldoc-extension elisp-slime-nav redshank org deft multiple-cursors go-autocomplete smart-compile coffee-mode swiper workgroups window-numbering ibuffer-vc bm iedit auto-complete buffer-move fastnav goto-last-change undo-tree visible-mark flymake which-key general git-timemachine markdown-mode haskell-emacs haskell-snippets haskell-mode ghc sunshine visual-fill-column nlinum-relative ag projectile list-register exec-path-from-shell visual-regexp-steroids peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
@@ -230,7 +231,7 @@
    (quote
     ("/usr/local/bin/gnutls-cli --insecure -p %p %h" "/usr/local/bin/gnutls-cli --insecure -p %p %h --protocols ssl3" "/usr/bin/openssl s_client -connect %h:%p -no_ssl2 -ign_eof")))
  '(tool-bar-mode nil)
- '(tramp-verbose 4)
+ '(tramp-verbose 4 nil (tramp))
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(uniquify-ignore-buffers-re "^\\*")
  '(uniquify-separator ":")
@@ -280,5 +281,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aquamacs-variable-width ((t (:height 140 :family "Lucida Grande"))) t)
+ '(cider-result-overlay-face ((t (:inherit popup-tip-face))))
+ '(diff-added ((t (:inherit zenburn-primary-3))))
+ '(diff-context ((t (:inherit font-lock-comment))))
+ '(diff-file-header ((t (:weight bold))))
+ '(diff-header ((t (:inherit zenburn-highlight-subtle))))
+ '(diff-hunk-header ((t (:inherit zenburn-highlight-subtle))))
+ '(diff-refine-changed ((t (:inherit zenbur-background-2))))
  '(hc-tab ((t (:inherit whitespace-tab))))
+ '(macrostep-expansion-highlight-face ((t (:inherit zenburn-highlight-subtle))))
  '(web-mode-html-tag-bracket-face ((t (:inherit zenburn-green-4)))))

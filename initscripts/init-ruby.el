@@ -7,7 +7,7 @@
   :bind
   (:map ruby-mode-map
         ("C-m" . reindent-then-newline-and-indent)
-        ("C-m C-a" . ruby-annotate-buffer)
+        ;("C-m C-a" . ruby-annotate-buffer)
    :map help-map
         ("r" . ri))
   :config
