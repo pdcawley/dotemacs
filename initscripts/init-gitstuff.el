@@ -1,6 +1,8 @@
 (eval-when-compile (require 'req-package))
 
 (require 'eieio)
+(req-package exec-path-from-shell)
+
 (req-package magit
   :requires (exec-path-from-shell)
   :general
