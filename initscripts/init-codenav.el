@@ -1,5 +1,5 @@
 (require 'dss-codenav-helpers)
-(require 's)
+(req-package 's :force t)
 
 (req-package avy
   :general

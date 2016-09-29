@@ -22,9 +22,6 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(require 'server)
-(server-start)
-
 ;; recompile configs
 
 (add-hook 'kill-emacs-hook
