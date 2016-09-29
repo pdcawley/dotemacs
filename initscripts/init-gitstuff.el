@@ -1,6 +1,9 @@
 (eval-when-compile (require 'req-package))
 
 (require 'eieio)
+(req-package with-editor
+  :diminish "")
+
 (req-package exec-path-from-shell)
 
 (req-package magit
