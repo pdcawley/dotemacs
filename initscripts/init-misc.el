@@ -17,8 +17,10 @@
     ad-do-it))
 
 ;; My own magic mode
-(require 'hbfc)
-(hbfc-mode 1)
+(req-package hbfc
+  :diminish " ⇸"
+  :config
+  (hbfc-mode 1))
 
 ;; Can't `diminish' until after the modes are loaded...
 (require 'diminish)
