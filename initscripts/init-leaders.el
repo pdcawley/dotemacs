@@ -80,4 +80,6 @@ Currently this function infloops when the list is circular."
   :documentation "Always keep elisp well formed"
   :toggle-keys "p")
 
+(general-create-definer pdc|with-leader
+                        :prefix leader-key :keymaps 'global)
 (provide 'init-leaders)
