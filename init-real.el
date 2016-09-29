@@ -23,8 +23,7 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 (require 'server)
-(unless (server-running-p)
-  (server-start))
+(server-start)
 
 ;; recompile configs
 
@@ -38,7 +37,7 @@
 (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 
 (defconst my-init-dir (expand-file-name "initscripts" emacs-d))
 (defconst emacs-major-version-rad 1000000)
@@ -50,9 +49,7 @@
 (unless (has-emacs-version 24 0)
   (add-to-list 'package-archives '("gnu" . "http://elpa.org/packages")))
 
-(message "package-archives configured")
 (package-initialize)
-(message "ELPA initialized")
 
 (defun require-package (package)
   "refresh package archives, check package presence and install if it's not installed"
@@ -67,14 +64,13 @@
 ;; el-get
 (require-package 'use-package)
 (require 'use-package)
-(message "Got use-package")
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-d))
 (require-package 'el-get)
 (use-package el-get
   :config
   (add-to-list 'el-get-recipe-path (expand-file-name "el-get/el-get/recipes" emacs-d))
   (el-get 'sync))
-(message "Got el-get")
+
 
 ;; req-package
 (use-package req-package
@@ -82,8 +78,6 @@
   :config
   (req-package--log-set-level 'debug))
 
-
-(message "got req-package")
 
 ;; (require-package 'which-key)
 ;; (require 'which-key)

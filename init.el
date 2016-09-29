@@ -1,5 +1,6 @@
 ;(package-initialize)
 
+(setq package-enable-at-startup nil)
 (require 'package)
 
 (setq temporary-file-directory (expand-file-name "~/tmp/emacstmp"))
@@ -11,7 +12,6 @@
 
 ;;(setq debug-on-error t)
 (setq custom-file my-custom-file)
-(setq package-enable-at-startup nil)
 (load my-custom-file t)
 (setq auto-save-default nil)
 (setq make-backup-files nil)
