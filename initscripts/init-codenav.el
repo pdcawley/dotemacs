@@ -1,19 +1,22 @@
+;; -*- lexical-binding: t -*-
+
 (require 'dss-codenav-helpers)
 (req-package 's :force t)
+(require 'init-leader)
 
 (req-package avy
   :general
-  (:prefix jump-leader-key
-   "b" '(avy-goto-char :which-key "avy goto char")
-   "'" '(avy-goto-char-2 :which-key "avy goto char-2")
-   "w" '(avy-goto-word-1 :which-key "avy goto word")))
+  (pdc|with-leader
+   "jb" '(avy-goto-char :which-key "avy goto char")
+   "j'" '(avy-goto-char-2 :which-key "avy goto char-2")
+   "jw" '(avy-goto-word-1 :which-key "avy goto word")))
 
 (req-package swiper
   :commands (swiper swiper-all)
   :general
-  (:prefix search-leader-key
-           "s" 'swiper
-           "S" 'swiper-all)
+  (pdc|with-leader
+   "ss" 'swiper
+   "sS" 'swiper-all)
   :init
   (setq ivy-height 20))
 
@@ -63,7 +66,6 @@
   "Re-build regex pattern from string with init prefixed"
   (ivy--regex (s-concat "^init-" str) greedy))
 
-
 (defun pdc/find-initscript ()
   "Open init-file in the initscripts directory"
   (interactive)
@@ -79,12 +81,25 @@
     :history 'pdc|init-script-history
     :caller 'pdc/find-initscript))
 
+(defun pdc/find-zshrc ()
+  (find-file (expand-file-name "~/.zshrc")))
 
+(defun pdc/find-zshenv ()
+  (find-file (expand-file-name "~/.zshenv")))
 
-(general-define-key
- :prefix files-leader-key
-  "e" '(:ignore t :describe "dotfiles")
-  "ed" '(pdc/find-initfile :which-key "open dotfile")
-  "ei" '(pdc/find-initscripts :which-key "open initscripts/"))
-
+(cl-flet ((ff (file &rest props)
+                  (let ((which-key (or (plist-get props :which-key) file)))
+                    (cons (lambda ()
+                            (interactive)
+                            (find-file-existing (expand-file-name file)))
+                          (plist-put props :which-key which-key)))
+                  ))
+  (pdc|with-leader
+   "fe" '(:ignore t :which-key "dotfiles")
+   "fed" '(pdc/find-initfile :which-key "init-real.el")
+   "feD" (ff "~/.emacs.d/init.el" :which-key "init.el")
+   "fei" '(pdc/find-initscripts :which-key "initscripts/")
+   "fez" '(pdc/find-zshrc :which-key ".zshrc")
+   "feZ" '(pdc/find-zshenv :which-key ".zshenv")
+   "fek" (ff  "~/.karabiner.d/configuration/karabiner.json") :which-key "karabiner.json"))
 (provide 'init-codenav)
