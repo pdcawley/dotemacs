@@ -23,6 +23,41 @@
 
 (put 'zenburn 'theme-immediate t)
 
+(custom-theme-set-variables
+ 'zenburn
+
+ '(zenburn-fg       "#dcdccc" t)
+ '(zenburn-bg-1     "#2b2b2b" t)
+ '(zenburn-bg       "#3f3f3f" t)
+ '(zenburn-bg+1     "#4f4f4f" t)
+ '(zenburn-bg+2     "#5f5f5f" t)
+ '(zenburn-red+1    "#dca3a3" t)
+ '(zenburn-red      "#cc9393" t)
+ '(zenburn-red-1    "#bc8383" t)
+ '(zenburn-red-2    "#ac7373" t)
+ '(zenburn-red-3    "#9c6363" t)
+ '(zenburn-red-4    "#8c5353" t)
+ '(zenburn-orange   "#dfaf8f" t)
+ '(zenburn-yellow   "#f0dfaf" t)
+ '(zenburn-yellow-1 "#e0cf9f" t)
+ '(zenburn-yellow-2 "#d0bf8f" t)
+ '(zenburn-green-4  "#2e3330" t)
+ '(zenburn-green-1  "#5f7f5f" t)
+ '(zenburn-green    "#7f9f7f" t)
+ '(zenburn-green+1  "#8fb28f" t)
+ '(zenburn-green+2  "#9fc59f" t)
+ '(zenburn-green+3  "#afd8af" t)
+ '(zenburn-green+4  "#bfebbf" t)
+ '(zenburn-cyan     "#93e0e3" t)
+ '(zenburn-blue+1   "#94bff3" t)
+ '(zenburn-blue     "#8cd0d3" t)
+ '(zenburn-blue-1   "#7cb8bb" t)
+ '(zenburn-blue-2   "#6ca0a3" t)
+ '(zenburn-blue-3   "#5c888b" t)
+ '(zenburn-blue-4   "#4c7073" t)
+ '(zenburn-blue-5   "#366060" t)
+ '(zenburn-magenta  "#dc8cc3" t))
+
 
 (let ( (zenburn-fg      "#dcdccc")
        (zenburn-bg-1        "#2b2b2b")
