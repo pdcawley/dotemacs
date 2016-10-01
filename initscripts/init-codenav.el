@@ -1,8 +1,10 @@
 ;; -*- lexical-binding: t -*-
 
 (require 'dss-codenav-helpers)
+(require 'init-leaders)
+
 (req-package 's :force t)
-(require 'init-leader)
+
 
 (req-package avy
   :general
