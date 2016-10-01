@@ -5,9 +5,12 @@
 (bindings|define-prefix buffer "b" "buffers")
 (bindings|define-prefix org "o")
 (bindings|define-prefix toggle "t" "toggles")
+(bindings|define-prefix mode-leader ",")
 
 (general-create-definer pdc|with-leader
                         :prefix leader-key :keymaps 'global)
+(general-create-definer pdc|with-mode-leader
+                        :prefix mode-leader-leader-key)
 
 (defun pdc/mplist-get (plist prop)
   "Get the values associated to PROP in PLIST, a modified plist.
