@@ -26,7 +26,6 @@
 (req-package ffap)
 (req-package cider)
 
-
 (defvar dss-lisp-modes-hook nil)
 
 (defun dss/init ()
@@ -366,38 +365,47 @@
   :diminish " Ⓟ"
   :bind
   (:map lisp-mode-map
-        ("M-q" . slime-reindent-defun)
-        ("M-l" . slime-selector)
+   ("M-q" . slime-reindent-defun)
+   ("M-l" . slime-selector)
    :map paredit-mode-map
-        ("DEL" . dss/paredit-backward-delete)
-        ("M-RET" . dss/indent-defun)
-        ("C-M-l" . paredit-recentre-on-sexp)
-        ("C-M-s" . paredit-backward-up)
-        ("C-M-k" . paredit-forward-slurp-sexp)
-        ("C-M-j" . paredit-backward-slurp-sexp)
-        ("C-M-\\" . pdc/indent-then-snap-to-indent)
-        ("M-o" . dss/paredit-open-line)
-        ("C-M-y" . dss/replace-sexp)
-        ("C-M-y" . dss/replace-sexp)
-        ("C-y" . dss/paredit-yank)
-        ("(" . dss/paredit-open-parenthesis)
-        (";" . dss/paredit-semicolon)
-        ("M-w" . dss/paredit-kill-ring-save)
-        (")" . paredit-close-round-and-newline)
-        ("M-)" . paredit-close-round)
-        ("M-k" . paredit-raise-sexp)
-        ("M-I" . paredit-splice-sexp)
-        ("C-. d" . paredit-forward-down)
-        ("C-. B" . paredit-splice-sexp-killing-backward)
-        ("C-. C" . paredit-convolute-sexp)
-        ("C-. F" . paredit-splice-sexp-killing-forward)
-        ("C-. a" . paredit-add-to-next-list)
-        ("C-. A" . paredit-add-to-previous-list)
-        ("C-. j" . paredit-join-with-next-list)
-        ("C-. J" . paredit-join-with-previous-list))
+   ("DEL" . dss/paredit-backward-delete)
+   ("M-RET" . dss/indent-defun)
+   ("C-M-l" . paredit-recentre-on-sexp)
+   ("C-M-s" . paredit-backward-up)
+   ("C-M-k" . paredit-forward-slurp-sexp)
+   ("C-M-j" . paredit-backward-slurp-sexp)
+   ("C-M-\\" . pdc/indent-then-snap-to-indent)
+   ("M-o" . dss/paredit-open-line)
+   ("C-M-y" . dss/replace-sexp)
+   ("C-M-y" . dss/replace-sexp)
+   ("C-y" . dss/paredit-yank)
+   ("(" . dss/paredit-open-parenthesis)
+   (";" . dss/paredit-semicolon)
+   ("M-w" . dss/paredit-kill-ring-save)
+   (")" . paredit-close-round-and-newline)
+   ("M-)" . paredit-close-round)
+   ("M-k" . paredit-raise-sexp)
+   ("M-I" . paredit-splice-sexp)
+   ("C-. d" . paredit-forward-down)
+   ("C-. B" . paredit-splice-sexp-killing-backward)
+   ("C-. C" . paredit-convolute-sexp)
+   ("C-. F" . paredit-splice-sexp-killing-forward)
+   ("C-. a" . paredit-add-to-next-list)
+   ("C-. A" . paredit-add-to-previous-list)
+   ("C-. j" . paredit-join-with-next-list)
+   ("C-. J" . paredit-join-with-previous-list))
   :config
   (progn
     ;; (req-package paredit-ext)
+
+    (bindings|add-toggle paredit
+      :status paredit-mode
+      :on (enable-paredit-mode)
+      :off (disable-paredit-mode)
+      :keymaps lisp-modes
+      :toggle-keys "tp")
+
+
 
     (defun dss/paredit-backward-delete ()
       (interactive)

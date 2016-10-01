@@ -4,7 +4,10 @@
 
 (bindings|define-prefix buffer "b" "buffers")
 (bindings|define-prefix org "o")
-(bindings|define-prefix toggle "T" "toggles")
+(bindings|define-prefix toggle "t" "toggles")
+
+(general-create-definer pdc|with-leader
+                        :prefix leader-key :keymaps 'global)
 
 (defun pdc/mplist-get (plist prop)
   "Get the values associated to PROP in PLIST, a modified plist.
@@ -36,6 +39,7 @@ Currently this function infloops when the list is circular."
          (doc (plist-get props :documentation))
          (on-body (pdc/mplist-get props :on))
          (off-body (pdc/mplist-get props :off))
+         (keymaps (pdc/mplist-get props :keymaps))
          (binding (plist-get props :toggle-keys))
          (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
                                 (listp ',status))
@@ -55,10 +59,9 @@ Currently this function infloops when the list is circular."
                (message ,(format "%s enabled." name)))
            (message "This toggle is not supported.")))
        ,@(when binding
-           `((general-define-key :prefix toggle-leader-key
-               ,binding '(,wrapper-func
-                          :which-key ,(or doc
-                                         (symbol-name name))))))
+           `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
+                              ,binding '(,wrapper-func :which-key
+                                          ,(or doc (symbol-name name))))))
        ,@(when status
            `((defun ,wrapper-func-on ()
                ,(format "Toggle %s on" (symbol-name name))
@@ -73,13 +76,4 @@ Currently this function infloops when the list is circular."
   (declare (indent 1))
   (bindings//expand-add-toggle name props))
 
-(bindings|add-toggle paredit
-  :status paredit-mode
-  :on (enable-paredit-mode)
-  :off (disable-paredit-mode)
-  :documentation "Always keep elisp well formed"
-  :toggle-keys "p")
-
-(general-create-definer pdc|with-leader
-                        :prefix leader-key :keymaps 'global)
 (provide 'init-leaders)
