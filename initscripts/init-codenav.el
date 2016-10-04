@@ -17,11 +17,10 @@
   :commands (swiper swiper-all)
   :general
   (pdc|with-leader
-   "ss" 'swiper
-   "sS" 'swiper-all)
+   "s s" 'swiper
+   "s S" 'swiper-all)
   :init
   (setq ivy-height 20))
-
 
 (req-package counsel
   :diminish " Ⓒ"
@@ -31,8 +30,10 @@
   (:prefix files-leader-key
    "4" '(pdc-find-file-other-window :which-key "find in other window")
    "f"   '(counsel-find-file :which-key "find"))
-  :config
+  :init
   (counsel-mode t))
+
+(pdc|with-leader "s o" 'occur)
 
 (defun swiper-mc ()
   (interactive)
@@ -62,7 +63,7 @@
 (defun pdc/find-initscripts ()
   "Open initscripts directory, in the current window"
   (interactive)
-  (dired emacs-d))
+  (dired (expand-file-name "initscripts/" emacs-d)))
 
 (defun pdc//find-initscript-re-builder (str &optional greedy)
   "Re-build regex pattern from string with init prefixed"

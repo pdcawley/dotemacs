@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (defun show-compilation ()
   (interactive)
   (let ((compile-buf
@@ -11,9 +13,26 @@
 
 ;(bind-key "M-O" 'show-compilation)
 
+(defun gdk (&rest args)
+  (apply general-define-key args))
+
+
 (req-package smart-compile
-  :disabled t
-  :commands smart-compile
-  :bind (("C-c c" . smart-compile)
-         ("A-n"   . next-error)
-         ("A-p"   . previous-error)))
+  :require (dash hydra init-leaders)
+  :demand t
+  :general
+  (pdc|with-leader
+   "." '(:ignore t :which-key "compile")
+   ". c" 'smart-compile
+   ". ^" '(first-error :which-key "first")))
+
+(with-eval-after-load 'hydra
+  (pdc|general-bind-hydra errornav "."
+   ("n" next-error "next")
+   ("p" previous-error "prev")
+   ("o" occur-next-error "occur next")
+   ("d" compilation-display-error "display error")
+   ;; ("^" first-error "first" :color blue)
+   ))
+
+(provide 'init-compilation-setup)

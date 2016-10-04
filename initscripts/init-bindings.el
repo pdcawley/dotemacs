@@ -1,16 +1,13 @@
+;; -*- lexical-binding: t -*-
 (eval-when-compile (require 'autoinsert))
 ;;; 99bindings.el --- Misc. global key bindings
 (require 'pdc-support)
 (require 'init-leaders)
+(require 'general)
 
 ;; Some custom global key bindings
-(global-set-key (kbd "C-c s")  'calendar)
-(global-set-key (kbd "C-c g")  'goto-line)
-(global-set-key (kbd "C-c c")  'recompile)
-(global-set-key (kbd "C-c a")  'apply-macro-to-region-lines)
-(global-set-key (kbd "C-c w")  'woman)
-(global-set-key (kbd "C-c o o")  'occur)
-(global-set-key (kbd "M-d")   'kill-word)
+
+;; (global-set-key (kbd "M-d")   'kill-word)
 (global-unset-key (kbd "C-z"))
 (global-unset-key [insert])
 (global-set-key [M-insert] 'overwrite-mode)
@@ -398,140 +395,217 @@
 
 (bind-key "<C-M-backspace>" 'backward-kill-sexp)
 
-(bind-key "D F" 'describe-face help-map)
-(bind-key "D b" 'describe-bindings help-map)
-
 (bind-key "C-. P l" 'package-list-packages)
 (bind-key "C-. I" 'toggle-input-method)
 
 ;; Tavis Rudd's bindings
 
-(req-package auto-complete)
-(req-package comint)
-(require 'org)
-(req-package fm)
+;; (req-package auto-complete)
+;; (req-package comint)
+;; (require 'org)
+;; (req-package fm)
 
-(defvar f2-map (make-sparse-keymap))
-(defvar f4-map (make-sparse-keymap))
-(defvar f6-map (make-sparse-keymap))
-(defvar f7-map (make-sparse-keymap))
-(defvar f8-map (make-sparse-keymap))
+;; (defvar f2-map (make-sparse-keymap))
+;; (defvar f4-map (make-sparse-keymap))
+;; (defvar f6-map (make-sparse-keymap))
+;; (defvar f7-map (make-sparse-keymap))
+;; (defvar f8-map (make-sparse-keymap))
 
-(bind-key "M-`" 'bm-toggle)
-
-
-(bind-key "M-=" '(lambda ()
-                   (interactive)
-                   (set-mark-command (list 4))))
-
-(defun dss/hippie-expand ()
-  (interactive)
-  (if (not ac-completing)
-      (call-interactively 'hippie-expand)
-    (ac-expand nil)))
-
-(bind-key "M-/" 'dss/hippie-expand)
-(bind-key "M-TAB" 'dabbrev-expand)
-(bind-key "C-M-l" 'dss/sync-point-all-windows)
-
-(bind-key "C-x C-v" 'revert-buffer)
-
-(req-package list-register
-  :bind
-   ("C-x r v" . list-register))
+;; (bind-key "M-`" 'bm-toggle)
 
 
-(defun dss/eval-region-or-last-sexp ()
-  (interactive)
-  (if mark-active
-      (call-interactively 'eval-region)
-    (call-interactively 'eval-last-sexp)))
+;; (bind-key "M-=" '(lambda ()
+;;                    (interactive)
+;;                    (set-mark-command (list 4))))
 
-(general-define-key
- :prefix "<f4>"
-  ""         f4-map
-  "."       'dss/grep-project
-  "t"       'etags-select-find-tag-at-point
-  "r"       'etags-select-find-tag
-  "<space>" 'fixup-whitespace
-  "s"       'dss/eval-region-or-last-sexp
-  "d"       'dss/eval-defun
-  "x"       'dss/magit-or-monky
-  "v"       'dss/magit-or-monky
-  "q"       'monky-queue
-  "3"       'dss/out-sexp
-  "8"       'dss/out-one-sexp
-  "9"       'paredit-wrap-round
-  "0"       'paredit-close-round-and-newline
-  "i"       'yank
-  "u"       'undo
-  "y"       'dss/mark-string
-  "m"       'mark-sexp
-  "'"       (kbd "\"")
-  ";"       'goto-last-change
-  "<f4>"    'kmacro-end-or-call-macro)
+;; (defun dss/hippie-expand ()
+;;   (interactive)
+;;   (if (not ac-completing)
+;;       (call-interactively 'hippie-expand)
+;;     (ac-expand nil)))
 
-(defvar *dss-iedit-auto-complete-was-on* nil)
-(make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)
-(req-package iedit
-  :ensure t
-  :bind ("<f4> e" . dss/iedit-toggle)
-  :config
-  (progn
-    (defun dss/iedit-toggle ()
-      (interactive)
-      (cond (iedit-mode
-             (when *dss-iedit-auto-complete-was-on*
-               (setq *dss-iedit-auto-complete-was-on* nil)
-               (auto-complete-mode t)))
-            (t
-             (when auto-complete-mode
-               (setq *dss-iedit-auto-complete-was-on* t)
-               (auto-complete-mode nil)))
-            (iedit-mode)))))
+;; (bind-key "M-/" 'dss/hippie-expand)
+;; (bind-key "M-TAB" 'dabbrev-expand)
+;; (bind-key "C-M-l" 'dss/sync-point-all-windows)
 
-(bind-key "<f4> e" 'dss/iedit-toggle)
-(bind-key "<f4> 6" 'dss/backward-string)
-(bind-key "<f4> 7" 'dss/forward-string)
-(bind-key "<f4> -" 'dss/clojure-run-tests)
-(bind-key "<f4> c" 'dss/slime-repl-clear)
-(bind-key "<f4> p" 'dss/clojure-jump-to-project)
-(bind-key "<f4> j" 'dss/clojure-jump-between-tests-and-code)
-(bind-key "<f4> /" 'dss/goto-match-paren)
-(bind-key "<f4> ]" 'dss/smex)
+;; (bind-key "C-x C-v" 'revert-buffer)
 
-;; f6-map
-(defun dss/insert-todo ()
-  (interactive)
-  (insert comment-start)
-  (insert "@@TR: "))
-
-(defun open-next-line ()
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (open-line 1)))
-
-(defun fm-occur (arg)
-  (interactive "soccur: ")
-  (occur arg)
-  (other-window 1)
-  (fm-start))
+;; (req-package list-register
+;;   :bind
+;;    ("C-x r v" . list-register))
 
 
-(general-define-key
- :prefix "<f6>"
- ""     '(nil :which-key "+lines")
- "`"    'open-next-line
- "<f6>" 'open-next-line
- "1"    'replace-string
- "i"    'dss/insert-todo
- "l"    'linum-mode
- "o"    'fm-occur
- ";"    'string-rectangle
- "k"    'kill-this-buffer)
+;; (defun dss/eval-region-or-last-sexp ()
+;;   (interactive)
+;;   (if mark-active
+;;       (call-interactively 'eval-region)
+;;     (call-interactively 'eval-last-sexp)))
+
+;; (general-define-key
+;;  :prefix "<f4>"
+;;   ""         f4-map
+;;   "."       'dss/grep-project
+;;   "t"       'etags-select-find-tag-at-point
+;;   "r"       'etags-select-find-tag
+;;   "<space>" 'fixup-whitespace
+;;   "s"       'dss/eval-region-or-last-sexp
+;;   "d"       'dss/eval-defun
+;;   "x"       'dss/magit-or-monky
+;;   "v"       'dss/magit-or-monky
+;;   "q"       'monky-queue
+;;   "3"       'dss/out-sexp
+;;   "8"       'dss/out-one-sexp
+;;   "9"       'paredit-wrap-round
+;;   "0"       'paredit-close-round-and-newline
+;;   "i"       'yank
+;;   "u"       'undo
+;;   "y"       'dss/mark-string
+;;   "m"       'mark-sexp
+;;   "'"       (kbd "\"")
+;;   ";"       'goto-last-change
+;;   "<f4>"    'kmacro-end-or-call-macro)
+
+;; (defvar *dss-iedit-auto-complete-was-on* nil)
+;; (make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)
+;; (req-package iedit
+;;   :bind ("<f4> e" . dss/iedit-toggle)
+;;   :config
+;;   (progn
+;;     (defun dss/iedit-toggle ()
+;;       (interactive)
+;;       (cond (iedit-mode
+;;              (when *dss-iedit-auto-complete-was-on*
+;;                (setq *dss-iedit-auto-complete-was-on* nil)
+;;                (auto-complete-mode t)))
+;;             (t
+;;              (when auto-complete-mode
+;;                (setq *dss-iedit-auto-complete-was-on* t)
+;;                (auto-complete-mode nil)))
+;;             (iedit-mode)))))
+
+;; (bind-key "<f4> e" 'dss/iedit-toggle)
+;; (bind-key "<f4> 6" 'dss/backward-string)
+;; (bind-key "<f4> 7" 'dss/forward-string)
+;; (bind-key "<f4> -" 'dss/clojure-run-tests)
+;; (bind-key "<f4> c" 'dss/slime-repl-clear)
+;; (bind-key "<f4> p" 'dss/clojure-jump-to-project)
+;; (bind-key "<f4> j" 'dss/clojure-jump-between-tests-and-code)
+;; (bind-key "<f4> /" 'dss/goto-match-paren)
+;; (bind-key "<f4> ]" 'dss/smex)
+
+;; ;; f6-map
+;; (defun dss/insert-todo ()
+;;   (interactive)
+;;   (insert comment-start)
+;;   (insert "@@TR: "))
+
+;; (defun open-next-line ()
+;;   (interactive)
+;;   (save-excursion
+;;     (end-of-line)
+;;     (open-line 1)))
+
+;; (defun fm-occur (arg)
+;;   (interactive "soccur: ")
+;;   (occur arg)
+;;   (other-window 1)
+;;   (fm-start))
+
+
+;; (general-define-key
+;;  :prefix "<f6>"
+;;  ""     '(nil :which-key "+lines")
+;;  "`"    'open-next-line
+;;  "<f6>" 'open-next-line
+;;  "1"    'replace-string
+;;  "i"    'dss/insert-todo
+;;  "l"    'linum-mode
+;;  "o"    'fm-occur
+;;  ";"    'string-rectangle
+;;  "k"    'kill-this-buffer)
 
 (electric-indent-mode -1)
+
+(general-define-key :keymaps 'help-map
+  "C-h" nil
+  "u" 'man
+  ;; Unbind old 'describe' bindings
+  "b" nil
+  "I" nil
+  "L" nil
+
+  "D" '(:ignore t :which-key "describe")
+  "D b" 'describe-bindings
+  "D C" '(finder-commentary :which-key "commentary")
+  "D F" 'describe-face
+  "D i" 'describe-input-method
+  "D k" 'describe-key
+  "D L" 'describe-language-environment
+  "D m" 'describe-mode
+  "D o" 'describe-symbol
+  "D P" 'describe-package
+  "D s" 'describe-syntax
+  "D T" 'describe-text-properties
+  "D t" 'describe-theme)
+
+(req-package s)
+(req-package dash)
+
+(with-eval-after-load
+    (--each (list (concat leader-key " h")
+                  "<f1>" "C-h")
+      (cl-flet ((with-prefix (key)
+                             (s-join " " (list it key))))
+        (which-key-declare-prefixes
+          (with-prefix "D") "describe"
+          (with-prefix "A") "apropos"
+          (with-prefix "e") "elisp"))))
+
+(with-eval-after-load 'hydra
+  (pdc|with-leader
+   "j l" 'dss/goto-line
+   "j $" 'move-end-of-line
+   "j >" 'end-of-buffer
+   "j <" 'beginning-of-buffer
+   "j ^" 'beginning-of-line
+   "j a" 'back-to-indentation
+
+   "h" (list help-map :which-key "help")
+   "w /" 'toggle-window-split
+
+   "." '(:ignore t :which-key "misc")
+   ". r" 'recompile
+   ". s" 'pdc/spruce-up-buffer
+
+   "k" (list
+        (defhydra hydra-kill (nil nil :color red)
+          "Kill"
+          (";" kill-comment "comment")
+          ("<tab>" delete-indentation "indentation")
+          ("L" kill-whole-line "whole line")
+          ("R" kill-rectangle "rectangle" :color blue)
+          ("S" kill-sentence "sentence")
+          ("l" kill-line "line")
+          ("p" kill-paragraph "paragraph")
+          ("r" kill-region "region" :color blue)
+          ("s" kill-sexp "sexp")
+          ("v" kill-visual-line "visual line")
+          ("w" kill-word "word"))
+        :which-key "+kill")
+
+   ;; "k -" '(nil :which-key "backward")
+   ;; "k - p" 'backward-kill-paragraph
+   ;; "k - S" 'backward-kill-sentence
+   ;; "k - s" 'backward-kill-sexp
+   ;; "k - w" 'backward-kill-word
+   ;; "k - u" 'kill-backward-up-list
+
+   "K" (list kmacro-keymap :which-key "kmacro")
+
+   "r" '(:ignore t :which-key "replace")
+   "r q" 'query-replace-regexp
+   "r R" 'replace-rectangle))
+
 
 (provide 'init-bindings)
 

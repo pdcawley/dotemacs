@@ -79,4 +79,22 @@ Currently this function infloops when the list is circular."
   (declare (indent 1))
   (bindings//expand-add-toggle name props))
 
+(defmacro pdc|general-bind-hydra (name leader &rest specs)
+  (let ((hydra-key (intern (format "hydra-%s" (symbol-name name)))))
+    `(progn
+       (defhydra ,hydra-key (nil nil :color red)
+         ,(symbol-name name)
+         ,@specs)
+       (dolist (it ',specs)
+         (pcase-let ((`(,key ,fn ,desc . ,_) it))
+           (let ((hydra-fn (intern (format "%s/%s"
+                                           (symbol-name ',hydra-key)
+                                           (symbol-name fn))))
+                 (keys (concat ,leader key)))
+             (general-define-key :prefix leader-key
+               keys (list hydra-fn :which-key desc))))))))
+
+
+
+
 (provide 'init-leaders)

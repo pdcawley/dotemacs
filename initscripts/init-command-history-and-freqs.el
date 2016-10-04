@@ -1,6 +1,4 @@
 (require 'dss-paths)
-(setq-default bookmark-default-file (concat dss-ephemeral-dir "emacs.bmk"))
-(setq bookmark-save-flag 1)
 
 (req-package savehist
   :config
@@ -24,8 +22,7 @@
   (setq recentf-max-saved-items 150)
   (setq recentf-max-menu-items 60)
   (run-with-timer (* 20 60) (* 2 60 60) (lambda () (recentf-save-list)))
-                                        ;(add-hook 'find-file-hook (lambda () (recentf-save-list)))
   (add-hook 'recentf-dialog-mode-hook
-	    (lambda ()
-	      (linum-mode +1))))
+        (lambda ()
+          (linum-mode +1))))
 

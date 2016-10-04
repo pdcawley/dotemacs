@@ -1,16 +1,17 @@
 (req-package bm
-  :ensure t
+  :requires hydra
   :init
-  (progn
-    (defvar ctl-period-breadcrumb-map)
-    (define-prefix-command 'ctl-period-breadcrumb-map)
-    (bind-key "C-. c" 'ctl-period-breadcrumb-map))
+  (with-eval-after-load 'hydra
+    (defhydra hydra-bm (nil nil :color red)
+      "bm"
+      ("b" bm-last-in-previous-buffer "previous buffer")
+      ("f" bm-first-in-next-buffer "next buffer")
+      ("g" bm-previous "previous")
+      ("l" bm-show-all "show all")
+      ("c" bm-toggle "toggle")
+      ("m" bm-toggle "toggle")
+      ("n" bm-next "next")
+      ("p" bm-previous "previous"))
+    (pdc|with-leader
+     "c" '(hydra-bm/body :which-key "bm"))))
 
-  :bind (("C-. c b" . bm-last-in-previous-buffer)
-         ("C-. c f" . bm-first-in-next-buffer)
-         ("C-. c g" . bm-previous)
-         ("C-. c l" . bm-show-all)
-         ("C-. c c" . bm-toggle)
-         ("C-. c m" . bm-toggle)
-         ("C-. c n" . bm-next)
-         ("C-. c p" . bm-previous)))

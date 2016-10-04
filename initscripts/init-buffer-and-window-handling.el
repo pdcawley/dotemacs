@@ -28,25 +28,28 @@
 
 ;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (req-package window-numbering
-  :require dash
+  :requires dash
   :general
-  (:prefix window-leader-key
-   "1" 'select-window-1
-   "2" 'select-window-2
-   "3" 'select-window-3
-   "4" 'select-window-4
-   "5" 'select-window-5
-   "6" 'select-window-6
-   "7" 'select-window-7
-   "8" 'select-window-8)
+  (pdc|with-leader :keymaps 'window-numbering-keymap
+   "w1" 'select-window-1
+   "w2" 'select-window-2
+   "w3" 'select-window-3
+   "w4" 'select-window-4
+   "w5" 'select-window-5
+   "w6" 'select-window-6
+   "w7" 'select-window-7
+   "w8" 'select-window-8
+
+   "w0" 'bm-next
+   "w9" 'bm-previous)
   :config
   (defun window-numbering-install-mode-line (&optional position)
     "Do nothing, the display is handled by spaceline.")
+  (--each (number-sequence 0 9)
+    (define-key window-numbering-keymap (kbd (format "M-%s" it)) nil))
+
+
   ;; (setq window-numbering-auto-assign-0-to-minibuffer nil)
-  (-map (lambda (map)
-          (bind-key "M-0" 'bm-next map)
-          (bind-key "M-9" 'bm-previous))
-        (list global-map window-numbering-keymap))
   (window-numbering-mode 1))
 
 
@@ -287,6 +290,7 @@
     (and buf (not (buffer-modified-p buf))
          (kill-buffer buf))))
 
+
 (defun dss/kill-buffer ()
   (interactive)
   (kill-this-buffer))
@@ -308,11 +312,32 @@
    "k" 'windmove-up
    "i" 'windmove-down
    "m" 'flymake-goto-prev-error
-   "," 'flymake-goto-next-error
-   "[" 'isearch-forward-at-point
-   "=" 'magit-status
-   "-" 'magit-diff))
+   "," 'flymake-goto-next-error))
 
+(req-package hydra
+  :requires (ibuffer ivy)
+  :config
+  (pdc|with-leader
+   "b" (list
+        (defhydra hydra-buffer (nil nil :color red)
+          "Buffers"
+          ("B" ivy-switch-buffer-other-window "display" :color blue)
+          ("b" ivy-switch-buffer "switch" :color blue)
+          ("r" revert-buffer "revert")
+          ("s" save-buffer "save")
+          ("C" clone-buffer "clone" :color blue)
+          ("k" kill-this-buffer "kill")
+          ("K" kill-buffer "kill a buffer" :color blue)
+          ("C-z" erase-buffer "erase" :color blue)
+          ("e" eval-buffer "eval")
+          ("l" ibuffer "list" :color blue)
+          ("]" next-buffer "next")
+          ("n" next-buffer "next")
+          ("[" previous-buffer "prev")
+          ("p" previous-buffer "prev")
+          ("y" bury-buffer "bury")
+          ("Y" unbury-buffer "unbury"))
+             :which-key "buffers")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'init-buffer-and-window-handling)
