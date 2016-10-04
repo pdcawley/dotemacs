@@ -140,4 +140,7 @@
     (load (expand-file-name user-login-name emacs-d) t)
     (req-package-finish)))
 
+;; Everything that's going to mess with the server has finished, so:
+(server-start)
+
 (provide 'init-real)

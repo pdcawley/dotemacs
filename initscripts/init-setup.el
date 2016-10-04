@@ -101,8 +101,6 @@ or the thing at the point and its bounds if there is no region"
            (end (cdr bounds)))
       (vector (buffer-substring-no-properties beg end) beg end))))
 
-(server-start)
-
 (defun put-alist (key value alist)
   "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
 If there is no such element, create a new pair (KEY . VALUE) and
