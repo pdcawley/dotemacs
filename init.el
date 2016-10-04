@@ -16,13 +16,17 @@
 (setq auto-save-default nil)
 (setq make-backup-files nil)
 (put 'erase-buffer 'disabled nil)
-(require 'zenburn-theme)
+(setq-default max-lisp-eval-depth 32000)
 
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 
 (add-to-list 'load-path (expand-file-name "elisp/" user-emacs-directory))
 (defconst emacs-start-time (current-time))
+
+;; (let ((load-path (cons user-emacs-directory load-path)))
+;;    (require 'zenburn-theme))
+(load-theme 'zenburn)
 
 (defconst emacs-d
   (file-name-directory
