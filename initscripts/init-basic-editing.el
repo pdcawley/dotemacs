@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (req-package flymake
   :config
   (setq flymake-log-level 0))
@@ -95,3 +97,16 @@
     (insert (funcall func (delete-and-extract-region
                            (region-beginning)
                            (region-end))))))
+
+(with-eval-after-load 'init-leaders
+  (pdc|general-bind-hydra transpose "t"
+    ("t" transpose-chars "chars")
+    ("C-t" transpose-chars "chars")
+    ("l" transpose-lines "lines")
+    ("p" transpose-paragraphs "paras")
+    ("s" transpose-sexps "sexps")
+    ("C-M-t" transpose-sexps "sexps")
+    ("w" transpose-words "words")
+    ("M-t" transpose-words "words")))
+
+(provide 'init-basic-editing)
