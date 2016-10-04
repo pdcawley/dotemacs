@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ack-and-a-half-arguments (quote ("--nopager")))
- '(ack-and-a-half-executable "ack" t)
+ '(ack-and-a-half-executable "ack")
  '(ack-and-a-half-prompt-for-directory t)
  '(ack-prompt-for-directory t)
  '(ansi-color-faces-vector
@@ -161,7 +161,7 @@
  '(overflow-newline-into-fringe t)
  '(package-selected-packages
    (quote
-    (ivy-hydra hydra mykie cider spaceline-config spaceline yasnippet yaml-mode highlight-chars css-mode web-mode multi-term geiser ruby-mode rainbow-delimiters powerline macrostep lusty-explorer browse-kill-ring js2-mode iflipb pretty-mode gist magit evil paredit highlight-cl ert eldoc-extension elisp-slime-nav redshank org deft multiple-cursors go-autocomplete smart-compile coffee-mode swiper workgroups window-numbering ibuffer-vc bm iedit auto-complete buffer-move fastnav goto-last-change undo-tree visible-mark flymake which-key general git-timemachine markdown-mode haskell-emacs haskell-snippets haskell-mode ghc sunshine visual-fill-column nlinum-relative ag projectile list-register exec-path-from-shell visual-regexp-steroids peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
+    (imenu-list ivy-hydra hydra mykie cider spaceline-config spaceline yasnippet yaml-mode highlight-chars css-mode web-mode multi-term geiser ruby-mode rainbow-delimiters powerline macrostep lusty-explorer browse-kill-ring js2-mode iflipb pretty-mode gist magit evil paredit highlight-cl ert eldoc-extension elisp-slime-nav redshank org deft multiple-cursors go-autocomplete smart-compile coffee-mode swiper workgroups window-numbering ibuffer-vc bm iedit auto-complete buffer-move fastnav goto-last-change undo-tree visible-mark flymake which-key general git-timemachine markdown-mode haskell-emacs haskell-snippets haskell-mode ghc sunshine visual-fill-column nlinum-relative ag projectile list-register exec-path-from-shell visual-regexp-steroids peek-mode elnode restclient httprepl flycheck-protobuf protobuf-mode magit-gitflow docker dockerfile-mode el-get aggressive-indent artbollocks-mode per-window-point dired-details dired-x runner bookmark+ protbuf eval-expr lisp-mode arduino-mode vc-git git-blame org-publish org-journal rnc-mode auto-complete-config ack fm git-gutter-fringe+ whitespace-cleanup-mo tagedit ssh-config project-mode project-buffer-mode pbcopy org-mode org-magit nterm mo-git-blame lineker filladapt emacs-jabber desktop-recover breadcrumb auto-complete-extension auto-complete-etags asciidoc ack-and-a-half yasnippet-snippets yasnippets lispy avy git-gutter+ counsel flycheck elixir-mode go-mode rainbow-mode project-local-variables)))
  '(pc-selection-mode nil)
  '(pdc/mc-cmds
    (quote
@@ -316,4 +316,5 @@
  '(cider-result-overlay-face ((t (:inherit popup-tip-face))))
  '(diff-refine-changed ((t (:inherit zenbur-background-2))))
  '(hc-tab ((t (:inherit whitespace-tab))))
- '(macrostep-expansion-highlight-face ((t (:inherit zenburn-highlight-subtle)))))
+ '(macrostep-expansion-highlight-face ((t (:inherit zenburn-highlight-subtle))))
+ '(which-key-key-face ((t (:inherit font-lock-constant-face :weight bold)))))
