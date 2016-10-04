@@ -316,6 +316,8 @@
 
 (req-package hydra
   :requires (ibuffer ivy)
+  :init
+  (setq hydra-head-format "%s → ")
   :config
   (pdc|with-leader
    "b" (list

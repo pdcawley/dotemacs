@@ -79,22 +79,30 @@ Currently this function infloops when the list is circular."
   (declare (indent 1))
   (bindings//expand-add-toggle name props))
 
-(defmacro pdc|general-bind-hydra (name leader &rest specs)
+(defmacro pdc|general-bind-hydra
+    (name leader &rest specs &key no-cancel &allow-other-keys)
+  "Bind a hydra in such a way that others can share the prefix."
+  (declare (indent defun))
   (let ((hydra-key (intern (format "hydra-%s" (symbol-name name)))))
     `(progn
        (defhydra ,hydra-key (nil nil :color red)
          ,(symbol-name name)
-         ,@specs)
+         ,@specs
+         ,@(unless no-cancel '(("q" nil "cancel" :color blue))))
        (dolist (it ',specs)
-         (pcase-let ((`(,key ,fn ,desc . ,_) it))
-           (let ((hydra-fn (intern (format "%s/%s"
-                                           (symbol-name ',hydra-key)
-                                           (symbol-name fn))))
-                 (keys (concat ,leader key)))
-             (general-define-key :prefix leader-key
-               keys (list hydra-fn :which-key desc))))))))
-
-
-
+         (pcase it
+           (`(,key ,fn ,desc . ,(pred (lambda (props)
+                                        (plist-get props :exit))))
+            (let ((keys (concat ,leader key)))
+              (general-define-key :prefix leader-key
+                keys (list fn :which-key desc))))
+           (`(,key ,fn ,desc . ,(and props
+                                     (pred (lambda (props)
+                                             (not (plist-get props :exit))))))
+            (let ((hydra-fn (plist-get props :cmd-name))
+                  (keys (concat ,leader key)))
+              (general-define-key :prefix leader-key
+                keys (list hydra-fn :which-key desc)))))))))
+;; (put 'pdc|general-bind-hydra 'lisp-indent-function 2)
 
 (provide 'init-leaders)
