@@ -25,6 +25,8 @@
         delete-horizontal-space
         down-list
         dss/paredit-backward-delete
+        dss/paredit-open-parenthesis
+        dss/paredit-semicolon
         dss/paredit-yank
         electric-newline-and-maybe-indent
         fastnav-jump-to-char-forward
