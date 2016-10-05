@@ -43,11 +43,11 @@
   :bind ("C-c G" . gist-region-or-buffer))
 
 (req-package git-blame
-  :ensure t
+  :requires magit
   :commands git-blame-mode)
 
 (req-package git-gutter+
-  :ensure t
+  :requires magit
   :if (window-system)
   :diminish git-gutter+-mode
   :config
@@ -68,5 +68,8 @@
       (let ((name (file-relative-name file)))
         (vc-git-command buff 'async nil "blame" "-w" "--date-iso" "-C" "-C"
   rev "--" name)))))
+
+(req-package magithub
+  :requires magit)
 
 (req-package git-timemachine)
