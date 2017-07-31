@@ -137,6 +137,8 @@
         transpose-sexps
         widget-button-click
         widget-button-press
+        yaml-electric-backspace
+        yaml-electric-dash-and-dot
         yas-expand
         ))
 
@@ -144,6 +146,10 @@
       '(
         describe-key
         dired-maybe-insert-subdir
+        hydra-mark/mc/mc/mark-next-like-this
+        hydra-mc/mc/edit-beginnings-of-lines
+        hydra-mc/mc/mark-next-like-this
+        hydra-mc/mc/mark-previous-like-this
         ido-complete
         ido-hacks-execute-extended-command
         isearch-forward-regexp
