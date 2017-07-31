@@ -109,14 +109,6 @@
                                         ;(add-to-list 'tabkey2-modes-that-use-more-tabs 'js2-mode)
                                         ;(tabkey2-mode 1)
 
-(global-set-key (kbd "C-h V") 'pdc/apropos-variable)
-(global-set-key (kbd "C-h A") nil)
-(global-set-key (kbd "C-h A v") 'pdc/apropos-variable)
-(global-set-key (kbd "C-h A d") 'apropos-documentation)
-(global-set-key (kbd "C-h A V") 'apropos-value)
-(global-set-key (kbd "C-h A l") 'apropos-library)
-(global-set-key (kbd "C-h A f") 'pdc/apropos-function)
-
 (defun pdc/apropos-variable ()
   "My apropos lookup for variables"
   (interactive)
@@ -127,6 +119,15 @@
   "Apropos lookup for commands and functions"
   (interactive (list (apropos-read-pattern "command or function")))
   (apropos-command pattern t))
+
+(with-eval-after-load 'general
+  (general-define-key :keymaps 'help-map :prefix "A"
+    "f" 'pdc/apropos-function
+    "l" 'apropos-library
+    "V" 'apropos-value
+    "d" 'apropos-documentation
+    "v" 'pdc/apropos-variable
+    "I" 'info-apropos))
 
 ;; vi-like %
 (global-set-key "%" 'match-paren)
@@ -186,112 +187,53 @@
                              ("\\.t\\'"                  . perl-mode)))
 
 
-(define-key input-decode-map "\eOD" [left])
-(define-key input-decode-map "\eOC" [right])
-(define-key input-decode-map "\eOA" [up])
-(define-key input-decode-map "\eOB" [down])
-
-(define-key input-decode-map "\e[F" [end])
-(define-key input-decode-map "\e[D" [S-left])
-(define-key input-decode-map "\e[C" [S-right])
-(define-key input-decode-map "\e[A" [S-up])
-(define-key input-decode-map "\e[B" [S-down])
-(define-key input-decode-map "\e[C" [S-right])
-(define-key input-decode-map "\e[I" [prior])
-(define-key input-decode-map "\e[G" [next])
-(define-key input-decode-map "\e[M" [f1])
-(define-key input-decode-map "\e[Y" [S-f1])
-(define-key input-decode-map "\e[k" [C-f1])
-(define-key input-decode-map "\e\e[M" [M-f1])
-(define-key input-decode-map "\e[N" [f2])
-(define-key input-decode-map "\e[Z" [S-f2])
-(define-key input-decode-map "\e[l" [C-f2])
-(define-key input-decode-map "\e\e[N" [M-f2])
-(define-key input-decode-map "\e[O" [f3])
-(define-key input-decode-map "\e[a" [S-f3])
-(define-key input-decode-map "\e[m" [C-f3])
-(define-key input-decode-map "\e\e[O" [M-f3])
-(define-key input-decode-map "\e[P" [f4])
-(define-key input-decode-map "\e[b" [S-f4])
-(define-key input-decode-map "\e[n" [C-f4])
-(define-key input-decode-map "\e\e[P" [M-f4])
-(define-key input-decode-map "\e[Q" [f5])
-(define-key input-decode-map "\e[c" [S-f5])
-(define-key input-decode-map "\e[o" [C-f5])
-(define-key input-decode-map "\e\e[Q" [M-f5])
-(define-key input-decode-map "\e[R" [f6])
-(define-key input-decode-map "\e[d" [S-f6])
-(define-key input-decode-map "\e[p" [C-f6])
-(define-key input-decode-map "\e\e[R" [M-f6])
-(define-key input-decode-map "\e[S" [f7])
-(define-key input-decode-map "\e[e" [S-f7])
-(define-key input-decode-map "\e[q" [C-f7])
-(define-key input-decode-map "\e\e[S" [M-f7])
-(define-key input-decode-map "\e[T" [f8])
-(define-key input-decode-map "\e[f" [S-f8])
-(define-key input-decode-map "\e[r" [C-f8])
-(define-key input-decode-map "\e\e[T" [M-f8])
-(define-key input-decode-map "\e[U" [f9])
-(define-key input-decode-map "\e[g" [S-f9])
-(define-key input-decode-map "\e[s" [C-f9])
-(define-key input-decode-map "\e\e[U" [M-f9])
-(define-key input-decode-map "\e[V" [f10])
-(define-key input-decode-map "\e[h" [S-f10])
-(define-key input-decode-map "\e[_" [C-f10])
-(define-key input-decode-map "\e\e[V" [M-f10])
-(define-key input-decode-map "\e[W" [f11])
-(define-key input-decode-map "\e[i" [S-f11])
-(define-key input-decode-map "\e[u" [C-f11])
-(define-key input-decode-map "\e\e[W" [M-f11])
-(define-key input-decode-map "\e[X" [f12])
-(define-key input-decode-map "\e[j" [S-f12])
-(define-key input-decode-map "\e[v" [C-f12])
-(define-key input-decode-map "\e\e[X" [M-f12])
 (define-key input-decode-map (kbd "A-C-g") (kbd "C-g"))
 
 (global-set-key (kbd "<A-backspace>") (kbd "<backspace>"))
+
 (global-set-key (kbd "H-a") (beginning-of-line))
 
 ;; Movement layer.
 
-(global-set-key (kbd "A-s") 'right-char)
-(global-set-key (kbd "A-n") 'left-char)
-(global-set-key (kbd "A-y") 'previous-line)
-(global-set-key (kbd "A-i") 'next-line)
-(global-set-key (kbd "A-p") 'move-beginning-of-line)
-(global-set-key (kbd "A-c") 'move-end-of-line)
-(global-set-key (kbd "A-b") 'scroll-down-command)
-(global-set-key (kbd "A-f") 'scroll-up-command)
-(global-set-key (kbd "A-C-s") 'right-word)
-(global-set-key (kbd "A-C-n") 'left-word)
-(global-set-key (kbd "A-C-y") 'backward-paragraph)
-(global-set-key (kbd "A-C-i") 'forward-paragraph)
-(global-set-key (kbd "A-C-p") 'backward-sentence)
-(global-set-key (kbd "A-C-c") 'forward-sentence)
-(global-set-key (kbd "A-C-b") 'beginning-of-buffer)
-(global-set-key (kbd "A-C-f") 'end-of-buffer)
-(global-set-key (kbd "A-M-s") 'forward-sexp)
-(global-set-key (kbd "A-M-n") 'backward-sexp)
-(global-set-key (kbd "A-M-y") 'backward-list)
-(global-set-key (kbd "A-M-i") 'forward-list)
-(global-set-key (kbd "A-M-p") 'backward-up-list)
-(global-set-key (kbd "A-M-c") 'up-list)
-(global-set-key (kbd "A-M-b") 'beginning-of-defun)
-(global-set-key (kbd "A-M-f") 'end-of-defun)
-(global-set-key (kbd "A-M-e") 'down-list)
+;; (global-set-key (kbd "A-s") 'right-char)
+;; (global-set-key (kbd "A-n") 'left-char)
+;; (global-set-key (kbd "A-y") 'previous-line)
+;; (global-set-key (kbd "A-i") 'next-line)
+;; (global-set-key (kbd "A-p") 'move-beginning-of-line)
+;; (global-set-key (kbd "A-c") 'move-end-of-line)
+;; (global-set-key (kbd "A-b") 'scroll-down-command)
+;; (global-set-key (kbd "A-f") 'scroll-up-command)
+;; (global-set-key (kbd "A-C-s") 'right-word)
+;; (global-set-key (kbd "A-C-n") 'left-word)
+;; (global-set-key (kbd "A-C-y") 'backward-paragraph)
+;; (global-set-key (kbd "A-C-i") 'forward-paragraph)
+;; (global-set-key (kbd "A-C-p") 'backward-sentence)
+;; (global-set-key (kbd "A-C-c") 'forward-sentence)
+;; (global-set-key (kbd "A-C-b") 'beginning-of-buffer)
+;; (global-set-key (kbd "A-C-f") 'end-of-buffer)
+;; (global-set-key (kbd "A-M-s") 'forward-sexp)
+;; (global-set-key (kbd "A-M-n") 'backward-sexp)
+;; (global-set-key (kbd "A-M-y") 'backward-list)
+;; (global-set-key (kbd "A-M-i") 'forward-list)
+;; (global-set-key (kbd "A-M-p") 'backward-up-list)
+;; (global-set-key (kbd "A-M-c") 'up-list)
+;; (global-set-key (kbd "A-M-b") 'beginning-of-defun)
+;; (global-set-key (kbd "A-M-f") 'end-of-defun)
+;; (global-set-key (kbd "A-M-e") 'down-list)
 
-(global-set-key (kbd "A-a") 'ack-and-a-half)
+;; (global-set-key (kbd "A-a") 'ack-and-a-half)
 
-(global-set-key (kbd "A-j") 'fastnav-jump-to-char-forward)
-(global-set-key (kbd "A-J") 'fastnav-jump-to-char-backward)
-(global-set-key (kbd "A-g") 'fastnav-sprint-forward)
-(global-set-key (kbd "A-G") 'fastnav-sprint-backward)
+;; (global-set-key (kbd "A-j") 'fastnav-jump-to-char-forward)
+;; (global-set-key (kbd "A-J") 'fastnav-jump-to-char-backward)
+;; (global-set-key (kbd "A-g") 'fastnav-sprint-forward)
+;; (global-set-key (kbd "A-G") 'fastnav-sprint-backward)
 
-(global-set-key (kbd "A-/") 'isearch-forward-regexp)
-(define-key isearch-mode-map (kbd "A-/") 'isearch-repeat-forward)
-(define-key isearch-mode-map (kbd "A-\\") 'isearch-repeat-backward)
+;; (global-set-key (kbd "A-/") 'isearch-forward-regexp)
+;; (define-key isearch-mode-map (kbd "A-/") 'isearch-repeat-forward)
+;; (define-key isearch-mode-map (kbd "A-\\") 'isearch-repeat-backward)
 
-(global-set-key (kbd "C-A-k") 'kill-line)
+;; (global-set-key (kbd "C-A-k") 'kill-line)
+
 (req-package compile
   :bind
   (:map compilation-mode-map
@@ -526,6 +468,25 @@
 
 (electric-indent-mode -1)
 
+(define-prefix-command 'pdc/describe nil "describe")
+
+(general-define-key :keymaps 'pdc/describe
+  "b" 'describe-bindings
+  "C" '(finder-commentary :which-key "commentary")
+  "F" 'describe-face
+  "i" 'describe-input-method
+  "k" 'describe-key
+  "L" 'describe-language-environment
+  "m" 'describe-mode
+  "o" 'describe-symbol
+  "P" 'describe-package
+  "s" 'describe-syntax
+  "T" 'describe-text-properties
+  "t" 'describe-theme
+  )
+
+(define-key help-map (kbd "D") 'pdc/describe)
+
 (general-define-key :keymaps 'help-map
   "C-h" nil
   "u" 'man
@@ -534,32 +495,33 @@
   "I" nil
   "L" nil
 
-  "D" '(:ignore t :which-key "describe")
-  "D b" 'describe-bindings
-  "D C" '(finder-commentary :which-key "commentary")
-  "D F" 'describe-face
-  "D i" 'describe-input-method
-  "D k" 'describe-key
-  "D L" 'describe-language-environment
-  "D m" 'describe-mode
-  "D o" 'describe-symbol
-  "D P" 'describe-package
-  "D s" 'describe-syntax
-  "D T" 'describe-text-properties
-  "D t" 'describe-theme)
+  ;; "D"   pdc/describe
+  ;; "D b" 'describe-bindings
+  ;; "D C" '(finder-commentary :which-key "commentary")
+  ;; "D F" 'describe-face
+  ;; "D i" 'describe-input-method
+  ;; "D k" 'describe-key
+  ;; "D L" 'describe-language-environment
+  ;; "D m" 'describe-mode
+  ;; "D o" 'describe-symbol
+  ;; "D P" 'describe-package
+  ;; "D s" 'describe-syntax
+  ;; "D T" 'describe-text-properties
+  ;; "D t" 'describe-theme
+  )
 
 (req-package s)
 (req-package dash)
 
-(with-eval-after-load
-    (--each (list (concat leader-key " h")
-                  "<f1>" "C-h")
-      (cl-flet ((with-prefix (key)
-                             (s-join " " (list it key))))
-        (which-key-declare-prefixes
-          (with-prefix "D") "describe"
-          (with-prefix "A") "apropos"
-          (with-prefix "e") "elisp"))))
+;; (with-eval-after-load
+;;     (--each (list (concat leader-key " h")
+;;                   "<f1>" "C-h")
+;;       (cl-flet ((with-prefix (key)
+;;                              (s-join " " (list it key))))
+;;         (which-key-declare-prefixes
+;;           (with-prefix "D") "describe"
+;;           (with-prefix "A") "apropos"
+;;           (with-prefix "e") "elisp"))))
 
 (with-eval-after-load 'hydra
   (pdc|with-leader
@@ -605,6 +567,8 @@
    "r" '(:ignore t :which-key "replace")
    "r q" 'query-replace-regexp
    "r R" 'replace-rectangle))
+
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
 
 
 (provide 'init-bindings)
