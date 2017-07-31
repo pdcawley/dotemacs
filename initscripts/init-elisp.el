@@ -41,26 +41,15 @@
 (req-package lisp-mode
   :require (yasnippet nlinum-relative cider)
   :force t
-  :bind (("C-h e" . nil)
-         ("C-h e c" . finder-commentary)
-         ("C-h e e" . view-echo-area-messages)
-         ("C-h e f" . find-function)
-         ("C-h e F" . find-face-definition))
+  :general
+  (pdc|with-leader
+   "e" '(nil :which-key "elisp")
+   "e c" 'finder-commentary
+   "e e" 'view-echo-area-messages
+   "e f" 'find-function
+   "e F" 'find-face-definition)
   :init
   (progn
-    (mapc (lambda (major-mode)
-            (font-lock-add-keywords
-             major-mode
-             '(("(\\(lambda\\)\\>"
-                (0 (ignore
-                    (compose-region (match-beginning 1)
-                                    (match-end 1) ?λ))))
-               ("(\\(ert-deftest\\)\\>[     '(]*\\(setf[    ]+\\sw+\\|\\sw+\\)?"
-                (1 font-lock-keyword-face)
-                (2 font-lock-function-name-face
-                   nil t)))))
-          lisp-modes)
-
     (defvar slime-mode nil)
     (defvar lisp-mode-initialized nil)
 
@@ -118,7 +107,7 @@
         ;;            :ignore-case t
         ;;            :doc-spec '(("(ansicl)Symbol Index" nil nil nil))))
         ;;       lisp-modes)
-    ))
+        ))
 
     (defun dss/goto-match-paren (arg)
       "Go to the matching parenthesis if on parenthesis. Else go to the
@@ -173,7 +162,12 @@
             '(try-expand-dabbrev-visible
               try-complete-lisp-symbol
               try-complete-lisp-symbol-partially
-              try-expand-dabbrev)))
+              try-expand-all-abbrevs
+              try-expand-list
+              try-expand-line
+              try-expand-dabbrev
+              try-complete-file-name-partially
+              try-complete-file-name)))
     (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
     (setq emacs-lisp-mode-hook (cl-remove 'lexbind-mode emacs-lisp-mode-hook))
     ))
@@ -212,7 +206,10 @@
 (req-package ert
   :require lisp-mode
   :commands ert-run-tests-interactively
-  :bind ("C-c e t" . ert-run-tests-interactively))
+  :general
+  (pdc|with-leader
+   "e t" '(ert-run-tests-interactively :which-key "run tests")))
+
 
 (req-package elint
   :require lisp-mode
@@ -245,11 +242,9 @@
     (byte-recompile-file buffer-file-name)))
 
 (req-package ielm
-  :require lisp-mode
-  :bind
-  (("C-c :" . ielm)
-   :map ielm-mode
-   ("<return>" . my-ielm-return))
+  :requires (lisp-mode auto-complete)
+  :general
+  (pdc|with-leader "e :" 'ielm)
   :config
   (progn
     (defun my-ielm-return ()
@@ -279,18 +274,19 @@
     (defun dss/ielm-mode-hook ()
       (interactive)
       (ielm-auto-complete)
-      (paredit-mode t))
+      (paredit-mode t)
+      (local-set-key (kbd "<return>") 'my-ielm-return))
 
-    (defun dss/ielm-set-working-buffer (buf)
-      (interactive "bBuffer:")
-      (ielm-change-working-buffer buf)
-      (setq header-line-format (list (buffer-name ielm-working-buffer))))
+    ;; (defun dss/ielm-set-working-buffer (buf)
+    ;;   (interactive "bBuffer:")
+    ;;   (ielm-change-working-buffer buf)
+    ;;   (setq header-line-format (list (buffer-name ielm-working-buffer))))
 
-    (defun dss/ielm-on-buffer ()
-      (interactive)
-      (let ((buf (current-buffer)))
-        (ielm)
-        (dss/ielm-set-working-buffer buf)))
+    ;; (defun dss/ielm-on-buffer ()
+    ;;   (interactive)
+    ;;   (let ((buf (current-buffer)))
+    ;;     (ielm)
+    ;;     (dss/ielm-set-working-buffer buf)))
 
     (add-hook 'ielm-mode-hook 'dss/ielm-mode-hook)))
 
@@ -403,9 +399,7 @@
       :on (enable-paredit-mode)
       :off (disable-paredit-mode)
       :keymaps lisp-modes
-      :toggle-keys "tp")
-
-
+      :toggle-keys "Tp")
 
     (defun dss/paredit-backward-delete ()
       (interactive)
