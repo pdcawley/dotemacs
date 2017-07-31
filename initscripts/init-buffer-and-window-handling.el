@@ -316,30 +316,48 @@
 
 (req-package hydra
   :requires (ibuffer ivy)
+  :commands defhydra
   :init
-  (setq hydra-head-format "%s → ")
-  :config
+  (setq hydra-head-format "%s → "))
+
+(defun pdc/safe-revert-buffer ()
+  "Prompt before reverting the file."
+  (interactive)
+  (revert-buffer nil nil))
+
+(defun pdc/safe-erase-buffer ()
+  "Prompt before erasing the content of the file."
+  (interactive)
+  (if (y-or-n-p (format "Erase content of buffer %s ? " (current-buffer)))
+      (erase-buffer)))
+
+
+(with-eval-after-load 'init-leaders
   (pdc|with-leader
-   "b" (list
-        (defhydra hydra-buffer (nil nil :color red)
-          "Buffers"
-          ("B" ivy-switch-buffer-other-window "display" :color blue)
-          ("b" ivy-switch-buffer "switch" :color blue)
-          ("r" revert-buffer "revert")
-          ("s" save-buffer "save")
-          ("C" clone-buffer "clone" :color blue)
-          ("k" kill-this-buffer "kill")
-          ("K" kill-buffer "kill a buffer" :color blue)
-          ("C-z" erase-buffer "erase" :color blue)
-          ("e" eval-buffer "eval")
-          ("l" ibuffer "list" :color blue)
-          ("]" next-buffer "next")
-          ("n" next-buffer "next")
-          ("[" previous-buffer "prev")
-          ("p" previous-buffer "prev")
-          ("y" bury-buffer "bury")
-          ("Y" unbury-buffer "unbury"))
-             :which-key "buffers")))
+    "b" '(nil :which-key "buffer/bookmark")
+    "bL" 'bookmark-bmenu-list
+    "bj" 'bookmark-jump
+    "bP" (list bookmark-map :which-key "bmkp")
+    "bR" '(pdc/safe-revert-buffer :which-key "revert-buffer")
+    "be" '(pdc/safe-erase-buffer :which-key "erase-buffer")
+    "bd" 'kill-this-buffer)
+
+
+  (pdc|general-bind-hydra buffer "b"
+    ("B" ivy-switch-buffer-other-window "display" :color blue)
+    ("b" ivy-switch-buffer "switch" :color blue)
+    ("r" revert-buffer "revert")
+    ("s" save-buffer "save")
+    ("C" clone-buffer "clone" :color blue)
+    ("k" kill-this-buffer "kill")
+    ("K" kill-buffer "kill a buffer" :color blue)
+    ("l" ibuffer "list" :color blue)
+    ("]" next-buffer "next")
+    ("n" next-buffer "next")
+    ("[" previous-buffer "prev")
+    ("p" previous-buffer "prev")
+    ("y" bury-buffer "bury")
+    ("Y" unbury-buffer "unbury")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'init-buffer-and-window-handling)
