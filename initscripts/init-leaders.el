@@ -84,30 +84,50 @@ Currently this function infloops when the list is circular."
   (declare (indent 1))
   (bindings//expand-add-toggle name props))
 
+(defun pdc/shortdoc (fn)
+  (when-let ((doc (documentation fn)))
+    (substring doc 0 (string-match "\n" doc))))
+
+
 (defmacro pdc|general-bind-hydra
     (name leader &rest specs &key no-cancel &allow-other-keys)
   "Bind a hydra in such a way that others can share the prefix."
   (declare (indent defun))
-  (let ((hydra-key (intern (format "hydra-%s" (symbol-name name)))))
-    `(progn
-       (defhydra ,hydra-key (nil nil :color red)
-         ,(symbol-name name)
-         ,@specs
-         ,@(unless no-cancel '(("q" nil "cancel" :color blue))))
-       (dolist (it ',specs)
-         (pcase it
-           (`(,key ,fn ,desc . ,(pred (lambda (props)
-                                        (plist-get props :exit))))
-            (let ((keys (concat ,leader key)))
-              (general-define-key :prefix leader-key
-                keys (list fn :which-key desc))))
-           (`(,key ,fn ,desc . ,(and props
-                                     (pred (lambda (props)
-                                             (not (plist-get props :exit))))))
-            (let ((hydra-fn (plist-get props :cmd-name))
-                  (keys (concat ,leader key)))
-              (general-define-key :prefix leader-key
-                keys (list hydra-fn :which-key desc)))))))))
-;; (put 'pdc|general-bind-hydra 'lisp-indent-function 2)
+  (cl-flet
+      ((canonicalize-spec (spec)
+         (let* ((key (car spec))
+                (action (cadr spec))
+                (tail (cddr spec))
+                (caption (cond ((stringp (car tail))
+                                (pop tail))
+                               ((symbolp action)
+                                (symbol-name action))
+                               ((functionp action)
+                                (pdc/shortdoc action))
+                               (t "??"))))
+           `(,key ,action ,caption ,@tail))))
+
+    (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
+          (specs (mapcar #'canonicalize-spec specs)))
+      `(progn
+         (defhydra ,hydra-key (nil nil :color red)
+           ,(symbol-name name)
+           ,@specs
+           ,@(unless no-cancel '(("q" nil "cancel" :color blue))))
+         (dolist (it ',specs)
+           (pcase it
+             (`(,key ,fn ,desc . ,(pred (lambda (props)
+                                          (plist-get props :exit))))
+              (let ((keys (concat ,leader key)))
+                (general-define-key :prefix leader-key
+                  keys (list fn :which-key desc))))
+             (`(,key ,fn ,desc . ,(and props
+                                       (pred (lambda (props)
+                                               (not (plist-get props :exit))))))
+              (let ((hydra-fn (plist-get props :cmd-name))
+                    (keys (concat ,leader key)))
+                (general-define-key :prefix leader-key
+                  keys (list hydra-fn :which-key desc))))))))))
+(put 'pdc|general-bind-hydra 'lisp-indent-function 2)
 
 (provide 'init-leaders)
