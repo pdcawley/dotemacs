@@ -84,9 +84,9 @@
   :config
   (let ((new-descriptions
          '(("select-window-\\(0-9\\)" . "window \\1")
-           ("avy-goto-word-or-subword-1" . "avy word")
+           ("avy-goto-word-or-subword-1" . "avy»word")
            ("shell-command" . "shell cmd")
-           ("avy-goto-line" "avy line")
+           ("avy-goto-line" . "avy»line ")
            ("universal-argument" . "universal arg")
            ("er/expand-region" . "expand region"))))
     (dolist (nd new-descriptions)
