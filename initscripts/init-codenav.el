@@ -90,13 +90,12 @@
 (defun pdc/find-zshenv ()
   (find-file (expand-file-name "~/.zshenv")))
 
-(cl-flet ((ff (file &rest props)
+(cl-macrolet ((ff (file &rest props)
                   (let ((which-key (or (plist-get props :which-key) file)))
-                    (cons (lambda ()
-                            (interactive)
-                            (find-file-existing (expand-file-name file)))
-                          (plist-put props :which-key which-key)))
-                  ))
+                    `(lambda ()
+                       ,which-key
+                       (interactive)
+                       (find-file-existing (expand-file-name file))))))
   (pdc|with-leader
    "fe" '(:ignore t :which-key "dotfiles")
    "fed" '(pdc/find-initfile :which-key "init-real.el")
@@ -105,4 +104,5 @@
    "fez" '(pdc/find-zshrc :which-key ".zshrc")
    "feZ" '(pdc/find-zshenv :which-key ".zshenv")
    "fek" (ff  "~/.karabiner.d/configuration/karabiner.json") :which-key "karabiner.json"))
+
 (provide 'init-codenav)
