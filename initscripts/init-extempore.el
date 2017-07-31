@@ -1,12 +1,17 @@
-(setq extempore-share-directory "/usr/local/share/extempore/")
+(req-package extempore-mode
+  :require eldoc-mode
+  :mode
+  ("\\\\.xtm'" . extempore-mode)
+  :config
+  (setq extempore-tab-completion nil)
+  (setq extempore-program-args "--indevice 0 --device 1 --frames 1024")
+  (add-hook 'extempore-mode-hook 'pdc/extempore-mode-hook))
 
-(autoload 'extempore-mode
-  (concat extempore-share-directory "extras/extempore.el") "" t)
-(add-to-list 'auto-mode-alist '("\\.xtm" . extempore-mode))
+;; (setq extempore-share-directory "/usr/local/share/extempore/")
 
-(setq extempore-tab-completion nil)
-
-(setq extempore-program-args "--indevice 0 --device 1 --frames 1024")
+;; (autoload 'extempore-mode
+;;   (concat extempore-share-directory "extras/extempore.el") "" t)
+;; (add-to-list 'auto-mode-alist '("\\.xtm" . extempore-mode))
 
 (defun pdc/extempore-mode-hook ()
   (turn-on-eldoc-mode)
@@ -14,12 +19,10 @@
         'extempore-eldoc-documentation-function)
   (yas-minor-mode-on))
 
-(add-hook 'extempore-mode-hook 'pdc/extempore-mode-hook)
-
-(autoload #'llvm-mode (concat extempore-share-directory "extras/llvm-mode.el")
-  "Major mode for editing LLVM IR files" t)
-(add-to-list 'auto-mode-alist '("\\.ir$" . llvm-mode))
-(add-to-list 'auto-mode-alist '("\\.ll$" . llvm-mode))
+;; (autoload #'llvm-mode (concat extempore-share-directory "extras/llvm-mode.el")
+;;   "Major mode for editing LLVM IR files" t)
+;; (add-to-list 'auto-mode-alist '("\\.ir$" . llvm-mode))
+;; (add-to-list 'auto-mode-alist '("\\.ll$" . llvm-mode))
 
 
 (defun extempore-create-template-file (base-path filename &optional header)
