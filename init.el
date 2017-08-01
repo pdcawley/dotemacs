@@ -87,6 +87,7 @@ Note the weekly scope of the command's precision")
     (my-tangle-config-org))
   (load-file elfile))
 
+
 ;; when config.org is saved, re-generate config.el
 (defun my-tangle-config-org-hook-func ()
   (when (string= "config.org" (buffer-name))
@@ -105,7 +106,7 @@ Note the weekly scope of the command's precision")
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit hydra ivy paredit macrostep yankpad yasnippet req-package no-littering general))))
+    (kv s magit hydra ivy paredit macrostep yankpad yasnippet req-package no-littering general))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

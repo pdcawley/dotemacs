@@ -25,8 +25,8 @@ Some near-future plans for =config.org=:
 - [X] req-package based configuration and installation
 - Prog-modes
   - [ ] Perl
-  - [0/3] Lisps
-    - [ ] Emacs Lisp
+  - [1/3] Lisps
+    - [X] Emacs Lisp
     - [ ] Scheme
     - [ ] Extempore
   - [ ] Javascript
@@ -79,6 +79,14 @@ inhibit the startup screen
 (setq inhibit-startup-screen t)
 #+END_SRC
 
+** Support functions
+
+*** hook-into-modes
+#+BEGIN_SRC emacs-lisp
+(defmacro hook-into-modes (func modes)
+  `(--each ,modes (add-hook it ,func)))
+#+END_SRC
+
 ** Package
 
 Configure the package manager
@@ -104,26 +112,58 @@ copies of the packages:
 Initialize our package managment and key binding:
 
 #+BEGIN_SRC emacs-lisp
-    (eval-when-compile (require 'req-package))
+  (eval-when-compile
+    (progn
+      (require 'req-package)
+      (require 'cl)))
 
-    (setq package-enable-at-startup nil)
-    (unless (package-installed-p 'req-package)
-      (package-refresh-contents)
-      (package-install 'req-package))
+  (setq package-enable-at-startup nil)
+  (unless (package-installed-p 'req-package)
+    (package-refresh-contents)
+    (package-install 'req-package))
 
-    ;; After config.el has loaded, we run the 
-    (use-package req-package
-      :init
-      (add-hook 'after-init-hook (lambda () (req-package-finish)))
-      :config
-      (progn
-        (req-package--log-enable-messaging)
-        (req-package--log-enable-debugging)))
+  ;; After config.el has loaded, we run the 
+  (use-package req-package
+    :init
+    (add-hook 'after-init-hook (lambda () (req-package-finish)))
+    :config
+    (progn
+      (req-package--log-enable-messaging)
+      (req-package--log-enable-debugging)))
 
-    (req-package diminish
-      :force t)
-    (req-package bind-key
-      :force t)
+  (req-package diminish
+    :force t)
+  (req-package bind-key
+    :force t)
+#+END_SRC
+
+*** Basic libraries
+
+Some libraries just make life easier so we should just load them up
+unconditionally and not worry about dealing with dependencies on them
+and fencing some of our helper functions in calls to =req-package= to
+ensure that the prereqs are required.
+
+**** dash.el
+A modern lisp manipulation library
+#+BEGIN_SRC emacs-lisp
+  (use-package dash
+    :ensure t)
+  (eval-when-compile (require 'dash))
+#+END_SRC
+
+**** s.el
+A modern string manipulation library
+#+BEGIN_SRC emacs-lisp
+  (use-package s
+    :ensure t)
+#+END_SRC
+
+**** kv.el
+A modern library for messing with dictionaries
+#+BEGIN_SRC emacs-lisp
+  (use-package kv
+    :ensure t)
 #+END_SRC
 
 ** =yes-or-no-p= can die in a fire
@@ -352,4 +392,374 @@ within Org-mode only is defined in my yankpad file.
   (bind-key "<f6> e" 'my-org-insert-elisp nil (eq major-mode 'org-mode))
 
 #+END_SRC
+
+* Programming languages
+
+** Lisps
+
+There are multiple lispy modes, and we want many of them to be
+initialized the same way. So we'll set up some variables to assist
+with this
+#+BEGIN_SRC emacs-lisp
+  (defvar lisp-modes '(emacs-lisp-mode
+                       inferior-emacs-lisp-mode
+                       lisp-mode
+                       lisp-interaction-mode
+                       extempore-mode)
+    "A list of Lisp style modes")
+
+  (defvar lisp-mode-hooks
+    (--map (intern (concat (symbol-name it) "-hook"))
+           lisp-modes)
+    "The hook variables associated with our lisp-modes")
+#+END_SRC
+
+Configure our base Lisp mode
+#+BEGIN_SRC emacs-lisp
+  ;; Helpers (move targets)
+  (defun pdc/display-syntax (syntax-type)
+    (eq syntax-type (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/in-syntax-p (syntax-type)
+    "This only answers if you're in a comment or string at the moment."
+    (eq syntax-type (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/in-string-p ()
+    (pdc/in-syntax-p 'string))
+
+  (defun pdc/in-comment-p ()
+    (pdc/in-syntax-p 'comment))
+
+  (defun pdc/blank-line-p ()
+    "Return non-nil iff current line is blank."
+    (save-excursion
+      (beginning-of-line)
+      (looking-at "\\s-*$")))
+
+  (defun pdc/beginning-of-string ()
+    "Go to beginning of string around point.
+  Do nothing if not in string."
+    ;; from loveshack's python-beginning-of-string
+    (interactive)
+    (if (and (not (pdc/in-string-p))
+             (save-excursion
+               (backward-char)
+               (pdc/in-string-p)))
+        (backward-char))
+    (let ((state (syntax-ppss)))
+      (when (eq 'string (syntax-ppss-context state))
+        (goto-char (nth 8 state)))))
+
+  (defun pdc/end-of-string ()
+    (interactive)
+    (if (and (not (pdc/in-string-p))
+             (save-excursion
+               (forward-char)
+               (pdc/in-string-p)))
+        (forward-char))
+    (if (pdc/in-string-p)
+        (progn
+          (pdc/beginning-of-string)
+          (forward-sexp))))
+
+  (defun pdc/mark-string ()
+    (interactive)
+    (if (pdc/in-string-p)
+        (progn
+          (pdc/beginning-of-string)
+          (forward-char)
+          (push-mark nil nil t)
+          (pdc/end-of-string)
+          (backward-char))))
+
+  (defun pdc/forward-string (&optional backward)
+    (interactive)
+    (if (pdc/in-string-p)
+        (pdc/end-of-string))
+    (while (not (pdc/in-string-p))
+      (if backward
+          (backward-char)
+        (forward-char))))
+
+  (defun pdc/backward-string ()
+    (interactive)
+    (if (pdc/in-string-p)
+        (pdc/beginning-of-string))
+    (pdc/forward-string t)
+    (pdc/beginning-of-string)
+    (forward-char))
+
+  (defun pdc/out-sexp (&optional level forward syntax)
+    "Skip out of any nested brackets.
+   Skip forward if FORWARD is non-nil, else backward.
+   If SYNTAX is non-nil it is the state returned by `syntax-ppss' at point.
+   Return non-nil if and only if skipping was done."
+    (interactive)
+    (if (pdc/in-string-p)
+        (pdc/beginning-of-string))
+    (progn
+      (let* ((depth (syntax-ppss-depth (or syntax (syntax-ppss))))
+             (level (or level depth))
+             (forward (if forward -1 1)))
+        (unless (zerop depth)
+          (if (> depth 0)
+              ;; Skip forward out of nested brackets.
+              (condition-case ()            ; beware invalid syntax
+                  (progn (backward-up-list (* forward level)) t)
+                (error nil))
+            ;; Invalid syntax (too many closed brackets).
+            ;; Skip out of as many as possible.
+            (let (done)
+              (while (condition-case ()
+                         (progn (backward-up-list forward)
+                                (setq done t))
+                       (error nil)))
+              done))))))
+
+  (defun pdc/flash-region (beg end)
+    (interactive "r")
+    (let ((ovl (make-overlay beg end))
+          (was-mark-active mark-active))
+      (setq mark-active nil)
+      (overlay-put ovl 'face 'highlight)
+      (run-with-timer 0.5 nil
+                      (lambda (ovl was-mark-active)
+                        (delete-overlay ovl)
+                        (setq mark-active was-mark-active))
+                      ovl was-mark-active)))
+
+  (defun pdc/indent-sexp ()
+    "http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode
+    can be used from any coding major mode"
+    (interactive)
+    (save-restriction
+      (save-excursion
+        (widen)
+        (let* ((inhibit-point-motion-hooks t)
+               (parse-status (syntax-ppss (point)))
+               (beg (nth 1 parse-status))
+               (end-marker (make-marker))
+               (end (progn (goto-char beg) (forward-list) (point))))
+          (pdc/flash-region beg end)
+          (set-marker end-marker end)
+          (goto-char beg)
+          (while (< (point) (marker-position end-marker))
+            ;; don't reindent blank lines so we don't set the "buffer
+            ;; modified" property for nothing
+            (beginning-of-line)
+            (unless (looking-at "\\s-*$")
+              (indent-according-to-mode))
+            (forward-line))))))
+
+  (req-package autoinsert)
+  (req-package finder)
+
+
+  (req-package lisp-mode
+    :require (finder paredit)
+    :force t
+    :loader :path
+    :config
+    (defun my-byte-recompile-file ()
+      (save-excursion
+        (byte-recompile-file buffer-file-name)))
+
+
+    (defun emacs-lisp-rebuild-associated-elc ()
+      "If you're saving an elisp file, the .elc is probably now invalid"
+      (make-local-variable 'after-save-hook)
+      (add-hook 'after-save-hook 'my-byte-recompile-file))
+
+    (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
+
+    (defun pdc/goto-match-paren (arg)
+      "Go to the matching parenthesis if on parenthesis. Else go up to the opening parenthesis one level up."
+      (interactive "p")
+      (cond ((looking-at "\\s(") (forward-list 1))
+            (t
+             (backward-char 1)
+             (cond ((looking-at "\\s\)")
+                    (forward-char 1)
+                    (backward-list 1))
+                   (t
+                    (while (not (looking-at "\\s\)"))
+                      (backward-char 1)
+                      (cond ((looking-at "\\s\)")
+                             (backward-char 1)
+                             (when (looking-at "\\s\)")
+                               (forward-char 1)
+                               (backward-list 1)
+                               (backward-char 1))))))))))
+
+    (defun pdc/replace-sexp ()
+      (interactive)
+      (if (pdc/in-string-p)
+          (pdc/mark-string)
+        (mark-sexp))
+      (delete-region (point) (mark))
+      (yank))
+
+
+    (defun my-lisp-mode-hook ()
+      (auto-fill-mode 1)
+      (paredit-mode +1)
+      ;; (redshank-mode 1)
+      ;; (elisp-slime-nav-mode 1)
+      (add-hook 'after-save-hook 'check-parens
+                nil t)
+      (yas-minor-mode 1))
+
+    (hook-into-modes 'my-lisp-mode-hook lisp-mode-hooks))
+
+
+  (req-package elisp-mode
+    :loader :path
+    :config
+    (defun pdc/elisp-mode-hook ()
+      (eldoc-mode 1)
+      (setq mode-name "EL"))
+    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+    (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
+
+
+                                          ;(req-package elisp-slime-nav-mode)
+
+  (req-package paredit
+    :commands paredit-mode
+    :require
+    :diminish " Ⓟ"
+    :bind
+    (:map paredit-mode-map
+          ("DEL" . pdc/paredit-backward-delete)
+          ("M-RET" . pdc/indent-defun)
+          ("C-M-l" . paredit-recentre-on-sexp)
+          ("C-M-s" . paredit-backward-up)
+          ("C-M-k" . paredit-forward-slurp-sexp)
+          ("C-M-j" . paredit-backward-slurp-sexp)
+          ("C-M-\\" . pdc/indent-then-snap-to-indent)
+          ("M-o" . pdc/paredit-open-line)
+          ("C-M-y" . pdc/replace-sexp)
+          ("C-M-y" . pdc/replace-sexp)
+          ("C-y" . pdc/paredit-yank)
+          ("(" . pdc/paredit-open-parenthesis)
+          (";" . pdc/paredit-semicolon)
+          ("M-w" . pdc/paredit-kill-ring-save)
+          (")" . paredit-close-round-and-newline)
+          ("M-)" . paredit-close-round)
+          ("M-k" . paredit-raise-sexp)
+          ("M-I" . paredit-splice-sexp)
+          ("C-. d" . paredit-forward-down)
+          ("C-. B" . paredit-splice-sexp-killing-backward)
+          ("C-. C" . paredit-convolute-sexp)
+          ("C-. F" . paredit-splice-sexp-killing-forward)
+          ("C-. a" . paredit-add-to-next-list)
+          ("C-. A" . paredit-add-to-previous-list)
+          ("C-. j" . paredit-join-with-next-list)
+          ("C-. J" . paredit-join-with-previous-list))
+    :config
+    (defun pdc/indent-defun ()
+      (interactive)
+      (save-excursion
+        (pdc/out-sexp)
+        (forward-char)
+        (pdc/indent-sexp)))
+
+    (defun pdc/paredit-backward-delete ()
+      (interactive)
+      (if mark-active
+          (call-interactively 'delete-region)
+        (paredit-backward-delete)))
+
+    (defun pdc/indent-defun-or-region ()
+      (interactive)
+      (if mark-active
+          (call-interactively 'indent-region)
+        (pdc/indent-defun)))
+
+    (defun pdc/indent-then-snap-to-indent ()
+      (interactive)
+      (pdc/indent-defun-or-region)
+      (back-to-indentation))
+
+    (defun pdc/paredit-yank ()
+      (interactive)
+      (call-interactively 'yank)
+      (unless mark-active
+        (when (and (looking-back "\)" 1)
+                   (looking-at "\("))
+          (reindent-then-newline-and-indent)
+          (when (looking-at-p "^")
+            (newline))))
+      (condition-case nil (pdc/indent-defun)))
+
+
+
+
+    (defun pdc/paredit-open-line ()
+      (interactive)
+      (save-excursion
+        (reindent-then-newline-and-indent))
+      (indent-according-to-mode))
+
+    (defun pdc/paredit-kill-ring-save ()
+      (interactive)
+      (if (not mark-active)
+          (save-excursion
+            (when (looking-at-p " +\(")
+              (search-forward "(")
+              (backward-char))
+            (mark-sexp)
+            (call-interactively 'kill-ring-save))
+        (call-interactively 'kill-ring-save)))
+
+    (defun pdc/paredit-open-parenthesis (&optional n)
+      (interactive "P") 
+      (cond ((and (looking-back "\(" 1)
+                  (looking-at "\)"))
+             (paredit-open-parenthesis n))
+            ((equal last-command this-command)
+             (undo)
+             (insert " ")
+             (backward-char 1)
+             (paredit-open-parenthesis n))
+            ((and (not (or mark-active (pdc/in-string-p)))
+                  (looking-at-p "[\(a-z\"#\\[{]"))
+             (mark-sexp)
+             (paredit-open-parenthesis n)
+             (when (looking-at-p "[\(\"#\\[{]")
+               (save-excursion (insert " "))))
+            (t (paredit-open-parenthesis n))))
+
+
+    (defun pdc/paredit-semicolon (&optional n)
+      (interactive "P")
+      (when (looking-at-p "  +\(")
+        (search-forward "(")
+        (backward-char))
+      (cond ((or (looking-back ";" 1)
+                 (looking-at-p "[[:blank:]]*$"))
+             (self-insert-command 1))
+            ((equal last-command this-command)
+             (undo)
+             (self-insert-command 1))
+            ((and (not mark-active) 
+                  (looking-at-p "^[[:blank:]]*$"))
+             (insert ";;; "))
+            ((and (not mark-active)
+                  (save-excursion
+                    (beginning-of-line)
+                    (looking-at-p "[[:blank:]]*$")))
+             (insert ";; "))
+            (t (paredit-semicolon n))))
+
+    (unbind-key "M-r" paredit-mode-map)
+    (unbind-key "M-s" paredit-mode-map)
+
+    (defun pdc/in-slime-repl-p ()
+      (equal mode-name "REPL"))
+
+    )
+#+END_SRC
+
+** Emacs Lisp
 
