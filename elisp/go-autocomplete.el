@@ -1,1 +1,0 @@
-/Users/pdcawley/dev/src/github.com/nsf/gocode/emacs/go-autocomplete.el

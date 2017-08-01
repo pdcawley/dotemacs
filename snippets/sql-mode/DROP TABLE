@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: DROP TABLE
-# key: dtable
-# --
-DROP TABLE IF EXISTS ${1:table_name};
-DROP SEQUENCE IF EXISTS $1_seq;

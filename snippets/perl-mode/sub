@@ -1,8 +1,0 @@
-# name: sub ... { ... }
-# key: sub
-# --
-sub ${1:function_name} {
-     ${2:my (${3:@args}) = @_;
-
-}$0
-}

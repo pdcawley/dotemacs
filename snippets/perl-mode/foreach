@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: foreach
-# key: foreach
-# --
-foreach my \$${1:x} (${2:@${3:array}}) {
-    ${0:# body...}
-}

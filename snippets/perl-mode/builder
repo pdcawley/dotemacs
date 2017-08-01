@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: builder
-# --
-sub _build_${1:attr_name} {
-    my ($self) = @_;
-    $0
-}

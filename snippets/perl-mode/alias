@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: alias
-# --
-use aliased '${1:ClassName}'${2: => '${3:ShortCut}'};
-$0

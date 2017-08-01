@@ -1,4 +1,0 @@
-# -*- mode: snippet -*-
-# name: MI
-# --
-__PACKAGE__->meta->make_immutable($1);$0

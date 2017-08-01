@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: meth
-# key: method
-# --
-// $2 ${5:...}
-func (${1:target}) ${2:name}(${3:args}) $4 {
-  $0
-}

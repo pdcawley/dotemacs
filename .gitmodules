@@ -1,58 +1,15 @@
-[submodule "elisp/external/deft"]
-	path = elisp/external/deft
-	url = git://jblevins.org/git/deft.git
-[submodule "elisp/external/expand-region"]
-	path = elisp/external/expand-region
-	url = git://github.com/magnars/expand-region.el
 [submodule "elisp/external/multiple-cursors"]
 	path = elisp/external/multiple-cursors
 	url = git@github.com:pdcawley/multiple-cursors.el
 [submodule "elisp/external/mark-multiple"]
 	path = elisp/external/mark-multiple
 	url = https://github.com/magnars/mark-multiple.el.git
-[submodule "elisp/external/annoying-arrows-mode"]
-	path = elisp/external/annoying-arrows-mode
-	url = git://github.com/magnars/annoying-arrows-mode.el.git
-[submodule "elisp/external/smart-forward"]
-	path = elisp/external/smart-forward
-	url = git://github.com/magnars/smart-forward.el.git
 [submodule "elisp/external/wgrep"]
 	path = elisp/external/wgrep
 	url = git://github.com/mhayashi1120/Emacs-wgrep.git
 [submodule "elisp/external/semi"]
 	path = elisp/external/semi
 	url = https://github.com/wanderlust/semi.git
-[submodule "elisp/external/bbdb"]
-	path = elisp/external/bbdb
-	url = git://git.savannah.nongnu.org/bbdb.git
-[submodule "elisp/external/arduino-mode"]
-	path = elisp/external/arduino-mode
-	url = git://github.com/bookest/arduino-mode.git
-[submodule "elisp/external/apel"]
-	path = elisp/external/apel
-	url = https://github.com/wanderlust/apel.git
-[submodule "elisp/external/cperl-mode"]
-	path = elisp/external/cperl-mode
-	url = git@github.com:pdcawley/cperl-mode.git
-[submodule "elisp/external/eval-expr"]
-	path = elisp/external/eval-expr
-	url = https://github.com/jwiegley/eval-expr.git
-
-[submodule "elisp/external/springboard"]
-	path = elisp/external/springboard
-	url = http://github.com/jwiegley/springboard
-[submodule "elisp/external/info-lookmore"]
-	path = elisp/external/info-lookmore
-	url = https://github.com/emacsmirror/info-lookmore.git
-[submodule "elisp/external/artbollocks-mode"]
-	path = elisp/external/artbollocks-mode
-	url = https://github.com/sachac/artbollocks-mode.git
-[submodule "elisp/external/predictive"]
-	path = elisp/external/predictive
-	url = http://www.dr-qubit.org/git/predictive.git
-[submodule "elisp/external/structured-haskell-mode"]
-	path = elisp/external/structured-haskell-mode
-	url = git@github.com:chrisdone/structured-haskell-mode.git
 [submodule "elisp/external/mode-compile"]
 	path = elisp/external/mode-compile
 	url = https://github.com/icathing/mode-compile.git

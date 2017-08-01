@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: bind-lib
-# key: bindl
-# --
-(bind-lib ${1:lib-name} ${2:fn-name} ${3:type})

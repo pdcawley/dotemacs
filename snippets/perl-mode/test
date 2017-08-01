@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: test
-# key: test
-# --
-test "${1:name}" => sub {
-    ${2:my ($self) = @_;
-    }$0
-};

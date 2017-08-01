@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: trra
-# --
-use Test::Routine::AutoClear;
-use Test::More;
-
-$0

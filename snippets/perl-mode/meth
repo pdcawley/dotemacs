@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: meth
-# condition: (member (pdc/package-type) '(class role))
-# --
-method $1${2:(${3:$arg})} {
-    $0
-}

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: subtest
-# --
-subtest "${1:description}" => sub {
-    $0
-};

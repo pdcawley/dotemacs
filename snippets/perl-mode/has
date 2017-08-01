@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: has
-# --
-has ${1:attrib} => (
-    is => '${2:ro}',
-    $0
-);
