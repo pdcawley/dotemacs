@@ -19,10 +19,10 @@ This approach is shamelessly lifted from [[https://github.com/novoid/dot-emacs/]
 
 Some near-future plans for =config.org=:
 
-- [ ] yasnippet setup (life is too short to type =#+BEGIN_SRC
+- [X] yasnippet setup (life is too short to type =#+BEGIN_SRC
   emacs-lisp= everywhere
 - [ ] Leader key based keymaps
-- [ ] req-package based configuration and installation
+- [X] req-package based configuration and installation
 - Prog-modes
   - [ ] Perl
   - [0/3] Lisps
