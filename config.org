@@ -322,7 +322,7 @@ your sanity. Please, I beg of you don't. But do use them.
     :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
     :diminish yas-minor-mode
     :config
-    (yas-load-directory (concat my-user-directory "etc/yasnippet/snippets/"))
+    (yas-load-directory (concat my-user-emacs-directory "etc/yasnippet/snippets/"))
     (yas-global-mode 1))
 #+END_SRC
 
