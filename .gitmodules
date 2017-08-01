@@ -13,3 +13,6 @@
 [submodule "elisp/external/mode-compile"]
 	path = elisp/external/mode-compile
 	url = https://github.com/icathing/mode-compile.git
+[submodule "orgmode"]
+	path = vendor/org-mode
+	url = git://orgmode.org/org-mode.git

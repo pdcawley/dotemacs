@@ -1,6 +1,7 @@
 semantic.cache
 flc
 loaddefs.el*
+/config.el*
 *.elc
 *.rnc
 bookmarks
