@@ -1,0 +1,355 @@
+# -*- mode: org; coding: utf-8 -*-
+#+TODO: ACTIVE | DISABLED
+#+STARTUP: indent
+
+This is the Emacs config file of Piers Cawley.
+
+This file is named =config.org=. =init.el= contains bootstrap code
+that tangles (only) the Elisp blocks into =config.el=, which is
+interpreted by Emacs on startup.
+
+Note that all Elisp blocks which are part of a =DISABLED= heading, or
+which are marked with =:tangle no= won't be tangled to the =config.el=
+file. This will also make the invisible to Github's Org-mode
+rendering, so the best place to read this is within Emacs.
+
+This approach is shamelessly lifted from [[https://github.com/novoid/dot-emacs/][Novoid's dot-emacs]]. 
+
+* Roadmap
+
+Some near-future plans for =config.org=:
+
+- [ ] yasnippet setup (life is too short to type =#+BEGIN_SRC
+  emacs-lisp= everywhere
+- [ ] Leader key based keymaps
+- [ ] req-package based configuration and installation
+- Prog-modes
+  - [ ] Perl
+  - [0/3] Lisps
+    - [ ] Emacs Lisp
+    - [ ] Scheme
+    - [ ] Extempore
+  - [ ] Javascript
+- Blogging
+  - [ ] Multi-hugo support
+  - Maybe blogging from org-mode?
+- Navigation
+  - [ ] Avy-jump
+  - [ ] Swiper
+  - [ ] Bookmarks
+- Org mode
+  - [ ] Sort out a workflow
+  - Stick to it
+
+* General settings and bootstrapping
+
+profiling:
+#+BEGIN_SRC emacs-lisp
+  (defvar my-config-el-start-time (current-time)
+    "Time when config.el was started")
+#+END_SRC
+
+Turn off backup files
+#+BEGIN_SRC emacs-lisp
+(setq backup-inhibited t)
+#+END_SRC
+
+set start of week to Monday (not sunday) http://sunsite.univie.ac.at/textbooks/emacs/emacs_33.html
+#+BEGIN_SRC emacs-lisp
+(setq calendar-week-start-day 1)
+#+END_SRC
+
+don't indent with tabs
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+set warning of opening large files to 100MB
+#+BEGIN_SRC emacs-lisp
+(setq large-file-warning-threshold 100000000)
+#+END_SRC
+
+do not add double space after periods [[http://www.reddit.com/r/emacs/comments/2l5gtz/real_sentence_in_emacs/][Real sentence in Emacs : emacs]]
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
+
+inhibit the startup screen
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-screen t)
+#+END_SRC
+
+** Package
+
+Configure the package manager
+
+=package-user-dir= holds the directory where ELPA installs its local
+copies of the packages:
+
+#+BEGIN_SRC emacs-lisp
+(setq package-user-dir (concat my-user-emacs-directory "elpa"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+  ;;(add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
+  ;; unstable
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+  (package-refresh-contents)
+#+END_SRC
+
+Initialize our package managment and key binding:
+
+#+BEGIN_SRC emacs-lisp
+    (eval-when-compile (require 'req-package))
+
+    (setq package-enable-at-startup nil)
+    (unless (package-installed-p 'req-package)
+      (package-refresh-contents)
+      (package-install 'req-package))
+
+    ;; After config.el has loaded, we run the 
+    (use-package req-package
+      :init
+      (add-hook 'after-init-hook (lambda () (req-package-finish)))
+      :config
+      (progn
+        (req-package--log-enable-messaging)
+        (req-package--log-enable-debugging)))
+
+    (req-package diminish
+      :force t)
+    (req-package bind-key
+      :force t)
+#+END_SRC
+
+** =yes-or-no-p= can die in a fire
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Eliminate duplicates from the minibuffer history
+
+#+BEGIN_SRC emacs-lisp
+(setq history-delete-duplicates t)
+#+END_SRC
+
+** Finding Emacs lisp
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
+#+END_SRC
+
+* no-littering
+
+From:
+- [[http://manuel-uberti.github.io/programming/2017/06/17/nolittering/][Manuel Uberti: Keeping your .emacs.d clean]]
+- https://github.com/tarsius/no-littering
+
+It sets some default paths in order to separate automatically created
+files and directories.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package no-littering)
+#+END_SRC
+
+* Styling
+
+Making emacs look nice
+
+Show current column:
+#+BEGIN_SRC emacs-lisp
+(setq column-number-mode t)
+#+END_SRC
+
+Cursor settings:
+#+BEGIN_SRC emacs-lisp
+;; Prevent the cursor from blinking
+(blink-cursor-mode 0)
+(set-cursor-color "IndianRed")
+#+END_SRC
+
+** TODO Powerline
+
+** Themes
+
+Zenburn, it's the only way to be sure!
+
+#+BEGIN_SRC emacs-lisp
+(load-theme 'zenburn t)
+#+END_SRC
+
+** Only one window on startup
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-startup-hook 'delete-other-windows t)
+#+END_SRC
+
+** Font sizes
+
+
+- 2011-04-20: increase/set font size
+  - http://www.emacswiki.org/emacs/SetFonts
+
+#+BEGIN_SRC emacs-lisp
+(defun my-increase-fontsize ()
+  (interactive)
+  "Sets the font to bigger size"
+  (set-face-attribute 'default (selected-frame) :height 130)
+  )
+(defun my-normal-fontsize ()
+  (interactive)
+  "Sets the font to normal size"
+  (set-face-attribute 'default (selected-frame) :height 100)
+  )
+#+END_SRC
+
+
+* UTF-8 and codings
+
+Activate UTF-8 mode:
+#+BEGIN_SRC emacs-lisp
+  (setq locale-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+
+  (set-clipboard-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+#+END_SRC
+
+* Leader key based bindings
+
+** Leader keys and maps
+#+BEGIN_SRC emacs-lisp
+  (defvar leader-map (make-sparse-keymap))
+  (defvar leader-key "M-m")
+  (global-set-key (kbd leader-key) nil)
+#+END_SRC
+
+** Supporting packages
+which-key:
+#+BEGIN_SRC emacs-lisp
+  (req-package which-key
+    :diminish " Ⓚ"
+    :config
+    (let ((new-descriptions
+           '(("select-window-\\"0-9 "\\)" . "window \\1")
+             ("avy-goto-word-or-subword-1" . "avy»word")
+             ("shell-command" . "shell cmd")
+             ("universal-argument" . "universal arg")
+             ("er/expand-region" . "expand region"))))
+      (dolist (nd new-descriptions)
+        (push (cons (concat "\\`" (car nd) "\\'") (cdr nd))
+              which-key-description-replacement-alist)))
+    (setq which-key-special-keys nil
+          which-key-echo-keystrokes 0.02
+          which-key-max-description-length 32
+          which-key-sort-order 'which-key-key-order-alpha
+          which-key-idle-delay 0.4)
+    (which-key-mode))
+#+END_SRC
+
+hydra:
+#+BEGIN_SRC emacs-lisp
+  (req-package ivy)
+  (req-package ibuffer)
+  (req-package hydra
+    :requires (ibyffer ivy)
+    :commands defhydra
+    :init
+    (setq hydra-head-format "%s → "))
+#+END_SRC
+
+
+** Supporting macros
+These define space keymaps under the leader key
+#+BEGIN_SRC emacs-lisp
+
+  (defun bindings|expand-define-prefix (desc key docstr)
+    (let* ((variable-name (intern (format "%s-leader-key" (symbol-name desc))))
+           (doc (or docstr (symbol-name desc))))
+      `(progn
+         (defvar ,variable-name (format "%s %s" leader-key ,key)
+           ,(format "Prefix for %s" doc))
+         (general-define-key ,variable-name '(nil :which-keyhy ,(symbol-name desc))))))
+
+  (defmacro bindings|define-prefix (desc key &optional docstr)
+    (declare (indent 1))
+    (bindings|expand-define-prefix desc key docstr))
+#+END_SRC
+
+** Keymap prefixes
+The idea is that most of our commands come under a tree of prefixes,
+all initiated from the primary leader key. The prefixes are
+essentially sparse keymaps, and I've not worked out how to easily
+define them on the fly, so we predeclare the major branches of our
+tree here.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package general
+    :requires (which-key hydra)
+    :config
+    (bindings|define-prefix jump "j" "jumping around")
+    (bindings|define-prefix search "s" "searching")
+    (bindings|define-prefix files "f")
+    (bindings|define-prefix window "w" "windows")
+    (bindings|define-prefix buffer "b" "buffers")
+    (bindings|define-prefix org "o")
+    (bindings|define-prefix toggle "t" "toggles"))
+#+END_SRC
+
+
+
+
+* Snippets
+
+Snippet systems are the good sort of magical. Insane in many ways, and
+for god's sake, don't look at yasnippet's implementation if you value
+your sanity. Please, I beg of you don't. But do use them.
+
+** yasnippet
+
+[[https://github.com/joaotavora/yasnippet][Yasnippet]] seems to be winning the snippet tool race now
+
+#+BEGIN_SRC emacs-lisp
+  (req-package yasnippet
+    :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
+    :diminish yas-minor-mode
+    :config
+    (yas-load-directory (concat my-user-directory "etc/yasnippet/snippets/"))
+    (yas-global-mode 1))
+#+END_SRC
+
+** yankpad
+
+[[https://github.com/Kungsgeten/yankpad][yankpad]] is an add-on that enables easy management of yasnippet
+snippets within an Org-mode file. I do define Org-mode-independent
+snippets with the basic yasnippet methods. Any snippet that is used
+within Org-mode only is defined in my yankpad file.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package yankpad
+    :requires yasnippet
+    :bind
+    ("<f6>" . yankpad-keymap)
+    :init
+    (setq yankpad-file "~/org/yankpad.org"))
+#+END_SRC
+
+** Snippet like functions
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-org-insert-elisp ()
+    (interactive)
+    (yas-expand-snippet "#+BEGIN_SRC emacs-lisp\n$0\n#+END_SRC\n")
+    (org-edit-special))
+  (bind-key "<f6> e" 'my-org-insert-elisp nil (eq major-mode 'org-mode))
+
+#+END_SRC
+
