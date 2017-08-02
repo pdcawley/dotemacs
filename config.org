@@ -84,7 +84,7 @@ inhibit the startup screen
 *** hook-into-modes
 #+BEGIN_SRC emacs-lisp
 (defmacro hook-into-modes (func modes)
-  `(--each ,modes (add-hook-exec it ,func)))
+  `(--each ,modes (add-hook it ,func)))
 #+END_SRC
 
 ** Package
@@ -100,7 +100,7 @@ copies of the packages:
 
 #+BEGIN_SRC emacs-lisp
   (package-initialize)
-  ;;(add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
   ;; unstable
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
@@ -114,22 +114,21 @@ Initialize our package managment and key binding:
 #+BEGIN_SRC emacs-lisp
   (eval-when-compile
     (progn
+      (setq package-enable-at-startup nil)
+      (unless (package-installed-p 'req-package)
+        (package-refresh-contents)
+        (package-install 'req-package))
+      (require 'use-package)
+      (use-package req-package
+        :init
+        (add-hook 'after-init-hook (lambda () (req-package-finish)))
+        :config
+        (progn
+          (req-package--log-enable-messaging)
+          (req-package--log-enable-debugging)))
+
       (require 'req-package)
       (require 'cl)))
-
-  (setq package-enable-at-startup nil)
-  (unless (package-installed-p 'req-package)
-    (package-refresh-contents)
-    (package-install 'req-package))
-
-  ;; After config.el has loaded, we run the 
-  (use-package req-package
-    :init
-    (add-hook 'after-init-hook (lambda () (req-package-finish)))
-    :config
-    (progn
-      (req-package--log-enable-messaging)
-      (req-package--log-enable-debugging)))
 
   (req-package diminish
     :force t)
@@ -691,26 +690,11 @@ your sanity. Please, I beg of you don't. But do use them.
 #+BEGIN_SRC emacs-lisp
   (req-package yasnippet
     :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
+    :demand t
     :diminish yas-minor-mode
     :config
     (yas-load-directory (concat my-user-emacs-directory "etc/yasnippet/snippets/"))
     (yas-global-mode 1))
-#+END_SRC
-
-** yankpad
-
-[[https://github.com/Kungsgeten/yankpad][yankpad]] is an add-on that enables easy management of yasnippet
-snippets within an Org-mode file. I do define Org-mode-independent
-snippets with the basic yasnippet methods. Any snippet that is used
-within Org-mode only is defined in my yankpad file.
-
-#+BEGIN_SRC emacs-lisp
-  (req-package yankpad
-    :requires yasnippet
-    :bind
-    ("<f6>" . yankpad-keymap)
-    :init
-    (setq yankpad-file "~/org/yankpad.org"))
 #+END_SRC
 
 ** Snippet like functions
@@ -720,13 +704,20 @@ within Org-mode only is defined in my yankpad file.
     (interactive)
     (yas-expand-snippet "#+BEGIN_SRC emacs-lisp\n$0\n#+END_SRC\n")
     (org-edit-special))
-  (bind-key "<f6> e" 'my-org-insert-elisp nil (eq major-mode 'org-mode))
+
+  (bindings|define-prefix snippet "S" "snippets")
+  (bind-key (concat leader-key " S e") 'my-org-insert-elisp nil (eq major-mode 'org-mode))
+
+
+  ;; (with-eval-after-load 'yankpad
+  ;;  (bind-key "<f6>e" 'my-org-insert-elisp nil (eq major-mode 'org-mode)))
 
 #+END_SRC
 
-* Programming languages
+* Programming
+** Programming languages
 
-** Lisps
+*** Lisps
 
 There are multiple lispy modes, and we want many of them to be
 initialized the same way. So we'll set up some variables to assist
@@ -888,13 +879,12 @@ Configure our base Lisp mode
 
   (req-package lisp-mode
     :require (finder paredit)
-    :command lisp-mode
+    :demand t
     :general
     (pdc|with-leader
      "e" '(nil :which-key "elisp"))
-    :force t
-    :loader :path
     :config
+
     (defun my-byte-recompile-file ()
       (save-excursion
         (byte-recompile-file buffer-file-name)))
@@ -947,27 +937,27 @@ Configure our base Lisp mode
     (hook-into-modes 'my-lisp-mode-hook lisp-mode-hooks))
 
 
+
   (req-package elisp-mode
     :require lisp-mode
-    :loader :path
-    :commands emacs-lisp-mode
-    :general
+    :demand t
+    :config
     (pdc|with-leader
      "e c" 'finder-commentary
      "e e" 'view-echo-area-messages
      "e f" 'find-function
      "e F" 'find-face-definition)
-    :config
+
     (defun pdc/elisp-mode-hook ()
       (eldoc-mode 1)
       (setq mode-name "EL"))
-    (add-hook-exec 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
 
   (req-package paredit
     :commands paredit-mode
-    :require
+    :demand t
     :diminish " Ⓟ"
     :bind
     (:map paredit-mode-map
@@ -1097,5 +1087,5 @@ Configure our base Lisp mode
 
 #+END_SRC
 
-** Emacs Lisp
+*** Emacs Lisp
 
