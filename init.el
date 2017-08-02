@@ -105,7 +105,7 @@ Note the weekly scope of the command's precision")
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (window-numbering ibuffer-vc kv s magit hydra ivy paredit macrostep yankpad yasnippet req-package no-littering general))))
+    (git-timemachine magithub git-gutter-fringe+ git-gutter+ gist exec-path-from-shell window-numbering ibuffer-vc kv s magit hydra ivy paredit macrostep yankpad yasnippet req-package no-littering general))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

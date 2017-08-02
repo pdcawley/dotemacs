@@ -715,6 +715,65 @@ your sanity. Please, I beg of you don't. But do use them.
 #+END_SRC
 
 * Programming
+** Version Control (Git)
+
+#+BEGIN_SRC emacs-lisp
+
+  (req-package with-editor
+    :diminish "")
+
+  (req-package exec-path-from-shell)
+
+  (req-package magit
+    :require exec-path-from-shell
+    :demand t
+    :general
+    ("M-," 'pdc/vc-status)
+    ("C-. g s" 'magit-status)
+    (:prefix leader-key
+             "g"   '(:ignore t :which-key "git")
+             "g s" 'magit-status)
+    :init
+    (setq magit-last-seen-setup-instructions "1.4.0")
+    (setq magit-branch-arguments nil)
+    (setq magit-push-always-verify nil)
+    :config
+    (defun pdc/bookmark-magit-status (bookmark)
+      "Run magit-status on the bookmarked file"
+      (interactive
+       (list (bookmark-completing-read "Status of bookmark"
+                                       (bmkp-default-bookmark-name))))
+      (magit-status (bookmark-prop-get bookmark 'filename)))
+    (defun pdc/vc-status ()
+      (interactive)
+      (cond ((magit-get-top-dir default-directory)
+             (call-interactively 'magit-status))
+            (t
+             (call-interactively 'dired)))))
+
+  (req-package gist
+    :init
+    (setq gist-authenticate-function 'gist-oauth2-authentication)
+    :general
+    (pdc|with-leader
+     "g G" 'gist-region-or-buffer))
+
+  (req-package git-gutter+
+    :require magit
+    :diminish git-gutter+-mode
+    :config
+    (global-git-gutter+-mode 1))
+
+  (req-package git-gutter-fringe+
+    :config
+    (git-gutter-fr+-minimal))
+
+  (req-package magithub :require magit)
+
+  (req-package git-timemachine)
+#+END_SRC
+
+
 ** Programming languages
 
 *** Lisps
