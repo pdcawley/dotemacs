@@ -479,6 +479,204 @@ of subsequent calls to =req-package=
 
 
 
+* Buffer and window handling
+** ibuffer
+#+BEGIN_SRC emacs-lisp
+  (req-package ibuffer
+    :config
+    (fset 'list-buffers 'ibuffer)
+    (defun pdc/list-buffers-int ()
+      (interactive)
+      (display-buffer (list-buffers-noselect nil))))
+
+#+END_SRC
+
+** ibuffer-vc
+#+BEGIN_SRC emacs-lisp
+  (req-package ibuffer-vc
+    :require ibuffer
+    :config
+    (setq ibuffer-formats
+          '((mark pdc-modified vc-status-mini
+                  " " (name 35 35 :left :elide)
+                  " " filename-and-process)
+            (mark " " (name 16 -1) " " filename)))
+
+    (define-ibuffer-column pdc-modified (:name "M" :inline t)
+      (if (buffer-modified-p)
+          (propertize "-" 'face '(:foreground "yellow"))
+        " ")))
+#+END_SRC
+
+** Window numbering
+Bouncing around windows using their numbers is fast and
+straightforward.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package window-numbering
+    :requires dash
+    :config
+    ;; Because we don't want deferred loading here, we move the key
+    ;; bindings down into config
+    (pdc|with-leader :keymaps 'window-numbering-keymap
+     "w1" 'select-window-1
+     "w2" 'select-window-2
+     "w3" 'select-window-3
+     "w4" 'select-window-4
+     "w5" 'select-window-5
+     "w6" 'select-window-6
+     "w7" 'select-window-7
+     "w8" 'select-window-8
+
+     "w0" 'bm-next
+     "w9" 'bm-previous)
+    ;; (defun window-numbering-install-mode-line (&optional position)
+    ;;   "Do nothing, the desplay will be handled by spaceline.")
+    (--each (number-sequence 0 9)
+      (general-define-key :keymaps 'window-numbering-keymap
+       (format "M-%s" it) nil))
+
+    (window-numbering-mode 1))
+#+END_SRC
+
+** uniquify
+Give buffers unique names
+#+BEGIN_SRC emacs-lisp
+  (req-package uniquify
+    :config
+    (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+    (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
+#+END_SRC
+
+** winner-mode
+An undo tree for window configurations. Really handy.
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'winner-mode)
+    (winner-mode 1))
+#+END_SRC
+
+** Useful commands
+- TODO Use window numbers rather than counts where appropriate [%]
+  - [ ] =pdc/transpose-windows=
+
+Various commands that affect windows and window layout
+
+=pdc/toggle-window-split=: Toggle the orientation of a single window split.
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/toggle-window-split ()
+    "Switch between a horizontal and vertical split if there are two windows."
+    (interactive)
+    (when (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                            (car next-win-edges))
+                                        (<= (cadr this-win-edges)
+                                            (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car next-win-edges))
+                  'split-window-horizontally
+                'split-window-vertically))
+             (delete-other-windows)
+             (let ((first-win (selected-window)))
+               (funcall splitter)
+               (if this-win-2nd (other-window 1))
+               (set-window-buffer (selected-window) this-win-buffer)
+               (set-window-buffer (next-window) next-win-buffer)
+               (select-window first-win)
+               (if this-win-2nd (other-window 1)))))))
+#+END_SRC
+
+=pdc/transpose-windows=: Swap the buffers between two windows
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/transpose-windows (arg)
+    "Transpose the buffers shown in two windows"
+    (interactive "p")
+    (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+      (while (/= arg 0)
+        (elt ((this-win (window-buffer))
+              (next-win (window-buffer (funcall selector))))
+             (set-window-buffer (selected-window) next-win)
+             (set-window-buffer (funcall selector) this-win)
+             (select-window (funcall selector)))
+        (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+  (defun pdc/rotate-windows ()
+    "Rotate your windows"
+    (interactive)
+    (cond
+     ((not (> (count-windows) 1))
+      (message "You can't rotate a single window!"))
+     (t
+      (let ((i 1)
+            (num-windows (count-windows)))
+        (while  (< i num-windows)
+          (let* ((w1 (elt (window-list) i))
+                 (w2 (elt (window-list) (+ (% i num-windows) 1)))
+                 (b1 (window-buffer w1))
+                 (b2 (window-buffer w2))
+                 (s1 (window-start w1))
+                 (s2 (window-start w2)))
+            (set-window-buffer w1 b2)
+            (set-window-buffer w2 b1)
+            (set-window-start w1 s2)
+            (set-window-start w2 s1)
+            (setq i (1+ i))))))))
+#+END_SRC
+
+=pdc/sync-point-all-windows=: Move the point to the same place in all
+windows. Not sure I've ever used this. Might disable it.
+#+BEGIN_SRC emacs-lisp
+
+  (defun pdc/sync-point-all-windows (&optional buffer pnt)
+    "Synchronise the point in all windows"
+    (interactive)
+    (let ((buffer (or buffer (current-buffer)))
+          (pnt (or pnt (point))))
+      (dolist (f (frame-list))
+        (dolist (w (window-list f))
+          (if (eq (window-buffer w) buffer)
+              (set-window-point w pnt))))))
+#+END_SRC
+
+=pdc/bury-buffer-other-windows=: The highlander function. When called,
+it burys the buffer in the current window in all the other windows,
+ensuring that the current window is the only one displaying the buffer.
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/bury-buffer-other-windows (&optional buffer pnt)
+    "Bury the current buffer in all windows but the current one."
+    (interactive)
+    (let ((buffer (or buffer (current-buffer))))
+      (save-window-excursion
+        (dolist (f (frame-list))
+          (dolist (w (window-list f))
+            (if (eq (window-buffer w) buffer)
+                (unless (window--delete w t t)
+                  (set-window-dedicated-p w nil)
+                  (switch-to-prev-buffer w 'kill))))))))
+#+END_SRC
+
+=pdc/blank-other-frame-windows=: Sets all other windows in all frames
+to display a =*blank*= buffer.
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/blank-other-frame-windows ()
+    (interactive)
+    (let ((buffer (get-buffer-create "*blank*")))
+      (save-window-excursion
+        (dolist (f (frame-list))
+          (dolist (w (window-list f))
+            (unless (window--delete w t t)
+              (set-window-dedicated-p w nil)
+              (set-window-buffer w buffer)))))))
+#+END_SRC
+
+
+
+** Support functions
+
 
 * Snippets
 
