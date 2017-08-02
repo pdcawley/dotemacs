@@ -334,6 +334,10 @@ essentially sparse keymaps, and I've not worked out how to easily
 define them on the fly, so we predeclare the major branches of our
 tree here.
 
+We use =use-package ... :ensure t= here rather than =req-package= to
+ensure that =pdc|with-leader= is avaialable to the =:general= clause
+of subsequent calls to =req-package=
+
 #+BEGIN_SRC emacs-lisp
 
   (use-package general
