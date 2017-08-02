@@ -84,7 +84,7 @@ inhibit the startup screen
 *** hook-into-modes
 #+BEGIN_SRC emacs-lisp
 (defmacro hook-into-modes (func modes)
-  `(--each ,modes (add-hook it ,func)))
+  `(--each ,modes (add-hook-exec it ,func)))
 #+END_SRC
 
 ** Package
@@ -888,6 +888,7 @@ Configure our base Lisp mode
 
   (req-package lisp-mode
     :require (finder paredit)
+    :command lisp-mode
     :general
     (pdc|with-leader
      "e" '(nil :which-key "elisp"))
@@ -904,7 +905,7 @@ Configure our base Lisp mode
       (make-local-variable 'after-save-hook)
       (add-hook 'after-save-hook 'my-byte-recompile-file))
 
-    (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
+    (add-hook-exec 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
 
     (defun pdc/goto-match-paren (arg)
       "Go to the matching parenthesis if on parenthesis. Else go up to the opening parenthesis one level up."
@@ -949,6 +950,7 @@ Configure our base Lisp mode
   (req-package elisp-mode
     :require lisp-mode
     :loader :path
+    :commands emacs-lisp-mode
     :general
     (pdc|with-leader
      "e c" 'finder-commentary
@@ -959,11 +961,9 @@ Configure our base Lisp mode
     (defun pdc/elisp-mode-hook ()
       (eldoc-mode 1)
       (setq mode-name "EL"))
-    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+    (add-hook-exec 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
-
-                                          ;(req-package elisp-slime-nav-mode)
 
   (req-package paredit
     :commands paredit-mode
@@ -1033,9 +1033,6 @@ Configure our base Lisp mode
             (newline))))
       (condition-case nil (pdc/indent-defun)))
 
-
-
-
     (defun pdc/paredit-open-line ()
       (interactive)
       (save-excursion
@@ -1071,7 +1068,6 @@ Configure our base Lisp mode
                (save-excursion (insert " "))))
             (t (paredit-open-parenthesis n))))
 
-
     (defun pdc/paredit-semicolon (&optional n)
       (interactive "P")
       (when (looking-at-p "  +\(")
@@ -1097,9 +1093,8 @@ Configure our base Lisp mode
     (unbind-key "M-s" paredit-mode-map)
 
     (defun pdc/in-slime-repl-p ()
-      (equal mode-name "REPL"))
+      (equal mode-name "REPL")))
 
-    )
 #+END_SRC
 
 ** Emacs Lisp
