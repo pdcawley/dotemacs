@@ -518,7 +518,7 @@ of subsequent calls to =req-package=
                (keys (concat leader key)))
            (general-define-key :prefix leader-key
                                keys (list hydra-fn :which-key desc))))))
-  
+
 
     (defmacro pdc|general-bind-hydra
         (name leader &rest specs &key no-cancel &allow-other-keys)
@@ -536,8 +536,9 @@ of subsequent calls to =req-package=
                                                     ((functionp action)
                                                      (pdc/shortdoc action))
                                                     (t "??"))))
-                                `(,key ,action ,caption ,@tail :cmd-name ,(intern
-                                                                          (format "hydra-%s/%s" name action))))))
+                                `(,key ,action ,caption ,@tail
+                                       :cmd-name ,(intern
+                                                   (format "hydra-%s/%s" name action))))))
         (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
               (specs (-map #'canonicalize-spec specs)))
           `(progn
@@ -547,7 +548,7 @@ of subsequent calls to =req-package=
                ,@ (unless no-cancel '(("q" nil "cancel" :color blue))))
              (--each ',specs
                (pdc//bind-hydra-spec it ,leader))))))
-  
+
     (put 'pdc|general-bind-hydra 'lisp-indent-function 2))
 #+END_SRC
 
@@ -668,16 +669,15 @@ of subsequent calls to =req-package=
                              (region-beginning)
                              (region-end))))))
 
-  (with-eval-after-load 'init-leaders
-    (pdc|general-bind-hydra transpose "t"
-      ("t" transpose-chars "chars")
-      ("C-t" transpose-chars "chars")
-      ("l" transpose-lines "lines")
-      ("p" transpose-paragraphs "paras")
-      ("s" transpose-sexps "sexps")
-      ("C-M-t" transpose-sexps "sexps")
-      ("w" transpose-words "words")
-      ("M-t" transpose-words "words")))
+  (pdc|general-bind-hydra transpose "t"
+    ("t" transpose-chars "chars")
+    ("C-t" transpose-chars "chars")
+    ("l" transpose-lines "lines")
+    ("p" transpose-paragraphs "paras")
+    ("s" transpose-sexps "sexps")
+    ("C-M-t" transpose-sexps "sexps")
+    ("w" transpose-words "words")
+    ("M-t" transpose-words "words"))
 
 #+END_SRC
 
