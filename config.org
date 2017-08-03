@@ -847,13 +847,12 @@ your sanity. Please, I beg of you don't. But do use them.
 
 * Programming
 ** Version Control (Git)
-
+*** Magit
+Magit is awesome and I'd hate to be without it
 #+BEGIN_SRC emacs-lisp
 
   (req-package with-editor
     :diminish "")
-
-  (req-package exec-path-from-shell)
 
   (req-package magit
     :require exec-path-from-shell
@@ -882,6 +881,10 @@ your sanity. Please, I beg of you don't. But do use them.
             (t
              (call-interactively 'dired)))))
 
+#+END_SRC
+*** Gist
+Manage code samples on github
+#+BEGIN_SRC emacs-lisp
   (req-package gist
     :init
     (setq gist-authenticate-function 'gist-oauth2-authentication)
@@ -889,6 +892,12 @@ your sanity. Please, I beg of you don't. But do use them.
     (pdc|with-leader
      "g G" 'gist-region-or-buffer))
 
+#+END_SRC
+
+*** Helpful gutters/fringes
+The fringe is a very handy bit of interface, especially when it knows
+about the git status of things.
+#+BEGIN_SRC emacs-lisp
   (req-package git-gutter+
     :require magit
     :diminish git-gutter+-mode
@@ -899,8 +908,18 @@ your sanity. Please, I beg of you don't. But do use them.
     :config
     (git-gutter-fr+-minimal))
 
-  (req-package magithub :require magit)
+#+END_SRC
 
+*** DISABLED magithub
+Apparently has useful integration with github, but I need to look into
+how to configure it properly.
+#+BEGIN_SRC emacs-lisp
+  (req-package magithub :require magit)
+#+END_SRC
+
+*** git-timemachine
+Speculatively installed. Need to work out if I really need it.
+#+BEGIN_SRC emacs-lisp
   (req-package git-timemachine)
 #+END_SRC
 
