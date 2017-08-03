@@ -194,7 +194,7 @@ A modern library for messing with dictionaries
 (add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
 #+END_SRC
 
-* no-littering
+** no-littering
 
 From:
 - [[http://manuel-uberti.github.io/programming/2017/06/17/nolittering/][Manuel Uberti: Keeping your .emacs.d clean]]
@@ -221,6 +221,11 @@ Cursor settings:
 ;; Prevent the cursor from blinking
 (blink-cursor-mode 0)
 (set-cursor-color "IndianRed")
+#+END_SRC
+
+Turn off the visible bell:
+#+BEGIN_SRC emacs-lisp
+(setq visible-bell nil)
 #+END_SRC
 
 ** Spaceline
@@ -417,7 +422,8 @@ of subsequent calls to =req-package=
     (bindings|define-prefix window "w" "windows")
     (bindings|define-prefix buffer "b" "buffers")
     (bindings|define-prefix org "o")
-    (bindings|define-prefix toggle "t" "toggles")
+    (bindings|define-prefix toggle "T" "toggles")    
+    (bindings|define-prefix transpose "t" "transpose")
 
     (general-create-definer pdc|with-leader
                             :prefix leader-key :keymaps 'global)
@@ -425,7 +431,7 @@ of subsequent calls to =req-package=
                             :prefix mode-leader-key)
     (pdc|with-leader
      "h" (list help-map :which-key "help"))
-  
+
 
     (defun pdc/mplist-get (plist prop)
       "Get the values associated to PROP in PLIST, a modified plist.
@@ -498,6 +504,21 @@ of subsequent calls to =req-package=
       (when-let ((doc (documentation fn)))
         (substring doc 0 (string-match "\n" doc))))
 
+    (defun pdc//bind-hydra-spec (spec leader)
+      (pcase spec
+        (`(,key ,fn ,desc . ,(pred (lambda (props)
+                                     (plist-get props :exit))))
+         (let ((keys (concat leader key)))
+           (general-define-key :prefix leader-key
+                               keys (list fn :which-key desc))))
+        (`(,key ,fn ,desc . ,(and props
+                                  (pred (lambda (props)
+                                          (not (plist-get props :exit))))))
+         (let ((hydra-fn (plist-get props :cmd-name))
+               (keys (concat leader key)))
+           (general-define-key :prefix leader-key
+                               keys (list hydra-fn :which-key desc))))))
+  
 
     (defmacro pdc|general-bind-hydra
         (name leader &rest specs &key no-cancel &allow-other-keys)
@@ -515,7 +536,8 @@ of subsequent calls to =req-package=
                                                     ((functionp action)
                                                      (pdc/shortdoc action))
                                                     (t "??"))))
-                                `(,key ,action ,caption ,@tail))))
+                                `(,key ,action ,caption ,@tail :cmd-name ,(intern
+                                                                          (format "hydra-%s/%s" name action))))))
         (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
               (specs (-map #'canonicalize-spec specs)))
           `(progn
@@ -524,23 +546,140 @@ of subsequent calls to =req-package=
                ,@specs
                ,@ (unless no-cancel '(("q" nil "cancel" :color blue))))
              (--each ',specs
-               (pcase it
-                 (`(,key ,fn ,desc . ,(pred (lambda (props)
-                                              (plist-get props :exit))))
-                  (let ((keys (concat ,leader key)))
-                    (general-define-key :prefix leader-key
-                                        keys (list fn :which-key desc))))
-                 (`(,key ,fn ,desc . ,(and props
-                                           (pred (lambda (props)
-                                                   (not (plist-get props :exit))))))
-                  (let ((hydra-fn (plist-get props :cmd-name))
-                        (keys (concat ,leader key)))
-                    (general-define-key :prefix leader-key
-                                        keys (list hydra-fn :which-key desc))))))))))
+               (pdc//bind-hydra-spec it ,leader))))))
+  
     (put 'pdc|general-bind-hydra 'lisp-indent-function 2))
 #+END_SRC
 
 
+* Basic editing
+#+BEGIN_SRC emacs-lisp
+  (req-package subword)
+
+  (defun pdc/set-undo-boundary ()
+    (interactive)
+    (undo-boundary))
+
+  (defun pdc/cap-sentence ()
+    (interactive)
+    (save-excursion
+      (backward-sentence)
+      (capitalize-word 1)))
+
+  (defun pdc/quote-region (start end &optional c)
+    (interactive "r")
+    (let ((c (or c "\"")))
+      (save-excursion
+        (goto-char start)
+        (insert c)
+        (goto-char (+ 1 end))
+        (insert c))))
+
+  (defun pdc/single-quote-region (start end)
+    (interactive "r")
+    (pdc/quote-region start end "'"))
+
+  (defun pdc/yank-and-indent ()
+    (interactive)
+    (yank)
+    (call-interactively 'indent-region))
+
+
+  (require 'misc)      ; forward-to-word & backward-to-word
+
+  (req-package visible-mark
+    :config
+    (global-visible-mark-mode t))
+
+  (req-package undo-tree
+    :diminish undo-tree-mode
+    :config
+    (global-undo-tree-mode))
+
+  ;;; Helper lifts from k2
+  (defun pdc/mark-whole-line ()
+    (interactive)
+    (beginning-of-line)
+    (set-mark-command nil)
+    (end-of-line))
+
+
+  (defun pdc/kill-whole-line ()
+    (interactive)
+    (pdc/mark-whole-line)
+    (kill-region (region-beginning)
+                 (region-end)))
+
+  (defun pdc/copy-whole-line ()
+    (interactive)
+    (save-excursion
+      (pdc/mark-whole-line)
+      (kill-ring-save (region-beginning)
+                      (region-end))))
+
+
+  (defun pdc/clone-line ()
+    (interactive)
+    (beginning-of-line)
+    (pdc/copy-whole-line)
+    (open-next-line)
+    (forward-line)
+    (yank)
+    (back-to-indentation))
+
+  (defun pdc/goto-line (line)
+    "A simplified, single buffer version of the standard command
+    that work even if the buffer is narrowed"
+    (interactive "nLine:")
+    ;; Leave mark at previous position
+    (or (region-active-p) (push-mark))
+    ;; Move to the specified line number in that buffer.
+    (save-restriction
+      (goto-char (point-min))
+      (if (eq selective-display t)
+          (re-search-forward "[\n\C-m]" nil 'end (1- line))
+        (forward-line (1- line)))))
+
+  (req-package goto-last-change
+    :config
+    (setq highlight-changes-visibility-initial-state nil))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;; https://github.com/al3x/emacs/blob/master/utilities/slick-copy.el
+  (defadvice kill-ring-save (before slick-copy activate compile)
+    "When called interactively with no active region, copy a single line instead."
+    (interactive
+     (if mark-active (list (region-beginning) (region-end))
+       (message "Copied line")
+       (list (line-beginning-position)
+             (line-beginning-position 2)))))
+
+  (defadvice kill-region (before slick-cut activate compile)
+    "When called interactively with no active region, kill a single line instead."
+    (interactive
+     (if mark-active (list (region-beginning) (region-end))
+       (list (line-beginning-position)
+             (line-beginning-position 2)))))
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (defun pdc/apply-to-region (func)
+    (when (region-active-p)
+      (insert (funcall func (delete-and-extract-region
+                             (region-beginning)
+                             (region-end))))))
+
+  (with-eval-after-load 'init-leaders
+    (pdc|general-bind-hydra transpose "t"
+      ("t" transpose-chars "chars")
+      ("C-t" transpose-chars "chars")
+      ("l" transpose-lines "lines")
+      ("p" transpose-paragraphs "paras")
+      ("s" transpose-sexps "sexps")
+      ("C-M-t" transpose-sexps "sexps")
+      ("w" transpose-words "words")
+      ("M-t" transpose-words "words")))
+
+#+END_SRC
 
 * Buffer and window handling
 ** ibuffer
