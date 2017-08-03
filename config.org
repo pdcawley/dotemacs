@@ -1004,9 +1004,8 @@ Configure our base Lisp mode
   (req-package autoinsert)
   (req-package finder)
 
-
   (req-package lisp-mode
-    :require (finder paredit)
+    :require finder paredit
     :demand t
     :general
     (pdc|with-leader
@@ -1213,7 +1212,6 @@ Configure our base Lisp mode
 
     (defun pdc/in-slime-repl-p ()
       (equal mode-name "REPL")))
-
 #+END_SRC
 
 *** Emacs Lisp
