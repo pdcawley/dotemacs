@@ -851,7 +851,9 @@ with this
 #+BEGIN_SRC emacs-lisp
   (defvar lisp-modes '(emacs-lisp-mode
                        inferior-emacs-lisp-mode
+                       ielm-mode
                        lisp-mode
+                       inferior-lisp-mode
                        lisp-interaction-mode
                        extempore-mode)
     "A list of Lisp style modes")
