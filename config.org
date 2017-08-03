@@ -1064,7 +1064,8 @@ Configure our base Lisp mode
 
     (hook-into-modes 'my-lisp-mode-hook lisp-mode-hooks))
 
-
+  (req-package eldoc
+    :diminish eldoc-mode)
 
   (req-package elisp-mode
     :require lisp-mode
