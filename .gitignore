@@ -40,3 +40,4 @@ esk-org-mode.el
 network-security.data
 /elpa
 /tutorial
+/preferences.el

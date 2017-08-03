@@ -7,12 +7,13 @@
 ;; Log starting time because it's nice to know EXACTLY how slow our
 ;; startup process is
 
-(defvar my-init-el-start-time (current-time) 
+(defconst my-init-el-start-time (current-time) 
   "Time when init.el was started")
 
 ;; user-emacs-directory is weird on Windows. Sod that
-(setq my-user-emacs-directory "~/.emacs.d/")
-
+(defconst my-user-emacs-directory "~/.emacs.d/")
+(defconst my-custom-file (expand-file-name "preferences.el"
+                                           my-user-emacs-directory))
 ;; Set paths to our manually installed Org-mode
 (add-to-list 'load-path (expand-file-name "vendor/org-mode/lisp"
 					  my-user-emacs-directory))
@@ -97,18 +98,9 @@ Note the weekly scope of the command's precision")
 
 (message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time)))
 
+(setq custom-file my-custom-file)
+(load custom-file)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (git-timemachine magithub git-gutter-fringe+ git-gutter+ gist exec-path-from-shell window-numbering ibuffer-vc kv s magit hydra ivy paredit macrostep yankpad yasnippet req-package no-littering general))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+
+
