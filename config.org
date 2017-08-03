@@ -1171,14 +1171,18 @@ Configure our base Lisp mode
           ("M-)" . paredit-close-round)
           ("M-k" . paredit-raise-sexp)
           ("M-I" . paredit-splice-sexp)
-          ("C-. d" . paredit-forward-down)
-          ("C-. B" . paredit-splice-sexp-killing-backward)
-          ("C-. C" . paredit-convolute-sexp)
-          ("C-. F" . paredit-splice-sexp-killing-forward)
-          ("C-. a" . paredit-add-to-next-list)
-          ("C-. A" . paredit-add-to-previous-list)
-          ("C-. j" . paredit-join-with-next-list)
-          ("C-. J" . paredit-join-with-previous-list))
+          )
+    :general
+    (pdc|with-mode-leader :keymaps 'paredit-mode-map
+     "d" 'paredit-forward-down
+     "B" 'paredit-splice-sexp-killing-backward
+     "C" 'paredit-convolute-sexp
+     "F" 'paredit-splice-sexp-killing-forward
+     "a" 'paredit-add-to-next-list
+     "A" 'paredit-add-to-previous-list
+     "j" 'paredit-join-with-next-list
+     "J" 'paredit-join-with-previous-list)
+   
     :config
     (defun pdc/indent-defun ()
       (interactive)
