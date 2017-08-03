@@ -165,6 +165,16 @@ A modern library for messing with dictionaries
     :ensure t)
 #+END_SRC
 
+** Get the environment from the shell
+#+BEGIN_SRC emacs-lisp
+  (when (memq window-system '(mac-ns ns))
+    (use-package exec-path-from-shell
+      :ensure t
+      :config
+      (progn
+        (exec-path-from-shell-initialize))))
+#+END_SRC
+
 ** =yes-or-no-p= can die in a fire
 
 #+BEGIN_SRC emacs-lisp
