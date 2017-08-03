@@ -223,7 +223,57 @@ Cursor settings:
 (set-cursor-color "IndianRed")
 #+END_SRC
 
-** TODO Powerline
+** Spaceline
+#+BEGIN_SRC emacs-lisp
+  (req-package which-func)
+
+  (req-package powerline
+    :config
+    (defun pdc/customize-powerline-faces ()
+      "Alter powerline faces to make them work with more themes"
+      (set-face-attribute 'powerline-inactive2 nil
+                          :inherit 'font-lock-comment-face))
+    (pdc/customize-powerline-faces))
+
+
+  (req-package spaceline
+    :require which-func powerline
+    :init
+    (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
+          powerline-height 24)
+    :config
+    (require 'spaceline-config)
+
+    (defun pdc//restore-powerline (buffer)
+      "Restore the powerline in buffer"
+      (with-current-buffer buffer
+        (setq-local mode-line-format (default-value 'mode-line-format))
+        (powerline-set-selected-window)
+        (powerline-reset)))
+
+    (setq spaceline-org-clock-p nil)
+
+    (defun pdc//prepare-diminish ()
+      (when spaceline-minor-modes-p
+        (setq spaceline-minor-modes-separator
+              (if (display-graphic-p) "" " "))))
+    (add-hook 'spaceline-pre-hook 'pdc//prepare-diminish)
+    (spaceline-toggle-hud-on)
+    (spaceline-toggle-line-column-off)
+    (spaceline-emacs-theme))
+
+#+END_SRC
+
+** Diminish some modes
+#+BEGIN_SRC emacs-lisp
+  (diminish 'auto-fill-function " Ⓕ")
+  (diminish 'auto-revert-mode " ⎌")
+  ;;; These will be moved to org-mode config when we have an org-mode
+  ;;; config section
+  (diminish 'org-src-mode " ∮")
+  (diminish 'org-indent-mode " ∃")
+#+END_SRC
+
 
 ** Themes
 
