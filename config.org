@@ -373,6 +373,9 @@ of subsequent calls to =req-package=
                             :prefix leader-key :keymaps 'global)
     (general-create-definer pdc|with-mode-leader
                             :prefix mode-leader-key)
+    (pdc|with-leader
+     "h" (list help-map :which-key "help"))
+  
 
     (defun pdc/mplist-get (plist prop)
       "Get the values associated to PROP in PLIST, a modified plist.
@@ -689,35 +692,41 @@ to display a =*blank*= buffer.
 
 
 * Navigation
-#+BEGIN_SRC emacs-lisp
 
+** =avy=
+For jumping to characters and words in the frame
+#+BEGIN_SRC emacs-lisp
   (req-package avy
     :general
     (pdc|with-leader
      "jb" 'avy-goto-char
      "j'" 'avy-goto-char-2
      "jw" 'avy-goto-word-1))
+#+END_SRC
 
+** =swiper=
+A better incremental search
+
+#+BEGIN_SRC emacs-lisp
   (req-package swiper
     :commands (swiper swiper-all)
     :general
+    ("C-s" 'swiper)
     (pdc|with-leader
      "s s" 'swiper
      "s S" 'swiper-all))
 
+#+END_SRC
 
-  (req-package colir)
+** =ivy=
+A better completing read. Similar to helm but rather less intrusive. 
 
-  (req-package counsel
-    :require colir
-    :demand t
-    :diminish " ⓒ"
-    :general
-    (:prefix files-leader-key
-     "4" '(pdc-find-file-other-window :which-key "find in other window")
-     "f" '(counsel-find-file :which-key "find"))
-    :config
-    (counsel-mode t))
+We define a =pdc-find-file-other-window= function, but it seems the
+'proper' ivy based approach is to do =M-o j= once we've selected the
+correct file using counsel-find-file. Not sure how to suggest this in
+the method itself, short of erroring out and telling the user (me) to
+just use the ivy supplied method.
+#+BEGIN_SRC emacs-lisp
 
   (req-package ivy
     :config
@@ -742,6 +751,37 @@ to display a =*blank*= buffer.
                 :history 'file-name-history
                 :keymap counsel-find-file-map
                 :caller 'counsel-find-file)))
+#+END_SRC
+
+** =counsel=
+
+Wraps a bunch of common functions with the =ivy= completing read
+that's also used by swiper.
+#+BEGIN_SRC emacs-lisp
+  (req-package colir)
+
+  (req-package counsel
+    :require colir
+    :demand t
+    :diminish " ⓒ"
+    :general
+    (:prefix files-leader-key
+     "f" '(counsel-find-file :which-key "find"))
+    (pdc|with-leader
+     "g S" '(counsel-git-grep :which-key "git grep")
+     "g f" '(counsel-git :which-key "find file in repo")
+     "e L" '(counsel-load-library :which-key "load library")
+     "o j" '(counsel-org-goto :which-key "goto")
+     "o J" '(counsel-org-goto-all :which-key "goto-all"))
+    :init
+  
+    :config
+    (--each '((apropos . counsel-apropos)
+              (org-goto . counsel-org-goto)
+              (set-variable . counsel-set-variable)
+              (insert-char . counsel-unicode-char))
+      (define-key counsel-mode-map (vector 'remap (car it)) (cdr it)))
+    (counsel-mode t))
 #+END_SRC
 
 * Snippets
@@ -772,7 +812,31 @@ your sanity. Please, I beg of you don't. But do use them.
     (yas-expand-snippet "#+BEGIN_SRC emacs-lisp\n$0\n#+END_SRC\n")
     (org-edit-special))
 
+  (defun pdc/org-split-src ()
+    (interactive)
+    (let ((element (org-element-at-point)))
+      (barf-if-buffer-read-only)
+      (pcase (org-element-type element)
+        (`src-block
+         (let* ((beg (org-element-property :begin element))
+                (end (save-excursion
+                       (goto-char beg)
+                       (line-end-position))))
+           (end-of-line)
+           (insert "\n#+END_SRC\n\n")
+           (insert-buffer-substring (current-buffer) beg end)
+           (forward-line -1)))
+        (_
+         ;; Nothing interesting to split
+         (user-error "Don't know how to split this element")))))
+
+
+
   (bindings|define-prefix snippet "S" "snippets")
+  (pdc|with-mode-leader :keymaps 'org-mode-map
+                        "s" nil
+                        "s e" 'my-org-insert-elisp
+                        "s/" 'pdc/org-split-src)
   (bind-key (concat leader-key " S e") 'my-org-insert-elisp nil (eq major-mode 'org-mode))
 
 
