@@ -969,14 +969,19 @@ For jumping to characters and words in the frame
 A better incremental search
 
 #+BEGIN_SRC emacs-lisp
-  (req-package swiper
-    :pin "melpa"
-    :commands (swiper swiper-all)
-    :general
-    ("C-s" 'swiper)
-    (pdc|with-leader
-     "s s" 'swiper
-     "s S" 'swiper-all))
+    (req-package swiper
+      :pin "melpa"
+      :commands (swiper swiper-all)
+      :general
+      (pdc|with-leader :infix search-prefix-key
+       "s" 'swiper
+       "S" 'swiper-all)
+      :config
+      (global-set-key [remap isearch-forward] 'swiper)
+      (global-set-key [remap isearch-forward-regexp] 'swiper)
+      (global-set-key [remap isearch-backward] 'swiper)
+      (global-set-key [remap isearch-backward-regexp] 'swiper))
+
 
 #+END_SRC
 
