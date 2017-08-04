@@ -1563,4 +1563,11 @@ Configure our base Lisp mode
 #+END_SRC
 
 *** Emacs Lisp
+#+BEGIN_SRC emacs-lisp
+  (req-package macrostep
+    :general
+    (pdc|with-leader
+     "e m" 'macrostep-expand))
+#+END_SRC
+
 
