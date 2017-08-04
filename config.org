@@ -374,6 +374,8 @@ which-key:
 #+BEGIN_SRC emacs-lisp
   (req-package which-key
     :diminish " Ⓚ"
+    :init
+    (bindings|add-toggle which-key-mode :toggle"TK")
     :config
     (let ((new-descriptions
            '(("select-window-\\"0-9 "\\)" . "window \\1")
@@ -496,11 +498,17 @@ of subsequent calls to =req-package=
                                            (symbol-name name))))
              (wrapper-func-on (intern (format "%s-on" wrapper-func)))
              (wrapper-func-off (intern (format "%s-off" wrapper-func)))
-             (status (plist-get props :status))
+             (status (or (plist-get props :status) name))
              (condition (plist-get props :if))
              (doc (plist-get props :documentation))
-             (on-body (pdc/mplist-get props :on))
+             (on-body (or (pdc/mplist-get props :on)))
              (off-body (pdc/mplist-get props :off))
+             ;; If we're defined by `define-minor-mode this will toggle
+             ;; the mode
+             (toggle-body (or (pdc/mplist-get props :toggler)
+                              (if (or on-body off-body)
+                                  `(if ,status-eval ,off-body ,on-body)
+                                `(,name 'toggle))))
              (keymaps (pdc/mplist-get props :keymaps))
              (binding (plist-get props :toggle-keys))
              (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
@@ -510,16 +518,9 @@ of subsequent calls to =req-package=
            (defun ,wrapper-func ()
              ,(format "Toggle %s on and off." (symbol-name name))
              (interactive)
-             (if (or (null ',condition)
-                     (and (or (and (symbolp ',condition) (boundp ',condition))
-                              (listp ',condition))
-                          ,condition))
-                 (if ,status-eval
-                     (progn ,@off-body
-                            (message ,(format "%s disabled." name)))
-                   ,@on-body
-                   (message ,(format "%s enabled." name)))
-               (message "This toggle is not supported.")))
+             ,toggle-body
+             (message (let ((enabled ,status-eval))
+                        (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
            ,@(when binding
                `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
                                   ,binding '(,wrapper-func :which-key
@@ -1042,7 +1043,7 @@ that's also used by swiper.
      "o j" '(counsel-org-goto :which-key "goto")
      "o J" '(counsel-org-goto-all :which-key "goto-all"))
     :init
-
+    (bindings|add-toggle counsel-mode :toggle-keys "Tc")
     :config
     (--each '((apropos . counsel-apropos)
               (org-goto . counsel-org-goto)
@@ -1054,6 +1055,11 @@ that's also used by swiper.
 #+END_SRC
 
 * Bindings
+Toggles for stuff that's preloaded
+#+BEGIN_SRC emacs-lisp
+  (bindings|add-toggle auto-fill-mode :toggle-keys "Tf")
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (defun pdc/execute-extended-command-short (prefixarg &optional function)
     "Massively simplified execute extended command.
@@ -1132,7 +1138,7 @@ that's also used by swiper.
             "k" "L" "m" "C-w" "P" "o" "s" "v"
             ;; info stuff
             "i" "F" "K" "r" "S")
-  
+
     (global-unset-key (kbd (format "%c %s" help-char it))))
 
   (pdc|with-leader :infix "h d"
@@ -1189,7 +1195,7 @@ that's also used by swiper.
 
      "C-M-|"  'pdc|align-last-sexp
      "C-M-\\" 'pdc|align-last-sexp
-   
+
      "'"      'pdc|quote-behind
      "\""     'pdc|doublequote-behind
 
@@ -1324,6 +1330,8 @@ about the git status of things.
   (req-package git-gutter+
     :require magit
     :diminish git-gutter+-mode
+    :init
+    (bindings|add-toggle git-gutter+-mode :toggle-keys "Tg")
     :config
     (global-git-gutter+-mode 1))
 
@@ -1624,7 +1632,10 @@ Configure our base Lisp mode
      "A" 'paredit-add-to-previous-list
      "j" 'paredit-join-with-next-list
      "J" 'paredit-join-with-previous-list)
-   
+
+    :init
+    (bindings|add-toggle paredit-mode :toggle-keys "Tp")
+
     :config
     (defun pdc/indent-defun ()
       (interactive)
