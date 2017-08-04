@@ -1267,7 +1267,6 @@ your sanity. Please, I beg of you don't. But do use them.
 
 
 
-  (bindings|define-prefix snippet "S" "snippets")
   (pdc|with-mode-leader :keymaps 'org-mode-map
                         "s" nil
                         "s e" 'my-org-insert-elisp
