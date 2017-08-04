@@ -234,6 +234,16 @@ Turn off the visible bell:
 (setq visible-bell nil)
 #+END_SRC
 
+Make sure we have more emoji
+#+BEGIN_SRC emacs-lisp
+    (req-package emoji-fontset
+      :config
+      (setq emoji-fontset-check-version 'force)
+      (emoji-fontset-enable "Symbola")
+      ;(emoji-fontset-enable "Apple Color Emoji")
+      )
+#+END_SRC
+
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
   (req-package which-func)
