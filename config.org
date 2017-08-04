@@ -1257,8 +1257,6 @@ your sanity. Please, I beg of you don't. But do use them.
                         "s" nil
                         "s e" 'my-org-insert-elisp
                         "s/" 'pdc/org-split-src)
-  (bind-key (concat leader-key " S e") 'my-org-insert-elisp nil (eq major-mode 'org-mode))
-
 
   ;; (with-eval-after-load 'yankpad
   ;;  (bind-key "<f6>e" 'my-org-insert-elisp nil (eq major-mode 'org-mode)))
