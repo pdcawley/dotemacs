@@ -21,7 +21,7 @@ Some near-future plans for =config.org=:
 
 - [X] yasnippet setup (life is too short to type =#+BEGIN_SRC
   emacs-lisp= everywhere
-- [ ] Leader key based keymaps
+- [X] Leader key based keymaps
 - [X] req-package based configuration and installation
 - Prog-modes
   - [ ] Perl
@@ -34,8 +34,8 @@ Some near-future plans for =config.org=:
   - [ ] Multi-hugo support
   - Maybe blogging from org-mode?
 - Navigation
-  - [ ] Avy-jump
-  - [ ] Swiper
+  - [X] Avy-jump
+  - [X] Swiper
   - [ ] Bookmarks
 - Org mode
   - [ ] Sort out a workflow
