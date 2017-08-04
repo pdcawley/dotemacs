@@ -458,7 +458,7 @@ of subsequent calls to =req-package=
     (bindings|define-prefix mark "m" "mark/mc")
     (bindings|define-prefix org "o")
     (bindings|define-prefix search "s" "searching")
-    (bindings|define-prefix toggle "T" "toggles")    
+    (bindings|define-prefix toggle "T" "toggles")  
     (bindings|define-prefix transpose "t" "transpose")
     (bindings|define-prefix window "w" "windows")
 
