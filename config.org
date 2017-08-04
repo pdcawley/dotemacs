@@ -408,12 +408,20 @@ These define space keymaps under the leader key
 #+BEGIN_SRC emacs-lisp
 
   (defun bindings|expand-define-prefix (desc key docstr)
-    (let* ((variable-name (intern (format "%s-leader-key" (symbol-name desc))))
+    (let* ((descname (symbol-name desc))
+           (leader-variable-name (intern (format "%s-leader-key" descname)))
+           (prefix-variable-name (intern (format "%s-prefix-key" descname)))
+           (mode-leader-variable-name (intern (format "%s-mode-leader-key" descname)))
            (doc (or docstr (symbol-name desc))))
       `(progn
-         (defvar ,variable-name (format "%s %s" leader-key ,key)
-           ,(format "Prefix for %s" doc))
-         (general-define-key ,variable-name '(nil :which-key ,(symbol-name desc))))))
+         (defvar ,leader-variable-name (format "%s %s" leader-key ,key)
+           ,(format "leader-key + prefix for %s" doc))
+         (defvar ,prefix-variable-name ,key
+           ,(format "prefix for %s - use with `pdc|with-leader' type commands" doc))
+         (defvar ,mode-leader-variable-name (format "%s %s" mode-leader-key ,key)
+           ,(format "mode-leader-key + prefix for %s" doc))
+         (general-define-key
+          ,leader-variable-name '(nil :which-key ,(symbol-name desc))))))
 
   (defmacro bindings|define-prefix (desc key &optional docstr)
     (declare (indent 1))
