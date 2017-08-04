@@ -244,6 +244,13 @@ Make sure we have more emoji
       )
 #+END_SRC
 
+Turn off the toolbar
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+#+END_SRC
+
+
+
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
   (req-package which-func)
