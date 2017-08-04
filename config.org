@@ -416,14 +416,15 @@ of subsequent calls to =req-package=
     (general-define-key mode-leader-key '(nil :which-key "mode-leader"))
     (general-define-key leader-key '(nil :which-key "leader"))
 
-    (bindings|define-prefix jump "j" "jumping around")
-    (bindings|define-prefix search "s" "searching")
-    (bindings|define-prefix files "f")
-    (bindings|define-prefix window "w" "windows")
     (bindings|define-prefix buffer "b" "buffers")
+    (bindings|define-prefix files "f")
+    (bindings|define-prefix jump "j" "jumping around")
+    (bindings|define-prefix mark "m" "mark/mc")
     (bindings|define-prefix org "o")
+    (bindings|define-prefix search "s" "searching")
     (bindings|define-prefix toggle "T" "toggles")    
     (bindings|define-prefix transpose "t" "transpose")
+    (bindings|define-prefix window "w" "windows")
 
     (general-create-definer pdc|with-leader
                             :prefix leader-key :keymaps 'global)
@@ -515,9 +516,9 @@ of subsequent calls to =req-package=
                                   (pred (lambda (props)
                                           (not (plist-get props :exit))))))
          (let ((hydra-fn (plist-get props :cmd-name))
-               (keys (concat leader key)))
-           (general-define-key :prefix leader-key
-                               keys (list hydra-fn :which-key desc))))))
+               (long-leader (concat leader-key " " leader)))
+           (general-define-key :prefix long-leader
+                               key (list hydra-fn :which-key desc))))))
 
 
     (defmacro pdc|general-bind-hydra
