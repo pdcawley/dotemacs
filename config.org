@@ -198,6 +198,7 @@ A modern library for messing with dictionaries
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
+(add-to-list 'load-path (concat my-user-emacs-directory "elisp/"))
 #+END_SRC
 
 ** no-littering
@@ -1043,6 +1044,162 @@ that's also used by swiper.
       (when (fboundp (cdr it))
         (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
+#+END_SRC
+
+* Bindings
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/execute-extended-command-short (prefixarg &optional function)
+    "Massively simplified execute extended command.
+
+  This isn't meant for interactive use by humans, but
+  `counsel-M-x', lovely though it is, breaks some of my dictation
+  support. This doesn't"
+    (interactive "P\nCcommand: ")
+    (setq this-command function)
+    (setq real-this-command function)
+    (let ((prefix-arg prefixarg))
+      (command-execute function 'record)))
+
+  ;; Clear up some useless bindings
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key [insert])
+
+  ;; Set up an options prefix
+  (bindings|define-prefix opts "O" "Options")
+
+  ;;
+  (general-define-key :prefix window-leader-key
+                      "/" 'pdc/toggle-window-split)
+
+  (general-define-key
+   "C-x C-m" 'pdc/execute-extended-command-short)
+
+  ;; Command name shorthands. Thanks Steve Yegge
+  (defalias 'qrr 'query-replace-regexp)
+  (defalias 'rr 'replace-regexp)
+
+  ;; Buffer spruce up - could be cleverer. Per-mode spruce up strategies
+  ;; for instance
+  (req-package pdc-spruce-up-buffer
+    :general
+    (:prefix buffer-leader-key
+             "T" 'pdc|spruce-up-buffer))
+
+  (general-define-key :prefix buffer-leader-key
+                      "y" 'bury-buffer
+                      "r" 'revert-buffer)
+
+  ;; Some lispy bindings
+
+  (pdc|with-mode-leader :keymaps 'lisp-mode-shared-map
+                        :infix buffer-prefix-key
+                        "v" '(eval-buffer :which-key "eVal-buffer"))
+
+  (defun pdc|apropos-function (pattern)
+    (interactive (list (apropos-read-pattern
+                        "command or function")))
+    (apropos-command pattern t))
+
+
+  ;;; An apropos leader
+  (pdc|with-leader :infix "h A"
+   ""    '(nil :which-key "apropos")
+   "A"   'apropos
+   "c"   'apropos-command
+   "d"   'apropos-documentation
+   "f"   'pdc|apropos-function
+   "l"   'apropos-library
+   "m"   'apropos-mode
+   "o"   'apropos-user-option
+   "v"   'apropos-variable
+   "M-v" 'apropos-local-variable
+   "V"   'apropos-value
+   "M-V" 'apropos-local-value)
+
+  ;;; A describe-foo leader
+  ;; First unbind a bunch of non-menu bindings
+  (--each '(;; apropos-*
+            "a" 
+            ;; describe-*
+            "b" "C-c" "C-o" "c" "C" "f" "g" "I"
+            "k" "L" "m" "C-w" "P" "o" "s" "v"
+            ;; info stuff
+            "i" "F" "K" "r" "S")
+  
+    (global-unset-key (kbd (format "%c %s" help-char it))))
+
+  (pdc|with-leader :infix "h d"
+   ""     '(nil :which-key "describe-*")
+   "b" 'describe-bindings
+   "B" 'describe-personal-bindings
+   "c" 'describe-key-briefly
+   "C" 'describe-coding-system "f" 'describe-function
+   "F" 'describe-face
+   "I" 'describe-input-mode
+   "k" 'describe-key
+   "o" 'describe-symbol
+   "L" 'describe-language-environment
+   "m" 'describe-mode
+   "P" 'describe-package
+   "s" 'describe-syntax
+   "v" 'describe-variable
+   "C-c" 'describe-current-coding-system)
+
+  (defun info-elisp-manual ()
+    "Display the Elisp manual in Info mode."
+    (interactive)
+    (info "elisp"))
+
+  (pdc|with-leader :infix "h i"
+   "" '(nil :which-key "Info")
+   "e" 'info-elisp-manual                
+   "i" 'info
+   "F" 'Info-goto-emacs-command-node
+   "K" 'Info-goto-emacs-key-command-node
+   "r" 'info-emacs-manual
+   "S" 'info-lookup-symbol)
+
+  ;; A vi-like %
+
+  (defun pdc|match-paren (arg)
+    "Go to the matching paren if on a paren, otherwise self-insert."
+    (interactive "p")
+    (let ((prev-char (char-to-string (preceding-char)))
+          (next-char (char-to-string (following-char))))
+      (cond ((string-match "[[{(<“‘\"]" next-char) (forward-sexp 1))
+            ((string-match "[\]})>\"’”]" prev-char) (backward-sexp 1))
+            (t (self-insert-command (or arg 1))))))
+
+  (general-define-key "%" 'pdc|match-paren)
+
+  (req-package pdc-helpers
+    :commands
+    pdc|smarter-move-beginning-of-line
+    :general
+    (pdc|with-leader
+     "|"      'pdc|align
+     "\\"     'pdc|align
+
+     "C-M-|"  'pdc|align-last-sexp
+     "C-M-\\" 'pdc|align-last-sexp
+   
+     "'"      'pdc|quote-behind
+     "\""     'pdc|doublequote-behind
+
+     ;; operate on file and buffer, so put beneath both leaders
+     "f R"    'pdc|rename-file-and-buffer
+     "b R"    'pdc|rename-file-and-buffer   
+     "f M"    'pdc|move-buffer-file
+     "b M"    'pdc|move-buffer-file
+
+     "e i"    'pdc|visit-ielm
+     "e R"    'pdc|eval-and-replace)
+    :init
+    (global-set-key [remap move-beginning-of-line]
+                    'pdc|smarter-move-beginning-of-line)
+    (global-set-key [remap ielm]
+                    'pdc|visit-ielm))
+
 #+END_SRC
 
 * Snippets
