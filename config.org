@@ -317,6 +317,11 @@ Zenburn, it's the only way to be sure!
 (add-hook 'emacs-startup-hook 'delete-other-windows t)
 #+END_SRC
 
+** Pretty symbols
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode)
+#+END_SRC
+
 ** Font sizes
 
 
