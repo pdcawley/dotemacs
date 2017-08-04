@@ -105,7 +105,13 @@ copies of the packages:
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-  (add-to-list 'package-archives '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+
+  (setq package-archive-priorities
+        '(("melpa-stable" . 10)
+          ("melpa" . 5)
+          ("org" . 15)
+          ("gnu" . 0)))
+
   (package-refresh-contents)
 #+END_SRC
 
