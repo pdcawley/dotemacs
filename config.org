@@ -970,6 +970,7 @@ A better incremental search
 
 #+BEGIN_SRC emacs-lisp
   (req-package swiper
+    :pin "melpa"
     :commands (swiper swiper-all)
     :general
     ("C-s" 'swiper)
@@ -990,6 +991,7 @@ just use the ivy supplied method.
 #+BEGIN_SRC emacs-lisp
 
   (req-package ivy
+    :pin "melpa"
     :config
     (defun pdc-find-file-other-window (&optional initial-input)
       "Forward to `find-file-other-window'.
