@@ -933,9 +933,6 @@ to display a =*blank*= buffer.
     :demand t
     :general
     ("s-<mouse-1>" 'mc/add-cursor-on-click)
-    (:keymap
-     ctl-x-map
-     "C-m" 'mc/mark-all-dwim)
     :config
     (pdc|general-bind-hydra mc "m"
       ("<" mc/mark-previous-like-this)
@@ -943,10 +940,9 @@ to display a =*blank*= buffer.
       ("M-<" mc/unmark-previous-like-this)
       ("M->" mc/unmark-next-like-this)
       ("i" mc/insert-numbers)
-      ;; ("h" mc/hide-unmatched-lines-mode)
       ("d" mc/mark-all-symbols-like-this-in-defun :color blue)
       ("r" mc/reverse-regions)
-      ("s" mc/sort-regions)
+      ("s" mc/sort-regions))
     (pdc|with-leader
      "m C-a" 'mc/edit-beginnings-of-lines
      "m A" 'mc/mark-all-like-this
