@@ -1034,13 +1034,14 @@ that's also used by swiper.
      "o j" '(counsel-org-goto :which-key "goto")
      "o J" '(counsel-org-goto-all :which-key "goto-all"))
     :init
-  
+
     :config
     (--each '((apropos . counsel-apropos)
               (org-goto . counsel-org-goto)
               (set-variable . counsel-set-variable)
               (insert-char . counsel-unicode-char))
-      (define-key counsel-mode-map (vector 'remap (car it)) (cdr it)))
+      (when (fboundp (cdr it))
+        (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
 #+END_SRC
 
