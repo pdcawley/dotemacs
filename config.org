@@ -968,6 +968,7 @@ For jumping to characters and words in the frame
   (req-package avy
     :general
     (pdc|with-leader
+     "jj" 'avy-goto-char-timer
      "jb" 'avy-goto-char
      "j'" 'avy-goto-char-2
      "jw" 'avy-goto-word-1))
@@ -1047,8 +1048,8 @@ that's also used by swiper.
      "g S" '(counsel-git-grep :which-key "git grep")
      "g f" '(counsel-git :which-key "find file in repo")
      "e L" '(counsel-load-library :which-key "load library")
-     "o j" '(counsel-org-goto :which-key "goto")
-     "o J" '(counsel-org-goto-all :which-key "goto-all"))
+     "o g" '(counsel-org-goto :which-key "goto")
+     "o G" '(counsel-org-goto-all :which-key "goto-all"))
     :init
     (bindings|add-toggle counsel-mode :toggle-keys "Tc")
     :config
@@ -1162,6 +1163,7 @@ Toggles for stuff that's preloaded
    "m" 'describe-mode
    "P" 'describe-package
    "s" 'describe-syntax
+   "t" 'describe-theme
    "v" 'describe-variable
    "C-c" 'describe-current-coding-system)
 
@@ -1197,29 +1199,90 @@ Toggles for stuff that's preloaded
     pdc|smarter-move-beginning-of-line
     :general
     (pdc|with-leader
-     "|"      'pdc|align
-     "\\"     'pdc|align
+     "|"      '(pdc|align :which-key "align")
+     "\\"     '(pdc|align :which-key "align")
 
-     "C-M-|"  'pdc|align-last-sexp
-     "C-M-\\" 'pdc|align-last-sexp
+     "C-M-|"  '(pdc|align-last-sexp :which-key "align last sexp")
+     "C-M-\\" '(pdc|align-last-sexp :which-key "align last sexp")
 
-     "'"      'pdc|quote-behind
-     "\""     'pdc|doublequote-behind
+     "'"      '(pdc|quote-behind :which-key "' behind")
+     "\""     '(pdc|doublequote-behind :which-key "\" behind")
 
      ;; operate on file and buffer, so put beneath both leaders
-     "f R"    'pdc|rename-file-and-buffer
-     "b R"    'pdc|rename-file-and-buffer   
-     "f M"    'pdc|move-buffer-file
-     "b M"    'pdc|move-buffer-file
+     "f R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer") 
+     "b R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")   
+     "f M"    '(pdc|move-buffer-file :which-key "move buffer file")
+     "b M"    '(pdc|move-buffer-file :which-key "move buffer file")
 
-     "e i"    'pdc|visit-ielm
-     "e R"    'pdc|eval-and-replace)
+     "e i"    '(pdc|visit-ielm :which-key "ielm")
+     "e R"    '(pdc|eval-and-replace :which-key "eval and replace"))
     :init
     (global-set-key [remap move-beginning-of-line]
                     'pdc|smarter-move-beginning-of-line)
     (global-set-key [remap ielm]
                     'pdc|visit-ielm))
 
+
+  (defun mark-line (&optional arg)
+    "Mark the current line.
+
+  If ARG is set, mark that many lines beginning (or ending if arg is negative) with the current one"
+    (interactive "p")
+    (let* ((arg (or arg 1)))
+      (beginning-of-line)
+      (let ((here (point)))
+        (if (< arg 1)
+            (beginning-of-line (1+  arg))
+          (end-of-line arg))
+        (set-mark (point))
+        (goto-char here))))
+
+  (defun mark-sentence (&optional arg)
+    (interactive "p")
+    (backward-sentence)
+    (mark-end-of-sentence arg))
+
+
+  (pdc|with-leader
+   "P l" 'package-list-packages
+   "T I" 'toggle-input-method)
+
+  ;;; Jumps
+  (pdc|with-leader
+   :infix jump-prefix-key
+   "l" 'pdc|goto-line
+   "$" 'move-end-of-line
+   ">" 'end-of-buffer
+   "<" 'beginning-of-buffer
+   "^" 'pdc|smarter-move-beginning-of-line
+   "a" 'back-to-indentation)
+
+  ;;; File stuff
+  (pdc|with-leader
+   :infix buffer-prefix-key
+   "R" 'recompile
+   "S" 'pdc|spruce-up-buffer)
+
+  (pdc|with-leader
+   "k" (list
+        (defhydra hydra-kill (nil nil :color red)
+          "Kill"
+          (";" kill-comment "comment")
+          ("<tab>" delete-indentation "indentation")
+          ("L" kill-whole-line "whole line")
+          ("R" kill-rectangle "rectangle" :color blue)
+          ("S" kill-sentence "sentence")
+          ("l" kill-line "line")
+          ("p" kill-paragraph "paragraph")
+          ("r" kill-region "region")
+          ("s" kill-sexp "sexp")
+          ("v" kill-visual-line "visual line")
+          ("w" kill-word "word"))
+        :which-key "+kill")
+   "K" (list kmacro-keymap :which-key "kmacro")
+
+   "r q" 'query-replace-regexp
+   "r R" 'replace-rectangle)
 #+END_SRC
 
 * Snippets
