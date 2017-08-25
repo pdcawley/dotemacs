@@ -861,7 +861,7 @@ to display a =*blank*= buffer.
     (yank)
     (back-to-indentation))
 
-  (defun pdc/goto-line (line)
+  (defun pdc|goto-line (line)
     "A simplified, single buffer version of the standard command
     that work even if the buffer is narrowed"
     (interactive "nLine:")
