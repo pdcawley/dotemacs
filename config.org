@@ -1633,7 +1633,7 @@ Configure our base Lisp mode
 
 
     (defun my-lisp-mode-hook ()
-      (auto-fill-mode 1)
+      (auto-fill-mode -1)
       (paredit-mode +1)
       ;; (redshank-mode 1)
       ;; (elisp-slime-nav-mode 1)
@@ -1649,18 +1649,18 @@ Configure our base Lisp mode
   (req-package elisp-mode
     :require lisp-mode
     :demand t
-    :config
+    :general
     (pdc|with-leader
      "e c" 'finder-commentary
      "e e" 'view-echo-area-messages
      "e f" 'find-function
      "e F" 'find-face-definition)
-
-    (defun pdc/elisp-mode-hook ()
-      (eldoc-mode 1)
-      (setq mode-name "EL"))
-    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
-    (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
+     :config
+     (defun pdc/elisp-mode-hook ()
+       (eldoc-mode 1)
+       (setq mode-name "EL"))
+     (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
 
   (req-package paredit
@@ -1806,7 +1806,12 @@ Configure our base Lisp mode
   (req-package macrostep
     :general
     (pdc|with-leader
-     "e m" 'macrostep-expand))
+     "e m" 'macrostep-expand)
+    (pdc|with-mode-leader :keymaps 'emacs-lisp-mode-map
+     "e" 'macrostep-expand))
+
+#+END_SRC
+
 
 * Org-mode
 Yeah, yeah, org-mode. Everyone raves.
