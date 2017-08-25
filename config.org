@@ -227,7 +227,6 @@ Cursor settings:
 #+BEGIN_SRC emacs-lisp
 ;; Prevent the cursor from blinking
 (blink-cursor-mode 0)
-(set-cursor-color "IndianRed")
 #+END_SRC
 
 Turn off the visible bell:
