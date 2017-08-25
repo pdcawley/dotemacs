@@ -1743,6 +1743,156 @@ Configure our base Lisp mode
     :general
     (pdc|with-leader
      "e m" 'macrostep-expand))
+
+* Org-mode
+Yeah, yeah, org-mode. Everyone raves.
+
+** Org-journal
+#+BEGIN_SRC emacs-lisp
+  (req-package org-journal
+    :requires (org autoinsert)
+    :init
+    (defun pdc/journal-title ()
+      "The journal heading based on the file's name"
+      (let* ((year (string-to-number (substring (buffer-name) 0 4)))
+             (month (string-to-number (substring (buffer-name) 4 6)))
+             (day (string-to-number (substring (buffer-name) 6 8)))
+             (datim (encode-time 0 0 0 day month year)))
+        (format-time-string org-journal-date-format datim)))
+
+    (defun pdc|journal-file-insert ()
+      "Insert the heading based on the file's name."
+      (interactive)
+      (insert (journal-title))
+      (insert "\n\n")
+
+      (when (equal (file-name-base (buffer-file-name))
+                   (format-time-string "%Y%m%d"))
+        (when (file-exists-p "journal-dailies-end.org")
+          (insert-file-contents "journal-dailies-end.org")
+          (insert "\n"))
+
+        (let ((weekday-template (downcase (format-time-string)
+                                          "journal-%a.org")))
+          (when (file-exists-p weekday-template)
+            (insert-file-contents weekday-template)))
+        (when (file-exists-p "journal-dailies.org")
+          (insert-file-contents "journal-dailies.org"))
+        (previous-line 2)))
+
+    :config
+    (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))
+
+#+END_SRC
+
+** Org-mode
+
+Load org and set up bindings under our leader keys. Includes some utility commands under `init`
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  :requires counsel
+  :diminish org-indent
+  :general
+  (pdc|with-leader :infix "o"
+                   "a" 'org-agenda
+                   "b" 'org-iswitchb
+                   "c" '(org-capture :which-key "capture")
+                   "j" '(org-journal-new-entry :which-key "new journal entry")
+                   "l" 'org-store-link)
+
+  (pdc|with-mode-leader :keymaps '(org-mode-map)
+                        "h" '(:ignore t :which-key "structure")
+                        "h n" '(org-insert-heading-respect-content :which-key "new")
+                        "h s" 'org-insert-subheading
+
+                        "c" '(:ignore t :which-key "clock")
+                        "c i" '(org-clock-in :which-key "in")
+                        "c i" '(org-clock-in :which-key "in")
+                        "c o" '(org-clock-out :which-key "out")
+                        "c d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
+                        "c ." '(org-time-stamp :which-key "time-stamp")
+                        "c c" '(org-clock-cancel :which-key "cancel")
+                        "c _" '(org-clock-select-task :which-key "select-task")
+                        "c -" '(org-clock-goto :which-key "goto")
+                        "c '" '(pdc|org-goto-select-task :which-key "goto-select-task")
+                        "c g" '(pdc|org-refile-goto :which-key "refile-goto")
+                        "c l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
+
+                        "r" '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
+                        "R" '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
+  :init
+  (defun pdc|org-goto-select-task ()
+    (interactive)
+    (org-clock-goto '(4)))
+  (defun pdc|org-refile-goto ()
+    (interactive)
+    (org-refile '(4)))
+  (defun pdc|org-refile-goto-last ()
+    (interactive)
+    (org-refile '(16)))
+  (defun pdc|org-reload-uncompiled ()
+    (interactive)
+    (org-reload '(4)))
+  (defun pdc|org-reload-compiled ()
+    (interactive)
+    (org-reload))
+
+
+  (setq org-directory (expand-file-name "~/Dropbox"))
+#+END_SRC
+
+*** Babel
+
+#+BEGIN_SRC emacs-lisp
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (shell . t)
+       (perl . t)
+       (haskell . t)))
+    (setq org-confirm-babel-evaluate nil
+          org-src-fontify-natively t
+          org-src-tab-acts-natively t
+          org-iswitchb-completing-read 'ivy-completing-read)
+#+END_SRC
+
+*** Capture
+#+BEGIN_SRC emacs-lisp
+  (require 'org-contacts)
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (setq org-capture-templates
+        `(("t" "Todo" entry (file+headline ,(concat org-directory "/gtd.org") "Tasks")
+               "* TODO %?\n  %i\n  %a")
+          ("F" "Folk contacts")
+          ("Ff" "Festival" entry (file+datetree+prompt ,(concat org-directory "/gig-contacts.org") "Festivals")
+           (file ,(concat org-directory "/capture-templates/festival.otpl")))
+          ))
+#+END_SRC
+
+*** Agenda
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files `(,org-directory "~/Documents/journal"))
 #+END_SRC
 
 
+
+*** Close the req-package
+
+It's ugly lisp, but it keeps paredit relatively happy with our fragments. 
+
+#+BEGIN_SRC emacs-lisp
+)
+#+END_SRC
+
+*** Org exporters
+
+#+BEGIN_SRC emacs-lisp
+  (req-package ox-gfm
+    :requires org)
+
+  (req-package auto-insert)
+#+END_SRC

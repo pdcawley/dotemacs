@@ -17,8 +17,8 @@
 ;; Set paths to our manually installed Org-mode
 (add-to-list 'load-path (expand-file-name "vendor/org-mode/lisp"
 					  my-user-emacs-directory))
-(add-to-list 'load-path (expand-file-name
-			 "vendor/org-mode/contrib/lisp"))
+(add-to-list 'load-path (expand-file-name "vendor/org-mode/contrib/lisp"
+                                          my-user-emacs-directory))
 (require 'org)
 
 ;; =============================================================================
