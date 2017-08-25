@@ -459,10 +459,14 @@ of subsequent calls to =req-package=
     (general-define-key leader-key '(nil :which-key "leader"))
 
     (bindings|define-prefix buffer "b" "buffers")
+    (bindings|define-prefix elisp "e")
     (bindings|define-prefix files "f")
     (bindings|define-prefix jump "j" "jumping around")
     (bindings|define-prefix mark "m" "mark/mc")
     (bindings|define-prefix org "o")
+    (bindings|define-prefix package "P")
+    (bindings|define-prefix replace "r" "replace")
+    (bindings|define-prefix rectangle "R")
     (bindings|define-prefix search "s" "searching")
     (bindings|define-prefix toggle "T" "toggles")  
     (bindings|define-prefix transpose "t" "transpose")
@@ -1523,9 +1527,6 @@ Configure our base Lisp mode
   (req-package lisp-mode
     :require finder paredit
     :demand t
-    :general
-    (pdc|with-leader
-     "e" '(nil :which-key "elisp"))
     :config
 
     (defun my-byte-recompile-file ()
