@@ -39,11 +39,12 @@ See help of `format-time-string' for suggested replacements")
   "Format of date to insert with `insert-current-time' func.
 Note the weekly scope of the command's precision")
 
-(defun pdc//tangle-config-org ()
+(defun pdc/tangle-config-org ()
   "Writes all source blocks from =config.org= into =config.el= that are ...
 - not marked as =tangle: no=
 - doesn't have the TODO state =DISABLED=
 - have a source-code of emacs-lisp"
+  (interactive)
   (require 'org)
   (let ((body-list ())
         (visited? (get-file-buffer my-config-org))
@@ -87,7 +88,7 @@ Note the weekly scope of the command's precision")
       (gc-cons-threshhold most-positive-fixnum))
   (when (or (not (file-exists-p elfile))
 	    (file-newer-than-file-p orgfile elfile))
-    (pdc//tangle-config-org))
+    (pdc/tangle-config-org))
   (load-file elfile))
 
 ;; when config.org is saved, re-generate config.el
@@ -95,7 +96,7 @@ Note the weekly scope of the command's precision")
   (when (string= "config.org" (buffer-name))
     (let ((orgfile (concat my-user-emacs-directory "config.org"))
 	  (elfile (concat my-user-emacs-directory "config.el")))
-      (pdc//tangle-config-org))))
+      (pdc/tangle-config-org))))
 (add-hook 'after-save-hook 'my-tangle-config-org-hook-func)
 
 (message "→★ loading init.el in %.2fs" (float-time (time-subtract (current-time) my-init-el-start-time)))
