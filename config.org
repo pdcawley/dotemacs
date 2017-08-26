@@ -1653,22 +1653,14 @@ Configure our base Lisp mode
   (req-package autoinsert)
   (req-package finder)
 
+  (req-package auto-compile
+    :init (setq load-prefer-newer t)
+    :config (auto-compile-on-load-mode))
+
   (req-package lisp-mode
     :require finder paredit
     :demand t
     :config
-
-    (defun my-byte-recompile-file ()
-      (save-excursion
-        (byte-recompile-file buffer-file-name)))
-
-
-    (defun emacs-lisp-rebuild-associated-elc ()
-      "If you're saving an elisp file, the .elc is probably now invalid"
-      (make-local-variable 'after-save-hook)
-      (add-hook 'after-save-hook 'my-byte-recompile-file))
-
-    (add-hook-exec 'emacs-lisp-mode-hook 'emacs-lisp-rebuild-associated-elc)
 
     (defun pdc/goto-match-paren (arg)
       "Go to the matching parenthesis if on parenthesis. Else go up to the opening parenthesis one level up."
