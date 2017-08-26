@@ -935,6 +935,24 @@ to display a =*blank*= buffer.
 
 #+END_SRC
 
+** Abbreviations
+#+NAME: abbrev
+| Base | Expansion                   |
+|------+-----------------------------|
+| bc   | because                     |
+| wo   | without                     |
+| wi   | with                        |
+| qm   | piers@singingtogether.co.uk |
+
+#+BEGIN_SRC emacs-lisp :var data=abbrev
+(mapc (lambda (x) (define-global-abbrev (car x) (cadr x))) (cddr data))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'abbrev-mode)
+(diminish 'abbrev-mode " A")
+#+END_SRC
+
 ** Multiple cursors
 #+BEGIN_SRC emacs-lisp
   (req-package multiple-cursors
