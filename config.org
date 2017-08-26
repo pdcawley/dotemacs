@@ -459,10 +459,11 @@ of subsequent calls to =req-package=
     (general-define-key leader-key '(nil :which-key "leader"))
 
     (bindings|define-prefix buffer "b" "buffers")
+    (bindings|define-prefix cursor "c" "cursor/mark")
     (bindings|define-prefix elisp "e")
     (bindings|define-prefix files "f")
+    (bindings|define-prefix emacs-d "f e" "emacs")
     (bindings|define-prefix jump "j" "jumping around")
-    (bindings|define-prefix mark "m" "mark/mc")
     (bindings|define-prefix org "o")
     (bindings|define-prefix package "P")
     (bindings|define-prefix replace "r" "replace")
@@ -523,10 +524,7 @@ of subsequent calls to =req-package=
                                   `(if ,status-eval ,off-body ,on-body)
                                 `(,name 'toggle))))
              (keymaps (pdc/mplist-get props :keymaps))
-             (binding (plist-get props :toggle-keys))
-             (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
-                                    (listp ',status))
-                                ,status)))
+             (binding (plist-get props :toggle-keys)))
         `(progn
            (defun ,wrapper-func ()
              ,(format "Toggle %s on and off." (symbol-name name))
@@ -536,8 +534,8 @@ of subsequent calls to =req-package=
                         (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
            ,@(when binding
                `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
-                                  ,binding '(,wrapper-func :which-key
-                                                           ,(or doc (symbol-name name))))))
+                   ,binding '(,wrapper-func :which-key
+                                            ,(or doc (symbol-name name))))))
            ,@(when status
                `((defun ,wrapper-func-on ()
                    ,(format "Toggle %s on" (symbol-name name))
@@ -563,9 +561,9 @@ of subsequent calls to =req-package=
          (let ((keys (concat leader key)))
            (general-define-key :prefix leader-key
                                keys (list fn :which-key desc))))
-        (`(,key ,fn ,desc . ,(and props
-                                  (pred (lambda (props)
-                                          (not (plist-get props :exit))))))
+        (`(,key ,_ ,desc . ,(and props
+                                 (pred (lambda (props)
+                                         (not (plist-get props :exit))))))
          (let ((hydra-fn (plist-get props :cmd-name))
                (long-leader (concat leader-key " " leader)))
            (general-define-key :prefix long-leader
@@ -573,7 +571,7 @@ of subsequent calls to =req-package=
 
 
     (defmacro pdc|general-bind-hydra
-        (name leader &rest specs &key no-cancel &allow-other-keys)
+        (name leader &key no-cancel &allow-other-keys &rest specs)
       "Bind a hydra in such a way that others can share the prefix."
       (declare (indent defun))
       (cl-flet
@@ -771,7 +769,7 @@ windows. Not sure I've ever used this. Might disable it.
 it burys the buffer in the current window in all the other windows,
 ensuring that the current window is the only one displaying the buffer.
 #+BEGIN_SRC emacs-lisp
-  (defun pdc/bury-buffer-other-windows (&optional buffer pnt)
+  (defun pdc/bury-buffer-other-windows (&optional buffer)
     "Bury the current buffer in all windows but the current one."
     (interactive)
     (let ((buffer (or buffer (current-buffer))))
@@ -967,7 +965,7 @@ to display a =*blank*= buffer.
     :general
     ("s-<mouse-1>" 'mc/add-cursor-on-click)
     :config
-    (pdc|general-bind-hydra mc "m"
+    (pdc|general-bind-hydra mc cursor-prefix-key
       ("<" mc/mark-previous-like-this)
       (">" mc/mark-next-like-this )
       ("M-<" mc/unmark-previous-like-this)
@@ -1931,7 +1929,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   :general
   (pdc|with-leader :infix "o"
                    "a" 'org-agenda
-                   "b" 'org-iswitchb
+                   "b" 'org-switchb
                    "c" '(org-capture :which-key "capture")
                    "j" '(org-journal-new-entry :which-key "new journal entry")
                    "l" 'org-store-link)
@@ -1972,7 +1970,6 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   (defun pdc|org-reload-compiled ()
     (interactive)
     (org-reload))
-
 
   (setq org-directory (expand-file-name "~/Dropbox"))
 #+END_SRC
