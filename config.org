@@ -182,7 +182,9 @@ A modern library for messing with dictionaries
       (exec-path-from-shell-initialize)))
 #+END_SRC
 
-** =yes-or-no-p= can die in a fire
+** Never type "yes" when "y" will do
+
+=yes-or-no-p= can die in a fire
 
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -962,7 +964,7 @@ to display a =*blank*= buffer.
 
 * Navigation
 
-** =avy=
+** Avy
 For jumping to characters and words in the frame
 #+BEGIN_SRC emacs-lisp
   (req-package avy
@@ -974,7 +976,7 @@ For jumping to characters and words in the frame
      "jw" 'avy-goto-word-1))
 #+END_SRC
 
-** =swiper=
+** Swiper
 A better incremental search
 
 #+BEGIN_SRC emacs-lisp
@@ -994,7 +996,7 @@ A better incremental search
 
 #+END_SRC
 
-** =ivy=
+** Ivy
 A better completing read. Similar to helm but rather less intrusive. 
 
 We define a =pdc-find-file-other-window= function, but it seems the
@@ -1030,7 +1032,7 @@ just use the ivy supplied method.
                 :caller 'counsel-find-file)))
 #+END_SRC
 
-** =counsel=
+** Counsel
 
 Wraps a bunch of common functions with the =ivy= completing read
 that's also used by swiper.
