@@ -2021,5 +2021,6 @@ It's ugly lisp, but it keeps paredit relatively happy with our fragments.
   (req-package ox-gfm
     :requires org)
 
-  (req-package auto-insert)
+  (req-package autoinsert)
 #+END_SRC
+
