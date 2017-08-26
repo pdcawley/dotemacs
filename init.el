@@ -19,6 +19,8 @@
 					  my-user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "vendor/org-mode/contrib/lisp"
                                           my-user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "vendor/req-package"
+                                          my-user-emacs-directory))
 (require 'org)
 
 ;; =============================================================================
