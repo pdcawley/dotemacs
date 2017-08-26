@@ -970,15 +970,63 @@ to display a =*blank*= buffer.
       ("d" mc/mark-all-symbols-like-this-in-defun :color blue)
       ("r" mc/reverse-regions)
       ("s" mc/sort-regions))
-    (pdc|with-leader
-     "m C-a" 'mc/edit-beginnings-of-lines
-     "m A" 'mc/mark-all-like-this
-     "m a" 'mc/mark-all-dwim
-     "m C-e" 'mc/edit-ends-of-lines
-     "m e" 'mc/edit-lines))
+    (pdc|with-leader :infix cursor-prefix-key
+     "C-a" 'mc/edit-beginnings-of-lines
+     "A" 'mc/mark-all-like-this
+     "a" 'mc/mark-all-dwim
+     "C-e" 'mc/edit-ends-of-lines
+     "e" 'mc/edit-lines))
 #+END_SRC
 
 * Navigation
+
+** Standard locations
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/find-config ()
+    "Edit the `config.org', in the current window."
+    (interactive)
+    (find-file-existing my-config-org))
+
+  (defun pdc/find-user-init-file ()
+    "Edit the `user-init-file' in the current window."
+    (interactive)
+    (find-file-existing user-init-file))
+
+  (defun pdc/copy-file ()
+    "Write the file under new name."
+    (interactive)
+    (call-interactively 'write-file))
+
+  (defun pdc//read-file-name (&optional initial-input)
+    (ivy-read "File file: " 'read-file-name-internal
+              :matcher #'counsel--find-file-matcher
+              :initial-input initial-input
+              :preselect (when counsel-find-file-at-point
+                           (require 'ffap)
+                           (let ((f (ffap-guesser)))
+                             (when f (expand-file-name f))))
+              :history 'file-name-history
+              :caller this-command))
+
+  (defun pdc/sudo-edit (&optional initial-input)
+    (interactive "P")
+    (counsel-find-file-as-root (pdc//read-file-name initial-input)))
+  
+  (pdc|with-leader :prefix emacs-d-leader-key
+    "c" '(pdc/find-config :which-key "config.org")
+    "i" '(pdc/find-user-init-file :which-key "init.el"))
+
+  (pdc|with-leader :prefix files-leader-key
+    "c" '(pdc/copy-file :which-key "copy")
+    "g" 'rgrep
+    "l" 'find-file-literally
+    "E" 'pdc/sudo-edit
+    "s" 'save-buffer
+    "v" '(:ignore t :which-key "variables")
+    "vd" 'add-dir-local-variable
+    "vf" 'add-file-local-varihable
+    "vp" 'add-file-local-variable-prop-line)
+#+END_SRC
 
 ** Avy
 For jumping to characters and words in the frame
