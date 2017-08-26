@@ -426,7 +426,7 @@ These define space keymaps under the leader key
          (defvar ,mode-leader-variable-name (format "%s %s" mode-leader-key ,key)
            ,(format "mode-leader-key + prefix for %s" doc))
          (general-define-key
-          ,leader-variable-name '(nil :which-key ,(symbol-name desc))))))
+          ,leader-variable-name '(:ignore t :which-key ,(symbol-name desc))))))
 
   (defmacro bindings|define-prefix (desc key &optional docstr)
     (declare (indent 1))
