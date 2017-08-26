@@ -715,7 +715,7 @@ Various commands that affect windows and window layout
     (interactive "p")
     (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
       (while (/= arg 0)
-        (elt ((this-win (window-buffer))
+        (let ((this-win (window-buffer))
               (next-win (window-buffer (funcall selector))))
              (set-window-buffer (selected-window) next-win)
              (set-window-buffer (funcall selector) this-win)
