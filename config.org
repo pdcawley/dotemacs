@@ -121,9 +121,6 @@ Initialize our package managment and key binding:
   (eval-when-compile
     (progn
       (setq package-enable-at-startup nil)
-      (unless (package-installed-p 'req-package)
-        (package-refresh-contents)
-        (package-install 'req-package))
       (require 'use-package)
       (use-package req-package
         :init
