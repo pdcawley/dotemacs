@@ -300,7 +300,8 @@ Turn off the toolbar
   ;;; These will be moved to org-mode config when we have an org-mode
   ;;; config section
   (with-eval-after-load 'org-src
-    (diminish 'org-src-mode " ∮"))
+    (diminish 'org-src-mode " ∮")
+    (setq org-src-window-setup 'current-window))
   (with-eval-after-load 'org-indent
     (diminish 'org-indent-mode " ∃"))
 #+END_SRC
