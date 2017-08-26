@@ -21,4 +21,4 @@
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
 [submodule "vendor/req-package"]
 	path = vendor/req-package
-	url = git@github.com:edvorg/req-package.git
+	url = git@github.com:pdcawley/req-package.git
