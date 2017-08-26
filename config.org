@@ -474,11 +474,14 @@ of subsequent calls to =req-package=
 
     (general-create-definer pdc|with-leader
                             :prefix leader-key :keymaps 'global)
+    (put 'pdc|with-leader 'lisp-indent-function 'defun)
+
     (general-create-definer pdc|with-mode-leader
                             :prefix mode-leader-key)
-    (pdc|with-leader
-     "h" (list help-map :which-key "help"))
+    (put 'pdc|with-mode-leader 'lisp-indent-function 'defun)
 
+    (pdc|with-leader
+      "h" (list help-map :which-key "help"))
 
     (defun pdc/mplist-get (plist prop)
       "Get the values associated to PROP in PLIST, a modified plist.
@@ -506,10 +509,13 @@ of subsequent calls to =req-package=
              (wrapper-func-on (intern (format "%s-on" wrapper-func)))
              (wrapper-func-off (intern (format "%s-off" wrapper-func)))
              (status (or (plist-get props :status) name))
-             (condition (plist-get props :if))
+             ;; (condition (plist-get props :if))
              (doc (plist-get props :documentation))
              (on-body (or (pdc/mplist-get props :on)))
              (off-body (pdc/mplist-get props :off))
+             (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
+                                    (listp ',status))
+                                ,status))
              ;; If we're defined by `define-minor-mode this will toggle
              ;; the mode
              (toggle-body (or (pdc/mplist-get props :toggler)
