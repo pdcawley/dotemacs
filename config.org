@@ -417,22 +417,23 @@ hydra:
 ** Supporting macros
 These define space keymaps under the leader key
 #+BEGIN_SRC emacs-lisp
-
   (defun bindings|expand-define-prefix (desc key docstr)
     (let* ((descname (symbol-name desc))
            (leader-variable-name (intern (format "%s-leader-key" descname)))
-           (prefix-variable-name (intern (format "%s-prefix-key" descname)))
+           (infix-variable-name (intern (format "%s-infix-key" descname)))
+           (prefix-variable-name-deprecated (intern (format "%s-prefix-key" descname)))
            (mode-leader-variable-name (intern (format "%s-mode-leader-key" descname)))
            (doc (or docstr (symbol-name desc))))
       `(progn
          (defvar ,leader-variable-name (format "%s %s" leader-key ,key)
            ,(format "leader-key + prefix for %s" doc))
-         (defvar ,prefix-variable-name ,key
-           ,(format "prefix for %s - use with `pdc|with-leader' type commands" doc))
-         (defvar ,mode-leader-variable-name (format "%s %s" mode-leader-key ,key)
-           ,(format "mode-leader-key + prefix for %s" doc))
-         (general-define-key
-          ,leader-variable-name '(:ignore t :which-key ,(symbol-name desc))))))
+         (defvar ,infix-variable-name ,key
+           ,(format "infix for %s - use with `pdc|with-leader :infix %s' type commands" doc infix-variable-name))
+         (defvar ,prefix-variable-name-deprecated ,infix-variable-name
+           ,(format "Obsolete copy of %s" infix-variable-name))
+         (make-obsolete ',prefix-variable-name-deprecated ',infix-variable-name "2017-08-27")
+         (which-key-add-key-based-replacements ,leader-variable-name ,doc))))
+
 
   (defmacro bindings|define-prefix (desc key &optional docstr)
     (declare (indent 1))
@@ -970,7 +971,7 @@ to display a =*blank*= buffer.
     :general
     ("s-<mouse-1>" 'mc/add-cursor-on-click)
     :config
-    (pdc|general-bind-hydra mc cursor-prefix-key
+    (pdc|general-bind-hydra mc cursor-infix-key
       ("<" mc/mark-previous-like-this)
       (">" mc/mark-next-like-this )
       ("M-<" mc/unmark-previous-like-this)
@@ -979,7 +980,7 @@ to display a =*blank*= buffer.
       ("d" mc/mark-all-symbols-like-this-in-defun :color blue)
       ("r" mc/reverse-regions)
       ("s" mc/sort-regions))
-    (pdc|with-leader :infix cursor-prefix-key
+    (pdc|with-leader :infix cursor-infix-key
      "C-a" 'mc/edit-beginnings-of-lines
      "A" 'mc/mark-all-like-this
      "a" 'mc/mark-all-dwim
@@ -1021,7 +1022,7 @@ to display a =*blank*= buffer.
     (interactive "P")
     (counsel-find-file-as-root (pdc//read-file-name initial-input)))
   
-  (pdc|with-leader :prefix emacs-d-leader-key
+  (pdc|with-leader :infix emacs-d-infix-key
     "c" '(pdc/find-config :which-key "config.org")
     "i" '(pdc/find-user-init-file :which-key "init.el"))
 
@@ -1057,7 +1058,7 @@ A better incremental search
       :pin "melpa"
       :commands (swiper swiper-all)
       :general
-      (pdc|with-leader :infix search-prefix-key
+      (pdc|with-leader :infix search-infix-key
        "s" 'swiper
        "S" 'swiper-all)
       :config
@@ -1324,7 +1325,7 @@ Toggles for stuff that's preloaded
 
   ;;; Jumps
   (pdc|with-leader
-   :infix jump-prefix-key
+   :infix jump-infix-key
    "l" 'pdc|goto-line
    "$" 'move-end-of-line
    ">" 'end-of-buffer
@@ -1334,7 +1335,7 @@ Toggles for stuff that's preloaded
 
   ;;; File stuff
   (pdc|with-leader
-   :infix buffer-prefix-key
+   :infix buffer-infix-key
    "R" 'recompile
    "S" 'pdc|spruce-up-buffer)
 
