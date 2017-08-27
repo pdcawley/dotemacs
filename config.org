@@ -446,6 +446,7 @@ These define space keymaps under the leader key
 #+END_SRC
 
 ** Keymap prefixes
+
 The idea is that most of our commands come under a tree of prefixes,
 all initiated from the primary leader key. The prefixes are
 essentially sparse keymaps, and I've not worked out how to easily
@@ -456,45 +457,183 @@ We use =use-package ... :ensure t= here rather than =req-package= to
 ensure that =pdc|with-leader= is avaialable to the =:general= clause
 of subsequent calls to =req-package=
 
+*** Our prefixes
+
 #+NAME: prefixes
-| name            | keys | description         |
-|-----------------+------+---------------------|
-| colors          | C    |                     |
-| package         | P    |                     |
-| rectangle       | R    |                     |
-| elisp           | Re   |                     |
-| toggle          | T    | toggles             |
-| applications    | a    |                     |
-| shell           | as   | shells              |
-| buffer          | b    | buffers             |
-| compile         | c    | compile/comments    |
-| files           | f    |                     |
-| file-convert    | fC   | files/convert       |
-| emacs-d         | fe   | emacs               |
-| variable        | fv   | variables           |
-| git             | g    | git/version-control |
-| help            | h    |                     |
-| help-describe   | hd   |                     |
-| insertion       | i    |                     |
-| jump            | j    | jump/join/split     |
-| lisp            | k    |                     |
-| delete-backward | kD   |                     |
-| hybrid          | k`   |                     |
-| delete          | kd   |                     |
-| cursor          | m    | marks/cursors       |
-| narrow          | n    | narrow/number       |
-| org             | o    |                     |
-| project         | p    | projects            |
-|                 | p$   | projects/shell      |
-| replace         | r    |                     |
-| search          | s    | searching           |
-| transpose       | t    |                     |
-| window          | w    | windows             |
-| quit            | q    |                     |
-|                 |      |                     |
+| name            | keys | description            |
+|-----------------+------+------------------------|
+|                 | C-t  | other-toggles          |
+| colors          | C    |                        |
+| package         | P    |                        |
+| elisp           | Re   |                        |
+| pcre            | Rp   |                        |
+|                 | T    | UI toggles/themes      |
+| applications    | a    |                        |
+| shell           | as   | shells                 |
+| buffer          | b    | buffers                |
+| compile         | c    | compile/comments       |
+| files           | f    |                        |
+| file-convert    | fC   | files/convert          |
+| emacs-d         | fe   | emacs                  |
+| variable        | fv   | variables              |
+| git             | g    | git/version-control    |
+| help            | h    |                        |
+| help-describe   | hd   |                        |
+| insertion       | i    |                        |
+| jump            | j    | jump/join/split        |
+| lisp            | k    |                        |
+| delete-backward | kD   |                        |
+| hybrid          | k`   |                        |
+| delete          | kd   |                        |
+| cursor          | m    | marks/cursors          |
+| narrow          | n    | narrow/number          |
+| org             | o    |                        |
+| project         | p    | projects               |
+|                 | p$   | projects/shell         |
+| quit            | q    |                        |
+| replace         | r    |                        |
+|                 | r    | registers/rings/resume |
+| search          | s    | search/symbol          |
+| ag              | sa   |                        |
+| grep            | sg   |                        |
+| ack             | sk   |                        |
+| pt              | st   |                        |
+| web             | sw   |                        |
+|                 | t    | toggles                |
+|                 | t    | toggles                |
+|                 | tC   | colours                |
+|                 | th   | highlight              |
+|                 | tm   | modeline               |
+| window          | w    | windows                |
+|                 | wp   | popup                  |
+|                 | x    | text                   |
+|                 | xa   | align                  |
+|                 | xd   | delete                 |
+|                 | xg   | google-translate       |
+|                 | xl   | lines                  |
+|                 | xm   | move                   |
+|                 | xt   | transpose              |
+|                 | xw   | words                  |
+|                 | z    | zoom                   |
+
+*** CURRENT Support prefix declaration and access
+
+We used to use a bunch of poorly namespaced variables to track our
+leader key prefix declarations, but this risks name clashes and has
+made macro writing a wee bit tricky. A better approach seems to be to
+manage our own prefix registry
+
+#+BEGIN_SRC emacs-lisp
+  (defvar bindings--prefixes-hash (ht)
+    "Holds the map of prefix descriptions to their keys")
+#+END_SRC
+
+We manage this with =bindings//declare-prefix=, 
+
+#+BEGIN_SRC emacs-lisp
+    (defun bindings//declare-prefix (key-seq description)
+      "Register a prefix KEY-SEQ and its DESCRIPTION.
+
+  The description is used as the key of `bindings--prefixes-hash' as well 
+  as any subdescriptions obtained by spliting on ``/''. Any keys that have
+  have no spaces in them are also registered as keywords via 
+  `kvthing->keyword'"
+      (require 's)
+      (require 'ht)
+      (require 'which-key)
+      (require 'kv)
+      (let* ((description (s-chop-suffix "/" (s-chop-prefix "/" description)))
+             (shortdescs (when (s-contains? "/" description)
+                           (s-split "/" description t)))
+             (full-leader (concat leader-key " " key-seq)))
+        (which-key-add-key-based-replacements full-leader description)
+        ;; (ht-set! bindings--prefixes-hash description key-seq)
+        ;; (unless (s-countains? " " description)
+        ;;   (ht-set! bindings--prefixes-hash (kvthing->keyword description)))
+        (dolist (desc (cons description shortdescs))
+          (unless (s-contains? " " desc)
+            (ht-set! bindings--prefixes-hash (kvthing->keyword desc)
+                     key-seq))
+          (ht-set! bindings--prefixes-hash desc key-seq))))
+
+#+END_SRC
+
+**** Prefix registry accessors
+
+Functions to get prefix sequences from the registry. The general form
+is =(getter "prefix"|:prefix suffix )= which will look up the prefix
+and append the value of =suffix= to the result. Lets us write:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(general-define-key :prefix (bindings//leader :file)
+  "f" 'find-file)
+
+;; Equivalent to 
+(general-define-key :prefix leader-key
+  (bindings//leader :file "f") 'find-file)
+#+END_SRC
+
+It's a bit clumsy to write by hand, but that's why we have the macros below
+
+#+BEGIN_SRC emacs-lisp
+    (defun bindings//prefix (name &optional keys)
+      "Return the prefix associated with NAME.
+
+    If KEYS is supplied, append it to the prefix. Raise an error if there is no 
+  such prefix."
+      (let* ((prefix (if (ht-contains? bindings--prefixes-hash name)
+                         (ht-get bindings--prefixes-hash name)
+                       (error "No such leader %S." name)))
+             (prefix (if keys
+                         (concat prefix " " keys)
+                       prefix)))
+        prefix))
+
+    (defun bindings//leader (name &optional keys)
+      "Return the leader sequence associated with NAME.
+    Append KEYS to the result, if supplied"
+      (concat leader-key " " (bindings//prefix name keys)))
+#+END_SRC
+
+Now we have the functions in place, we can start writing the syntactic
+sugar. =pdc|with-leader= is a variant of =pdc/with-leader= that
+rewrites lists of the (pcase) form 
+=`(,(or pred stringp) (pred keywordp)) . ,_)= into calls to
+=bindings//leader= (for =:prefix= arguments) or =bindings//prefix=
+(for everything else)
 
 #+BEGIN_SRC emacs-lisp
 
+    (defun bindings//list->keys (list &optional lookupfn)
+      (let ((lookupfn (or lookupfn #'bindings//prefix)))
+        (pcase list
+          (`(,(or (pred stringp) (pred keywordp)) . ,_)
+           (apply lookupfn list))
+          (_ list))))
+
+    (defmacro pdc|with-leader (&rest args)
+      (declare (indent defun))
+      (let ((parsed-args
+             (cl-loop for (key value) on args by 'cddr
+                      nconc (pcase (list key value)
+                              (`(:prefix ,_)
+                               (list :prefix (bindings//list->keys value 'bindings//leader)))
+                              (`(:infix ,_)
+                               (list key (bindings//list->keys value)))
+                              (`(,(pred keywordp) ,_)
+                               (list key value))
+                              (`(,_ ,_)
+                               (list (bindings//list->keys key) value))))))
+        `(pdc/with-leader ,@parsed-args)))
+#+END_SRC
+
+*** Load general keybinding support
+
+We load =general.el= using =(use-package :ensure t ...)= here because
+=general= needs to be loaded and working in order for =req-package= to
+handle the =:general= clauses we use for our keybindings. 
+
+#+BEGIN_SRC emacs-lisp
   (use-package general
     :ensure t
     :config
@@ -506,9 +645,9 @@ of subsequent calls to =req-package=
     (general-define-key mode-leader-key '(nil :which-key "mode-leader"))
     (general-define-key leader-key '(nil :which-key "leader"))
 
-    (general-create-definer pdc|with-leader
+    (general-create-definer pdc/with-leader
                             :prefix leader-key :keymaps 'global)
-    (put 'pdc|with-leader 'lisp-indent-function 'defun)
+    (put 'pdc/with-leader 'lisp-indent-function 'defun)
 
     (general-create-definer pdc|with-mode-leader
                             :prefix mode-leader-key)
@@ -591,7 +730,7 @@ of subsequent calls to =req-package=
     (pcase spec
       (`(,key ,fn ,desc . ,(pred (lambda (props)
                                    (plist-get props :exit))))
-       (let ((keys (concat leader key)))
+       (let ((keys (concat leader " " key)))
          (general-define-key :prefix leader-key
                              keys (list fn :which-key desc))))
       (`(,key ,_ ,desc . ,(and props
@@ -636,6 +775,8 @@ of subsequent calls to =req-package=
 
 #+END_SRC
 
+
+*** Declare the prefixes
 #+BEGIN_SRC emacs-lisp :var prefixes=prefixes
   (dolist (it prefixes)
     (pcase-let* ((`(,namestr ,keys ,desc) it)
@@ -644,6 +785,7 @@ of subsequent calls to =req-package=
                  (description (if (> (length desc) 0)
                                   desc
                                 namestr)))
+      (bindings//declare-prefix keys (s-join "/" (list namestr desc)))
       (if name
           (bindings|define-prefix-1 name keys description)
         (which-key-add-key-based-replacements keys description))))
@@ -1085,11 +1227,11 @@ For jumping to characters and words in the frame
 #+BEGIN_SRC emacs-lisp
   (req-package avy
     :general
-    (pdc|with-leader
-     "jj" 'avy-goto-char-timer
-     "jb" 'avy-goto-char
-     "j'" 'avy-goto-char-2
-     "jw" 'avy-goto-word-1))
+    (pdc|with-leader :infix (:jump)
+     "j" 'avy-goto-char-timer
+     "b" 'avy-goto-char
+     "'" 'avy-goto-char-2
+     "w" 'avy-goto-word-1))
 #+END_SRC
 
 ** Swiper
@@ -1760,11 +1902,11 @@ Configure our base Lisp mode
     :require lisp-mode
     :demand t
     :general
-    (pdc|with-leader
-     "e c" 'finder-commentary
-     "e e" 'view-echo-area-messages
-     "e f" 'find-function
-     "e F" 'find-face-definition)
+    (pdc|with-leader :infix (:elisp)
+     "c" 'finder-commentary
+     "m" 'view-echo-area-messages
+     "f" 'find-function
+     "F" 'find-face-definition)
      :config
      (defun pdc/elisp-mode-hook ()
        (eldoc-mode 1)
