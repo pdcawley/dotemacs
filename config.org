@@ -438,6 +438,11 @@ These define space keymaps under the leader key
   (defmacro bindings|define-prefix (desc key &optional docstr)
     (declare (indent 1))
     (bindings|expand-define-prefix desc key docstr))
+
+  (defmacro bindings|define-prefix-1 (descvar key docstr)
+    (declare (indent 1))
+    `(eval (bindings|expand-define-prefix `,,descvar ,key ,docstr)))
+
 #+END_SRC
 
 ** Keymap prefixes
@@ -450,6 +455,43 @@ tree here.
 We use =use-package ... :ensure t= here rather than =req-package= to
 ensure that =pdc|with-leader= is avaialable to the =:general= clause
 of subsequent calls to =req-package=
+
+#+NAME: prefixes
+| name            | keys | description         |
+|-----------------+------+---------------------|
+| colors          | C    |                     |
+| package         | P    |                     |
+| rectangle       | R    |                     |
+| elisp           | Re   |                     |
+| toggle          | T    | toggles             |
+| applications    | a    |                     |
+| shell           | as   | shells              |
+| buffer          | b    | buffers             |
+| compile         | c    | compile/comments    |
+| files           | f    |                     |
+| file-convert    | fC   | files/convert       |
+| emacs-d         | fe   | emacs               |
+| variable        | fv   | variables           |
+| git             | g    | git/version-control |
+| help            | h    |                     |
+| help-describe   | hd   |                     |
+| insertion       | i    |                     |
+| jump            | j    | jump/join/split     |
+| lisp            | k    |                     |
+| delete-backward | kD   |                     |
+| hybrid          | k`   |                     |
+| delete          | kd   |                     |
+| cursor          | m    | marks/cursors       |
+| narrow          | n    | narrow/number       |
+| org             | o    |                     |
+| project         | p    | projects            |
+|                 | p$   | projects/shell      |
+| replace         | r    |                     |
+| search          | s    | searching           |
+| transpose       | t    |                     |
+| window          | w    | windows             |
+| quit            | q    |                     |
+|                 |      |                     |
 
 #+BEGIN_SRC emacs-lisp
 
@@ -464,21 +506,6 @@ of subsequent calls to =req-package=
     (general-define-key mode-leader-key '(nil :which-key "mode-leader"))
     (general-define-key leader-key '(nil :which-key "leader"))
 
-    (bindings|define-prefix buffer "b" "buffers")
-    (bindings|define-prefix cursor "c" "cursor/mark")
-    (bindings|define-prefix elisp "e")
-    (bindings|define-prefix files "f")
-    (bindings|define-prefix emacs-d "f e" "emacs")
-    (bindings|define-prefix jump "j" "jumping around")
-    (bindings|define-prefix org "o")
-    (bindings|define-prefix package "P")
-    (bindings|define-prefix replace "r" "replace")
-    (bindings|define-prefix rectangle "R")
-    (bindings|define-prefix search "s" "searching")
-    (bindings|define-prefix toggle "T" "toggles")  
-    (bindings|define-prefix transpose "t" "transpose")
-    (bindings|define-prefix window "w" "windows")
-
     (general-create-definer pdc|with-leader
                             :prefix leader-key :keymaps 'global)
     (put 'pdc|with-leader 'lisp-indent-function 'defun)
@@ -488,10 +515,10 @@ of subsequent calls to =req-package=
     (put 'pdc|with-mode-leader 'lisp-indent-function 'defun)
 
     (pdc|with-leader
-      "h" (list help-map :which-key "help"))
+      "h" (list help-map :which-key "help")))
 
-    (defun pdc/mplist-get (plist prop)
-      "Get the values associated to PROP in PLIST, a modified plist.
+  (defun pdc/mplist-get (plist prop)
+    "Get the values associated to PROP in PLIST, a modified plist.
 
   A modified plist is one where keys are keywords and values are
   all non-keywords elements that follow it.
@@ -500,112 +527,127 @@ of subsequent calls to =req-package=
   and its values is returned.
 
   Currently this function infloops when the list is circular."
-      (let ((tail plist)
-            result)
-        (while (and (consp tail) (not (eq prop (car tail))))
-          (pop tail))
-        ;; pop the found keyword
-        (pop tail)
-        (while (and (consp tail) (not (keywordp (car tail))))
-          (push (pop tail) result))
-        (nreverse result)))
+    (let ((tail plist)
+          result)
+      (while (and (consp tail) (not (eq prop (car tail))))
+        (pop tail))
+      ;; pop the found keyword
+      (pop tail)
+      (while (and (consp tail) (not (keywordp (car tail))))
+        (push (pop tail) result))
+      (nreverse result)))
 
-    (defun bindings//expand-add-toggle (name props)
-      (let* ((wrapper-func (intern (format "toggle|%s"
-                                           (symbol-name name))))
-             (wrapper-func-on (intern (format "%s-on" wrapper-func)))
-             (wrapper-func-off (intern (format "%s-off" wrapper-func)))
-             (status (or (plist-get props :status) name))
-             ;; (condition (plist-get props :if))
-             (doc (plist-get props :documentation))
-             (on-body (or (pdc/mplist-get props :on)))
-             (off-body (pdc/mplist-get props :off))
-             (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
-                                    (listp ',status))
-                                ,status))
-             ;; If we're defined by `define-minor-mode this will toggle
-             ;; the mode
-             (toggle-body (or (pdc/mplist-get props :toggler)
-                              (if (or on-body off-body)
-                                  `(if ,status-eval ,off-body ,on-body)
-                                `(,name 'toggle))))
-             (keymaps (pdc/mplist-get props :keymaps))
-             (binding (plist-get props :toggle-keys)))
+  (defun bindings//expand-add-toggle (name props)
+    (let* ((wrapper-func (intern (format "toggle|%s"
+                                         (symbol-name name))))
+           (wrapper-func-on (intern (format "%s-on" wrapper-func)))
+           (wrapper-func-off (intern (format "%s-off" wrapper-func)))
+           (status (or (plist-get props :status) name))
+           ;; (condition (plist-get props :if))
+           (doc (plist-get props :documentation))
+           (on-body (or (pdc/mplist-get props :on)))
+           (off-body (pdc/mplist-get props :off))
+           (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
+                                  (listp ',status))
+                              ,status))
+           ;; If we're defined by `define-minor-mode this will toggle
+           ;; the mode
+           (toggle-body (or (pdc/mplist-get props :toggler)
+                            (if (or on-body off-body)
+                                `(if ,status-eval ,off-body ,on-body)
+                              `(,name 'toggle))))
+           (keymaps (pdc/mplist-get props :keymaps))
+           (binding (plist-get props :toggle-keys)))
+      `(progn
+         (defun ,wrapper-func ()
+           ,(format "Toggle %s on and off." (symbol-name name))
+           (interactive)
+           ,toggle-body
+           (message (let ((enabled ,status-eval))
+                      (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
+         ,@(when binding
+             `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
+                 ,binding '(,wrapper-func :which-key
+                                          ,(or doc (symbol-name name))))))
+         ,@(when status
+             `((defun ,wrapper-func-on ()
+                 ,(format "Toggle %s on" (symbol-name name))
+                 (interactive)
+                 (unless ,status-eval (,wrapper-func)))
+               (defun ,wrapper-func-off ()
+                 ,(format "Toggle %s off." (symbol-name name))
+                 (interactive)
+                 (when ,status-eval (,wrapper-func))))))))
+
+  (defmacro bindings|add-toggle (name &rest props)
+    (declare (indent 1))
+    (bindings//expand-add-toggle name props))
+
+  (defun pdc/shortdoc (fn)
+    (when-let ((doc (documentation fn)))
+      (substring doc 0 (string-match "\n" doc))))
+
+  (defun pdc//bind-hydra-spec (spec leader)
+    (pcase spec
+      (`(,key ,fn ,desc . ,(pred (lambda (props)
+                                   (plist-get props :exit))))
+       (let ((keys (concat leader key)))
+         (general-define-key :prefix leader-key
+                             keys (list fn :which-key desc))))
+      (`(,key ,_ ,desc . ,(and props
+                               (pred (lambda (props)
+                                       (not (plist-get props :exit))))))
+       (let ((hydra-fn (plist-get props :cmd-name))
+             (long-leader (concat leader-key " " leader)))
+         (general-define-key :prefix long-leader
+                             key (list hydra-fn :which-key desc))))))
+
+
+  (defmacro pdc|general-bind-hydra
+      (name leader &key no-cancel &allow-other-keys &rest specs)
+    "Bind a hydra in such a way that others can share the prefix."
+    (declare (indent defun))
+    (cl-flet
+        ((canonicalize-spec (spec)
+                            (let* ((key (car spec))
+                                   (action (cadr spec))
+                                   (tail (cddr spec))
+                                   (caption (cond ((stringp (car tail))
+                                                   (pop tail))
+                                                  ((symbolp action)
+                                                   (symbol-name action))
+                                                  ((functionp action)
+                                                   (pdc/shortdoc action))
+                                                  (t "??"))))
+                              `(,key ,action ,caption ,@tail
+                                     :cmd-name ,(intern
+                                                 (format "hydra-%s/%s" name action))))))
+      (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
+            (specs (-map #'canonicalize-spec specs)))
         `(progn
-           (defun ,wrapper-func ()
-             ,(format "Toggle %s on and off." (symbol-name name))
-             (interactive)
-             ,toggle-body
-             (message (let ((enabled ,status-eval))
-                        (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
-           ,@(when binding
-               `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
-                   ,binding '(,wrapper-func :which-key
-                                            ,(or doc (symbol-name name))))))
-           ,@(when status
-               `((defun ,wrapper-func-on ()
-                   ,(format "Toggle %s on" (symbol-name name))
-                   (interactive)
-                   (unless ,status-eval (,wrapper-func)))
-                 (defun ,wrapper-func-off ()
-                   ,(format "Toggle %s off." (symbol-name name))
-                   (interactive)
-                   (when ,status-eval (,wrapper-func))))))))
+           (defhydra ,hydra-key (nil nil :color red)
+             ,(symbol-name name)
+             ,@specs
+             ,@ (unless no-cancel '(("q" nil "cancel" :color blue))))
+           (--each ',specs
+             (pdc//bind-hydra-spec it ,leader))))))
 
-    (defmacro bindings|add-toggle (name &rest props)
-      (declare (indent 1))
-      (bindings//expand-add-toggle name props))
+  (put 'pdc|general-bind-hydra 'lisp-indent-function 2)
 
-    (defun pdc/shortdoc (fn)
-      (when-let ((doc (documentation fn)))
-        (substring doc 0 (string-match "\n" doc))))
+#+END_SRC
 
-    (defun pdc//bind-hydra-spec (spec leader)
-      (pcase spec
-        (`(,key ,fn ,desc . ,(pred (lambda (props)
-                                     (plist-get props :exit))))
-         (let ((keys (concat leader key)))
-           (general-define-key :prefix leader-key
-                               keys (list fn :which-key desc))))
-        (`(,key ,_ ,desc . ,(and props
-                                 (pred (lambda (props)
-                                         (not (plist-get props :exit))))))
-         (let ((hydra-fn (plist-get props :cmd-name))
-               (long-leader (concat leader-key " " leader)))
-           (general-define-key :prefix long-leader
-                               key (list hydra-fn :which-key desc))))))
+#+BEGIN_SRC emacs-lisp :var prefixes=prefixes
+  (dolist (it prefixes)
+    (pcase-let* ((`(,namestr ,keys ,desc) it)
+                 (name (when (not (string= "" namestr))
+                         (intern namestr)))
+                 (description (if (> (length desc) 0)
+                                  desc
+                                namestr)))
+      (if name
+          (bindings|define-prefix-1 name keys description)
+        (which-key-add-key-based-replacements keys description))))
 
-
-    (defmacro pdc|general-bind-hydra
-        (name leader &key no-cancel &allow-other-keys &rest specs)
-      "Bind a hydra in such a way that others can share the prefix."
-      (declare (indent defun))
-      (cl-flet
-          ((canonicalize-spec (spec)
-                              (let* ((key (car spec))
-                                     (action (cadr spec))
-                                     (tail (cddr spec))
-                                     (caption (cond ((stringp (car tail))
-                                                     (pop tail))
-                                                    ((symbolp action)
-                                                     (symbol-name action))
-                                                    ((functionp action)
-                                                     (pdc/shortdoc action))
-                                                    (t "??"))))
-                                `(,key ,action ,caption ,@tail
-                                       :cmd-name ,(intern
-                                                   (format "hydra-%s/%s" name action))))))
-        (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
-              (specs (-map #'canonicalize-spec specs)))
-          `(progn
-             (defhydra ,hydra-key (nil nil :color red)
-               ,(symbol-name name)
-               ,@specs
-               ,@ (unless no-cancel '(("q" nil "cancel" :color blue))))
-             (--each ',specs
-               (pdc//bind-hydra-spec it ,leader))))))
-
-    (put 'pdc|general-bind-hydra 'lisp-indent-function 2))
 #+END_SRC
 
 * Buffer and window handling
@@ -1123,7 +1165,7 @@ that's also used by swiper.
     (pdc|with-leader
      "g S" '(counsel-git-grep :which-key "git grep")
      "g f" '(counsel-git :which-key "find file in repo")
-     "e L" '(counsel-load-library :which-key "load library")
+     "Re L" '(counsel-load-library :which-key "load library")
      "o g" '(counsel-org-goto :which-key "goto")
      "o G" '(counsel-org-goto-all :which-key "goto-all"))
     :init
@@ -1189,7 +1231,7 @@ Toggles for stuff that's preloaded
   ;; Some lispy bindings
 
   (pdc|with-mode-leader :keymaps 'lisp-mode-shared-map
-                        :infix buffer-prefix-key
+                        :infix buffer-infix-key
                         "v" '(eval-buffer :which-key "eVal-buffer"))
 
   (defun pdc|apropos-function (pattern)
@@ -1290,8 +1332,8 @@ Toggles for stuff that's preloaded
      "f M"    '(pdc|move-buffer-file :which-key "move buffer file")
      "b M"    '(pdc|move-buffer-file :which-key "move buffer file")
 
-     "e i"    '(pdc|visit-ielm :which-key "ielm")
-     "e R"    '(pdc|eval-and-replace :which-key "eval and replace"))
+     "Re i"    '(pdc|visit-ielm :which-key "ielm")
+     "Re R"    '(pdc|eval-and-replace :which-key "eval and replace"))
     :init
     (global-set-key [remap move-beginning-of-line]
                     'pdc|smarter-move-beginning-of-line)
@@ -1357,7 +1399,7 @@ Toggles for stuff that's preloaded
         :which-key "+kill")
    "K" (list kmacro-keymap :which-key "kmacro")
 
-   "r q" 'query-replace-regexp
+   ;; "r q" 'query-replace-regexp
    "r R" 'replace-rectangle)
 #+END_SRC
 
@@ -1873,8 +1915,8 @@ Configure our base Lisp mode
 #+BEGIN_SRC emacs-lisp
   (req-package macrostep
     :general
-    (pdc|with-leader
-     "e m" 'macrostep-expand)
+    (pdc|with-leader :infix elisp-infix-key
+     "m" 'macrostep-expand)
     (pdc|with-mode-leader :keymaps 'emacs-lisp-mode-map
      "e" 'macrostep-expand))
 
