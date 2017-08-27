@@ -79,6 +79,11 @@ inhibit the startup screen
 (setq inhibit-startup-screen t)
 #+END_SRC
 
+I'm okay with narrowing
+#+BEGIN_SRC emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
 ** Support functions
 
 *** hook-into-modes
