@@ -466,22 +466,23 @@ of subsequent calls to =req-package=
 | name            | keys | description            |
 |-----------------+------+------------------------|
 |                 | C-t  | other-toggles          |
-| colors          | C    |                        |
-| package         | P    |                        |
+| color           | C    | colours                |
+| package         | P    | packages               |
 | elisp           | Re   |                        |
 | pcre            | Rp   |                        |
 |                 | T    | UI toggles/themes      |
-| applications    | a    |                        |
+| applications    | a    | apps                   |
 | shell           | as   | shells                 |
 | buffer          | b    | buffers                |
-| compile         | c    | compile/comments       |
-| files           | f    |                        |
+|                 | c    | compile/comments       |
+| file            | f    | files                  |
 | file-convert    | fC   | files/convert          |
 | emacs-d         | fe   | emacs                  |
 | variable        | fv   | variables              |
 | git             | g    | git/version-control    |
 | help            | h    |                        |
-| help-describe   | hd   |                        |
+|                 | hA   | apropos                |
+| help-describe   | hd   | describe               |
 | insertion       | i    |                        |
 | jump            | j    | jump/join/split        |
 | lisp            | k    |                        |
@@ -1167,7 +1168,7 @@ to display a =*blank*= buffer.
       ("d" mc/mark-all-symbols-like-this-in-defun :color blue)
       ("r" mc/reverse-regions)
       ("s" mc/sort-regions))
-    (pdc|with-leader :infix cursor-infix-key
+    (pdc|with-leader :infix (:cursor)
      "C-a" 'mc/edit-beginnings-of-lines
      "A" 'mc/mark-all-like-this
      "a" 'mc/mark-all-dwim
@@ -1209,11 +1210,11 @@ to display a =*blank*= buffer.
     (interactive "P")
     (counsel-find-file-as-root (pdc//read-file-name initial-input)))
   
-  (pdc|with-leader :infix emacs-d-infix-key
+  (pdc|with-leader :infix (:emacs-d)
     "c" '(pdc/find-config :which-key "config.org")
     "i" '(pdc/find-user-init-file :which-key "init.el"))
 
-  (pdc|with-leader :prefix files-leader-key
+  (pdc|with-leader :prefix (:files)
     "c" '(pdc/copy-file :which-key "copy")
     "g" 'rgrep
     "l" 'find-file-literally
@@ -1245,7 +1246,7 @@ A better incremental search
       :pin "melpa"
       :commands (swiper swiper-all)
       :general
-      (pdc|with-leader :infix search-infix-key
+      (pdc|with-leader :infix (:search)
        "s" 'swiper
        "S" 'swiper-all)
       :config
@@ -1305,14 +1306,13 @@ that's also used by swiper.
     :demand t
     :diminish " ⓒ"
     :general
-    (:prefix files-leader-key
-     "f" '(counsel-find-file :which-key "find"))
     (pdc|with-leader
-     "g S" '(counsel-git-grep :which-key "git grep")
-     "g f" '(counsel-git :which-key "find file in repo")
-     "Re L" '(counsel-load-library :which-key "load library")
-     "o g" '(counsel-org-goto :which-key "goto")
-     "o G" '(counsel-org-goto-all :which-key "goto-all"))
+      (:files "f") '(counsel-find-file :which-key "find") 
+      (:git "S") '(counsel-git-grep :which-key "git grep")
+      (:git "f") '(counsel-git :which-key "find file in repo")
+      (:elisp "L") '(counsel-load-library :which-key "load library")
+      (:org "g") '(counsel-org-goto :which-key "goto")
+      (:org "G") '(counsel-org-goto-all :which-key "goto-all"))
     :init
     (bindings|add-toggle counsel-mode :toggle-keys "Tc")
     :config
@@ -1352,8 +1352,7 @@ Toggles for stuff that's preloaded
   (bindings|define-prefix opts "O" "Options")
 
   ;;
-  (general-define-key :prefix window-leader-key
-                      "/" 'pdc/toggle-window-split)
+  (pdc|with-leader (:window "/") 'pdc/toggle-window-split)
 
   (general-define-key
    "C-x C-m" 'pdc/execute-extended-command-short)
@@ -1366,17 +1365,16 @@ Toggles for stuff that's preloaded
   ;; for instance
   (req-package pdc-spruce-up-buffer
     :general
-    (:prefix buffer-leader-key
-             "T" 'pdc|spruce-up-buffer))
+    ((bindings//leader :buffer "T") 'pdc|spruce-up-buffer))
 
-  (general-define-key :prefix buffer-leader-key
-                      "y" 'bury-buffer
-                      "r" 'revert-buffer)
+  (pdc|with-leader :infix (:buffer)
+    "y" 'bury-buffer
+    "r" 'revert-buffer)
 
   ;; Some lispy bindings
 
   (pdc|with-mode-leader :keymaps 'lisp-mode-shared-map
-                        :infix buffer-infix-key
+                        :infix "b"
                         "v" '(eval-buffer :which-key "eVal-buffer"))
 
   (defun pdc|apropos-function (pattern)
@@ -1386,7 +1384,7 @@ Toggles for stuff that's preloaded
 
 
   ;;; An apropos leader
-  (pdc|with-leader :infix "h A"
+  (pdc|with-leader :infix (:apropos)
    ""    '(nil :which-key "apropos")
    "A"   'apropos
    "c"   'apropos-command
@@ -2060,7 +2058,7 @@ Configure our base Lisp mode
 #+BEGIN_SRC emacs-lisp
   (req-package macrostep
     :general
-    (pdc|with-leader :infix elisp-infix-key
+    (pdc|with-leader :infix (:elisp)
      "m" 'macrostep-expand)
     (pdc|with-mode-leader :keymaps 'emacs-lisp-mode-map
      "e" 'macrostep-expand))
