@@ -2067,6 +2067,85 @@ Configure our base Lisp mode
 
 #+END_SRC
 
+* Diary/calendar
+
+** Relative dates
+Folk festivals and the like are often scheduled around floating dates,
+e.g. Chippenham runs from the Friday before the last Monday in May
+every year. Specifying the end date with a timestamp's easy (though it
+doesn't display terriby well) but specifying the start date isn't
+currently supported by =diary-lib.el=. So we'll lift some ideas from
+diary-remind and see where that gets us.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar date)
+  (defvar entry)
+
+  (with-eval-after-load 'calendar
+    (calendar-set-date-style 'iso))
+
+
+  (cl-defun pdc//diary-search-from (start-date needle-sexp &key deltas limit direction inclusive)
+    (let* ((direction (cond (direction (/ direction (abs direction)))
+                            (limit (/ limit (abs limit)))
+                            (t +1)))
+           (limit (or limit (* direction 6)))
+           (deltas (or deltas
+                       (number-sequence (if inclusive 0 direction) limit direction))))
+    
+      (unless (= (* direction limit)
+                 (abs limit))
+        (error ":limit and :direction must have the same sign"))
+      (cl-flet ((start-date+ (days)
+                             (calendar-gregorian-from-absolute
+                              (+ (calendar-absolute-from-gregorian start-date) days))))
+        (cl-loop for delta in deltas
+                 for date = (start-date+ delta)
+                 when (eval needle-sexp)
+                 return date))))
+
+
+
+  (cl-defun pdc/diary-relative (sexp count &key mark interval dayname)
+    (cl-flet ((date+ (days)
+                     (calendar-gregorian-from-absolute
+                      (+ (calendar-absolute-from-gregorian date) days))))
+      (when-let
+          ((date (cond ((and interval dayname) nil)
+                       (dayname
+                        (when (= dayname (calendar-day-of-week date))
+                          (let* ((direction (- (/ count (abs count))))
+                                 (weeks (- (+ count direction)))
+                                 (start-date (date+ (* 7 weeks))))
+                            (pdc//diary-search-from start-date sexp :direction direction))))
+                       (t (date+ (* count (or interval 1)))))))
+        (when-let ((diary-entry (eval sexp)))
+          (cons mark (if (consp diary-entry)
+                             (cdr diary-entry)
+                           diary-entry))))))
+
+  (with-eval-after-load 'ert 
+    (require 'diary-lib)
+    (ert-deftest pdc//diary-stuff ()
+      (let ((entry "Diary search test")
+            (date '(8 25 2017))
+            (earlier-date '(8 18 2017))
+            (august-bank-holiday '(diary-float 8 1 -1)))
+
+
+        (should (org-date 2017 8 25))
+        (should (equal '(8 28 2017)
+                       (pdc//diary-search-from date august-bank-holiday)))
+        (should (equal date
+                       (pdc//diary-search-from date '(org-date 2017 8 25) :inclusive t)))
+        (should-not (pdc//diary-search-from date '(org-date 2017 8 25)))
+
+        (should-error (pdc//diary-search-from date august-bank-holiday :direction -1 :limit 22))
+
+        (should (pdc/diary-relative august-bank-holiday -1 :dayname 5)))))
+
+#+END_SRC
+
 
 * Org-mode
 Yeah, yeah, org-mode. Everyone raves.
@@ -2202,12 +2281,6 @@ Load org and set up bindings under our leader keys. Includes some utility comman
           ))
 #+END_SRC
 
-*** Agenda
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files `(,org-directory "~/Documents/journal"))
-#+END_SRC
-
-
 
 *** Close the req-package
 
@@ -2226,3 +2299,11 @@ It's ugly lisp, but it keeps paredit relatively happy with our fragments.
   (req-package autoinsert)
 #+END_SRC
 
+** Org-agenda
+#+BEGIN_SRC emacs-lisp
+(req-package diary-lib)
+(req-package org-agenda
+  :requires (org diary-lib)
+  :init
+  (setq org-agenda-files `(,org-directory "~/Documents/journal")))
+#+END_SRC
