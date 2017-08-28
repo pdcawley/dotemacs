@@ -520,7 +520,7 @@ of subsequent calls to =req-package=
 |                 | xw   | words                  |
 |                 | z    | zoom                   |
 
-*** CURRENT Support prefix declaration and access
+*** Support prefix declaration and access
 
 We used to use a bunch of poorly namespaced variables to track our
 leader key prefix declarations, but this risks name clashes and has
@@ -630,6 +630,11 @@ rewrites lists of the (pcase) form
                                (list (bindings//list->keys key) value))))))
         `(pdc/with-leader ,@parsed-args)))
 #+END_SRC
+
+***** TODO Roadmap [0/3]
+- [ ] Similar support for mode leader prefixes
+- [ ] Sweetener for =general-define-key=
+- [ ] Better toggles
 
 *** Load general keybinding support
 
@@ -789,10 +794,7 @@ handle the =:general= clauses we use for our keybindings.
                  (description (if (> (length desc) 0)
                                   desc
                                 namestr)))
-      (bindings//declare-prefix keys (s-join "/" (list namestr desc)))
-      (if name
-          (bindings|define-prefix-1 name keys description)
-        (which-key-add-key-based-replacements keys description))))
+      (bindings//declare-prefix keys (s-join "/" (list namestr desc)))))
 
 #+END_SRC
 
@@ -1159,7 +1161,7 @@ to display a =*blank*= buffer.
     :general
     ("s-<mouse-1>" 'mc/add-cursor-on-click)
     :config
-    (pdc|general-bind-hydra mc cursor-infix-key
+    (pdc|general-bind-hydra mc (bindings//prefix :cursor)
       ("<" mc/mark-previous-like-this)
       (">" mc/mark-next-like-this )
       ("M-<" mc/unmark-previous-like-this)
@@ -1510,7 +1512,7 @@ Toggles for stuff that's preloaded
 
   ;;; Jumps
   (pdc|with-leader
-   :infix jump-infix-key
+   :infix (:jump)
    "l" 'pdc|goto-line
    "$" 'move-end-of-line
    ">" 'end-of-buffer
@@ -1520,7 +1522,7 @@ Toggles for stuff that's preloaded
 
   ;;; File stuff
   (pdc|with-leader
-   :infix buffer-infix-key
+   :infix (:buffer)
    "R" 'recompile
    "S" 'pdc|spruce-up-buffer)
 
