@@ -318,7 +318,10 @@ Turn off the toolbar
 Zenburn, it's the only way to be sure!
 
 #+BEGIN_SRC emacs-lisp
-(load-theme 'zenburn t)
+  (use-package zenburn-theme
+    :ensure t
+    :init
+    (load-theme 'zenburn t))
 #+END_SRC
 
 ** Only one window on startup
