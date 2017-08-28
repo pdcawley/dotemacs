@@ -2163,7 +2163,13 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     (org-reload))
 
   (setq org-directory (expand-file-name "~/Dropbox"))
+
+  :config
+  (add-to-list 'Info-directory-list
+               (expand-file-name "../doc" (org-find-library-dir "org")))
+
 #+END_SRC
+
 
 *** Babel
 
