@@ -392,7 +392,7 @@ which-key:
   (req-package which-key
     :diminish " Ⓚ"
     :init
-    (bindings|add-toggle which-key-mode :toggle"TK")
+    (bindings|add-toggle which-key-mode :toggle-keys "TK")
     :config
     (let ((new-descriptions
            '(("select-window-\\"0-9 "\\)" . "window \\1")
