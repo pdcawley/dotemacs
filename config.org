@@ -2082,11 +2082,10 @@ Configure our base Lisp mode
           ("(" . pdc/paredit-open-parenthesis)
           (";" . pdc/paredit-semicolon)
           ("M-w" . pdc/paredit-kill-ring-save)
-          (")" . paredit-close-round-and-newline)
+          (")" . pdc-paredit/close-round-and-newline)
           ("M-)" . paredit-close-round)
           ("M-k" . paredit-raise-sexp)
-          ("M-I" . paredit-splice-sexp)
-          )
+          ("M-I" . paredit-splice-sexp))
     :general
     (pdc|with-mode-leader :keymaps 'paredit-mode-map
      "d" 'paredit-forward-down
@@ -2193,6 +2192,16 @@ Configure our base Lisp mode
              (insert ";; "))
             (t (paredit-semicolon n))))
 
+    (defvar pdc-paredit--post-close-keymap (make-sparse-keymap))
+    (general-define-key :keymaps '(pdc-paredit--post-close-keymap)
+                        "SPC" (lambda () (interactive) (just-one-space -1)))
+
+    (defun pdc-paredit/close-round-and-newline ()
+      (interactive)
+      (paredit-move-past-close-and-newline ")")
+      (set-transient-map pdc-paredit--post-close-keymap))
+  
+  
     (unbind-key "M-r" paredit-mode-map)
     (unbind-key "M-s" paredit-mode-map)
 
@@ -2340,7 +2349,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   (use-package org
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-  :requires counsel
+  :defer nil
   :diminish org-indent
   :general
   (pdc|with-leader :infix "o"
