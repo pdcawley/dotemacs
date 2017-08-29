@@ -690,6 +690,10 @@ handle the =:general= clauses we use for our keybindings.
         (push (pop tail) result))
       (nreverse result)))
 
+  (defvar bindings-toggles '()
+    "List of all declared toggles.
+  The strucutre of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
+
   (defun bindings//expand-add-toggle (name props)
     (let* ((wrapper-func (intern (format "toggle|%s"
                                          (symbol-name name))))
@@ -712,6 +716,13 @@ handle the =:general= clauses we use for our keybindings.
            (keymaps (pdc/mplist-get props :keymaps))
            (binding (plist-get props :toggle-keys)))
       `(progn
+
+         (push (append '(,name)
+                       '(:function ,wrapper-func
+                                   :predicate ,wrapper-func-status)
+                       ',props)
+               bindings-toggles)
+
          (defun ,wrapper-func ()
            ,(format "Toggle %s on and off." (symbol-name name))
            (interactive)
