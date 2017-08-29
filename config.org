@@ -358,6 +358,13 @@ Zenburn, it's the only way to be sure!
   (set-face-attribute 'default (selected-frame) :height 100)
   )
 #+END_SRC
+** Hightlight TODO etc in comments and strings
+#+BEGIN_SRC emacs-lisp
+  (req-package hl-todo
+    :init
+    (hook-into-modes 'hl-todo-mode '(text-mode-hook prog-mode-hook)))
+
+#+END_SRC
 
 
 * UTF-8 and codings
