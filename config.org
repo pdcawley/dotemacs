@@ -729,10 +729,6 @@ handle the =:general= clauses we use for our keybindings.
            ,toggle-body
            (message (let ((enabled ,status-eval))
                       (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
-         ,@(when binding
-             `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
-                 ,binding '(,wrapper-func :which-key
-                                          ,(or doc (symbol-name name))))))
          ,@(when status
              `((defun ,wrapper-func-on ()
                  ,(format "Toggle %s on" (symbol-name name))
@@ -742,6 +738,11 @@ handle the =:general= clauses we use for our keybindings.
                  ,(format "Toggle %s off." (symbol-name name))
                  (interactive)
                  (when ,status-eval (,wrapper-func))))))))
+         ,@(when binding
+             `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
+                 ,binding '(,wrapper-func :which-key
+                                          ,(or doc (symbol-name name)))))))))
+
 
   (defmacro bindings|add-toggle (name &rest props)
     (declare (indent 1))
