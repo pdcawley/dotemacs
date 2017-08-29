@@ -871,10 +871,29 @@ handle the =:general= clauses we use for our keybindings.
     "P" 'proced
     "u" 'undo-tree-visualize)
 
-  (pdc|with-leader :infix (:buffers)
-    "n" 'next-buffer
-    "p" 'previous-buffer
-    "w" 'read-only-mode)
+  (use-package pdc-buffer-helpers
+    :defer nil
+    :general
+    (pdc|with-leader "TAB" 'pdc/alternate-buffer)
+    (pdc|with-leader :infix (:buffers)
+      "C-d" 'pdc/kill-matching-buffers-rudely
+      "d" 'pdc/kill-this-buffer
+      "e" 'pdc/safe-erase-buffer
+      "m" 'pdc/kill-other-buffers
+      "n" 'next-buffer
+      "N" 'pdc/new-empty-buffer
+      "P" 'pdc/copy-clipboard-to-whole-buffer
+      "p" 'previous-buffer
+      "R" 'pdc/safe-revert-buffer
+      "s" 'pdc/switch-to-scratch-buffer
+      "w" 'read-only-mode
+      "Y" 'pdc/copy-whole-buffer-to-clipboard)
+    :config
+    (cl-loop for n from 1 to 9
+             do (pdc|with-leader :infix (:buffers)
+                  (format "%i" n)
+                  (intern (format "buffer-to-window-%i" n)))))
+
 #+END_SRC
 
 
