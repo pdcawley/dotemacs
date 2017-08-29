@@ -721,7 +721,7 @@ handle the =:general= clauses we use for our keybindings.
            (doc (plist-get props :documentation))
            (on-body (if mode `((,mode)) (pdc/mplist-get props :on)))
            (off-body (if mode `((,mode -1)) (pdc/mplist-get props :off)))
-           ;(prefix-arg-var (plist-get props :prefix))
+           (prefix-arg-var (plist-get props :prefix))
            (on-message (plist-get props :on-message))
            (condition (plist-get props :if))
 
@@ -745,9 +745,9 @@ handle the =:general= clauses we use for our keybindings.
                bindings-toggles)
 
          ;; toggle function
-         (defun ,wrapper-func ()
+         (defun ,wrapper-func ,(if prefix-arg-var (list prefix-arg-var) ())
            ,(format "Toggle %s on and off." (symbol-name name))
-           (interactive)
+           (interactive ,@(when prefix-arg-var (list prefix-arg-var)))
            (if (or (null ',condition)
                    (and (or (and (symbolp ',condition) (boundp ',condition))
                             (listp ',condition))
@@ -757,7 +757,7 @@ handle the =:general= clauses we use for our keybindings.
                  ,(if on-message
                       `(message (if ,status-eval on-message (format "%s disabled." ,(symbol-name name))))
                     `(message (let ((enabled ,status-eval))
-                               (format "%s %s." (quote ,name) (if ,status-eval "enabled" "disabled"))))))
+                                (format "%s %s." (quote ,name) (if ,status-eval "enabled" "disabled"))))))
              (message "This toggle is not supported")))
 
          (defun ,wrapper-func-status ()
