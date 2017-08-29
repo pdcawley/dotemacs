@@ -507,8 +507,7 @@ of subsequent calls to =req-package=
 | project         | p    | projects               |
 |                 | p$   | projects/shell         |
 | quit            | q    |                        |
-| replace         | r    |                        |
-|                 | r    | registers/rings/resume |
+| replace         | r    | registers/rings/resume |
 | search          | s    | search/symbol          |
 | ag              | sa   |                        |
 | grep            | sg   |                        |
