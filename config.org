@@ -910,30 +910,32 @@ Bouncing around windows using their numbers is fast and
 straightforward.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package window-numbering
+  (req-package winum
     :requires dash
     :config
-    ;; Because we don't want deferred loading here, we move the key
-    ;; bindings down into config
-    (pdc|with-leader :keymaps 'window-numbering-keymap
-     "w1" 'select-window-1
-     "w2" 'select-window-2
-     "w3" 'select-window-3
-     "w4" 'select-window-4
-     "w5" 'select-window-5
-     "w6" 'select-window-6
-     "w7" 'select-window-7
-     "w8" 'select-window-8
-
-     "w0" 'bm-next
-     "w9" 'bm-previous)
+    (setq winum-auto-assign-0-to-minibuffer t
+          winum-auto-setup-mode-line nil
+          winum-ignored-buffers '(" *which-key*"))
+    (pdc|with-leader
+      "`" 'winum-select-window-by-number
+      "0" 'winum-select-window-0-or-10
+      "1" 'winum-select-window-1
+      "2" 'winum-select-window-2
+      "3" 'winum-select-window-3
+      "4" 'winum-select-window-4
+      "5" 'winum-select-window-5
+      "6" 'winum-select-window-6
+      "7" 'winum-select-window-7
+      "8" 'winum-select-window-8
+      "9" 'winum-select-window-9)
+  
     ;; (defun window-numbering-install-mode-line (&optional position)
     ;;   "Do nothing, the desplay will be handled by spaceline.")
-    (--each (number-sequence 0 9)
-      (general-define-key :keymaps 'window-numbering-keymap
-       (format "M-%s" it) nil))
+    (dolist (it (number-sequence 0 9))
+      (general-define-key :keymaps 'winum-keymap
+                          (format "M-%s" it) nil))
 
-    (window-numbering-mode 1))
+    (winum-mode t))
 #+END_SRC
 
 ** uniquify
