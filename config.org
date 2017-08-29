@@ -1,4 +1,4 @@
- # -*- mode: org; coding: utf-8 -*-
+# -*- mode: org; coding: utf-8 -*-
 #+TODO: ACTIVE | DISABLED
 #+TODO: TODO CURRENT | DONE
 #+STARTUP: indent
