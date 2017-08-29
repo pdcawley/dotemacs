@@ -1,0 +1,9 @@
+# key: guest
+# name: guest
+# --
+** ${1:names}
+  - Phone number: $2
+  - Attending: ${3:maybe$(yas-choose-value '("yes" "no" "no-reply" "maybe"))}
+  - Number: ${4:2}
+  - Meals: ${5:$4}
+  - Veggie options: ${6:0}

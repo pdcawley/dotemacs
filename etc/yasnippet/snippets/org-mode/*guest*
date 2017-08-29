@@ -1,0 +1,12 @@
+# key: guest
+# name: guest
+# --
+** ${1:names}
+  :PROPERTIES:
+  :Attending: ${3:maybe$(yas-choose-value '("yes" "no" "no-reply" "maybe"))}
+  :CONTACTED: `(with-temp-buffer (org-insert-time-stamp (current-time)))`
+  :END:
+  - Phone number: $2
+  - Number: ${4:2}
+  - Meals: ${5:$4}
+  - Veggie options: ${6:0}
