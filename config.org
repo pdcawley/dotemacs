@@ -268,12 +268,14 @@ Turn off the toolbar
                           :inherit 'font-lock-comment-face))
     (pdc/customize-powerline-faces))
 
-
   (req-package spaceline
     :require which-func powerline
+    :commands spaceline-compile
     :init
     (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
           powerline-height 24)
+    (spaceline-compile)
+  
     :config
     (require 'spaceline-config)
 
@@ -285,6 +287,9 @@ Turn off the toolbar
         (powerline-reset)))
 
     (setq spaceline-org-clock-p nil)
+
+    (setq spaceline-window-numbers-unicode t
+          spaceline-workspace-numbers-unicode t)
 
     (defun pdc//prepare-diminish ()
       (when spaceline-minor-modes-p
