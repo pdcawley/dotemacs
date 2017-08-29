@@ -1345,7 +1345,50 @@ just use the ivy supplied method.
                 :require-match 'confirm-after-completion
                 :history 'file-name-history
                 :keymap counsel-find-file-map
-                :caller 'counsel-find-file)))
+                :caller 'counsel-find-file))
+
+    (defun ivy-pdc-help//toggle-candidates ()
+      "Return the sorted cnadidates for toggle source."
+      (let (result)
+        (dolist (toggle bindings-toggles)
+          (let* ((toggle-symbol (symbol-name (car toggle)))
+                 (toggle-status (funcall (plist-get (cdr toggle) :predicate)))
+                 (toggle-name (capitalize (replace-regexp-in-string "-" " " toggle-symbol)))
+                 (toggle-doc (format "(%s) %s: %s"
+                                     (if toggle-status "+" "-")
+                                     toggle-name
+                                     (propertize
+                                      (or (plist-get (cdr toggle) :documentation) "")
+                                      'face 'font-lock-doc-face))))
+            (when (plist-member (cdr toggle) :toggle-keys)
+              (let* ((key (plist-get (cdr toggle) :toggle-keys))
+                     (key (key-description
+                           (kbd (if (listp key)
+                                    (apply 'bindings//leader key)
+                                  (concat leader-key " " key))))))
+                (setq toggle-doc
+                      (format "%s (%s)"
+                              toggle-doc
+                              (propertize key 'face 'font-lock-keyword-face)))))
+            (if (plist-member (cdr toggle) :documentation)
+                (push `(,toggle-doc . ,toggle-symbol) result)
+              (push `(,toggle-name . ,toggle-symbol) result))))
+        (setq result (cl-sort result 'string< :key 'car))
+        result))
+
+    (defun ivy-pdc-help//toggle (candidate)
+      "Toggle candidate."
+      (when-let ((toggle (assq (intern (cdr candidate)) bindings-toggles)))
+        (funcall (plist-get (cdr toggle) :function))))
+
+    (defun ivy-pdc-help/toggles ()
+      (interactive)
+      (ivy-read "Toggles: "
+                (ivy-pdc-help//toggle-candidates)
+                :action 'ivy-pdc-help//toggle))
+  
+    )
+
 #+END_SRC
 
 ** Counsel
