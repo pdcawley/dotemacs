@@ -754,8 +754,10 @@ handle the =:general= clauses we use for our keybindings.
                         ,condition))
                (progn
                  ,toggle-body
-                 (message (let ((enabled ,status-eval))
-                            (format "%s %s." (quote ,name) (if enabled "enabled" "disabled")))))
+                 ,(if on-message
+                      `(message (if ,status-eval on-message (format "%s disabled." ,(symbol-name name))))
+                    `(message (let ((enabled ,status-eval))
+                               (format "%s %s." (quote ,name) (if ,status-eval "enabled" "disabled"))))))
              (message "This toggle is not supported")))
 
          (defun ,wrapper-func-status ()
