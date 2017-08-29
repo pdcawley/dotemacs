@@ -365,6 +365,16 @@ Zenburn, it's the only way to be sure!
     (hook-into-modes 'hl-todo-mode '(text-mode-hook prog-mode-hook)))
 
 #+END_SRC
+** Display battery info in modeline
+#+BEGIN_SRC emacs-lisp
+  (req-package fancy-battery
+    :init
+    (bindings|add-toggle mode-line-battery
+      :mode fancy-battery-mode
+      :documentation "Display battery info in mode-line"
+      :toggle-keys (:modeline "b")))
+
+#+END_SRC
 
 
 * UTF-8 and codings
