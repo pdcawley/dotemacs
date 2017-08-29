@@ -815,6 +815,35 @@ handle the =:general= clauses we use for our keybindings.
 
 #+END_SRC
 
+*** Initial bindings
+
+**** Universal argument
+#+BEGIN_SRC emacs-lisp
+  (pdc|with-leader "u" 'universal-argument)
+
+  (define-key universal-argument-map
+    (kbd (concat leader-key " u"))
+    'universal-argument-more)
+
+#+END_SRC
+
+**** More
+#+BEGIN_SRC emacs-lisp
+  (pdc|with-leader "!" 'shell-command)
+
+  (pdc|with-leader :infix (:apps)
+    "c" 'calc-dispatch
+    "p" 'list-processes
+    "P" 'proced
+    "u" 'undo-tree-visualize)
+
+  (pdc|with-leader :infix (:buffers)
+    "n" 'next-buffer
+    "p" 'previous-buffer
+    "w" 'read-only-mode)
+#+END_SRC
+
+
 * Buffer and window handling
 ** ibuffer
 #+BEGIN_SRC emacs-lisp
