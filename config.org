@@ -1533,8 +1533,8 @@ Toggles for stuff that's preloaded
   ;; Some lispy bindings
 
   (pdc|with-mode-leader :keymaps 'lisp-mode-shared-map
-                        :infix "b"
-                        "v" '(eval-buffer :which-key "eVal-buffer"))
+    :infix "b"
+    "v" '(eval-buffer :which-key "eVal-buffer"))
 
   (defun pdc|apropos-function (pattern)
     (interactive (list (apropos-read-pattern
@@ -1544,18 +1544,18 @@ Toggles for stuff that's preloaded
 
   ;;; An apropos leader
   (pdc|with-leader :infix (:apropos)
-   ""    '(nil :which-key "apropos")
-   "A"   'apropos
-   "c"   'apropos-command
-   "d"   'apropos-documentation
-   "f"   'pdc|apropos-function
-   "l"   'apropos-library
-   "m"   'apropos-mode
-   "o"   'apropos-user-option
-   "v"   'apropos-variable
-   "M-v" 'apropos-local-variable
-   "V"   'apropos-value
-   "M-V" 'apropos-local-value)
+    ""    '(nil :which-key "apropos")
+    "A"   'apropos
+    "c"   'apropos-command
+    "d"   'apropos-documentation
+    "f"   'pdc|apropos-function
+    "l"   'apropos-library
+    "m"   'apropos-mode
+    "o"   'apropos-user-option
+    "v"   'apropos-variable
+    "M-v" 'apropos-local-variable
+    "V"   'apropos-value
+    "M-V" 'apropos-local-value)
 
   ;;; A describe-foo leader
   ;; First unbind a bunch of non-menu bindings
@@ -1570,22 +1570,22 @@ Toggles for stuff that's preloaded
     (global-unset-key (kbd (format "%c %s" help-char it))))
 
   (pdc|with-leader :infix "h d"
-   ""     '(nil :which-key "describe-*")
-   "b" 'describe-bindings
-   "B" 'describe-personal-bindings
-   "c" 'describe-key-briefly
-   "C" 'describe-coding-system "f" 'describe-function
-   "F" 'describe-face
-   "I" 'describe-input-mode
-   "k" 'describe-key
-   "o" 'describe-symbol
-   "L" 'describe-language-environment
-   "m" 'describe-mode
-   "P" 'describe-package
-   "s" 'describe-syntax
-   "t" 'describe-theme
-   "v" 'describe-variable
-   "C-c" 'describe-current-coding-system)
+    ""     '(nil :which-key "describe-*")
+    "b" 'describe-bindings
+    "B" 'describe-personal-bindings
+    "c" 'describe-key-briefly
+    "C" 'describe-coding-system "f" 'describe-function
+    "F" 'describe-face
+    "I" 'describe-input-mode
+    "k" 'describe-key
+    "o" 'describe-symbol
+    "L" 'describe-language-environment
+    "m" 'describe-mode
+    "P" 'describe-package
+    "s" 'describe-syntax
+    "t" 'describe-theme
+    "v" 'describe-variable
+    "C-c" 'describe-current-coding-system)
 
   (defun info-elisp-manual ()
     "Display the Elisp manual in Info mode."
@@ -1593,13 +1593,13 @@ Toggles for stuff that's preloaded
     (info "elisp"))
 
   (pdc|with-leader :infix "h i"
-   "" '(nil :which-key "Info")
-   "e" 'info-elisp-manual                
-   "i" 'info
-   "F" 'Info-goto-emacs-command-node
-   "K" 'Info-goto-emacs-key-command-node
-   "r" 'info-emacs-manual
-   "S" 'info-lookup-symbol)
+    "" '(nil :which-key "Info")
+    "e" 'info-elisp-manual                
+    "i" 'info
+    "F" 'Info-goto-emacs-command-node
+    "K" 'Info-goto-emacs-key-command-node
+    "r" 'info-emacs-manual
+    "S" 'info-lookup-symbol)
 
   ;; A vi-like %
 
@@ -1619,23 +1619,23 @@ Toggles for stuff that's preloaded
     pdc|smarter-move-beginning-of-line
     :general
     (pdc|with-leader
-     "|"      '(pdc|align :which-key "align")
-     "\\"     '(pdc|align :which-key "align")
+      "|"      '(pdc|align :which-key "align")
+      "\\"     '(pdc|align :which-key "align")
 
-     "C-M-|"  '(pdc|align-last-sexp :which-key "align last sexp")
-     "C-M-\\" '(pdc|align-last-sexp :which-key "align last sexp")
+      "C-M-|"  '(pdc|align-last-sexp :which-key "align last sexp")
+      "C-M-\\" '(pdc|align-last-sexp :which-key "align last sexp")
 
-     "'"      '(pdc|quote-behind :which-key "' behind")
-     "\""     '(pdc|doublequote-behind :which-key "\" behind")
+      "'"      '(pdc|quote-behind :which-key "' behind")
+      "\""     '(pdc|doublequote-behind :which-key "\" behind")
 
-     ;; operate on file and buffer, so put beneath both leaders
-     "f R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer") 
-     "b R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")   
-     "f M"    '(pdc|move-buffer-file :which-key "move buffer file")
-     "b M"    '(pdc|move-buffer-file :which-key "move buffer file")
+      ;; operate on file and buffer, so put beneath both leaders
+      "f R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer") 
+      "b R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")   
+      "f M"    '(pdc|move-buffer-file :which-key "move buffer file")
+      "b M"    '(pdc|move-buffer-file :which-key "move buffer file")
 
-     "Re i"    '(pdc|visit-ielm :which-key "ielm")
-     "Re R"    '(pdc|eval-and-replace :which-key "eval and replace"))
+      "Re i"    '(pdc|visit-ielm :which-key "ielm")
+      "Re R"    '(pdc|eval-and-replace :which-key "eval and replace"))
     :init
     (global-set-key [remap move-beginning-of-line]
                     'pdc|smarter-move-beginning-of-line)
@@ -1664,45 +1664,45 @@ Toggles for stuff that's preloaded
 
 
   (pdc|with-leader
-   "P l" 'package-list-packages
-   "T I" 'toggle-input-method)
+    "P l" 'package-list-packages
+    "T I" 'toggle-input-method)
 
   ;;; Jumps
   (pdc|with-leader
-   :infix (:jump)
-   "l" 'pdc|goto-line
-   "$" 'move-end-of-line
-   ">" 'end-of-buffer
-   "<" 'beginning-of-buffer
-   "^" 'pdc|smarter-move-beginning-of-line
-   "a" 'back-to-indentation)
+    :infix (:jump)
+    "l" 'pdc|goto-line
+    "$" 'move-end-of-line
+    ">" 'end-of-buffer
+    "<" 'beginning-of-buffer
+    "^" 'pdc|smarter-move-beginning-of-line
+    "a" 'back-to-indentation)
 
   ;;; File stuff
   (pdc|with-leader
-   :infix (:buffer)
-   "R" 'recompile
-   "S" 'pdc|spruce-up-buffer)
+    :infix (:buffer)
+    "R" 'recompile
+    "S" 'pdc|spruce-up-buffer)
 
   (pdc|with-leader
-   "k" (list
-        (defhydra hydra-kill (nil nil :color red)
-          "Kill"
-          (";" kill-comment "comment")
-          ("<tab>" delete-indentation "indentation")
-          ("L" kill-whole-line "whole line")
-          ("R" kill-rectangle "rectangle" :color blue)
-          ("S" kill-sentence "sentence")
-          ("l" kill-line "line")
-          ("p" kill-paragraph "paragraph")
-          ("r" kill-region "region")
-          ("s" kill-sexp "sexp")
-          ("v" kill-visual-line "visual line")
-          ("w" kill-word "word"))
-        :which-key "+kill")
-   "K" (list kmacro-keymap :which-key "kmacro")
-
-   ;; "r q" 'query-replace-regexp
-   "r R" 'replace-rectangle)
+    "k" (list
+         (defhydra hydra-kill (nil nil :color red)
+           "Kill"
+           (";" kill-comment "comment")
+           ("<tab>" delete-indentation "indentation")
+           ("L" kill-whole-line "whole line")
+           ("R" kill-rectangle "rectangle" :color blue)
+           ("S" kill-sentence "sentence")
+           ("l" kill-line "line")
+           ("p" kill-paragraph "paragraph")
+           ("r" kill-region "region")
+           ("s" kill-sexp "sexp")
+           ("v" kill-visual-line "visual line")
+           ("w" kill-word "word"))
+         :which-key "+kill")
+    "K" (list kmacro-keymap :which-key "kmacro")
+  
+    ;; "r q" 'query-replace-regexp
+    "r R" 'replace-rectangle)
 #+END_SRC
 
 * Snippets
