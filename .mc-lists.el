@@ -45,6 +45,7 @@
         lispy-quotes
         match-paren
         nxml-electric-slash
+        org-self-insert-command
         paredit-backslash
         paredit-backward
         paredit-backward-barf-sexp
@@ -158,6 +159,5 @@
         reindent-then-newline-and-indent
         scroll-other-window
         smart-open-line-above
-        swiper-mc
         switch-to-buffer
         ))
