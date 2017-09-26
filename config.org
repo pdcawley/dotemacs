@@ -2310,6 +2310,14 @@ diary-remind and see where that gets us.
 
 #+END_SRC
 
+* Blogging
+I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
+#+BEGIN_SRC emacs-lisp
+  (req-package easy-hugo
+    :init
+    (setq easy-hugo-basedir "~/Documents/singingtogether/")
+    (setq easy-hugo-postdir "content/gig"))
+#+END_SRC
 
 * Org-mode
 Yeah, yeah, org-mode. Everyone raves.
