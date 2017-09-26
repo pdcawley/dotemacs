@@ -133,7 +133,6 @@ If the universal prefix argument is used then will the windows too."
 (defun pdc/switch-to-scratch-buffer ()
   "Switch to the `*scratch' buffer. Create it first if needed."
   (interactive)
-  (let ((exists (get-buffer ("*scratch*"))))
-    (switch-to-buffer (get-buffer-create "*scratch*"))))
+  (switch-to-buffer (get-buffer-create "*scratch*")))
 
 (provide 'pdc-buffer-helpers)
