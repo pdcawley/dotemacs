@@ -502,6 +502,7 @@ of subsequent calls to =req-package=
 | shell           | as   | shells                 |
 | buffer          | b    | buffers                |
 |                 | c    | compile/comments       |
+| error           | e    | errors                 |
 | file            | f    | files                  |
 | file-convert    | fC   | files/convert          |
 | emacs-d         | fe   | emacs                  |
@@ -893,11 +894,18 @@ handle the =:general= clauses we use for our keybindings.
       "s" 'pdc/switch-to-scratch-buffer
       "w" 'read-only-mode
       "Y" 'pdc/copy-whole-buffer-to-clipboard)
-    :config
     (cl-loop for n from 1 to 9
              do (pdc|with-leader :infix (:buffers)
                   (format "%i" n)
                   (intern (format "buffer-to-window-%i" n)))))
+
+  (use-package pdc-error-helpers
+    :general
+    (pdc|with-leader :infix (:errors)
+      "n" 'pdc/next-error
+      "N" 'pdc/previous-error
+      "p" 'pdc/previous-error))
+
 
 #+END_SRC
 
