@@ -789,7 +789,7 @@ handle the =:general= clauses we use for our keybindings.
     (bindings//expand-add-toggle name props))
 
   (defun pdc/shortdoc (fn)
-    (when-let ((doc (documentation fn)))
+    (when-let* ((doc (documentation fn)))
       (substring doc 0 (string-match "\n" doc))))
 
   (defun pdc//bind-hydra-spec (spec leader)
@@ -1440,7 +1440,7 @@ just use the ivy supplied method.
 
     (defun ivy-pdc-help//toggle (candidate)
       "Toggle candidate."
-      (when-let ((toggle (assq (intern (cdr candidate)) bindings-toggles)))
+      (when-let* ((toggle (assq (intern (cdr candidate)) bindings-toggles)))
         (funcall (plist-get (cdr toggle) :function))))
 
     (defun ivy-pdc-help/toggles ()
@@ -2276,7 +2276,7 @@ diary-remind and see where that gets us.
     (cl-flet ((date+ (days)
                      (calendar-gregorian-from-absolute
                       (+ (calendar-absolute-from-gregorian date) days))))
-      (when-let
+      (when-let*
           ((date (cond ((and interval dayname) nil)
                        (dayname
                         (when (= dayname (calendar-day-of-week date))
@@ -2285,7 +2285,7 @@ diary-remind and see where that gets us.
                                  (start-date (date+ (* 7 weeks))))
                             (pdc//diary-search-from start-date sexp :direction direction))))
                        (t (date+ (* count (or interval 1)))))))
-        (when-let ((diary-entry (eval sexp)))
+        (when-let* ((diary-entry (eval sexp)))
           (cons mark (if (consp diary-entry)
                              (cdr diary-entry)
                            diary-entry))))))
