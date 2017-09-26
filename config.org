@@ -216,7 +216,12 @@ It sets some default paths in order to separate automatically created
 files and directories.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package no-littering)
+  (req-package no-littering
+    :config
+    ;; Don't shit autosave files all over the place
+    (setq auto-save-file-name-transforms
+          `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
+            (".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+END_SRC
 
 * Styling
