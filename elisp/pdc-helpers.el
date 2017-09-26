@@ -1,7 +1,10 @@
 ;;; -*- lexical-binding: t -*-
 
-(use-package s)
-(use-package ivy)
+(eval-when-compile 
+  (use-package s)
+  (use-package ivy)
+  (use-package align))
+
 
 ;; Steve Yegge tips
 (defun pdc|rename-file-and-buffer (new-name)
@@ -28,10 +31,10 @@
   (interactive "DNew directory: ")
   (let* ((name (buffer-name))
          (filename (buffer-file-name))
-     (directory:
-      (if (string-match dir "\\(?:/\\|\\\\)$")
-          (substring dir 0 -1) dir))
-     (newname (concat dir "/" name)))
+         (directory (if (string-match dir "\\(?:/\\|\\\\)$")
+                        (substring dir 0 -1)
+                      dir))
+         (newname (concat directory "/" name)))
 
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)
@@ -47,6 +50,7 @@
 
 (defun pdc|align-last-sexp (&optional use-align-regexp)
   (interactive "P")
+  (require 'align)
   (save-excursion
     (backward-sexp)
     (let ((beg (point)))
