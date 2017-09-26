@@ -878,8 +878,7 @@ handle the =:general= clauses we use for our keybindings.
     "u" 'undo-tree-visualize)
 
   (use-package pdc-buffer-helpers
-    :defer nil
-    :general
+    :config
     (pdc|with-leader "TAB" 'pdc/alternate-buffer)
     (pdc|with-leader :infix (:buffers)
       "C-d" 'pdc/kill-matching-buffers-rudely
@@ -1272,9 +1271,8 @@ to display a =*blank*= buffer.
 #+BEGIN_SRC emacs-lisp
   (req-package multiple-cursors
     :demand t
-    :general
-    ("s-<mouse-1>" 'mc/add-cursor-on-click)
     :config
+    (general-define-key "s-<mouse-1>" 'mc/add-cursor-on-click)
     (pdc|general-bind-hydra mc (bindings//prefix :cursor)
       ("<" mc/mark-previous-like-this)
       (">" mc/mark-next-like-this )
