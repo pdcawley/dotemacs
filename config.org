@@ -1492,8 +1492,9 @@ that's also used by swiper.
 #+END_SRC
 
 * Bindings
-Toggles for stuff that's preloaded
+** Toggles for stuff that's preloaded
 #+BEGIN_SRC emacs-lisp
+
   (bindings|add-toggle auto-fill-mode
     :status auto-fill-function
     :toggle-keys "Tf")
