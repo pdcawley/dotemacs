@@ -635,27 +635,31 @@ rewrites lists of the (pcase) form
 
 #+BEGIN_SRC emacs-lisp
 
-    (defun bindings//list->keys (list &optional lookupfn)
-      (let ((lookupfn (or lookupfn #'bindings//prefix)))
-        (pcase list
-          (`(,(or (pred stringp) (pred keywordp)) . ,_)
-           (apply lookupfn list))
-          (_ list))))
+  (defun bindings//list->keys (list &optional lookupfn)
+    (let ((lookupfn (or lookupfn #'bindings//prefix)))
+      (pcase list
+        (`(,(or (pred stringp) (pred keywordp)) . ,_)
+         (apply lookupfn list))
+        (_ list))))
 
-    (defmacro pdc|with-leader (&rest args)
-      (declare (indent defun))
-      (let ((parsed-args
-             (cl-loop for (key value) on args by 'cddr
-                      nconc (pcase (list key value)
-                              (`(:prefix ,_)
-                               (list :prefix (bindings//list->keys value 'bindings//leader)))
-                              (`(:infix ,_)
-                               (list key (bindings//list->keys value)))
-                              (`(,(pred keywordp) ,_)
-                               (list key value))
-                              (`(,_ ,_)
-                               (list (bindings//list->keys key) value))))))
-        `(pdc/with-leader ,@parsed-args)))
+  (defmacro pdc|with-leader (&rest args)
+    (declare (indent defun))
+    (let ((parsed-args
+           (cl-loop for (key value) on args by 'cddr
+                    nconc (pcase (list key value)
+                            (`(:prefix ,(pred symbolp))
+                             (list key (bindings//list->keys (list value) 'bindings//leader)))
+                            (`(:prefix ,_)
+                             (list key (bindings//list->keys value 'bindings//leader)))
+                            (`(:infix ,(pred symbolp))
+                             (list key (bindings//list->keys (list value))))
+                            (`(:infix ,_)
+                             (list key (bindings//list->keys value)))
+                            (`(,(pred keywordp) ,_)
+                             (list key value))
+                            (`(,_ ,_)
+                             (list (bindings//list->keys key) value))))))
+      `(pdc/with-leader ,@parsed-args)))
 #+END_SRC
 
 ***** TODO Roadmap [0/3]
