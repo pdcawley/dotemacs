@@ -1490,7 +1490,81 @@ that's also used by swiper.
 * Bindings
 Toggles for stuff that's preloaded
 #+BEGIN_SRC emacs-lisp
-  (bindings|add-toggle auto-fill-mode :toggle-keys "Tf")
+  (bindings|add-toggle auto-fill-mode
+    :status auto-fill-function
+    :toggle-keys "Tf")
+
+  (req-package hl-line-mode
+    :commands (global-hl-line-mode hl-line-mode)
+    :init
+    (bindings|add-toggle highlight-current-line-globally
+     :mode global-hl-line-mode
+     :documentation "Globally highlight the current line"
+     :toggle-keys "thh"))
+
+
+  (bindings|add-toggle truncate-lines
+    :status truncate-lines
+    :on (toggle-truncate-lines)
+    :off (toggle-truncate-lines -1)
+    :documentation "Truncate long lines (no wrap)."
+    :toggle-keys "tl")
+
+  (bindings|add-toggle visual-line-navigation
+    "Move point according to visual lines."
+    :mode visual-line-mode
+    :toggle-keys "tL")
+
+  (bindings|add-toggle debug-on-error
+    "Display backtrace when an error happens."
+    :status debug-on-error
+    :on (setq debug-on-error t)
+    :off (setq debug-on-error nil)
+    :toggle-keys "tD")
+
+
+  (bindings|add-toggle fringe
+    "Display the fringe in GUI mode"
+    :status (not (equal fringe-mode 0))
+    :on (call-interactively 'fringe-mode)
+    :off (fringe-mode 0)
+    :toggle-keys "Tf")
+
+  (bindings|add-toggle fullscreen-frame
+    "Display the current frame in full screen."
+    :status (memq (frame-parameter nil 'fullscreen) '(fullscreen fullboth))
+    :on (toggle-frame-fullscreen)
+    :off (toggle-frame-fullscreen)
+    :toggle-keys "TF")
+
+
+  (bindings|add-toggle maximize-frame
+    "Maximize the current frame"
+    :status (eq (frame-parameter nil 'fullscreen) 'maximized)
+    :on (toggle-frame-maximized)
+    :off (toggle-frame-maximized)
+    :toggle-keys "TM")
+
+  (bindings|add-toggle mode-line
+    "Toggle the visibility of modeline."
+    :status (not hidden-mode-line-mode)
+    :on (hidden-mode-line-mode -1)
+    :off (hidden-mode-line-mode)
+    :toggle-keys "tmt")
+
+  (bindings|add-toggle tool-bar
+    "Display the toolbar in GUI mode."
+    :if window-system
+    :mode tool-bar-mode
+    :toggle-keys "Tt")
+
+  (bindings|add-toggle menu-bar
+    "Display the menu bar"
+    :if window-system
+    :mode menu-bar-mode
+    :toggle-keys "Tm")
+
+
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
