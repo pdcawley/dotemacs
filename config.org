@@ -1571,7 +1571,25 @@ that's also used by swiper.
 
 
 #+END_SRC
+** Quitting emacs
+#+BEGIN_SRC emacs-lisp
+  (defun pdc/frame-killer ()
+    "Kill server buffer and hide the main Emacs window"
+    (interactive)
+    (condition-case-unless-debug nil
+        (delete-frame nil 1)
+      (error (make-frame-invisible nil 1))))
 
+
+  (pdc|with-leader :infix :quit
+    "s" 'save-buffers-kill-emacs
+    "q" 'save-buffers-kill-terminal
+    "Q" 'kill-emacs
+    "z" 'pdc/frame-killer)
+
+#+END_SRC
+
+** Other bindings
 #+BEGIN_SRC emacs-lisp
   (defun pdc/execute-extended-command-short (prefixarg &optional function)
     "Massively simplified execute extended command.
