@@ -2421,6 +2421,23 @@ I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the mome
     (setq easy-hugo-postdir "content/gig"))
 #+END_SRC
 
+I use prodigy to start and stop local Hugo servers running to preview our changes.
+
+#+BEGIN_SRC emacs-lisp
+  (req-package prodigy
+    :config
+    (prodigy-define-service
+      :name "blog-serve"
+      :command "hugo"
+      :args '("serve" "-w")
+      :cwd "~/Documents/bofh.org.uk/"
+      :tags '(hugo blog)
+      :stop-signal 'sigkill
+      :kill-process-buffer-on-stop t))
+
+#+END_SRC
+
+
 * Org-mode
 Yeah, yeah, org-mode. Everyone raves.
 
