@@ -1114,9 +1114,160 @@ to display a =*blank*= buffer.
               (set-window-buffer w buffer)))))))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  ;;; Lifted from spacemacs
+  (defun pdc/split-window-below-and-focus ()
+    "Split the window vertically and focus the new window."
+    (interactive)
+    (split-window-below)
+    (windmove-down)
+    (when (and (boundp 'golden-ratio-mode)
+               (symbol-value golden-ratio-mode))
+      (golden-ratio)))
+
+  (defun pdc/split-window-right-and-focus ()
+    "Split the window horizontally and focus the new window."
+    (interactive)
+    (split-window-right)
+    (windmove-right)
+    (when (and (boundp 'golden-ratio-mode)
+               (symbol-value 'golden-ratio-mode))
+      (golden-ratio)))
+
+  (defun pdc/layout-double-columns ()
+    "Set the layout to double columns"
+    (interactive)
+    (delete-other-windows)
+    (split-window-right))
 
 
-** Support functions
+  (defun pdc/layout-triple-columns ()
+    "Set the layout to triple columns"
+    (interactive)
+    (delete-other-windows)
+    (dotimes (i 2) (split-window-right))
+    (balance-windows))
+
+  (defun pdc/switch-to-minibuffer-window ()
+    "Switch to minibuffer window (if active)"
+    (interactive)
+    (when-let* ((target (active-minibuffer-window)))
+      (selete-window target)))
+
+  (defun pdc/delete-window (&optional arg)
+    "Delete the current window.
+
+  If the universal prefix argument is used, then kill the buffer too."
+    (interactive "P")
+    (if (equal '(4) arg)
+        (kill-buffer-and-window)
+      (delete-window)))
+
+  ;;; TODO Pinch some window motion stuff from Evil
+
+  (defun pdc/toggle-maximize-buffer ()
+    "Maximize buffer"
+    (interactive)
+    (if (and (= 1 (length (window-list))
+                (assoc ?_ register-alist)))
+        (jump-to-register ?_)
+      (window-configuration-to-register ?_)
+      (delete-other-windows)))
+
+  (defun pdc/rotate-windows (count)
+    "Rotate each window forwards.
+  A negative prefix argument rotates each window backwards.
+  Dedicated (locked) windows are left untouched."
+    (interactive "p")
+    (let* ((non-dedicated-windows (remove-if 'window-dedicated-p (window-list)))
+           (num-windows (length non-dedicated-windows))
+           (i 0)
+           (step (+ num-windows count)))
+      (cond ((not (> num-windows 1))
+             (message "You can't rotate a single window!"))
+            (t
+             (dotimes (counter (- num-windows 1))
+               (let* ((next-i (% (+1 step) num-windows))
+
+                      (w1 (elt non-dedicated-windows i))
+                      (w2 (elt non-dedicated-windows next-i))
+
+                      (b1 (window-buffer w1))
+                      (b2 (window-buffer w2))
+
+                      (s1 (window-start w1))
+                      (s2 (window-start w2)))
+                 (set-window-buffer w1 b2)
+                 (set-window-buffer w2 b1)
+                 (set-window-start w1 s2)
+                 (set-window-start w2 s2)
+                 (setq i next-i)))))))
+
+  (defun pdc/rotate-windows-backward (count)
+    "Rotate each window backwards.
+  Dedicated (locked) windows are left untouched."
+    (interactive "p")
+    (spacemacs/rotate-windows (* -1 count)))
+
+  (defun pdc/maximize-horizontally ()
+    "Delete all windwos left or right of the current window."
+    (interactive)
+    (require 'windmove)
+    (save-excursion
+      (while (condition-case nil (windmove-left (error nil)))
+        (delete-window))
+      (while (condition-case nil (windmove-right (error nil)))
+        (delete-window))))
+
+#+END_SRC
+
+** Window Keybindings
+
+#+BEGIN_SRC emacs-lisp
+  ;;; For the 'evil-window-*' commands. Lift these into the config later
+  ;;; since we don't use Evil.
+
+  (require 'evil-commands)
+  (pdc|with-leader :infix :windows
+    "2" 'pdc/layout-double-columns
+    "3" 'pdc/layout-triple-columns
+    "b" 'pdc/switch-to-minibuffer-window
+    "d" 'pdc/delete-window
+    "f" 'follow-mode
+    "F" 'make-frame
+    ;; To be replaced with non-evil functions
+    "H"  'evil-window-move-far-left
+    "<S-left>"  'evil-window-move-far-left
+    "h"  'evil-window-left
+    "<left>"  'evil-window-left
+    "J"  'evil-window-move-very-bottom
+    "<S-down>"  'evil-window-move-very-bottom
+    "j"  'evil-window-down
+    "<down>"  'evil-window-down
+    "K"  'evil-window-move-very-top
+    "<S-up>"  'evil-window-move-very-top
+    "k"  'evil-window-up
+    "<up>"  'evil-window-up
+    "L"  'evil-window-move-far-right
+    "<S-right>"  'evil-window-move-far-right
+    "l"  'evil-window-right
+    "<right>"  'evil-window-right
+    "m" 'pdc/toggle-maximize-buffer
+    "o" 'other-frame
+    "r" 'pdc/rotate-windows
+    "R" 'pdc/rotate-windows-backward
+    "s" 'split-window-below
+    "S" 'pdc/split-window-below-and-focus
+    "-" 'split-window-below
+    "U" 'winner-redo
+    "u" 'winner-undo
+    "v" 'split-window-right
+    "V" 'pdc/split-window-right-and-focus
+    "/" 'split-window-right
+    "w" 'other-window
+    "=" 'balance-windows
+    "_" 'pdc/maximize-horizontally)
+#+END_SRC
 
 
 * Basic editing
