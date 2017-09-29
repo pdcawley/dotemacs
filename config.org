@@ -717,14 +717,17 @@ handle the =:general= clauses we use for our keybindings.
   The strucutre of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
 
   (defun bindings//expand-add-toggle (name props)
-    (let* ((mode (plist-get props :mode) )
+    (let* ((docstr (if (stringp (car props))
+                            (pop props)))
+           (mode (plist-get props :mode) )
            (wrapper-func (intern (format "toggle|%s"
                                          (symbol-name name))))
            (wrapper-func-on (intern (format "%s-on" wrapper-func)))
            (wrapper-func-off (intern (format "%s-off" wrapper-func)))
            (wrapper-func-status (intern (format "%s-status" wrapper-func)))
            (status (or (plist-get props :status) mode name))
-           (doc (plist-get props :documentation))
+           (doc (or (plist-get props :documentation)
+                    docstr))
            (on-body (if mode `((,mode)) (pdc/mplist-get props :on)))
            (off-body (if mode `((,mode -1)) (pdc/mplist-get props :off)))
            (prefix-arg-var (plist-get props :prefix))
@@ -738,7 +741,9 @@ handle the =:general= clauses we use for our keybindings.
            ;; the mode
            (toggle-body (or (pdc/mplist-get props :toggler)
                             (if (or on-body off-body)
-                                `(if ,status-eval ,off-body ,on-body)
+                                `(if ,status-eval
+                                     (progn ,@off-body)
+                                   ,@on-body)
                               `(,name 'toggle))))
            (keymaps (pdc/mplist-get props :keymaps))
            (binding (plist-get props :toggle-keys)))
