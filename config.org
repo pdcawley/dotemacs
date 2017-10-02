@@ -438,7 +438,7 @@ hydra:
   (req-package ivy)
   (req-package ibuffer)
   (req-package hydra
-    :requires (ibyffer ivy)
+    :require (ibuffer ivy)
     :commands defhydra
     :init
     (setq hydra-head-format "%s → "))
@@ -953,7 +953,7 @@ straightforward.
 
 #+BEGIN_SRC emacs-lisp
   (req-package winum
-    :requires dash
+    :require dash
     :config
     (setq winum-auto-assign-0-to-minibuffer t
           winum-auto-setup-mode-line nil
@@ -2595,7 +2595,7 @@ Yeah, yeah, org-mode. Everyone raves.
 ** Org-journal
 #+BEGIN_SRC emacs-lisp
   (req-package org-journal
-    :requires (org autoinsert)
+    :require (org autoinsert)
     :init
     (defun pdc/journal-title ()
       "The journal heading based on the file's name"
@@ -2736,7 +2736,7 @@ It's ugly lisp, but it keeps paredit relatively happy with our fragments.
 
 #+BEGIN_SRC emacs-lisp
   (req-package ox-gfm
-    :requires org)
+    :require org)
 
   (req-package autoinsert)
 #+END_SRC
@@ -2745,7 +2745,7 @@ It's ugly lisp, but it keeps paredit relatively happy with our fragments.
 #+BEGIN_SRC emacs-lisp
 (req-package diary-lib)
 (req-package org-agenda
-  :requires (org diary-lib)
+  :require (org diary-lib)
   :init
   (setq org-agenda-files `(,org-directory "~/Documents/journal")))
 #+END_SRC
