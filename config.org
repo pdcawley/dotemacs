@@ -316,10 +316,10 @@ Turn off the toolbar
   ;;; These will be moved to org-mode config when we have an org-mode
   ;;; config section
   (with-eval-after-load 'org-src
-    (diminish 'org-src-mode " ∮")
+    (diminish 'org-src-mode " ⓞ")
     (setq org-src-window-setup 'current-window))
   (with-eval-after-load 'org-indent
-    (diminish 'org-indent-mode " ∃"))
+    (diminish 'org-indent-mode))
 #+END_SRC
 
 
@@ -1424,7 +1424,7 @@ to display a =*blank*= buffer.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'abbrev-mode)
-(diminish 'abbrev-mode " A")
+(diminish 'abbrev-mode "")
 #+END_SRC
 
 ** Multiple cursors
@@ -1621,7 +1621,7 @@ that's also used by swiper.
   (req-package counsel
     :require colir
     :demand t
-    :diminish " ⓒ"
+    :diminish counsel-mode
     :general
     (pdc|with-leader
       (:files "f") '(counsel-find-file :which-key "find") 
@@ -1650,7 +1650,8 @@ that's also used by swiper.
     :status auto-fill-function
     :toggle-keys "Tf")
 
-  (req-package hl-line-mode
+  (req-package hl-line
+    :diminish hl-highlight-mode
     :commands (global-hl-line-mode hl-line-mode)
     :init
     (bindings|add-toggle highlight-current-line-globally
@@ -1670,6 +1671,7 @@ that's also used by swiper.
     "Move point according to visual lines."
     :mode visual-line-mode
     :toggle-keys "tL")
+  (diminish 'visual-line-mode " Ⓛ")
 
   (bindings|add-toggle debug-on-error
     "Display backtrace when an error happens."
@@ -1970,7 +1972,7 @@ your sanity. Please, I beg of you don't. But do use them.
   (req-package yasnippet
     :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
     :demand t
-    :diminish yas-minor-mode
+    :diminish (yas-minor-mode . " ⓨ")
     :config
     (yas-load-directory (concat my-user-emacs-directory "etc/yasnippet/snippets/"))
     (yas-global-mode 1))
@@ -2070,6 +2072,7 @@ about the git status of things.
   (req-package git-gutter+
     :require magit
     :diminish git-gutter+-mode
+    :diminish git-gutter-mode
     :init
     (bindings|add-toggle git-gutter :mode git-gutter+-mode :toggle-keys "Tg")
     :config
