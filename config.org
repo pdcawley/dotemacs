@@ -2436,7 +2436,9 @@ Configure our base Lisp mode
 
     (defun my-lisp-mode-hook ()
       (auto-fill-mode -1)
-      (paredit-mode +1)
+      (require 'lispy)
+      (lispy-mode +1)
+      ;; (paredit-mode +1)
       ;; (redshank-mode 1)
       ;; (elisp-slime-nav-mode 1)
       (add-hook 'after-save-hook 'check-parens
@@ -2464,6 +2466,13 @@ Configure our base Lisp mode
      (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
      (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
+  (req-package lispy
+    :diminish " Ⓛ"
+    :init
+    (bindings|add-toggle lispy-mode :toggle-keys "Tl")
+    :config
+    (lispy-set-key-theme '(paredit special c-digits))
+    (unbind-key "M-m" lispy-mode-map-lispy))
 
   (req-package paredit
     :commands paredit-mode
@@ -2491,14 +2500,14 @@ Configure our base Lisp mode
           ("M-I" . paredit-splice-sexp))
     :general
     (pdc|with-mode-leader :keymaps 'paredit-mode-map
-     "d" 'paredit-forward-down
-     "B" 'paredit-splice-sexp-killing-backward
-     "C" 'paredit-convolute-sexp
-     "F" 'paredit-splice-sexp-killing-forward
-     "a" 'paredit-add-to-next-list
-     "A" 'paredit-add-to-previous-list
-     "j" 'paredit-join-with-next-list
-     "J" 'paredit-join-with-previous-list)
+      "d" 'paredit-forward-down
+      "B" 'paredit-splice-sexp-killing-backward
+      "C" 'paredit-convolute-sexp
+      "F" 'paredit-splice-sexp-killing-forward
+      "a" 'paredit-add-to-next-list
+      "A" 'paredit-add-to-previous-list
+      "j" 'paredit-join-with-next-list
+      "J" 'paredit-join-with-previous-list)
 
     :init
     (bindings|add-toggle paredit-mode :toggle-keys "Tp")
