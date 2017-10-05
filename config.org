@@ -1772,8 +1772,7 @@ that's also used by swiper.
     :config
     (--each '((apropos . counsel-apropos)
               (org-goto . counsel-org-goto)
-              (set-variable . counsel-set-variable)
-              (insert-char . counsel-unicode-char))
+              (set-variable . counsel-set-variable))
       (when (fboundp (cdr it))
         (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
