@@ -1269,7 +1269,144 @@ to display a =*blank*= buffer.
     "_" 'pdc/maximize-horizontally)
 #+END_SRC
 
+** Text keybindings
 
+#+BEGIN_SRC emacs-lisp
+
+  (defalias 'count-region 'count-words-region)
+
+  (defun pdc/align-repeat (start end regexp &optional justify right after)
+    "Repeat alignment with respect to the given regular expression.
+  If JUSTIFY-RIGHT is non nil justify to the right instead of the
+  left. If AFTER is non-nil, add whitespace to the left instead of
+  the right."
+    (interactive "r\nsAlign regexp: ")
+    (let* ((ws-regexp (if (string-empty-p regexp)
+                          "\\(\\s-+\\)"
+                        "\\(\\s-*\\)"))
+           (complete-regexp (if after
+                                (concat regexp ws-regexp)
+                              (concat ws-regexp regexp)))
+           (group (if justify-right -1 1)))
+      (message "%S" complete-regexp)
+      (align-regexp start end complete-regexp group 1 t)))
+
+  (defun pdc/align-repeat-decimal (start end)
+    "Align a table of numbers on decimal points and dollar signs (both optional)"
+    (interactive "r")
+    (require 'align)
+    (align-regexp start end nil
+                  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
+                         (repeat . t)
+                         (group 1 2)
+                         (spacing 1 1)
+                         (justify nil t)))
+                  nil))
+
+  (defmacro pdc|create-align-repeat-x (name regexp &optional justify-right default-after)
+    (let ((new-func (intern (concat "pdc|align-repeat-" name))))
+      `(defun ,new-func (start end switch)
+         (interactive "r\nP")
+         (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
+           (pdc/align-repeat start end ,regexp ,justify-right after)))))
+
+  (pdc|create-align-repeat-x "comma" "," nil t)
+  (pdc|create-align-repeat-x "semicolon" ";" nil t)
+  (pdc|create-align-repeat-x "colon" ":" nil t)
+  (pdc|create-align-repeat-x "equal" "=")
+  (pdc|create-align-repeat-x "math-oper" "[+\\-*/]")
+  (pdc|create-align-repeat-x "ampersand" "&")
+  (pdc|create-align-repeat-x "bar" "|")
+  (pdc|create-align-repeat-x "left-paren" "(")
+  (pdc|create-align-repeat-x "right-paren" ")" t)
+  (pdc|create-align-repeat-x "backslash" "\\\\")
+
+  (defun pdc/uniquify-lines ()
+    "Remove duplicate adjacent lines in region or current buffer"
+    (interactive)
+    (save-excursion
+      (save-restriction
+        (let ((beg (if (region-active-p) (region-beginning) (point-min)))
+              (end (if (region-active-p) (region-end) (point-max))))
+          (goto-char beg)
+          (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
+            (replace-match "\\1"))))))
+
+  (defun pdc/sort-lines ()
+    "Sort lines in region or current buffer"
+    (interactive)
+    (let ((beg (if (region-active-p) (region-beginning) (point-min)))
+          (end (if (region-active-p) (region-end) (point-max))))
+      (sort-lines nil beg end)))
+
+
+  (defun pdc/count-words-analysis (start end)
+    "Count how many times each word is used in the region.
+   Punctuation is ignored."
+    (interactive "r")
+    (let (words alist_words_compare (formated ""))
+      (save-excursion
+        (goto-char start)
+        (while (re-search-forward "\\w+" end t)
+          (let* ((word (intern (match-string 0)))
+                 (cell (assq word words)))
+            (if cell
+                (setcdr cell (1+ (cdr cell)))
+              (setq words (cons (cons word 1) words))))))
+      (defun alist_words_compare (a b)
+        "Compare elements from an associative list of words count.
+  Compare them on count first,and in case of tie sort them alphabetically."
+        (let ((a_key (car a))
+              (a_val (cdr a))
+              (b_key (car b))
+              (b_val (cdr b)))
+          (if (eq a_val b_val)
+              (string-lessp a_key b_key)
+            (> a_val b_val))))
+      (setq words (cl-sort words 'alist_words_compare))
+      (while words
+        (let* ((word (pop words))
+               (name (car word))
+               (count (cdr word)))
+          (setq formated (concat formated (format "[%s: %d], " name count)))))
+      (when (interactive-p)
+        (if (> (length formated) 2)
+            (message (substring formated 0 -2))
+          (message "No words.")))
+      words))
+
+  (pdc|with-leader :infix :text
+    "a&" 'pdc/align-repeat-ampersand
+    "a(" 'pdc/align-repeat-left-paren
+    "a)" 'pdc/align-repeat-right-paren
+    "a," 'pdc/align-repeat-comma
+    "a." 'pdc/align-repeat-decimal
+    "a:" 'pdc/align-repeat-colon
+    "a;" 'pdc/align-repeat-semicolon
+    "a=" 'pdc/align-repeat-equal
+    "a\\" 'pdc/align-repeat-backslash
+    "aa" 'align
+    "ac" 'align-current
+    "am" 'pdc/align-repeat-math-oper
+    "ar" 'pdc/align-repeat
+    "a|" 'pdc/align-repeat-bar
+    "c" 'count-region
+    "dw" 'delete-trailing-whitespace
+    "jc" 'set-justification-center
+    "jf" 'set-justification-full
+    "jl" 'set-justification-left
+    "jn" 'set-justification-none
+    "jr" 'set-justification-right
+    "ls" 'pdc/sort-lines
+    "lu" 'pdc/uniquify-lines
+    "tc" 'transpose-chars
+    "tl" 'transpose-lines
+    "tw" 'transpose-words
+    "U" 'upcase-region
+    "u" 'downcase-region
+    "wc" 'pdc/count-words-analysis
+    "TAB" 'indent-rigidly)
+#+END_SRC
 * Basic editing
 
 ** Our commands
