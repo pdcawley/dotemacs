@@ -2154,6 +2154,22 @@ your sanity. Please, I beg of you don't. But do use them.
 #+END_SRC
 
 * Programming
+** Project management
+We use Projectile here (which I should learn)
+#+BEGIN_SRC emacs-lisp
+  (req-package projectile
+    :require ivy
+    :config
+    :diminish projectile-mode
+    (projectile-global-mode)
+    (setq projectile-completion-system 'ivy))
+
+  (req-package counsel-projectile
+    :require projectile
+    :config
+    (counsel-projectile-on))
+#+END_SRC
+
 ** Version Control (Git)
 *** Magit
 Magit is awesome and I'd hate to be without it
