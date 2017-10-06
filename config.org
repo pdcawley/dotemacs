@@ -1584,6 +1584,14 @@ to display a =*blank*= buffer.
      "C-e" 'mc/edit-ends-of-lines
      "e" 'mc/edit-lines))
 #+END_SRC
+** Expanding the region
+#+BEGIN_SRC emacs-lisp
+  (req-package expand-region
+    :general
+    (pdc|with-leader
+      "v" 'er/expand-region))
+
+#+END_SRC
 
 * Navigation
 
