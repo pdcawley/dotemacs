@@ -2629,8 +2629,7 @@ Configure our base Lisp mode
       (interactive)
       (paredit-move-past-close-and-newline ")")
       (set-transient-map pdc-paredit--post-close-keymap))
-  
-  
+
     (unbind-key "M-r" paredit-mode-map)
     (unbind-key "M-s" paredit-mode-map)
 
