@@ -353,23 +353,15 @@ Zenburn, it's the only way to be sure!
 
 ** Font sizes
 
-
-- 2011-04-20: increase/set font size
-  - http://www.emacswiki.org/emacs/SetFonts
-
 #+BEGIN_SRC emacs-lisp
-(defun my-increase-fontsize ()
-  (interactive)
-  "Sets the font to bigger size"
-  (set-face-attribute 'default (selected-frame) :height 130)
-  )
-(defun my-normal-fontsize ()
-  (interactive)
-  "Sets the font to normal size"
-  (set-face-attribute 'default (selected-frame) :height 100)
-  )
+  (req-package default-text-scale
+    :general
+    (pdc|with-leader
+      "+" 'default-text-scale-increase
+      "=" 'default-text-scale-increase
+      "-" 'default-text-scale-decrease))
 #+END_SRC
-** Hightlight TODO etc in comments and strings
+** Highlight TODO etc in comments and strings
 #+BEGIN_SRC emacs-lisp
   (req-package hl-todo
     :init
