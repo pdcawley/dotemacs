@@ -2751,7 +2751,7 @@ diary-remind and see where that gets us.
 
 #+END_SRC
 
-* Blogging
+* Blogging & Web
 I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
 #+BEGIN_SRC emacs-lisp
   (req-package easy-hugo
