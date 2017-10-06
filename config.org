@@ -85,6 +85,12 @@ I'm okay with narrowing
 (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
+Add a nice short alias for ~with-eval-after-load~
+
+#+BEGIN_SRC emacs-lisp
+  (defalias 'after-loading 'with-eval-after-load)
+#+END_SRC
+
 ** Support functions
 
 *** hook-into-modes
