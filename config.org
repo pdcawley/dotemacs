@@ -2250,6 +2250,14 @@ Speculatively installed. Need to work out if I really need it.
   (req-package git-timemachine)
 #+END_SRC
 
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (req-package flycheck
+    :diminish " ⓢ"
+    :init
+    (global-flycheck-mode t))
+#+END_SRC
+
 
 ** Programming languages
 
