@@ -1679,6 +1679,10 @@ just use the ivy supplied method.
 
   (req-package ivy
     :pin "melpa"
+    :diminish " 🍃"
+    :init
+    (ivy-mode 1)
+    (bindings|add-toggle ivy-mode :toggle-keys "Ti")
     :config
     (defun pdc-find-file-other-window (&optional initial-input)
       "Forward to `find-file-other-window'.
