@@ -2760,45 +2760,112 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 
 #+END_SRC
 
+** Web mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :pin melpa
+    :mode "\\.html?\\'"
+    :mode "\\.vue?\\'"
+    :init
+    (setq web-mode-enable-auto-closing t)
+    (setq web-mode-enable-auto-quoting t)
+    :config
+    (add-to-list 'web-mode-engines-alist '("gtl" . "\\.html\'"))
+    (add-to-list 'web-mode-engines-alist '("css" . (ac-source-css-property)))
+    (add-to-list 'web-mode-engines-alist '("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+
+#+END_SRC
+
+** Javascript
+#+BEGIN_SRC emacs-lisp
+  (use-package ac-js2 :ensure t)
+
+  (use-package js2-mode
+    :ensure t
+    :mode "\\.js\\'"
+    :init
+    (add-hook 'js-mode-hook 'js2-minor-mode)
+    (add-hook 'js2-mode-hook 'ac-js2-mode))
+
+  (use-package js2-refactor
+    :ensure t
+    :config
+    (js2r-add-keybindings-with-prefix "C-, m")
+    (add-hook 'js2-mode-hook #'js2-refactor-mode))
+
+  (req-package tern-auto-complete
+    :ensure t)
+
+  (req-package tern
+    :ensure t
+    :diminish tern-mode
+    :config
+    (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+    (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+    (tern-ac-setup))
+
+#+END_SRC
 
 * Org-mode
 Yeah, yeah, org-mode. Everyone raves.
 
+** Org-bullets
+#+BEGIN_SRC emacs-lisp
+  (after-loading 'org
+    (use-package org-bullets
+      :config
+      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+#+END_SRC
+
+** Org-ac
+#+BEGIN_SRC emacs-lisp
+  (after-loading 'org
+    (message "Loading org-ac")
+    (use-package org-ac
+      :demand t
+      :init
+      (org-ac/config-default)))
+#+END_SRC
+
 ** Org-journal
 #+BEGIN_SRC emacs-lisp
-  (req-package org-journal
-    :require (org autoinsert)
-    :init
-    (defun pdc/journal-title ()
-      "The journal heading based on the file's name"
-      (let* ((year (string-to-number (substring (buffer-name) 0 4)))
-             (month (string-to-number (substring (buffer-name) 4 6)))
-             (day (string-to-number (substring (buffer-name) 6 8)))
-             (datim (encode-time 0 0 0 day month year)))
-        (format-time-string org-journal-date-format datim)))
+  (after-loading 'org
+    (after-loading 'autoinsert
+      (message "Loadin org-journal")
+      (use-package org-journal
+       :demand t
+       :init
+       (defun pdc//journal-title ()
+         "The journal heading based on the file's name"
+         (let* ((year (string-to-number (substring (buffer-name) 0 4)))
+                (month (string-to-number (substring (buffer-name) 4 6)))
+                (day (string-to-number (substring (buffer-name) 6 8)))
+                (datim (encode-time 0 0 0 day month year)))
+           (format-time-string org-journal-date-format datim)))
 
-    (defun pdc|journal-file-insert ()
-      "Insert the heading based on the file's name."
-      (interactive)
-      (insert (journal-title))
-      (insert "\n\n")
+       (defun pdc/journal-file-insert ()
+         "Insert the heading based on the file's name."
+         (interactive)
+         (insert (journal-title))
+         (insert "\n\n")
 
-      (when (equal (file-name-base (buffer-file-name))
-                   (format-time-string "%Y%m%d"))
-        (when (file-exists-p "journal-dailies-end.org")
-          (insert-file-contents "journal-dailies-end.org")
-          (insert "\n"))
+         (when (equal (file-name-base (buffer-file-name))
+                      (format-time-string "%Y%m%d"))
+           (when (file-exists-p "journal-dailies-end.org")
+             (insert-file-contents "journal-dailies-end.org")
+             (insert "\n"))
 
-        (let ((weekday-template (downcase (format-time-string)
-                                          "journal-%a.org")))
-          (when (file-exists-p weekday-template)
-            (insert-file-contents weekday-template)))
-        (when (file-exists-p "journal-dailies.org")
-          (insert-file-contents "journal-dailies.org"))
-        (previous-line 2)))
+           (let ((weekday-template (downcase (format-time-string)
+                                             "journal-%a.org")))
+             (when (file-exists-p weekday-template)
+               (insert-file-contents weekday-template)))
+           (when (file-exists-p "journal-dailies.org")
+             (insert-file-contents "journal-dailies.org"))
+           (previous-line 2)))
 
-    :config
-    (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))
+       :config
+       (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))))
 
 #+END_SRC
 
@@ -2808,107 +2875,108 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-  :defer nil
-  :diminish org-indent
-  :general
-  (pdc|with-leader :infix "o"
-                   "a" 'org-agenda
-                   "b" 'org-switchb
-                   "c" '(org-capture :which-key "capture")
-                   "j" '(org-journal-new-entry :which-key "new journal entry")
-                   "l" 'org-store-link)
+    :diminish org-indent
+    :mode
+    ("\\.org\\'" . org-mode)
+    :general
+    (pdc|with-leader :infix "o"
+      "a" 'org-agenda
+      "b" 'org-switchb
+      "c" '(org-capture :which-key "capture")
+      "j" '(org-journal-new-entry :which-key "new journal entry")
+      "l" 'org-store-link)
 
-  (pdc|with-mode-leader :keymaps '(org-mode-map)
-                        "h" '(:ignore t :which-key "structure")
-                        "h n" '(org-insert-heading-respect-content :which-key "new")
-                        "h s" 'org-insert-subheading
+    (pdc|with-mode-leader :keymaps '(org-mode-map)
+      "h" '(:ignore t :which-key "structure")
+      "h n" '(org-insert-heading-respect-content :which-key "new")
+      "h s" 'org-insert-subheading
 
-                        "c" '(:ignore t :which-key "clock")
-                        "c i" '(org-clock-in :which-key "in")
-                        "c i" '(org-clock-in :which-key "in")
-                        "c o" '(org-clock-out :which-key "out")
-                        "c d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
-                        "c ." '(org-time-stamp :which-key "time-stamp")
-                        "c c" '(org-clock-cancel :which-key "cancel")
-                        "c _" '(org-clock-select-task :which-key "select-task")
-                        "c -" '(org-clock-goto :which-key "goto")
-                        "c '" '(pdc|org-goto-select-task :which-key "goto-select-task")
-                        "c g" '(pdc|org-refile-goto :which-key "refile-goto")
-                        "c l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
+      "c" '(:ignore t :which-key "clock")
+      "c i" '(org-clock-in :which-key "in")
+      "c i" '(org-clock-in :which-key "in")
+      "c o" '(org-clock-out :which-key "out")
+      "c d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
+      "c ." '(org-time-stamp :which-key "time-stamp")
+      "c c" '(org-clock-cancel :which-key "cancel")
+      "c _" '(org-clock-select-task :which-key "select-task")
+      "c -" '(org-clock-goto :which-key "goto")
+      "c '" '(pdc|org-goto-select-task :which-key "goto-select-task")
+      "c g" '(pdc|org-refile-goto :which-key "refile-goto")
+      "c l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
 
-                        "r" '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
-                        "R" '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
-  :init
-  (defun pdc|org-goto-select-task ()
-    (interactive)
-    (org-clock-goto '(4)))
-  (defun pdc|org-refile-goto ()
-    (interactive)
-    (org-refile '(4)))
-  (defun pdc|org-refile-goto-last ()
-    (interactive)
-    (org-refile '(16)))
-  (defun pdc|org-reload-uncompiled ()
-    (interactive)
-    (org-reload '(4)))
-  (defun pdc|org-reload-compiled ()
-    (interactive)
-    (org-reload))
+      "r" '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
+      "R" '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
+    :init
+    (defun pdc|org-goto-select-task ()
+      (interactive)
+      (org-clock-goto '(4)))
+    (defun pdc|org-refile-goto ()
+      (interactive)
+      (org-refile '(4)))
+    (defun pdc|org-refile-goto-last ()
+      (interactive)
+      (org-refile '(16)))
+    (defun pdc|org-reload-uncompiled ()
+      (interactive)
+      (org-reload '(4)))
+    (defun pdc|org-reload-compiled ()
+      (interactive)
+      (org-reload))
 
-  (setq org-directory (expand-file-name "~/Dropbox"))
+    (setq org-directory (expand-file-name "~/Dropbox/org"))
 
-  :config
-  (add-to-list 'Info-directory-list
-               (expand-file-name "../doc" (org-find-library-dir "org")))
-
-#+END_SRC
-
-
-*** Babel
-
-#+BEGIN_SRC emacs-lisp
     :config
+    (add-to-list 'Info-directory-list
+                 (expand-file-name "../doc" (org-find-library-dir "org")))
+
     (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (shell . t)
-       (perl . t)
-       (haskell . t)))
+       'org-babel-load-languages
+       '((emacs-lisp . t)
+         (shell . t)
+         (perl . t)
+         (haskell . t)))
+
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively t
           org-src-tab-acts-natively t
           org-iswitchb-completing-read 'ivy-completing-read)
-#+END_SRC
 
-*** Capture
-#+BEGIN_SRC emacs-lisp
-  (require 'org-contacts)
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
-  (setq org-capture-templates
-        `(("t" "Todo" entry (file+headline ,(concat org-directory "/gtd.org") "Tasks")
-               "* TODO %?\n  %i\n  %a")
-          ("F" "Folk contacts")
-          ("Ff" "Festival" entry (file+datetree+prompt ,(concat org-directory "/gig-contacts.org") "Festivals")
-           (file ,(concat org-directory "/capture-templates/festival.otpl")))
-          ))
-#+END_SRC
+    (require 'org-contacts)
+    (setq org-default-notes-file (concat org-directory "/notes.org"))
+    (setq org-capture-templates
+          `(("t" "Todo" entry (file+headline ,(concat org-directory "/gtd.org") "Tasks")
+                 "* TODO %?\n  %i\n  %a")
+            ("F" "Folk contacts")
+            ("Ff" "Festival" entry (file+datetree+prompt ,(concat org-directory "/gig-contacts.org") "Festivals")
+             (file ,(concat org-directory "/capture-templates/festival.otpl")))
+            ("D" "D&D")
+            ("DB" "Bil Brewster" entry (file+datetree ,(concat org-directory "/bil-brewster.org" "Sessions"))
+             " Session at %^{Location} 
+    :PROPERTIES:
+    :XP_delta:  %^{XP earned}
+    :Gold_delta: %^Gold earned
+    :DM:
+    :Title:
+    :Adventure_session_no:
+    :END:
+    ,** Party members
+      - Bil Brewster
+      -
+      -
+      -
+    ,** Writeup
+    ")))
+    :ensure t)
 
-
-*** Close the req-package
-
-It's ugly lisp, but it keeps paredit relatively happy with our fragments. 
-
-#+BEGIN_SRC emacs-lisp
-)
 #+END_SRC
 
 *** Org exporters
 
 #+BEGIN_SRC emacs-lisp
-  (req-package ox-gfm
-    :require org)
+  (after-loading 'org
+    (use-package ox-gfm
+      :ensure t))
+
 
   (req-package autoinsert)
 #+END_SRC
