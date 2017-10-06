@@ -1797,7 +1797,6 @@ that's also used by swiper.
      :documentation "Globally highlight the current line"
      :toggle-keys "thh"))
 
-
   (bindings|add-toggle truncate-lines
     :status truncate-lines
     :on (toggle-truncate-lines)
