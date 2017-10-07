@@ -2164,6 +2164,16 @@ Speculatively installed. Need to work out if I really need it.
     (global-flycheck-mode t))
 #+END_SRC
 
+** Auto-compile
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-compile :ensure t
+    :commands (auto-compile-on-load-mode auto-compile-on-save-mode)
+    :init
+    (auto-compile-on-load-mode)
+    (auto-compile-on-save-mode)
+    (setq auto-compile-display-buffer nil)
+    (setq auto-compile-mode-line-counter t))
+#+END_SRC
 
 ** Programming languages
 
