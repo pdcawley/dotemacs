@@ -314,17 +314,18 @@ Turn off the toolbar
 
 ** Diminish some modes
 #+BEGIN_SRC emacs-lisp
-  (diminish 'auto-fill-function " Ⓕ")
-  (req-package autorevert :ensure t
-  :diminish (auto-revert-mode . " ⎌"))
+    (diminish 'auto-fill-function " Ⓕ")
+    (use-package autorevert 
+      :ensure t
+      :diminish (auto-revert-mode . " ⎌"))
 
-  ;;; These will be moved to org-mode config when we have an org-mode
-  ;;; config section
-  (after-loading 'org-src
-    (diminish 'org-src-mode " ⓞ")
-    (setq org-src-window-setup 'current-window))
-  (after-loading 'org-indent
-    (diminish 'org-indent-mode))
+    ;;; These will be moved to org-mode config when we have an org-mode
+    ;;; config section
+    (after-loading 'org-src
+      (diminish 'org-src-mode " ⓞ")
+      (setq org-src-window-setup 'current-window))
+    (after-loading 'org-indent
+      (diminish 'org-indent-mode))
 #+END_SRC
 
 
