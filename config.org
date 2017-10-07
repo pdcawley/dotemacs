@@ -23,7 +23,6 @@ Some near-future plans for =config.org=:
 - [X] yasnippet setup (life is too short to type =#+BEGIN_SRC
   emacs-lisp= everywhere
 - [X] Leader key based keymaps
-- [X] req-package based configuration and installation
 - Prog-modes
   - [ ] Perl
   - [1/3] Lisps
@@ -143,22 +142,17 @@ Initialize our package managment and key binding:
       (require 'pdc-leader)
       (require 'general)
       (require 'use-package)
-      (use-package req-package
-        :init
-        (add-hook 'after-init-hook (lambda () (req-package-finish)))
-        :config
-        (progn
-          (req-package--log-enable-messaging)
-          (req-package--log-enable-debugging)))
-
-      (require 'req-package)
       (require 'cl)))
 
-  (setq use-package-verbose t)
   (use-package diminish
     :ensure t)
   (use-package bind-key
     :ensure t)
+  (use-package which-key
+    :ensure t
+    :init
+    (bindings|add-toggle which-key-mode :toggle-keys "TK"))
+
 #+END_SRC
 
 *** Basic libraries
@@ -401,81 +395,6 @@ Activate UTF-8 mode:
 
 * Leader key based bindings
 
-** Leader keys and maps
-#+BEGIN_SRC emacs-lisp :tangle no
-  (defvar leader-map (make-sparse-keymap))
-  (defvar leader-key "M-m")
-  ;(global-set-key (kbd leader-key) nil)
-
-  (defvar mode-leader-key "M-,"
-    "Prefix for mode specific leader")
-#+END_SRC
-
-** Supporting packages
-which-key:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package which-key
-    :diminish " Ⓚ"
-    :init
-    (bindings|add-toggle which-key-mode :toggle-keys "TK")
-    (which-key-mode)
-    :config
-    (let ((new-descriptions
-           '(("select-window-\\"0-9 "\\)" . "window \\1")
-             ("avy-goto-word-or-subword-1" . "avy»word")
-             ("shell-command" . "shell cmd")
-             ("universal-argument" . "universal arg")
-             ("er/expand-region" . "expand region"))))
-      (dolist (nd new-descriptions)
-        (push (cons (concat "\\`" (car nd) "\\'") (cdr nd))
-              which-key-description-replacement-alist)))
-    (setq which-key-special-keys nil
-          which-key-echo-keystrokes 0.02
-          which-key-max-description-length 32
-          which-key-sort-order 'which-key-key-order-alpha
-          which-key-idle-delay 0.4))
-#+END_SRC
-
-hydra:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package hydra :ensure t
-    :commands defhydra
-    :init
-    (setq hydra-head-format "%s → ")
-    :config)
-#+END_SRC
-
-
-** Supporting macros
-These define space keymaps under the leader key
-#+BEGIN_SRC emacs-lisp :tangle no
-  (defun bindings|expand-define-prefix (desc key docstr)
-    (let* ((descname (symbol-name desc))
-           (leader-variable-name (intern (format "%s-leader-key" descname)))
-           (infix-variable-name (intern (format "%s-infix-key" descname)))
-           (prefix-variable-name-deprecated (intern (format "%s-prefix-key" descname)))
-           (doc (or docstr (symbol-name desc))))
-      `(progn
-         (defvar ,leader-variable-name (format "%s %s" leader-key ,key)
-           ,(format "leader-key + prefix for %s" doc))
-         (defvar ,infix-variable-name ,key
-           ,(format "infix for %s - use with `pdc|with-leader :infix %s' type commands" doc infix-variable-name))
-         (defvar ,prefix-variable-name-deprecated ,infix-variable-name
-           ,(format "Obsolete copy of %s" infix-variable-name))
-         (make-obsolete ',prefix-variable-name-deprecated ',infix-variable-name "2017-08-27")
-         (which-key-add-key-based-replacements ,leader-variable-name ,doc))))
-
-
-  (defmacro bindings|define-prefix (desc key &optional docstr)
-    (declare (indent 1))
-    (bindings|expand-define-prefix desc key docstr))
-
-  (defmacro bindings|define-prefix-1 (descvar key docstr)
-    (declare (indent 1))
-    `(eval (bindings|expand-define-prefix `,,descvar ,key ,docstr)))
-
-#+END_SRC
-
 ** Keymap prefixes
 
 The idea is that most of our commands come under a tree of prefixes,
@@ -560,190 +479,6 @@ manage our own prefix registry
 - [ ] Sweetener for =general-define-key=
 - [ ] Better toggles
 
-*** Load general keybinding support
-
-We load =general.el= using =(use-package :ensure t ...)= here because
-=general= needs to be loaded and working in order for =req-package= to
-handle the =:general= clauses we use for our keybindings. 
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package general
-    :ensure t
-    :config
-    (use-package hydra
-      :ensure t)
-    (use-package which-key
-      :ensure t)
-
-    (general-define-key mode-leader-key '(nil :which-key "mode-leader"))
-    (general-define-key leader-key '(nil :which-key "leader"))
-
-    (general-create-definer pdc/with-leader
-                            :prefix leader-key :keymaps 'global)
-    (put 'pdc/with-leader 'lisp-indent-function 'defun)
-
-    (general-create-definer pdc|with-mode-leader
-                            :prefix mode-leader-key)
-    (put 'pdc|with-mode-leader 'lisp-indent-function 'defun)
-
-    (pdc|with-leader
-      "h" (list help-map :which-key "help")))
-
-  (defun pdc/mplist-get (plist prop)
-    "Get the values associated to PROP in PLIST, a modified plist.
-
-  A modified plist is one where keys are keywords and values are
-  all non-keywords elements that follow it.
-
-  If there are multiple properties with the same keyword, only the first property
-  and its values is returned.
-
-  Currently this function infloops when the list is circular."
-    (let ((tail plist)
-          result)
-      (while (and (consp tail) (not (eq prop (car tail))))
-        (pop tail))
-      ;; pop the found keyword
-      (pop tail)
-      (while (and (consp tail) (not (keywordp (car tail))))
-        (push (pop tail) result))
-      (nreverse result)))
-
-  (defvar bindings-toggles '()
-    "List of all declared toggles.
-  The strucutre of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
-
-  (defun bindings//expand-add-toggle (name props)
-    (let* ((docstr (if (stringp (car props))
-                            (pop props)))
-           (mode (plist-get props :mode) )
-           (wrapper-func (intern (format "toggle|%s"
-                                         (symbol-name name))))
-           (wrapper-func-on (intern (format "%s-on" wrapper-func)))
-           (wrapper-func-off (intern (format "%s-off" wrapper-func)))
-           (wrapper-func-status (intern (format "%s-status" wrapper-func)))
-           (status (or (plist-get props :status) mode name))
-           (doc (or (plist-get props :documentation)
-                    docstr))
-           (on-body (if mode `((,mode)) (pdc/mplist-get props :on)))
-           (off-body (if mode `((,mode -1)) (pdc/mplist-get props :off)))
-           (prefix-arg-var (plist-get props :prefix))
-           (on-message (plist-get props :on-message))
-           (condition (plist-get props :if))
-
-           (status-eval `(and (or (and (symbolp ',status) (boundp ',status))
-                                  (listp ',status))
-                              ,status))
-           ;; If we're defined by `define-minor-mode this will toggle
-           ;; the mode
-           (toggle-body (or (pdc/mplist-get props :toggler)
-                            (if (or on-body off-body)
-                                `(if ,status-eval
-                                     (progn ,@off-body)
-                                   ,@on-body)
-                              `(,name 'toggle))))
-           (keymaps (pdc/mplist-get props :keymaps))
-           (binding (plist-get props :toggle-keys)))
-      `(progn
-
-         (push (append '(,name)
-                       '(:function ,wrapper-func
-                                   :predicate ,wrapper-func-status)
-                       ',props)
-               bindings-toggles)
-
-         ;; toggle function
-         (defun ,wrapper-func ,(if prefix-arg-var (list prefix-arg-var) ())
-           ,(format "Toggle %s on and off." (symbol-name name))
-           (interactive ,@(when prefix-arg-var (list prefix-arg-var)))
-           (if (or (null ',condition)
-                   (and (or (and (symbolp ',condition) (boundp ',condition))
-                            (listp ',condition))
-                        ,condition))
-               (progn
-                 ,toggle-body
-                 ,(if on-message
-                      `(message (if ,status-eval on-message (format "%s disabled." ,(symbol-name name))))
-                    `(message (let ((enabled ,status-eval))
-                                (format "%s %s." (quote ,name) (if ,status-eval "enabled" "disabled"))))))
-             (message "This toggle is not supported")))
-
-         (defun ,wrapper-func-status ()
-           ,status-eval)
-
-         ,@(when status
-             `((defun ,wrapper-func-on ()
-                 ,(format "Toggle %s on" (symbol-name name))
-                 (interactive)
-                 (unless ,status-eval (,wrapper-func)))
-               (defun ,wrapper-func-off ()
-                 ,(format "Toggle %s off." (symbol-name name))
-                 (interactive)
-                 (when ,status-eval (,wrapper-func)))))
-         ,@(when binding
-             `((pdc|with-leader ,@(if keymaps `(:keymaps ',keymaps))
-                 ,binding '(,wrapper-func :which-key
-                                          ,(or doc (symbol-name name)))))))))
-
-
-  (defmacro bindings|add-toggle (name &rest props)
-    (declare (indent 1))
-    (bindings//expand-add-toggle name props))
-
-  (defun pdc/shortdoc (fn)
-    (when-let* ((doc (documentation fn)))
-      (substring doc 0 (string-match "\n" doc))))
-
-  (defun pdc//bind-hydra-spec (spec leader)
-    (pcase spec
-      (`(,key ,fn ,desc . ,(pred (lambda (props)
-                                   (plist-get props :exit))))
-       (let ((keys (concat leader " " key)))
-         (general-define-key :prefix leader-key
-                             keys (list fn :which-key desc))))
-      (`(,key ,_ ,desc . ,(and props
-                               (pred (lambda (props)
-                                       (not (plist-get props :exit))))))
-       (let ((hydra-fn (plist-get props :cmd-name))
-             (long-leader (concat leader-key " " leader)))
-         (general-define-key :prefix long-leader
-                             key (list hydra-fn :which-key desc))))))
-
-
-  (defmacro pdc|general-bind-hydra
-      (name leader &key no-cancel &allow-other-keys &rest specs)
-    "Bind a hydra in such a way that others can share the prefix."
-    (declare (indent defun))
-    (cl-flet
-        ((canonicalize-spec (spec)
-                            (let* ((key (car spec))
-                                   (action (cadr spec))
-                                   (tail (cddr spec))
-                                   (caption (cond ((stringp (car tail))
-                                                   (pop tail))
-                                                  ((symbolp action)
-                                                   (symbol-name action))
-                                                  ((functionp action)
-                                                   (pdc/shortdoc action))
-                                                  (t "??"))))
-                              `(,key ,action ,caption ,@tail
-                                     :cmd-name ,(intern
-                                                 (format "hydra-%s/%s" name action))))))
-      (let ((hydra-key (intern (format "hydra-%s" (symbol-name name))))
-            (specs (-map #'canonicalize-spec specs)))
-        `(progn
-           (defhydra ,hydra-key (nil nil :color red)
-             ,(symbol-name name)
-             ,@specs
-             ,@ (unless no-cancel '(("q" nil "cancel" :color blue))))
-           (--each ',specs
-             (pdc//bind-hydra-spec it ,leader))))))
-
-  (put 'pdc|general-bind-hydra 'lisp-indent-function 2)
-
-#+END_SRC
-
-
 *** Declare the prefixes
 #+BEGIN_SRC emacs-lisp :var prefixes=prefixes
   (dolist (it prefixes)
@@ -776,7 +511,7 @@ handle the =:general= clauses we use for our keybindings.
   (pdc|with-leader :infix (:apps)
     "c" 'calc-dispatch
     "p" 'list-processes
-    "P" 'proced
+    "C-p" 'proced
     "u" 'undo-tree-visualize)
 
   (use-package pdc-buffer-helpers
@@ -2151,12 +1886,14 @@ how to configure it properly.
 *** git-timemachine
 Speculatively installed. Need to work out if I really need it.
 #+BEGIN_SRC emacs-lisp
-  (req-package git-timemachine)
+  (use-package git-timemachine :ensure t)
 #+END_SRC
 
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck :ensure t
+  (use-package flycheck 
+    :ensure t
+    :pin "melpa"
     :commands global-flycheck-mode
     :diminish " ⓢ"
     :init
@@ -2338,11 +2075,12 @@ Configure our base Lisp mode
   (use-package autoinsert :ensure t)
   (use-package finder :ensure t)
 
-  (req-package auto-compile
+  (use-package auto-compile
+    :ensure t
     :init (setq load-prefer-newer t)
     :config (auto-compile-on-load-mode))
 
-  (req-package lisp-mode
+  (use-package lisp-mode
     :config
 
     (defun pdc/goto-match-paren (arg)
@@ -2386,10 +2124,10 @@ Configure our base Lisp mode
 
     (hook-into-modes 'my-lisp-mode-hook lisp-mode-hooks))
 
-  (req-package eldoc
+  (use-package eldoc
     :diminish eldoc-mode)
 
-  (req-package elisp-mode
+  (use-package elisp-mode
     :general
     (pdc|with-leader :infix (:elisp)
      "c" 'finder-commentary
@@ -2403,7 +2141,8 @@ Configure our base Lisp mode
      (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
      (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
-  (req-package lispy
+  (use-package lispy
+    :ensure t
     :diminish " Ⓛ"
     :init
     (bindings|add-toggle lispy-mode :toggle-keys "Tl")
@@ -2411,7 +2150,8 @@ Configure our base Lisp mode
     (lispy-set-key-theme '(paredit special c-digits))
     (unbind-key "M-m" lispy-mode-map-lispy))
 
-  (req-package paredit
+  (use-package paredit
+    :ensure t
     :commands paredit-mode
     :diminish " Ⓟ"
     :bind
@@ -2558,7 +2298,8 @@ Configure our base Lisp mode
 
 *** Emacs Lisp
 #+BEGIN_SRC emacs-lisp
-  (req-package macrostep
+  (use-package macrostep
+    :ensure t
     :general
     (pdc|with-leader :infix (:elisp)
      "m" 'macrostep-expand)
@@ -2649,7 +2390,9 @@ diary-remind and see where that gets us.
 * Blogging & Web
 I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
 #+BEGIN_SRC emacs-lisp
-  (req-package easy-hugo
+  (use-package easy-hugo
+    :ensure t
+    :commands easy-hugo
     :init
     (setq easy-hugo-basedir "~/Documents/singingtogether/")
     (setq easy-hugo-postdir "content/gig"))
@@ -2658,16 +2401,29 @@ I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the mome
 I use prodigy to start and stop local Hugo servers running to preview our changes.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package prodigy
-    :config
-    (prodigy-define-service
-      :name "blog-serve"
-      :command "hugo"
-      :args '("serve" "-w")
-      :cwd "~/Documents/bofh.org.uk/"
-      :tags '(hugo blog)
-      :stop-signal 'sigkill
-      :kill-process-buffer-on-stop t))
+      (use-package prodigy
+        :ensure t
+        :commands (prodigy-define-service)
+        :general
+        (pdc|with-leader :infix (:apps)
+          "P" 'prodigy)
+        :config
+        (prodigy-define-service
+          :name "blog-serve"
+          :command "hugo"
+          :args '("serve" "-w")
+          :cwd "~/Documents/bofh.org.uk/"
+          :tags '(hugo blog)
+          :stop-signal 'sigkill
+          :kill-process-buffer-on-stop t)
+        (prodigy-define-service
+          :name "st-serve"
+          :command "hugo"
+          :args '("serve" "-w")
+          :cwd "~/Documents/singingtogether/"
+          :tags '(hugo singing-together st)
+          :stop-signal 'sigkill
+          :kill-process-buffer-on-stop t))
 
 #+END_SRC
 
@@ -2705,10 +2461,10 @@ I use prodigy to start and stop local Hugo servers running to preview our change
     (js2r-add-keybindings-with-prefix "C-, m")
     (add-hook 'js2-mode-hook #'js2-refactor-mode))
 
-  (req-package tern-auto-complete
+  (use-package tern-auto-complete
     :ensure t)
 
-  (req-package tern
+  (use-package tern
     :ensure t
     :diminish tern-mode
     :config
@@ -2725,6 +2481,7 @@ Yeah, yeah, org-mode. Everyone raves.
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
     (use-package org-bullets
+      :ensure t
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC

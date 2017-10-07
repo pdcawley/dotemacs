@@ -1,5 +1,8 @@
-;; pdc-leader.el -- Support for setting up leader keys -*- lexical-binding: t -*-
+;;; pdc-leader.el -- Support for setting up leader keys -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Loads up all the stuff we need for our leader key based keymaps
 
+;;; Code:
 (eval-when-compile (require 'use-package))
 
 (use-package ht :ensure t)
@@ -11,7 +14,7 @@
 (defvar leader-key "M-m")
 
 (defvar mode-leader-key "M-,"
-  "Prefix for mode specific leader")
+  "Prefix for mode specific leader.")
 
 (use-package which-key
   :ensure t
@@ -71,14 +74,14 @@
   :ensure t)
 
 (defvar bindings--prefixes-hash (ht)
-  "Holds the map of prefix descriptions to their keys")
+  "Holds the map of prefix descriptions to their keys.")
 
 (defun bindings//declare-prefix (key-seq description)
   "Register a prefix KEY-SEQ and its DESCRIPTION.
 
-The description is used as the key of `bindings--prefixes-hash' as well 
-as any subdescriptions obtained by spliting on ``/''. Any keys that have
-have no spaces in them are also registered as keywords via 
+The description is used as the key of `bindings--prefixes-hash' as well
+as any subdescriptions obtained by spliting on ``/''.  Any keys that have
+have no spaces in them are also registered as keywords via
 `kvthing->keyword'"
   (let* ((description (s-chop-suffix "/" (s-chop-prefix "/" description)))
          (shortdescs (when (s-contains? "/" description)
@@ -97,11 +100,11 @@ have no spaces in them are also registered as keywords via
 (defun bindings//prefix (name &optional keys)
   "Return the prefix associated with NAME.
 
-    If KEYS is supplied, append it to the prefix. Raise an error if there is no 
-  such prefix."
+If KEYS is supplied, append it to the prefix.  Raise an error if there is no
+such prefix."
   (let* ((prefix (if (ht-contains? bindings--prefixes-hash name)
                      (ht-get bindings--prefixes-hash name)
-                   (error "No such leader %S." name)))
+                   (error "No such leader %S" name)))
          (prefix (if keys
                      (concat prefix " " keys)
                    prefix)))
@@ -109,7 +112,7 @@ have no spaces in them are also registered as keywords via
 
 (defun bindings//leader (name &optional keys)
   "Return the leader sequence associated with NAME.
-    Append KEYS to the result, if supplied"
+Append KEYS to the result, if supplied"
   (concat leader-key " " (bindings//prefix name keys)))
 
 (defun bindings//list->keys (list &optional lookupfn)
@@ -148,6 +151,7 @@ have no spaces in them are also registered as keywords via
 (general-create-definer pdc|with-mode-leader
                         :prefix mode-leader-key)
 (put 'pdc|with-mode-leader 'lisp-indent-function 'defun)
+
 (defun pdc/mplist-get (plist prop)
   "Get the values associated to PROP in PLIST, a modified plist.
 
@@ -173,6 +177,11 @@ Currently this function infloops when the list is circular."
 The strucutre of an element is a property list (name :func FUNCTION :doc STRING :key STRING).")
 
 (defun bindings//expand-add-toggle (name props)
+)
+
+
+(defmacro bindings|add-toggle (name &rest props)
+  (declare (indent 1))
   (let* ((docstr (if (stringp (car props))
                      (pop props)))
          (mode (plist-get props :mode) )
@@ -244,12 +253,7 @@ The strucutre of an element is a property list (name :func FUNCTION :doc STRING 
                               ,binding '(,wrapper-func :which-key
                                                        ,(or doc (symbol-name name)))))))))
 
-
-(defmacro bindings|add-toggle (name &rest props)
-  (declare (indent 1))
-  (bindings//expand-add-toggle name props))
-
-(defun pdc/shortdoc (fn)
+(defun pdc//shortdoc (fn)
   (when-let* ((doc (documentation fn)))
     (substring doc 0 (string-match "\n" doc))))
 
@@ -271,7 +275,7 @@ The strucutre of an element is a property list (name :func FUNCTION :doc STRING 
 
 (defmacro pdc|general-bind-hydra
     (name leader &key no-cancel &allow-other-keys &rest specs)
-  "Bind a hydra in such a way that others can share the prefix."
+  "Bind the hydra NAME in such a way that others can share the LEADER."
   (declare (indent defun))
   (cl-flet
       ((canonicalize-spec (spec)
@@ -283,7 +287,7 @@ The strucutre of an element is a property list (name :func FUNCTION :doc STRING 
                                                 ((symbolp action)
                                                  (symbol-name action))
                                                 ((functionp action)
-                                                 (pdc/shortdoc action))
+                                                 (pdc//shortdoc action))
                                                 (t "??"))))
                             `(,key ,action ,caption ,@tail
                                    :cmd-name ,(intern
@@ -299,7 +303,5 @@ The strucutre of an element is a property list (name :func FUNCTION :doc STRING 
            (pdc//bind-hydra-spec it ,leader))))))
 
 (put 'pdc|general-bind-hydra 'lisp-indent-function 2)
-
-(bindings|add-toggle which-key-mode :toggle-keys "TK")
 
 (provide 'pdc-leader)
