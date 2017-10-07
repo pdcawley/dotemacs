@@ -2839,6 +2839,13 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     (setq org-directory (expand-file-name "~/Dropbox/org"))
 
     :config
+    (use-package org-src
+      :init
+      (defun pdc//disable-checkdoc-in-org-src ()
+        (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+      :config
+      (add-hook 'org-src-mode-hook 'pdc//disable-checkdoc-in-org-src))
+
     (add-to-list 'Info-directory-list
                  (expand-file-name "../doc" (org-find-library-dir "org")))
 
