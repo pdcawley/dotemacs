@@ -91,6 +91,13 @@ Add a nice short alias for ~with-eval-after-load~
   (defalias 'after-loading 'with-eval-after-load)
 #+END_SRC
 
+** Finding Emacs lisp
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
+(add-to-list 'load-path (concat my-user-emacs-directory "elisp/"))
+#+END_SRC
+
 ** Support functions
 
 *** hook-into-modes
@@ -133,6 +140,8 @@ Initialize our package managment and key binding:
   (eval-when-compile
     (progn
       (setq package-enable-at-startup nil)
+      (require 'pdc-leader)
+      (require 'general)
       (require 'use-package)
       (use-package req-package
         :init
@@ -145,10 +154,11 @@ Initialize our package managment and key binding:
       (require 'req-package)
       (require 'cl)))
 
-  (req-package diminish
-    :force t)
-  (req-package bind-key
-    :force t)
+  (setq use-package-verbose t)
+  (use-package diminish
+    :ensure t)
+  (use-package bind-key
+    :ensure t)
 #+END_SRC
 
 *** Basic libraries
@@ -171,6 +181,7 @@ A modern string manipulation library
 #+BEGIN_SRC emacs-lisp
   (use-package s
     :ensure t)
+  (eval-when-compile (require 's))
 #+END_SRC
 
 **** kv.el
@@ -178,6 +189,7 @@ A modern library for messing with dictionaries
 #+BEGIN_SRC emacs-lisp
   (use-package kv
     :ensure t)
+  (eval-when-compile (require 'kv))
 #+END_SRC
 
 ** Get the environment from the shell
@@ -187,7 +199,6 @@ A modern library for messing with dictionaries
       :ensure t
       :init
       (setq exec-path-from-shell-arguments (list "-l"))
-      :config
       (exec-path-from-shell-initialize)))
 #+END_SRC
 
@@ -205,13 +216,6 @@ A modern library for messing with dictionaries
 (setq history-delete-duplicates t)
 #+END_SRC
 
-** Finding Emacs lisp
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
-(add-to-list 'load-path (concat my-user-emacs-directory "elisp/"))
-#+END_SRC
-
 ** no-littering
 
 From:
@@ -222,7 +226,8 @@ It sets some default paths in order to separate automatically created
 files and directories.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package no-littering
+  (use-package no-littering
+    :ensure t
     :config
     ;; Don't shit autosave files all over the place
     (setq auto-save-file-name-transforms
@@ -252,7 +257,8 @@ Turn off the visible bell:
 
 Make sure we have more emoji
 #+BEGIN_SRC emacs-lisp
-    (req-package emoji-fontset
+    (use-package emoji-fontset
+      :ensure t
       :config
       (setq emoji-fontset-check-version 'force)
       (emoji-fontset-enable "Symbola")
@@ -269,9 +275,9 @@ Turn off the toolbar
 
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
-  (req-package which-func)
+  (use-package which-func :ensure t)
 
-  (req-package powerline
+  (use-package powerline :ensure t
     :config
     (defun pdc/customize-powerline-faces ()
       "Alter powerline faces to make them work with more themes"
@@ -279,8 +285,7 @@ Turn off the toolbar
                           :inherit 'font-lock-comment-face))
     (pdc/customize-powerline-faces))
 
-  (req-package spaceline
-    :require which-func powerline
+  (use-package spaceline :ensure t
     :commands spaceline-compile
     :init
     (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
@@ -316,15 +321,15 @@ Turn off the toolbar
 ** Diminish some modes
 #+BEGIN_SRC emacs-lisp
   (diminish 'auto-fill-function " Ⓕ")
-  (req-package autorevert
+  (req-package autorevert :ensure t
   :diminish (auto-revert-mode . " ⎌"))
 
   ;;; These will be moved to org-mode config when we have an org-mode
   ;;; config section
-  (with-eval-after-load 'org-src
+  (after-loading 'org-src
     (diminish 'org-src-mode " ⓞ")
     (setq org-src-window-setup 'current-window))
-  (with-eval-after-load 'org-indent
+  (after-loading 'org-indent
     (diminish 'org-indent-mode))
 #+END_SRC
 
@@ -354,7 +359,7 @@ Zenburn, it's the only way to be sure!
 ** Font sizes
 
 #+BEGIN_SRC emacs-lisp
-  (req-package default-text-scale
+  (use-package default-text-scale :ensure t
     :general
     (pdc|with-leader
       "+" 'default-text-scale-increase
@@ -363,19 +368,19 @@ Zenburn, it's the only way to be sure!
 #+END_SRC
 ** Highlight TODO etc in comments and strings
 #+BEGIN_SRC emacs-lisp
-  (req-package hl-todo
+  (use-package hl-todo :ensure t
     :init
     (hook-into-modes 'hl-todo-mode '(text-mode-hook prog-mode-hook)))
 
 #+END_SRC
 ** Display battery info in modeline
 #+BEGIN_SRC emacs-lisp
-  (req-package fancy-battery
+  (use-package fancy-battery :ensure t
     :init
     (bindings|add-toggle mode-line-battery
       :mode fancy-battery-mode
       :documentation "Display battery info in mode-line"
-      :toggle-keys (:modeline "b")))
+      :toggle-keys  "Tb"))
 
 #+END_SRC
 
@@ -397,7 +402,7 @@ Activate UTF-8 mode:
 * Leader key based bindings
 
 ** Leader keys and maps
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defvar leader-map (make-sparse-keymap))
   (defvar leader-key "M-m")
   ;(global-set-key (kbd leader-key) nil)
@@ -408,11 +413,12 @@ Activate UTF-8 mode:
 
 ** Supporting packages
 which-key:
-#+BEGIN_SRC emacs-lisp
-  (req-package which-key
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package which-key
     :diminish " Ⓚ"
     :init
     (bindings|add-toggle which-key-mode :toggle-keys "TK")
+    (which-key-mode)
     :config
     (let ((new-descriptions
            '(("select-window-\\"0-9 "\\)" . "window \\1")
@@ -427,25 +433,22 @@ which-key:
           which-key-echo-keystrokes 0.02
           which-key-max-description-length 32
           which-key-sort-order 'which-key-key-order-alpha
-          which-key-idle-delay 0.4)
-    (which-key-mode))
+          which-key-idle-delay 0.4))
 #+END_SRC
 
 hydra:
-#+BEGIN_SRC emacs-lisp
-  (req-package ivy)
-  (req-package ibuffer)
-  (req-package hydra
-    :require (ibuffer ivy)
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package hydra :ensure t
     :commands defhydra
     :init
-    (setq hydra-head-format "%s → "))
+    (setq hydra-head-format "%s → ")
+    :config)
 #+END_SRC
 
 
 ** Supporting macros
 These define space keymaps under the leader key
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun bindings|expand-define-prefix (desc key docstr)
     (let* ((descname (symbol-name desc))
            (leader-variable-name (intern (format "%s-leader-key" descname)))
@@ -552,115 +555,7 @@ leader key prefix declarations, but this risks name clashes and has
 made macro writing a wee bit tricky. A better approach seems to be to
 manage our own prefix registry
 
-#+BEGIN_SRC emacs-lisp
-  (defvar bindings--prefixes-hash (ht)
-    "Holds the map of prefix descriptions to their keys")
-#+END_SRC
-
-We manage this with =bindings//declare-prefix=, 
-
-#+BEGIN_SRC emacs-lisp
-    (defun bindings//declare-prefix (key-seq description)
-      "Register a prefix KEY-SEQ and its DESCRIPTION.
-
-  The description is used as the key of `bindings--prefixes-hash' as well 
-  as any subdescriptions obtained by spliting on ``/''. Any keys that have
-  have no spaces in them are also registered as keywords via 
-  `kvthing->keyword'"
-      (require 's)
-      (require 'ht)
-      (require 'which-key)
-      (require 'kv)
-      (let* ((description (s-chop-suffix "/" (s-chop-prefix "/" description)))
-             (shortdescs (when (s-contains? "/" description)
-                           (s-split "/" description t)))
-             (full-leader (concat leader-key " " key-seq)))
-        (which-key-add-key-based-replacements full-leader description)
-        ;; (ht-set! bindings--prefixes-hash description key-seq)
-        ;; (unless (s-countains? " " description)
-        ;;   (ht-set! bindings--prefixes-hash (kvthing->keyword description)))
-        (dolist (desc (cons description shortdescs))
-          (unless (s-contains? " " desc)
-            (ht-set! bindings--prefixes-hash (kvthing->keyword desc)
-                     key-seq))
-          (ht-set! bindings--prefixes-hash desc key-seq))))
-
-#+END_SRC
-
-**** Prefix registry accessors
-
-Functions to get prefix sequences from the registry. The general form
-is =(getter "prefix"|:prefix suffix )= which will look up the prefix
-and append the value of =suffix= to the result. Lets us write:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(general-define-key :prefix (bindings//leader :file)
-  "f" 'find-file)
-
-;; Equivalent to 
-(general-define-key :prefix leader-key
-  (bindings//leader :file "f") 'find-file)
-#+END_SRC
-
-It's a bit clumsy to write by hand, but that's why we have the macros below
-
-#+BEGIN_SRC emacs-lisp
-    (defun bindings//prefix (name &optional keys)
-      "Return the prefix associated with NAME.
-
-    If KEYS is supplied, append it to the prefix. Raise an error if there is no 
-  such prefix."
-      (let* ((prefix (if (ht-contains? bindings--prefixes-hash name)
-                         (ht-get bindings--prefixes-hash name)
-                       (error "No such leader %S." name)))
-             (prefix (if keys
-                         (concat prefix " " keys)
-                       prefix)))
-        prefix))
-
-    (defun bindings//leader (name &optional keys)
-      "Return the leader sequence associated with NAME.
-    Append KEYS to the result, if supplied"
-      (concat leader-key " " (bindings//prefix name keys)))
-#+END_SRC
-
-Now we have the functions in place, we can start writing the syntactic
-sugar. =pdc|with-leader= is a variant of =pdc/with-leader= that
-rewrites lists of the (pcase) form 
-=`(,(or pred stringp) (pred keywordp)) . ,_)= into calls to
-=bindings//leader= (for =:prefix= arguments) or =bindings//prefix=
-(for everything else)
-
-#+BEGIN_SRC emacs-lisp
-
-  (defun bindings//list->keys (list &optional lookupfn)
-    (let ((lookupfn (or lookupfn #'bindings//prefix)))
-      (pcase list
-        (`(,(or (pred stringp) (pred keywordp)) . ,_)
-         (apply lookupfn list))
-        (_ list))))
-
-  (defmacro pdc|with-leader (&rest args)
-    (declare (indent defun))
-    (let ((parsed-args
-           (cl-loop for (key value) on args by 'cddr
-                    nconc (pcase (list key value)
-                            (`(:prefix ,(pred symbolp))
-                             (list key (bindings//list->keys (list value) 'bindings//leader)))
-                            (`(:prefix ,_)
-                             (list key (bindings//list->keys value 'bindings//leader)))
-                            (`(:infix ,(pred symbolp))
-                             (list key (bindings//list->keys (list value))))
-                            (`(:infix ,_)
-                             (list key (bindings//list->keys value)))
-                            (`(,(pred keywordp) ,_)
-                             (list key value))
-                            (`(,_ ,_)
-                             (list (bindings//list->keys key) value))))))
-      `(pdc/with-leader ,@parsed-args)))
-#+END_SRC
-
-***** TODO Roadmap [0/3]
+**** TODO Roadmap [0/3]
 - [ ] Similar support for mode leader prefixes
 - [ ] Sweetener for =general-define-key=
 - [ ] Better toggles
@@ -671,7 +566,7 @@ We load =general.el= using =(use-package :ensure t ...)= here because
 =general= needs to be loaded and working in order for =req-package= to
 handle the =:general= clauses we use for our keybindings. 
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package general
     :ensure t
     :config
@@ -919,7 +814,7 @@ handle the =:general= clauses we use for our keybindings.
 * Buffer and window handling
 ** ibuffer
 #+BEGIN_SRC emacs-lisp
-  (req-package ibuffer
+  (use-package ibuffer :ensure t
     :config
     (fset 'list-buffers 'ibuffer)
     (defun pdc/list-buffers-int ()
@@ -930,8 +825,7 @@ handle the =:general= clauses we use for our keybindings.
 
 ** ibuffer-vc
 #+BEGIN_SRC emacs-lisp
-  (req-package ibuffer-vc
-    :require ibuffer
+  (use-package ibuffer-vc :ensure t
     :config
     (setq ibuffer-formats
           '((mark pdc-modified vc-status-mini
@@ -950,8 +844,7 @@ Bouncing around windows using their numbers is fast and
 straightforward.
 
 #+BEGIN_SRC emacs-lisp
-  (req-package winum
-    :require dash
+  (use-package winum :ensure t
     :config
     (setq winum-auto-assign-0-to-minibuffer t
           winum-auto-setup-mode-line nil
@@ -981,7 +874,7 @@ straightforward.
 ** uniquify
 Give buffers unique names
 #+BEGIN_SRC emacs-lisp
-  (req-package uniquify
+  (use-package uniquify
     :config
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
     (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
@@ -1225,7 +1118,9 @@ to display a =*blank*= buffer.
   ;;; For the 'evil-window-*' commands. Lift these into the config later
   ;;; since we don't use Evil.
 
-  (require 'evil-commands)
+  (use-package evil :ensure t
+    :init 
+    (require 'evil-commands))
   (pdc|with-leader :infix :windows
     "2" 'pdc/layout-double-columns
     "3" 'pdc/layout-triple-columns
@@ -1511,20 +1406,22 @@ to display a =*blank*= buffer.
 
 ** Packages
 #+BEGIN_SRC emacs-lisp
-  (req-package subword)
+  (use-package subword :ensure t)
 
   (require 'misc)      ; forward-to-word & backward-to-word
 
-  (req-package visible-mark
-    :config
+  (use-package visible-mark :ensure t
+    :commands (global-visible-mark-mode)
+    :init
     (global-visible-mark-mode t))
 
-  (req-package undo-tree
+  (use-package undo-tree :ensure t
+    :commands (global-undo-tree-mode)
     :diminish undo-tree-mode
-    :config
+    :init
     (global-undo-tree-mode))
 
-  (req-package goto-last-change
+  (use-package goto-last-change :ensure t
     :config
     (setq highlight-changes-visibility-initial-state nil))
 
@@ -1564,8 +1461,7 @@ to display a =*blank*= buffer.
 
 ** Multiple cursors
 #+BEGIN_SRC emacs-lisp
-  (req-package multiple-cursors
-    :demand t
+  (use-package multiple-cursors :ensure t
     :config
     (general-define-key "s-<mouse-1>" 'mc/add-cursor-on-click)
     (pdc|general-bind-hydra mc (bindings//prefix :cursor)
@@ -1586,7 +1482,7 @@ to display a =*blank*= buffer.
 #+END_SRC
 ** Auto completion
 #+BEGIN_SRC emacs-lisp
-  (req-package auto-complete
+  (use-package auto-complete :ensure t
     :diminish " ⓐ"
     :init
     (ac-config-default)
@@ -1594,7 +1490,7 @@ to display a =*blank*= buffer.
 #+END_SRC
 ** Expanding the region
 #+BEGIN_SRC emacs-lisp
-  (req-package expand-region
+  (use-package expand-region :ensure t
     :general
     (pdc|with-leader
       "v" 'er/expand-region))
@@ -1654,7 +1550,7 @@ to display a =*blank*= buffer.
 ** Avy
 For jumping to characters and words in the frame
 #+BEGIN_SRC emacs-lisp
-  (req-package avy
+  (use-package avy :ensure t
     :general
     (pdc|with-leader :infix (:jump)
      "j" 'avy-goto-char-timer
@@ -1667,7 +1563,7 @@ For jumping to characters and words in the frame
 A better incremental search
 
 #+BEGIN_SRC emacs-lisp
-    (req-package swiper
+    (use-package swiper :ensure t
       :pin "melpa"
       :commands (swiper swiper-all)
       :general
@@ -1693,7 +1589,7 @@ the method itself, short of erroring out and telling the user (me) to
 just use the ivy supplied method.
 #+BEGIN_SRC emacs-lisp
 
-  (req-package ivy
+  (use-package ivy :ensure t
     :pin "melpa"
     :diminish " 🍃"
     :init
@@ -1771,11 +1667,8 @@ just use the ivy supplied method.
 Wraps a bunch of common functions with the =ivy= completing read
 that's also used by swiper.
 #+BEGIN_SRC emacs-lisp
-  (req-package colir)
-
-  (req-package counsel
-    :require colir
-    :demand t
+  (use-package  counsel :ensure t
+    :commands (counsel-mode)
     :diminish counsel-mode
     :general
     (pdc|with-leader
@@ -1804,7 +1697,7 @@ that's also used by swiper.
     :status auto-fill-function
     :toggle-keys "Tf")
 
-  (req-package hl-line
+  (use-package hl-line :ensure t
     :diminish hl-highlight-mode
     :commands (global-hl-line-mode hl-line-mode)
     :init
@@ -1928,7 +1821,7 @@ that's also used by swiper.
 
   ;; Buffer spruce up - could be cleverer. Per-mode spruce up strategies
   ;; for instance
-  (req-package pdc-spruce-up-buffer
+  (use-package pdc-spruce-up-buffer
     :general
     ((bindings//leader :buffer "T") 'pdc|spruce-up-buffer))
 
@@ -2020,7 +1913,7 @@ that's also used by swiper.
 
   (general-define-key "%" 'pdc|match-paren)
 
-  (req-package pdc-helpers
+  (use-package pdc-helpers
     :commands
     pdc|smarter-move-beginning-of-line
     :general
@@ -2122,9 +2015,8 @@ your sanity. Please, I beg of you don't. But do use them.
 [[https://github.com/joaotavora/yasnippet][Yasnippet]] seems to be winning the snippet tool race now
 
 #+BEGIN_SRC emacs-lisp
-  (req-package yasnippet
+  (use-package yasnippet :ensure t
     :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
-    :demand t
     :diminish (yas-minor-mode . " ⓨ")
     :config
     (yas-load-directory (concat my-user-emacs-directory "etc/yasnippet/snippets/"))
@@ -2173,15 +2065,14 @@ your sanity. Please, I beg of you don't. But do use them.
 ** Project management
 We use Projectile here (which I should learn)
 #+BEGIN_SRC emacs-lisp
-  (req-package projectile
-    :require ivy
-    :config
+  (use-package projectile :ensure t
+    :commands (projectile-mode global-projectile-mode)
     :diminish projectile-mode
+    :init
     (projectile-global-mode)
     (setq projectile-completion-system 'ivy))
 
-  (req-package counsel-projectile
-    :require projectile
+  (use-package counsel-projectile  :ensure t
     :config
     (counsel-projectile-on))
 #+END_SRC
@@ -2191,12 +2082,11 @@ We use Projectile here (which I should learn)
 Magit is awesome and I'd hate to be without it
 #+BEGIN_SRC emacs-lisp
 
-  (req-package with-editor
+  (use-package with-editor :ensure t
     :diminish "")
 
-  (req-package magit
-    :require exec-path-from-shell
-    :demand t
+  (use-package magit :ensure t
+    :commands (magit-get-top-dir magit-status)
     :general
     ("M-," 'pdc/vc-status)
     ("C-. g s" 'magit-status)
@@ -2225,7 +2115,7 @@ Magit is awesome and I'd hate to be without it
 *** Gist
 Manage code samples on github
 #+BEGIN_SRC emacs-lisp
-  (req-package gist
+  (use-package gist :ensure t
     :init
     (setq gist-authenticate-function 'gist-oauth2-authentication)
     :general
@@ -2238,16 +2128,14 @@ Manage code samples on github
 The fringe is a very handy bit of interface, especially when it knows
 about the git status of things.
 #+BEGIN_SRC emacs-lisp
-  (req-package git-gutter+
-    :require magit
+  (use-package git-gutter+ :ensure t
     :diminish git-gutter+-mode
     :diminish git-gutter-mode
     :init
     (bindings|add-toggle git-gutter :mode git-gutter+-mode :toggle-keys "Tg")
-    :config
     (global-git-gutter+-mode 1))
 
-  (req-package git-gutter-fringe+
+  (use-package git-gutter-fringe+ :ensure t
     :config
     (git-gutter-fr+-minimal))
 
@@ -2257,7 +2145,7 @@ about the git status of things.
 Apparently has useful integration with github, but I need to look into
 how to configure it properly.
 #+BEGIN_SRC emacs-lisp
-  (req-package magithub :require magit)
+  (use-package magithub :ensure t)
 #+END_SRC
 
 *** git-timemachine
@@ -2268,9 +2156,11 @@ Speculatively installed. Need to work out if I really need it.
 
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-  (req-package flycheck
+  (use-package flycheck :ensure t
+    :commands global-flycheck-mode
     :diminish " ⓢ"
     :init
+
     (global-flycheck-mode t))
 #+END_SRC
 
@@ -2435,16 +2325,14 @@ Configure our base Lisp mode
               (indent-according-to-mode))
             (forward-line))))))
 
-  (req-package autoinsert)
-  (req-package finder)
+  (use-package autoinsert :ensure t)
+  (use-package finder :ensure t)
 
   (req-package auto-compile
     :init (setq load-prefer-newer t)
     :config (auto-compile-on-load-mode))
 
   (req-package lisp-mode
-    :require finder paredit
-    :demand t
     :config
 
     (defun pdc/goto-match-paren (arg)
@@ -2492,8 +2380,6 @@ Configure our base Lisp mode
     :diminish eldoc-mode)
 
   (req-package elisp-mode
-    :require lisp-mode
-    :demand t
     :general
     (pdc|with-leader :infix (:elisp)
      "c" 'finder-commentary
@@ -2517,7 +2403,6 @@ Configure our base Lisp mode
 
   (req-package paredit
     :commands paredit-mode
-    :demand t
     :diminish " Ⓟ"
     :bind
     (:map paredit-mode-map
@@ -2839,7 +2724,8 @@ Yeah, yeah, org-mode. Everyone raves.
   (after-loading 'org
     (message "Loading org-ac")
     (use-package org-ac
-      :demand t
+      :ensure t
+      :commands (org-ac/config-default)
       :init
       (org-ac/config-default)))
 #+END_SRC
@@ -2850,7 +2736,8 @@ Yeah, yeah, org-mode. Everyone raves.
     (after-loading 'autoinsert
       (message "Loadin org-journal")
       (use-package org-journal
-       :demand t
+       :ensure t
+       :commands (org-journal-new-entry)
        :init
        (defun pdc//journal-title ()
          "The journal heading based on the file's name"
@@ -2946,11 +2833,11 @@ Load org and set up bindings under our leader keys. Includes some utility comman
                  (expand-file-name "../doc" (org-find-library-dir "org")))
 
     (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((emacs-lisp . t)
-         (shell . t)
-         (perl . t)
-         (haskell . t)))
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (shell . t)
+       (perl . t)
+       (haskell . t)))
 
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively t
@@ -2994,14 +2881,14 @@ Load org and set up bindings under our leader keys. Includes some utility comman
       :ensure t))
 
 
-  (req-package autoinsert)
+  (use-package autoinsert :ensure t)
 #+END_SRC
 
 ** Org-agenda
 #+BEGIN_SRC emacs-lisp
-(req-package diary-lib)
-(req-package org-agenda
-  :require (org diary-lib)
+(use-package diary-lib)
+(use-package org-agenda
+  :demand t
   :init
   (setq org-agenda-files `(,org-directory "~/Documents/journal")))
 #+END_SRC
