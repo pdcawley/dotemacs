@@ -2886,7 +2886,7 @@ Configure our base Lisp mode
       (auto-fill-mode -1)
       (require 'lispy)
       (lispy-mode +1)
-      ;; (paredit-mode +1)
+      (paredit-mode +1)
       ;; (redshank-mode 1)
       ;; (elisp-slime-nav-mode 1)
       (add-hook 'after-save-hook 'check-parens
@@ -2896,21 +2896,26 @@ Configure our base Lisp mode
     (hook-into-modes 'my-lisp-mode-hook lisp-mode-hooks))
 
   (use-package eldoc
-    :diminish eldoc-mode)
+    :defer t
+    :diminish eldoc-mode
+    :config
+    (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)
+    (add-hook 'ielm-mode-hook 'eldoc-mode))
+
 
   (use-package elisp-mode
     :general
     (pdc|with-leader :infix (:elisp)
-     "c" 'finder-commentary
-     "m" 'view-echo-area-messages
-     "f" 'find-function
-     "F" 'find-face-definition)
-     :config
-     (defun pdc/elisp-mode-hook ()
-       (eldoc-mode 1)
-       (setq mode-name "EL"))
-     (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
-     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
+      "c" 'finder-commentary
+      "m" 'view-echo-area-messages
+      "f" 'find-function
+      "F" 'find-face-definition)
+    :config
+    (defun pdc/elisp-mode-hook ()
+      (eldoc-mode 1)
+      (setq mode-name "EL"))
+    (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
+    (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
   (use-package lispy
     :ensure t
@@ -2918,7 +2923,7 @@ Configure our base Lisp mode
     :init
     (bindings|add-toggle lispy-mode :toggle-keys "Tl")
     :config
-    (lispy-set-key-theme '(paredit special c-digits))
+    (lispy-set-key-theme '(special c-digits))
     (unbind-key "M-m" lispy-mode-map-lispy))
 
   (use-package paredit
