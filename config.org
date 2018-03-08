@@ -512,6 +512,20 @@ Activate UTF-8 mode:
 :CUSTOM_ID: h-ACEC3B27-32B3-4A44-B3DC-5BE214AAEE7C
 :END:
 
+** We want ESC to quit lots of things
+:PROPERTIES:
+:CUSTOM_ID: h-8363C137-22C9-4FD5-A0F6-BDD0F2681A75
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (general-define-key :keymaps '(minibuffer-local-map
+                                 minibuffer-local-ns-map
+                                 minibuffer-local-completion-map
+                                 minibuffer-local-must-match-map
+                                 minibuffer-local-isearch-map)
+                      "<escape>" 'keyboard-escape-quit)
+#+END_SRC
+
 ** Keymap prefixes
 
 The idea is that most of our commands come under a tree of prefixes,
