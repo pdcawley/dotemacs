@@ -716,6 +716,53 @@ manage our own prefix registry
 #+END_SRC
 
 * Buffer and window handling
+:PROPERTIES:
+:CUSTOM_ID: h-D969DD41-E87B-403A-B8D6-66AD04F4B533
+:END:
+
+** ace-window
+:PROPERTIES:
+:CUSTOM_ID: h-9699C987-934B-46EF-9CCA-12BF20BEBA7B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :general
+    (pdc|with-leader :infix :buffers
+      "D" 'pdc/ace-kill-this-buffer)
+    (pdc|with-leader :infix :windows
+      "D" 'pdc/ace-delete-window
+      "M" 'ace-swap-window
+      "W" 'ace-window)
+    :init
+    (defun pdc/ace-delete-window (&optional arg)
+      "Ace delete window.
+  If the universal prefix argument is used then kill the buffer too."
+      (interactive "P")
+      (require 'ace-window)
+      (aw-select
+       " Ace - Delete Window"
+       (lambda (window)
+         (when (equal '(4) arg)
+           (with-selected-window window
+             (pdc/kill-this-buffer arg)))
+         (aw-delete-window window))))
+
+    (defun pdc/ace-kill-this-buffer (&optional arg)
+      "Ace kill visible buffer in a window.
+  If the universal prefix argument is used, then also kill the window."
+      (interactive "P")
+      (require 'ace-window)
+      (let (golden-ratio-mode)
+        (aw-select
+         " Ace - Kill buffer in Window"
+         (lambda (window)
+           (with-selected-window window
+             (pdc/kill-this-buffer arg)))))))
+
+#+END_SRC
+
 ** ibuffer
 :PROPERTIES:
 :CUSTOM_ID: h-89E6B27A-2A28-49B7-ADDB-013F9FB1A2A7
