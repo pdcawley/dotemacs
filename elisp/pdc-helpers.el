@@ -203,4 +203,87 @@ Start `ielm' if it's not already running"
   (interactive)
   (pdc|start-or-switch-to 'ielm "*ielm*"))
 
+;;; Spacemacs lifts
+
+(defun pdc//display-in-split (buffer alist)
+  "Split selected window and display BUFFER in the new window.
+BUFFER and ALIST ahve the same form as in `display-buffer'. If ALIST contains
+a split-side entry, its value must be usable as the SIDE argument for 
+`split-window'."
+  (let ((window (split-window nil nil (cdr (assq 'split-side alist)))))
+    (window--display-buffer buffer window 'window alist)
+    window))
+
+(defun pdc/find-file-vsplit (file)
+  "Find FILE in vertical split."
+  (interactive "FFind file (vsplit): ")
+  (let ((buffer (find-file-noselect file)))
+    (pop-to-buffer buffer '(pdc//display-in-split (split-side . right)))))
+
+(defun pdc/find-file-split (file)
+  "Find FILE in horizontal split"
+  (interactive "FFind file (split): ")
+  (let ((buffer (find-file-noselect file)))
+    (pop-to-buffer buffer '(pdc//display-in-split (split-side . below)))))
+
+(defun pdc/delete-delete-file (filename &optional ask-user)
+  "Remove specified FILENAME or directory.
+
+Also kills associated buffer (if any exists) and invalidates
+projectile cache when it's possible.
+
+When ASK-USER is non-nil, user will be asked to confirm file
+removal."
+  (interactive "f")
+  (when (and filename (file-exists-p filename))
+    (let ((buffer (find-buffer-visiting filename)))
+      (when buffer
+        (kill-buffer buffer)))
+    (when (or (not ask-user)
+              (y-or-n-p "Are you sure you want to delete this file? "))
+      (delete-file filename)
+      (when (projectile-project-p)
+        (call-interactively 'projectile-invalidate-cache)))))
+
+(defun pdc/delete-file-confirm (filename)
+  "Remove specified file or directory after user's approval.
+
+Delete FILENAME using `pdc/delete-file'."
+  (interactive "f")
+  (funcall-interactively #'pdc/delete-file filename t))
+
+(defun pdc/rename-file (filename &optional new-filename)
+  "Rename FILENAME to NEW-FILENAME.
+
+When NEW-FILENAME is not specified, ask user for a new name.
+
+Also, rename associated buffer (if any exists), invalidate the
+projectile cache when possible and update recentf list."
+  (interactive "f")
+  (when (and (filename (file-exists-p filename)))
+    (let* ((buffer (find-buffer-visiting filename))
+           (short-name (file-name-nondirectory filename))
+           (new-name (or new-filename
+                         (read-file-name
+                          (format "Rename %s to: " short-name)))))
+      (cond ((get-buffer new-name)
+             (error "A buffer named '%s' already exists!" new-name))
+            (t
+             (let ((dir (file-name-directory new-name)))
+               (when (and (not (file-exists-p dir))
+                          (yes-or-no-p (format "Create directory '%s'? " dir)))
+                 (make-directory dir t)))
+             (rename-file filename new-name 1)
+             (when buffer
+               (kill-buffer buffer)
+               (find-file new-name))
+             (when (fboundp 'recentf-add-file)
+               (recentf-add-file new-name)
+               (recentf-remove-if-non-kept filename))
+             (when (projectile-project-p)
+               (call-interactively 'projectile-invalidate-cache))
+             (message "File '%s' successfully renamed to '%s'"
+                      short-name
+                      (file-name-nondirectory new-name)))))))
+
 (provide 'pdc-helpers)
