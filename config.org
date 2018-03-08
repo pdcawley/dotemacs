@@ -849,8 +849,21 @@ Give buffers unique names
 :END:
 An undo tree for window configurations. Really handy.
 #+BEGIN_SRC emacs-lisp
-  (when (fboundp 'winner-mode)
-    (winner-mode 1))
+  (use-package winner
+    :init
+    (winner-mode t)
+    (setq winner-boring-buffers
+          (append winner-boring-buffers '("*Completions*"
+                                          "*Compile-Log*"
+                                          "*inferior-lisp*"
+                                          "*Fuzzy Copmletions*"
+                                          "*Apropos*"
+                                          "*Help*"
+                                          "*cvs*"
+                                          "*Buffer List*"
+                                          "*Ibuffer*"
+                                          "*esh command on file*"))))
+
 #+END_SRC
 
 ** Useful commands
