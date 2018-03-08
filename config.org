@@ -2600,6 +2600,27 @@ Speculatively installed. Need to work out if I really need it.
   (use-package git-timemachine :ensure t)
 #+END_SRC
 
+** Ediff
+:PROPERTIES:
+:CUSTOM_ID: h-FA6A7C6E-2D85-41FB-AB9A-D2F9A5D4B328
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ediff
+    :defer t
+    :init
+    (setq-default
+     ediff-window-setup-function 'ediff-setup-windows-plain
+     ediff-split-window-function 'split-window-horizontally
+     ediff-merge-split-window-function 'split-window-horizontally)
+    ;; Show org ediffs unfolded
+    (require 'outline)
+    (add-hook 'ediff-prepare-buffer-hook #'show-all)
+    ;; Restore window layout when done
+    (add-hook 'ediff-quit-hook #'winner-undo))
+
+#+END_SRC
+
 ** Flycheck
 :PROPERTIES:
 :CUSTOM_ID: h-B5612D66-5C2B-42FC-AD95-3C550EDA50A2
