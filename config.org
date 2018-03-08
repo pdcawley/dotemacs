@@ -702,6 +702,18 @@ manage our own prefix registry
 
 #+END_SRC
 
+** Extra Help functions
+:PROPERTIES:
+:CUSTOM_ID: h-28773083-DD0B-433A-9B9A-845AC0D03AB5
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package help-fns+
+    :ensure t
+    :general
+    (pdc|with-leader :infix :describe
+      "K" 'describe-keymap))
+#+END_SRC
 
 * Buffer and window handling
 ** ibuffer
