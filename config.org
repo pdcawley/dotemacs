@@ -237,6 +237,19 @@ A modern library for messing with dictionaries
       (exec-path-from-shell-initialize)))
 #+END_SRC
 
+** Interacting with the shell
+:PROPERTIES:
+:CUSTOM_ID: h-AB78AC60-C1EF-4AC9-A943-C7A9993123DC
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package comint
+    :general
+    (:keymaps 'comint-mode-map
+              "<up>" 'comint-previous-input
+              "<down>" 'comint-next-input))
+#+END_SRC
+
 ** Never type "yes" when "y" will do
 :PROPERTIES:
 :CUSTOM_ID: h-62B9CDB0-3316-4067-8602-DBBB4BA1825B
