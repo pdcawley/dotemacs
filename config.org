@@ -2,6 +2,9 @@
 #+TODO: ACTIVE | DISABLED
 #+TODO: TODO CURRENT | DONE
 #+STARTUP: indent
+#+LATEX_OPTIONS: [a4paper]
+#+LATEX_HEADER_EXTRA:  \usepackage{fontspec}
+#+OPTIONS: auto-id:t
 
 This is the Emacs config file of Piers Cawley.
 
@@ -17,6 +20,9 @@ rendering, so the best place to read this is within Emacs.
 This approach is shamelessly lifted from [[https://github.com/novoid/dot-emacs/][Novoid's dot-emacs]]. 
 
 * Roadmap
+:PROPERTIES:
+:CUSTOM_ID: h-02C2150A-DD66-4842-BC4A-90A5803968CB
+:END:
 
 Some near-future plans for =config.org=:
 
@@ -42,6 +48,9 @@ Some near-future plans for =config.org=:
   - Stick to it
 
 * General settings and bootstrapping
+:PROPERTIES:
+:CUSTOM_ID: h-19D2D2A2-CEF9-491E-B0F4-B8D616E045E3
+:END:
 
 profiling:
 #+BEGIN_SRC emacs-lisp
@@ -91,6 +100,9 @@ Add a nice short alias for ~with-eval-after-load~
 #+END_SRC
 
 ** Finding Emacs lisp
+:PROPERTIES:
+:CUSTOM_ID: h-83DF9133-F475-4760-B6E0-DFCF66C0D4A2
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
@@ -98,14 +110,23 @@ Add a nice short alias for ~with-eval-after-load~
 #+END_SRC
 
 ** Support functions
+:PROPERTIES:
+:CUSTOM_ID: h-7F523628-9B4F-4727-AFA1-994E706BF089
+:END:
 
 *** hook-into-modes
+:PROPERTIES:
+:CUSTOM_ID: h-89CC08BB-0642-4BF0-A8D0-9F5BED22E0EF
+:END:
 #+BEGIN_SRC emacs-lisp
 (defmacro hook-into-modes (func modes)
   `(--each ,modes (add-hook it ,func)))
 #+END_SRC
 
 ** Package
+:PROPERTIES:
+:CUSTOM_ID: h-D044C1BF-EF6B-4621-9F6A-090ADB7D4D11
+:END:
 
 Configure the package manager
 
@@ -157,7 +178,15 @@ Initialize our package managment and key binding:
 
 #+END_SRC
 
+*** Hook into use-package
+:PROPERTIES:
+:CUSTOM_ID: h-E8D93DEC-1CE9-4132-87AF-BE22687AA621
+:END:
+
 *** Basic libraries
+:PROPERTIES:
+:CUSTOM_ID: h-14F33696-C39A-432C-9C00-CCD474EBB73D
+:END:
 
 Some libraries just make life easier so we should just load them up
 unconditionally and not worry about dealing with dependencies on them
@@ -165,6 +194,9 @@ and fencing some of our helper functions in calls to =req-package= to
 ensure that the prereqs are required.
 
 **** dash.el
+:PROPERTIES:
+:CUSTOM_ID: h-0C05250C-AF36-4C00-9A49-F467BADE0EC6
+:END:
 A modern lisp manipulation library
 #+BEGIN_SRC emacs-lisp
   (use-package dash
@@ -173,6 +205,9 @@ A modern lisp manipulation library
 #+END_SRC
 
 **** s.el
+:PROPERTIES:
+:CUSTOM_ID: h-F9B1AA73-8AB9-4E22-855E-2C2DE58912F1
+:END:
 A modern string manipulation library
 #+BEGIN_SRC emacs-lisp
   (use-package s
@@ -181,6 +216,9 @@ A modern string manipulation library
 #+END_SRC
 
 **** kv.el
+:PROPERTIES:
+:CUSTOM_ID: h-54FD9BCC-5E9A-4C9C-8EED-46E2395C20AB
+:END:
 A modern library for messing with dictionaries
 #+BEGIN_SRC emacs-lisp
   (use-package kv
@@ -189,6 +227,9 @@ A modern library for messing with dictionaries
 #+END_SRC
 
 ** Get the environment from the shell
+:PROPERTIES:
+:CUSTOM_ID: h-854008B9-B69D-4351-A664-0C9760DF21B9
+:END:
 #+BEGIN_SRC emacs-lisp
   (when (memq window-system '(mac-ns ns))
     (use-package exec-path-from-shell
@@ -199,6 +240,9 @@ A modern library for messing with dictionaries
 #+END_SRC
 
 ** Never type "yes" when "y" will do
+:PROPERTIES:
+:CUSTOM_ID: h-62B9CDB0-3316-4067-8602-DBBB4BA1825B
+:END:
 
 =yes-or-no-p= can die in a fire
 
@@ -207,12 +251,18 @@ A modern library for messing with dictionaries
 #+END_SRC
 
 ** Eliminate duplicates from the minibuffer history
+:PROPERTIES:
+:CUSTOM_ID: h-CB5C541F-20DA-4698-AF19-274B37AB33D5
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq history-delete-duplicates t)
 #+END_SRC
 
 ** no-littering
+:PROPERTIES:
+:CUSTOM_ID: h-9A381074-44B2-44D6-9FF1-1EBF7A4894B5
+:END:
 
 From:
 - [[http://manuel-uberti.github.io/programming/2017/06/17/nolittering/][Manuel Uberti: Keeping your .emacs.d clean]]
@@ -232,6 +282,9 @@ files and directories.
 #+END_SRC
 
 * Styling
+:PROPERTIES:
+:CUSTOM_ID: h-D882C9E0-D7A1-45CD-B291-EBFC57A1919B
+:END:
 
 Making emacs look nice
 
@@ -270,6 +323,9 @@ Turn off the toolbar
 
 
 ** Spaceline
+:PROPERTIES:
+:CUSTOM_ID: h-4B8DBB73-485F-4E54-A0EB-32FEDEF037AD
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package which-func :ensure t)
 
@@ -315,6 +371,9 @@ Turn off the toolbar
 #+END_SRC
 
 ** Diminish some modes
+:PROPERTIES:
+:CUSTOM_ID: h-EF20149D-DEF2-41E6-8CB5-52FAA265CC7C
+:END:
 #+BEGIN_SRC emacs-lisp
     (diminish 'auto-fill-function " Ⓕ")
     (use-package autorevert 
@@ -332,6 +391,9 @@ Turn off the toolbar
 
 
 ** Themes
+:PROPERTIES:
+:CUSTOM_ID: h-74298D38-7F6A-488A-8938-ACD632632F81
+:END:
 
 Zenburn, it's the only way to be sure!
 
@@ -343,27 +405,40 @@ Zenburn, it's the only way to be sure!
 #+END_SRC
 
 ** Only one window on startup
+:PROPERTIES:
+:CUSTOM_ID: h-2ED36663-02C2-46BD-8354-EBEE99410D74
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'emacs-startup-hook 'delete-other-windows t)
 #+END_SRC
 
 ** Pretty symbols
+:PROPERTIES:
+:CUSTOM_ID: h-73ADA751-ABBE-4C38-B781-50B1AC82B4BB
+:END:
 #+BEGIN_SRC emacs-lisp
   (global-prettify-symbols-mode)
 #+END_SRC
 
 ** Font sizes
+:PROPERTIES:
+:CUSTOM_ID: h-36EE2A21-6F06-4CCF-8CCA-9C5E488175D2
+:END:
 
 #+BEGIN_SRC emacs-lisp
   (use-package default-text-scale :ensure t
-    :general
+    :commands (default-text-scale-increase default-text-scale-decrease)
+    :init
     (pdc|with-leader
       "+" 'default-text-scale-increase
       "=" 'default-text-scale-increase
       "-" 'default-text-scale-decrease))
 #+END_SRC
 ** Highlight TODO etc in comments and strings
+:PROPERTIES:
+:CUSTOM_ID: h-808266E5-51B1-40B2-A021-AE42CC784AD4
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package hl-todo :ensure t
     :init
@@ -371,6 +446,9 @@ Zenburn, it's the only way to be sure!
 
 #+END_SRC
 ** Display battery info in modeline
+:PROPERTIES:
+:CUSTOM_ID: h-5F450082-3805-49E7-97B2-F43DD0CBD5BF
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery :ensure t
     :init
@@ -383,6 +461,9 @@ Zenburn, it's the only way to be sure!
 
 
 * UTF-8 and codings
+:PROPERTIES:
+:CUSTOM_ID: h-4B7EB94D-2C65-424D-AF96-46439E2A90E8
+:END:
 
 Activate UTF-8 mode:
 #+BEGIN_SRC emacs-lisp
@@ -397,6 +478,9 @@ Activate UTF-8 mode:
 #+END_SRC
 
 * Leader key based bindings
+:PROPERTIES:
+:CUSTOM_ID: h-ACEC3B27-32B3-4A44-B3DC-5BE214AAEE7C
+:END:
 
 ** Keymap prefixes
 
@@ -411,6 +495,9 @@ We use =use-package ... :ensure t= here to ensure that
 calls to =use-package=
 
 *** Our prefixes
+:PROPERTIES:
+:CUSTOM_ID: h-A105DFBE-E7F0-4634-8615-B6E2A78EDDA9
+:END:
 
 #+NAME: prefixes
 | name            | keys | description            |
@@ -471,6 +558,9 @@ calls to =use-package=
 |                 | z    | zoom                   |
 
 *** Support prefix declaration and access
+:PROPERTIES:
+:CUSTOM_ID: h-5162F41D-0D16-4F55-AE12-5460C188809C
+:END:
 
 We used to use a bunch of poorly namespaced variables to track our
 leader key prefix declarations, but this risks name clashes and has
@@ -478,11 +568,17 @@ made macro writing a wee bit tricky. A better approach seems to be to
 manage our own prefix registry
 
 **** TODO Roadmap [0/3]
+:PROPERTIES:
+:CUSTOM_ID: h-AFBDE1FD-E7B1-4572-80F1-AE861FF976C6
+:END:
 - [ ] Similar support for mode leader prefixes
 - [ ] Sweetener for =general-define-key=
 - [ ] Better toggles
 
 *** Declare the prefixes
+:PROPERTIES:
+:CUSTOM_ID: h-BE22F4DE-C092-434C-A31F-D2F7C9D5EC12
+:END:
 #+BEGIN_SRC emacs-lisp :var prefixes=prefixes
   (dolist (it prefixes)
     (pcase-let* ((`(,namestr ,keys ,desc) it)
@@ -496,8 +592,14 @@ manage our own prefix registry
 #+END_SRC
 
 *** Initial bindings
+:PROPERTIES:
+:CUSTOM_ID: h-E6723092-96B9-4C15-BCCF-96B8C5D0389F
+:END:
 
 **** Universal argument
+:PROPERTIES:
+:CUSTOM_ID: h-ED5D4F53-D3C4-4607-A740-6FB605DFBFAE
+:END:
 #+BEGIN_SRC emacs-lisp
   (pdc|with-leader "u" 'universal-argument)
 
@@ -508,6 +610,9 @@ manage our own prefix registry
 #+END_SRC
 
 **** More
+:PROPERTIES:
+:CUSTOM_ID: h-ABD8955F-B61B-436E-8987-64B727276170
+:END:
 #+BEGIN_SRC emacs-lisp
   (pdc|with-leader "!" 'shell-command)
 
@@ -551,6 +656,9 @@ manage our own prefix registry
 
 * Buffer and window handling
 ** ibuffer
+:PROPERTIES:
+:CUSTOM_ID: h-89E6B27A-2A28-49B7-ADDB-013F9FB1A2A7
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer :ensure t
     :config
@@ -562,6 +670,9 @@ manage our own prefix registry
 #+END_SRC
 
 ** ibuffer-vc
+:PROPERTIES:
+:CUSTOM_ID: h-58455513-FCE9-47D6-B53D-67C3D8950B74
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer-vc :ensure t
     :config
@@ -578,6 +689,9 @@ manage our own prefix registry
 #+END_SRC
 
 ** Window numbering
+:PROPERTIES:
+:CUSTOM_ID: h-C54C7530-6A53-448D-A26C-390CBF8EB10E
+:END:
 Bouncing around windows using their numbers is fast and
 straightforward.
 
@@ -610,6 +724,9 @@ straightforward.
 #+END_SRC
 
 ** uniquify
+:PROPERTIES:
+:CUSTOM_ID: h-19D31FE6-9D7E-4F2C-A74E-A823D2CE15A9
+:END:
 Give buffers unique names
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
@@ -619,6 +736,9 @@ Give buffers unique names
 #+END_SRC
 
 ** winner-mode
+:PROPERTIES:
+:CUSTOM_ID: h-F8C41DB5-A155-43C1-9D1A-8AC6069E09D7
+:END:
 An undo tree for window configurations. Really handy.
 #+BEGIN_SRC emacs-lisp
   (when (fboundp 'winner-mode)
@@ -626,6 +746,9 @@ An undo tree for window configurations. Really handy.
 #+END_SRC
 
 ** Useful commands
+:PROPERTIES:
+:CUSTOM_ID: h-DD9CF74D-89D4-4C6B-8627-25C1E117E275
+:END:
 - TODO Use window numbers rather than counts where appropriate [%]
   - [ ] =pdc/transpose-windows=
 
@@ -851,6 +974,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Window Keybindings
+:PROPERTIES:
+:CUSTOM_ID: h-29EC2438-5F97-47F0-A45E-4D4F23156B0F
+:END:
 
 #+BEGIN_SRC emacs-lisp
   ;;; For the 'evil-window-*' commands. Lift these into the config later
@@ -901,6 +1027,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Text keybindings
+:PROPERTIES:
+:CUSTOM_ID: h-42916A89-7E93-46F2-BBB9-96BE5C98D739
+:END:
 
 #+BEGIN_SRC emacs-lisp
 
@@ -1037,10 +1166,18 @@ to display a =*blank*= buffer.
     "u" 'downcase-region
     "wc" 'pdc/count-words-analysis
     "TAB" 'indent-rigidly)
+
+
 #+END_SRC
 * Basic editing
+:PROPERTIES:
+:CUSTOM_ID: h-3B35BDE0-B859-44B3-A766-EBDFE2A000A3
+:END:
 
 ** Our commands
+:PROPERTIES:
+:CUSTOM_ID: h-12175468-F3CA-43BB-A102-FA46C7F76C84
+:END:
 #+BEGIN_SRC emacs-lisp
   (defun pdc/set-undo-boundary ()
     (interactive)
@@ -1143,6 +1280,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Packages
+:PROPERTIES:
+:CUSTOM_ID: h-DAE98409-A47C-4C92-85D9-9C7A980192E5
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package subword :ensure t)
 
@@ -1166,6 +1306,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Bindings
+:PROPERTIES:
+:CUSTOM_ID: h-E7738290-32A2-4617-B5B8-BDA661DAD4A6
+:END:
 #+BEGIN_SRC emacs-lisp
   (pdc|general-bind-hydra transpose "t"
     ("t" transpose-chars "chars")
@@ -1180,6 +1323,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Abbreviations
+:PROPERTIES:
+:CUSTOM_ID: h-4BAD042D-161C-4957-B014-E0253610DF5A
+:END:
 #+NAME: abbrev
 | Base | Expansion                   |
 |------+-----------------------------|
@@ -1198,6 +1344,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Multiple cursors
+:PROPERTIES:
+:CUSTOM_ID: h-9C6FC47B-93FE-4658-8476-768BB7EE1590
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors :ensure t
     :config
@@ -1219,6 +1368,9 @@ to display a =*blank*= buffer.
      "e" 'mc/edit-lines))
 #+END_SRC
 ** Auto completion
+:PROPERTIES:
+:CUSTOM_ID: h-BB506573-584F-462A-A767-2258376D6706
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete :ensure t
     :diminish " ⓐ"
@@ -1227,6 +1379,9 @@ to display a =*blank*= buffer.
     (global-auto-complete-mode t))
 #+END_SRC
 ** Expanding the region
+:PROPERTIES:
+:CUSTOM_ID: h-E6FACCB1-E5FD-4DCB-9018-1B238EC409F9
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region :ensure t
     :general
@@ -1236,8 +1391,14 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 * Navigation
+:PROPERTIES:
+:CUSTOM_ID: h-3CBDC359-6FE1-4CA5-B36B-D11FB27B4904
+:END:
 
 ** Standard locations
+:PROPERTIES:
+:CUSTOM_ID: h-A81459E3-6585-49BB-9821-2546EB1A5648
+:END:
 #+BEGIN_SRC emacs-lisp
   (defun pdc/find-config ()
     "Edit the `config.org', in the current window."
@@ -1286,6 +1447,9 @@ to display a =*blank*= buffer.
 #+END_SRC
 
 ** Avy
+:PROPERTIES:
+:CUSTOM_ID: h-F2157C17-D646-439E-A8BA-6DAAFFCB0599
+:END:
 For jumping to characters and words in the frame
 #+BEGIN_SRC emacs-lisp
   (use-package avy :ensure t
@@ -1298,6 +1462,9 @@ For jumping to characters and words in the frame
 #+END_SRC
 
 ** Swiper
+:PROPERTIES:
+:CUSTOM_ID: h-7229F57A-371D-4394-BB5A-F860A39C183B
+:END:
 A better incremental search
 
 #+BEGIN_SRC emacs-lisp
@@ -1318,6 +1485,9 @@ A better incremental search
 #+END_SRC
 
 ** Ivy
+:PROPERTIES:
+:CUSTOM_ID: h-3B23B470-EE75-4617-920A-D38E3FA2BE29
+:END:
 A better completing read. Similar to helm but rather less intrusive. 
 
 We define a =pdc-find-file-other-window= function, but it seems the
@@ -1401,6 +1571,9 @@ just use the ivy supplied method.
 #+END_SRC
 
 ** Counsel
+:PROPERTIES:
+:CUSTOM_ID: h-CB8056EA-07A0-4DFD-A2F0-9327F7B4A0BC
+:END:
 
 Wraps a bunch of common functions with the =ivy= completing read
 that's also used by swiper.
@@ -1428,7 +1601,13 @@ that's also used by swiper.
 #+END_SRC
 
 * Bindings
+:PROPERTIES:
+:CUSTOM_ID: h-30248995-CFFF-4BF8-B0DC-56AF934E58F4
+:END:
 ** Toggles for stuff that's preloaded
+:PROPERTIES:
+:CUSTOM_ID: h-AC98C3EC-1BF0-4FB1-BF41-39421DE26C6F
+:END:
 #+BEGIN_SRC emacs-lisp
 
   (bindings|add-toggle auto-fill-mode
@@ -1509,6 +1688,9 @@ that's also used by swiper.
 
 #+END_SRC
 ** Quitting emacs
+:PROPERTIES:
+:CUSTOM_ID: h-F11E7FE9-10C9-4A15-BCCC-512F699FC570
+:END:
 #+BEGIN_SRC emacs-lisp
   (defun pdc/frame-killer ()
     "Kill server buffer and hide the main Emacs window"
@@ -1527,6 +1709,9 @@ that's also used by swiper.
 #+END_SRC
 
 ** Other bindings
+:PROPERTIES:
+:CUSTOM_ID: h-29F880BF-21C4-44E4-866F-8C8CCA9EB1AD
+:END:
 #+BEGIN_SRC emacs-lisp
   (defun pdc/execute-extended-command-short (prefixarg &optional function)
     "Massively simplified execute extended command.
@@ -1743,25 +1928,45 @@ that's also used by swiper.
 #+END_SRC
 
 * Snippets
+:PROPERTIES:
+:CUSTOM_ID: h-5178C460-6EB9-488C-9220-03D421F39EB4
+:END:
 
 Snippet systems are the good sort of magical. Insane in many ways, and
 for god's sake, don't look at yasnippet's implementation if you value
 your sanity. Please, I beg of you don't. But do use them.
 
 ** yasnippet
+:PROPERTIES:
+:CUSTOM_ID: h-630A6836-98B7-4476-964F-14E4CCF69379
+:END:
 
 [[https://github.com/joaotavora/yasnippet][Yasnippet]] seems to be winning the snippet tool race now
 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet :ensure t
-    :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
+    :commands (yas-global-mode yas-minor-mode)
+    :functions (yas-load-directory)
     :diminish (yas-minor-mode . " ⓨ")
+    :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
+    :init
+    (defvar yas-global-mode nil)
+    (setq yas-triggers-in-field t
+          yas-wrap-around-region t)
+    (setq yas-prompt-functions '(yas-completing-prompt))
+    (setq yas-minor-mode-map (make-sparse-keymap))
+    (general-define-key :keymaps 'yas-minor-mode-map
+                        "M-s-/" 'yas-next-field)
+    (yas-global-mode 1)
     :config
-    (yas-load-directory (concat my-user-emacs-directory "etc/yasnippet/snippets/"))
-    (yas-global-mode 1))
+    (yas-load-directory (no-littering-expand-etc-file-name "yasnippet/snippets/")))
+
 #+END_SRC
 
 ** Snippet like functions
+:PROPERTIES:
+:CUSTOM_ID: h-AFB7D774-421A-4DAB-BB5C-F07DE8695D79
+:END:
 
 #+BEGIN_SRC emacs-lisp
   (defun my-org-insert-elisp ()
@@ -1800,7 +2005,13 @@ your sanity. Please, I beg of you don't. But do use them.
 #+END_SRC
 
 * Programming
+:PROPERTIES:
+:CUSTOM_ID: h-D4441E23-3749-4167-8030-EC38FF203644
+:END:
 ** Project management
+:PROPERTIES:
+:CUSTOM_ID: h-A3FA2DD9-23B4-4D5A-A9E8-2F60338414BE
+:END:
 We use Projectile here (which I should learn)
 #+BEGIN_SRC emacs-lisp
   (use-package projectile :ensure t
@@ -1816,7 +2027,13 @@ We use Projectile here (which I should learn)
 #+END_SRC
 
 ** Version Control (Git)
+:PROPERTIES:
+:CUSTOM_ID: h-C8C6371D-1DF9-410E-92B7-E7388505756A
+:END:
 *** Magit
+:PROPERTIES:
+:CUSTOM_ID: h-6B8BA595-A05A-4042-ADD4-0BE5E4FBD9CA
+:END:
 Magit is awesome and I'd hate to be without it
 #+BEGIN_SRC emacs-lisp
 
@@ -1851,6 +2068,9 @@ Magit is awesome and I'd hate to be without it
 
 #+END_SRC
 *** Gist
+:PROPERTIES:
+:CUSTOM_ID: h-1EF110DD-C7A0-4D86-BB59-8C3B20A021A6
+:END:
 Manage code samples on github
 #+BEGIN_SRC emacs-lisp
   (use-package gist :ensure t
@@ -1863,6 +2083,9 @@ Manage code samples on github
 #+END_SRC
 
 *** Helpful gutters/fringes
+:PROPERTIES:
+:CUSTOM_ID: h-8ABB2308-C42A-410D-840C-24BA6E8D5452
+:END:
 The fringe is a very handy bit of interface, especially when it knows
 about the git status of things.
 #+BEGIN_SRC emacs-lisp
@@ -1880,6 +2103,9 @@ about the git status of things.
 #+END_SRC
 
 *** DISABLED magithub
+:PROPERTIES:
+:CUSTOM_ID: h-082FC1D6-1A9F-4F5A-B044-8D027416BF57
+:END:
 Apparently has useful integration with github, but I need to look into
 how to configure it properly.
 #+BEGIN_SRC emacs-lisp
@@ -1887,12 +2113,18 @@ how to configure it properly.
 #+END_SRC
 
 *** git-timemachine
+:PROPERTIES:
+:CUSTOM_ID: h-34ECBFBA-98CA-45E0-BA28-D9A1A482EEBC
+:END:
 Speculatively installed. Need to work out if I really need it.
 #+BEGIN_SRC emacs-lisp
   (use-package git-timemachine :ensure t)
 #+END_SRC
 
 ** Flycheck
+:PROPERTIES:
+:CUSTOM_ID: h-B5612D66-5C2B-42FC-AD95-3C550EDA50A2
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck 
     :ensure t
@@ -1905,6 +2137,9 @@ Speculatively installed. Need to work out if I really need it.
 #+END_SRC
 
 ** Auto-compile
+:PROPERTIES:
+:CUSTOM_ID: h-D5790586-5EF8-450B-A49F-A35EA99A28FA
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package auto-compile :ensure t
     :commands (auto-compile-on-load-mode auto-compile-on-save-mode)
@@ -1916,8 +2151,14 @@ Speculatively installed. Need to work out if I really need it.
 #+END_SRC
 
 ** Programming languages
+:PROPERTIES:
+:CUSTOM_ID: h-75A30E7D-9382-4F97-A20F-E3E9CBAAA5EF
+:END:
 
 *** Lisps
+:PROPERTIES:
+:CUSTOM_ID: h-1E43EDEA-6688-4B60-9331-AA4F2C9DC3E6
+:END:
 
 There are multiple lispy modes, and we want many of them to be
 initialized the same way. So we'll set up some variables to assist
@@ -2300,6 +2541,9 @@ Configure our base Lisp mode
 #+END_SRC
 
 *** Emacs Lisp
+:PROPERTIES:
+:CUSTOM_ID: h-11543CB9-63F3-4A8D-BC2B-A20A40B471E7
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package macrostep
     :ensure t
@@ -2312,8 +2556,14 @@ Configure our base Lisp mode
 #+END_SRC
 
 * Diary/calendar
+:PROPERTIES:
+:CUSTOM_ID: h-4B4AB6B8-D333-4F2D-B7DA-8800A42833C7
+:END:
 
 ** Relative dates
+:PROPERTIES:
+:CUSTOM_ID: h-70EA6939-96CB-4727-A1DA-BCC76775E109
+:END:
 Folk festivals and the like are often scheduled around floating dates,
 e.g. Chippenham runs from the Friday before the last Monday in May
 every year. Specifying the end date with a timestamp's easy (though it
@@ -2391,6 +2641,9 @@ diary-remind and see where that gets us.
 #+END_SRC
 
 * Blogging & Web
+:PROPERTIES:
+:CUSTOM_ID: h-B8A46BF2-32CE-4E5B-AFBC-98A1DDAA9EFF
+:END:
 I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
 #+BEGIN_SRC emacs-lisp
   (use-package easy-hugo
@@ -2431,6 +2684,9 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+END_SRC
 
 ** Web mode
+:PROPERTIES:
+:CUSTOM_ID: h-8AF065E9-4515-4CA7-AE1C-3DB005077CAC
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :ensure t
@@ -2448,6 +2704,9 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+END_SRC
 
 ** Javascript
+:PROPERTIES:
+:CUSTOM_ID: h-BC68FBDE-7D00-499A-A5FF-C13B2444A9F7
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package ac-js2 :ensure t)
 
@@ -2478,9 +2737,15 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+END_SRC
 
 * Org-mode
+:PROPERTIES:
+:CUSTOM_ID: h-9B7F8382-588B-410F-8252-5027A6B3D7AD
+:END:
 Yeah, yeah, org-mode. Everyone raves.
 
 ** Org-bullets
+:PROPERTIES:
+:CUSTOM_ID: h-0E755206-6B53-4B55-95CF-644FF738C9C2
+:END:
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
     (use-package org-bullets
@@ -2490,6 +2755,9 @@ Yeah, yeah, org-mode. Everyone raves.
 #+END_SRC
 
 ** Org-ac
+:PROPERTIES:
+:CUSTOM_ID: h-10A4486E-4B7C-4102-ADB7-4DC6AB594B80
+:END:
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
     (message "Loading org-ac")
@@ -2501,6 +2769,9 @@ Yeah, yeah, org-mode. Everyone raves.
 #+END_SRC
 
 ** Org-journal
+:PROPERTIES:
+:CUSTOM_ID: h-685C95DC-776F-496D-8BDB-F42187F98D3D
+:END:
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
     (after-loading 'autoinsert
@@ -2543,6 +2814,9 @@ Yeah, yeah, org-mode. Everyone raves.
 #+END_SRC
 
 ** Org-mode
+:PROPERTIES:
+:CUSTOM_ID: h-FEC65015-24BF-4C3D-B26D-411A768ABA6D
+:END:
 
 Load org and set up bindings under our leader keys. Includes some utility commands under `init`
 
@@ -2651,6 +2925,9 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+END_SRC
 
 *** Org exporters
+:PROPERTIES:
+:CUSTOM_ID: h-9A12C54D-10F1-4724-9704-42D49264E3C9
+:END:
 
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
@@ -2662,6 +2939,9 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+END_SRC
 
 ** Org-agenda
+:PROPERTIES:
+:CUSTOM_ID: h-707E66CA-BE6E-4062-BC0E-F3D6E72BCB0F
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package diary-lib)
 (use-package org-agenda
