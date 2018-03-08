@@ -1619,8 +1619,26 @@ to display a =*blank*= buffer.
   (use-package auto-complete :ensure t
     :diminish " ⓐ"
     :init
-    (ac-config-default)
-    (global-auto-complete-mode t))
+    (setq ac-auto-start 0
+          ac-delay 0.2
+          ac-quick-help-delay 1.
+          ac-use-fuzzy t
+          ac-fuzzy-enable t
+          tab-always-indent 'complete
+          ac-dwim t)
+    (global-auto-complete-mode t)
+    :config
+    (require 'auto-complete-config)
+    (setq-default ac-sources '(ac-source-yasnippet
+                               ac-source-abbrev
+                               ac-source-dictionary
+                               ac-source-words-in-same-mode-buffers))
+    (add-to-list 'completion-styles 'initials t)
+    (general-define-key :keymaps 'ac-completing-map
+                        "C-j" 'ac-next
+                        "C-k" 'ac-previous
+                        "<S-tab>" 'ac-previous))
+
 #+END_SRC
 ** Expanding the region
 :PROPERTIES:
@@ -1744,10 +1762,21 @@ just use the ivy supplied method.
   (use-package ivy :ensure t
     :pin "melpa"
     :diminish " 🍃"
+    :general
+    (pdc|with-leader
+      (:replace "l") 'ivy-resume
+      (:buffer "b") 'ivy-switch-buffer
+      (:project "v") 'projectile-vc
+      (:file "b") 'counsel-bookmark)
     :init
     (ivy-mode 1)
     (bindings|add-toggle ivy-mode :toggle-keys "Ti")
+    (setq ivy-height 15)
+
     :config
+    (after-loading 'recentf
+      (setq ivy-use-virtual-buffers t))
+
     (defun pdc-find-file-other-window (&optional initial-input)
       "Forward to `find-file-other-window'.
   When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
@@ -1808,9 +1837,11 @@ just use the ivy supplied method.
       (interactive)
       (ivy-read "Toggles: "
                 (ivy-pdc-help//toggle-candidates)
-                :action 'ivy-pdc-help//toggle))
-  
-    )
+                :action 'ivy-pdc-help//toggle)))
+
+
+  (use-package ivy-hydra :ensure t)
+
 
 #+END_SRC
 
