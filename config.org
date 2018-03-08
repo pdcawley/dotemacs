@@ -1525,24 +1525,27 @@ to display a =*blank*= buffer.
 :CUSTOM_ID: h-DAE98409-A47C-4C92-85D9-9C7A980192E5
 :END:
 #+BEGIN_SRC emacs-lisp
-  (use-package subword :ensure t)
+   (use-package subword
+     :defer t
+     :diminish " ⓒ")
+
 
   (require 'misc)      ; forward-to-word & backward-to-word
 
-  (use-package visible-mark :ensure t
-    :commands (global-visible-mark-mode)
-    :init
-    (global-visible-mark-mode t))
+   (use-package visible-mark :ensure t
+     :commands (global-visible-mark-mode)
+     :init
+     (global-visible-mark-mode t))
 
-  (use-package undo-tree :ensure t
-    :commands (global-undo-tree-mode)
-    :diminish undo-tree-mode
-    :init
-    (global-undo-tree-mode))
+   (use-package undo-tree :ensure t
+     :commands (global-undo-tree-mode)
+     :diminish undo-tree-mode
+     :init
+     (global-undo-tree-mode))
 
-  (use-package goto-last-change :ensure t
-    :config
-    (setq highlight-changes-visibility-initial-state nil))
+   (use-package goto-last-change :ensure t
+     :config
+     (setq highlight-changes-visibility-initial-state nil))
 
 #+END_SRC
 
