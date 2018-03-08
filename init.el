@@ -20,12 +20,10 @@
 					  my-user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "vendor/org-mode/contrib/lisp"
                                           my-user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "vendor/req-package"
-                                          my-user-emacs-directory))
 (require 'org)
 
 ;; =============================================================================
-;; The int.el looks for "config.org" and tangles its elisp blocks
+;; The init.el looks for "config.org" and tangles its elisp blocks
 ;; (matching the criteria described below) to "config.el" which is
 ;; loaded as Emacs configuration.
 ;; I got this from https://github.com/novoid/dot-emacs/blob/master/init.el

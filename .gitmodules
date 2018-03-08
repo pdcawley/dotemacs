@@ -19,6 +19,6 @@
 [submodule "yasnippet-snippets"]
 	path = vendor/etc/yasnippet/snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
-[submodule "vendor/req-package"]
-	path = vendor/req-package
-	url = git@github.com:pdcawley/req-package.git
+[submodule "vendor/use-package"]
+	path = vendor/use-package
+	url = https://github.com/jwiegley/use-package.git

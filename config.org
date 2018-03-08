@@ -141,6 +141,8 @@ Initialize our package managment and key binding:
       (setq package-enable-at-startup nil)
       (require 'pdc-leader)
       (require 'general)
+      (add-to-list 'load-path (expand-file-name "vendor/use-package"
+                                                my-user-emacs-directory))
       (require 'use-package)
       (require 'cl)))
 
@@ -404,9 +406,9 @@ essentially sparse keymaps, and I've not worked out how to easily
 define them on the fly, so we predeclare the major branches of our
 tree here.
 
-We use =use-package ... :ensure t= here rather than =req-package= to
-ensure that =pdc|with-leader= is avaialable to the =:general= clause
-of subsequent calls to =req-package=
+We use =use-package ... :ensure t= here to ensure that
+=pdc|with-leader= is avaialable to the =:general= clause of subsequent
+calls to =use-package=
 
 *** Our prefixes
 
