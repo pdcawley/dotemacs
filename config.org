@@ -3399,11 +3399,13 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     :mode
     ("\\.org\\'" . org-mode)
     :general
+    (org-mode-map
+     "<return>" 'org-return-indent
+     "C-j" 'org-return)
     (pdc|with-leader :infix "o"
       "a" 'org-agenda
       "b" 'org-switchb
       "c" '(org-capture :which-key "capture")
-      "j" '(org-journal-new-entry :which-key "new journal entry")
       "l" 'org-store-link)
 
     (pdc|with-mode-leader :keymaps '(org-mode-map)
@@ -3423,6 +3425,10 @@ Load org and set up bindings under our leader keys. Includes some utility comman
       "c '" '(pdc|org-goto-select-task :which-key "goto-select-task")
       "c g" '(pdc|org-refile-goto :which-key "refile-goto")
       "c l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
+
+      "l" 'org-insert-link
+      "p" 'org-set-property
+      "P" 'org-set-property-and-value
 
       "r" '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
       "R" '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
@@ -3444,6 +3450,8 @@ Load org and set up bindings under our leader keys. Includes some utility comman
       (org-reload))
 
     (setq org-directory (expand-file-name "~/Dropbox/org"))
+    (setq org-startup-with-inline-images t
+          org-imenu-depth 8)
 
     :config
     (use-package org-src
