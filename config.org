@@ -1931,6 +1931,32 @@ that's also used by swiper.
     (counsel-mode t))
 #+END_SRC
 
+** Bookmarks
+:PROPERTIES:
+:CUSTOM_ID: h-5B5C1CFF-7511-4FEE-84FC-BC656FC65509
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package bookmark
+    :general
+    (pdc|with-leader :infix :file
+      "b" 'bookmark-jump)
+    :init
+    (setq bookmark-default-file (no-littering-expand-var-file-name "bookmarks")
+          bookmark-save-flag 1))
+#+END_SRC
+
+** Imenu
+:PROPERTIES:
+:CUSTOM_ID: h-C6F10736-F427-420B-8DFD-76552771EA0E
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package imenu
+    :general
+    (pdc|with-leader :infix :jump "i" 'imenu))
+#+END_SRC
+
 * Bindings
 :PROPERTIES:
 :CUSTOM_ID: h-30248995-CFFF-4BF8-B0DC-56AF934E58F4
