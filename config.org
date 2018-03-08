@@ -1256,6 +1256,126 @@ to display a =*blank*= buffer.
           (message "No words.")))
       words))
 
+  (defun pdc/insert-line-above-no-indent (count)
+    "Insert COUNT new lines above iwth no indentation."
+    (interactive "p")
+    (let ((p (+ (point) count)))
+      (save-excursion
+        (if (eq (line-number-at-pos) 1)
+            (move-beginning-of-line)
+          (progn
+            (evil-previous-line)
+            (move-end-of-line)))
+        (while (> count 0)
+          (insert "\n")
+          (setq count (1- count))))
+      (goto-char p)))
+
+  (defun pdc/insert-line-above-no-indent (count)
+    "Insert COUNT new lines below with no indentation"
+    (interactive "p")
+    (save-excursion
+      (move-end-of-line)
+      (while (> count 0)
+        (insert "\n")
+        (setq count (1- count)))))
+
+  (defvar pdc-indent-sensitive-modes
+    '(coffee-mode
+      elm-mode
+      haml-mode
+      haskell-mode
+      slim-mode
+      makefile-mode
+      makefile-bsdmake-mode
+      makefile-gmake-mode
+      makefile-imake-mode
+      python-mode
+      yaml-mode)
+    "Modes for which auto-indenting is suppressed.")
+
+  (defun pdc/indent-region-or-buffer ()
+    "Indent a region if selected, otherwise the whole buffer."
+    (interactive)
+    (unless (member major-mode pdc-indent-sensitive-modes)
+      (save-excursion
+        (if (region-active-p)
+            (progn
+              (indent-region (region-beginning) (region-end))
+              (message "Indented selected region."))
+          (progn
+            (indent-region (point-min) (point-max))
+            (message "Idented buffer.")))
+        (whitespace-cleanup))))
+
+  (defun pdc/split-and-new-line ()
+    "Split a quoted string or s-expression and insert a new line with 
+  auto-indent."
+    (interactive)
+    (paredit-split-sexp 1)
+    (paredit-newline))
+
+  (defun pdc/goto-next-line-and-indent (&optional count)
+    "Match the current lines indentation to the next line.
+  A COUNT argument matches the indentation to the next COUNT lines."
+    (interactive "p")
+    (let ((counter (or count 1)))
+      (while (> counter 0)
+        (join-line 1)
+        (newline-and-indent)
+        (setq counter (1- counter)))))
+
+  (defun pdc/push-mark-and-goto-beginning-of-line ()
+    "Push a mark at current location and go to the beginning of the line."
+    (interactive)
+    (push-mark (point))
+    (beginning-of-line))
+
+
+  (defun pdc/push-mark-and-goto-end-of-line ()
+    "Push a mark at current location and go to the end of the line."
+    (push-mark (point))
+    (end-of-line))
+
+  (defun pdc/close-compilation-window ()
+    "Close the window containing the '*compilation*' buffer."
+    (interactive)
+    (when compilation-last-buffer
+      (delete-windows-on compilation-last-buffer)))
+
+
+  (pdc|with-leader :infix :insertion
+    "j" 'pdc/insert-line-below-no-indent
+    "k" 'pdc/insert-line-above-no-indent)
+
+  (pdc|with-leader :infix :split
+    "o" 'open-line
+    "=" 'pdc/indent-region-or-buffer
+    "S" 'pdc/split-and-new-line
+    "k" 'pdc/goto-next-line-and-indent)
+
+  (pdc|with-leader :infix :jump
+    "0" 'pdc/push-mark-and-goto-beginning-of-line
+    "$" 'pdc/push-mark-and-goto-end-of-line
+    "f" 'find-function
+    "v" 'find-variable)
+
+  (pdc|with-leader :infix :compile
+    "C" 'compile
+    "k" 'kill-compilation
+    "r" 'recompile
+    "d" 'pdc/close-compilation-window)
+  (after-loading 'compile
+    (general-define-key :keymaps 'compilation-mode-map
+                        "g" nil
+                        "g f" 'find-file-at-point
+                        "r" 'recompile))
+
+  (pdc|with-leader :infix :narrow
+    "r" 'narrow-to-region
+    "p" 'narrow-to-page
+    "w" 'widen)
+
   (pdc|with-leader :infix :text
     "a&" 'pdc/align-repeat-ampersand
     "a(" 'pdc/align-repeat-left-paren
