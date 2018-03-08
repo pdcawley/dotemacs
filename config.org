@@ -471,6 +471,23 @@ Zenburn, it's the only way to be sure!
       :toggle-keys  "Tb"))
 
 #+END_SRC
+** Linum mode
+:PROPERTIES:
+:CUSTOM_ID: h-ADE621A5-B565-44DA-9150-88D1EF6EB786
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package linum
+    :init
+    (setq linum-format "%4d")
+    (bindings|add-toggle line-numbers
+      :mode linum-mode
+      :documentation "Show the line numbers."
+      :toggle-keys "tn")
+    :config
+    (global-linum-mode))
+
+#+END_SRC
 
 
 * UTF-8 and codings
