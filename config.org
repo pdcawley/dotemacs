@@ -3272,31 +3272,32 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 :CUSTOM_ID: h-BC68FBDE-7D00-499A-A5FF-C13B2444A9F7
 :END:
 #+BEGIN_SRC emacs-lisp
-  (use-package ac-js2 :ensure t)
+    (use-package ac-js2 :ensure t)
 
-  (use-package js2-mode
-    :ensure t
-    :mode "\\.js\\'"
-    :init
-    (add-hook 'js-mode-hook 'js2-minor-mode)
-    (add-hook 'js2-mode-hook 'ac-js2-mode))
+    (use-package js2-mode
+      :ensure t
+      :mode "\\.js\\'"
+      :init
+      (add-hook 'js-mode-hook 'js2-minor-mode)
+      (add-hook 'js2-mode-hook 'ac-js2-mode))
 
-  (use-package js2-refactor
-    :ensure t
-    :config
-    (js2r-add-keybindings-with-prefix "C-, m")
-    (add-hook 'js2-mode-hook #'js2-refactor-mode))
+    (use-package js2-refactor
+      :ensure t
+      :config
+      (js2r-add-keybindings-with-prefix "C-, m")
+      (add-hook 'js2-mode-hook #'js2-refactor-mode))
 
-  (use-package tern-auto-complete
-    :ensure t)
+    (use-package tern-auto-complete
+      :ensure t
+      )
 
-  (use-package tern
-    :ensure t
-    :diminish tern-mode
-    :config
-    (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-    (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-    (tern-ac-setup))
+    (use-package tern
+      :ensure t
+      :diminish tern-mode
+      :config
+      (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+      (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+      (tern-ac-setup))
 
 #+END_SRC
 
