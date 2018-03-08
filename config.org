@@ -1957,6 +1957,57 @@ that's also used by swiper.
     (pdc|with-leader :infix :jump "i" 'imenu))
 #+END_SRC
 
+** Files
+:PROPERTIES:
+:CUSTOM_ID: h-324E32DA-4291-4A44-9CC4-82D7C1BF1C57
+:END:
+*** Dired
+:PROPERTIES:
+:CUSTOM_ID: h-1800E44B-9B8A-4FD1-9632-560C9795618D
+:END:
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package dired
+    :general
+    (pdc|with-leader :infix :apps
+      "d" 'dired)
+    (pdc|with-leader :infix :files
+      "j" 'dired-jump)
+    (pdc|with-leader :infix :jump
+      "d" 'dired-jump
+      "D" 'dired-jump-other-window)
+    (pdc|with-mode-leader :keymaps 'dired-mode-map
+      "w" 'wdired-change-to-wdired-mode)
+    :init
+    (setq dired-use-ls-dired nil))
+
+  (use-package dired-x
+     :commands (dired-jump
+               dired-jump-other-window
+               dired-omit-mode))
+#+END_SRC
+*** Recentf
+:PROPERTIES:
+:CUSTOM_ID: h-CF54635A-644D-4ED3-8F30-741227FD1960
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'find-file-hook (lambda () (unless recentf-mode
+                                      (recentf-mode)
+                                      (recentf-track-opened-file))))
+    (setq recentf-max-saved-items 1000
+          recentf-auto-cleanup 'never
+          recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
+    :config
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
+    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
+#+END_SRC
 * Bindings
 :PROPERTIES:
 :CUSTOM_ID: h-30248995-CFFF-4BF8-B0DC-56AF934E58F4
