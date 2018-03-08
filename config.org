@@ -491,7 +491,7 @@ manage our own prefix registry
                  (description (if (> (length desc) 0)
                                   desc
                                 namestr)))
-      (bindings//declare-prefix keys (s-join "/" (list namestr desc)))))
+      (bindings//declare-prefix keys namestr desc)))
 
 #+END_SRC
 

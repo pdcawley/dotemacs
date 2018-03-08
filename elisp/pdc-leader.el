@@ -76,26 +76,28 @@
 (defvar bindings--prefixes-hash (ht)
   "Holds the map of prefix descriptions to their keys.")
 
-(defun bindings//declare-prefix (key-seq description)
-  "Register a prefix KEY-SEQ and its DESCRIPTION.
+(defun bindings//declare-prefix (key-seq name description)
+  "Register a prefix KEY-SEQ and its NAME and DESCRIPTION.
 
 The description is used as the key of `bindings--prefixes-hash' as well
 as any subdescriptions obtained by spliting on ``/''.  Any keys that have
 have no spaces in them are also registered as keywords via
 `kvthing->keyword'"
-  (let* ((description (s-chop-suffix "/" (s-chop-prefix "/" description)))
-         (shortdescs (when (s-contains? "/" description)
-                       (s-split "/" description t)))
+  (let* ((name (if (s-blank? name) nil name))
+         (shortdescs (-reject 's-blank? (s-split "/" description t)))
          (full-leader (concat leader-key " " key-seq)))
-    (which-key-add-key-based-replacements full-leader description)
+    (which-key-add-key-based-replacements full-leader (if (s-blank? description) name description))
     ;; (ht-set! bindings--prefixes-hash description key-seq)
     ;; (unless (s-countains? " " description)
     ;;   (ht-set! bindings--prefixes-hash (kvthing->keyword description)))
-    (dolist (desc (cons description shortdescs))
-      (unless (s-contains? " " desc)
+    (dolist (desc shortdescs)
+      (unless (or (ht-contains? bindings--prefixes-hash desc)
+                  (s-contains? " " desc))
         (ht-set! bindings--prefixes-hash (kvthing->keyword desc)
                  key-seq))
-      (ht-set! bindings--prefixes-hash desc key-seq)))  )
+      (ht-set! bindings--prefixes-hash desc key-seq))
+    (let ((canonical-name (kvthing->keyword (or name description))))
+      (ht-set! bindings--prefixes-hash canonical-name key-seq))))
 
 (defun bindings//prefix (name &optional keys)
   "Return the prefix associated with NAME.
