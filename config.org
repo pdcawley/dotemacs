@@ -2008,6 +2008,42 @@ that's also used by swiper.
     (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+END_SRC
+** Remembering stuff between Sessions
+:PROPERTIES:
+:CUSTOM_ID: h-A839AD38-0003-4FA6-96E9-C5CDA951C442
+:END:
+*** Savehist
+:PROPERTIES:
+:CUSTOM_ID: h-A16B73BC-6EAB-4573-AF44-318B15F14D49
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package savehist
+    :init
+    (setq enable-recursive-minibuffers t
+          history-length 1000
+          savehist-additional-variables '(mark-ring
+                                          global-mark-ring
+                                          search-ring
+                                          regexp-search-ring
+                                          extended-command-history)
+          savehist-autosave-interval 60)
+    (savehist-mode t))
+#+END_SRC
+*** Saveplace
+:PROPERTIES:
+:CUSTOM_ID: h-22B91BA9-F33A-4031-9F1E-50959BF8D0F9
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package saveplace
+    :init
+    (if (fboundp 'save-place-mode)
+        (save-place-mode)
+      (setq save-place t)))
+
+#+END_SRC
+
 * Bindings
 :PROPERTIES:
 :CUSTOM_ID: h-30248995-CFFF-4BF8-B0DC-56AF934E58F4
