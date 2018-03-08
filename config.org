@@ -527,6 +527,9 @@ Activate UTF-8 mode:
 #+END_SRC
 
 ** Keymap prefixes
+:PROPERTIES:
+:CUSTOM_ID: h-64E0A17D-1DCC-4BDF-B8DE-DD94400545F5
+:END:
 
 The idea is that most of our commands come under a tree of prefixes,
 all initiated from the primary leader key. The prefixes are
@@ -551,14 +554,14 @@ calls to =use-package=
 | package         | P    | packages               |
 | elisp           | Re   |                        |
 | pcre            | Rp   |                        |
-|                 | T    | UI toggles/themes      |
+| ui-toggles      | T    | UI toggles/themes      |
 | applications    | a    | apps                   |
 | shell           | as   | shells                 |
 | buffer          | b    | buffers                |
 |                 | c    | compile/comments       |
 | error           | e    | errors                 |
 | file            | f    | files                  |
-| file-convert    | fC   | files/convert          |
+| file-convert    | fC   | convert                |
 | emacs-d         | fe   | emacs                  |
 | variable        | fv   | variables              |
 | git             | g    | git/version-control    |
@@ -585,7 +588,6 @@ calls to =use-package=
 | pt              | st   |                        |
 | web             | sw   |                        |
 |                 | t    | toggles                |
-|                 | t    | toggles                |
 |                 | tC   | colours                |
 |                 | th   | highlight              |
 |                 | tm   | modeline               |
@@ -597,6 +599,9 @@ calls to =use-package=
 |                 | xg   | google-translate       |
 |                 | xl   | lines                  |
 |                 | xm   | move                   |
+| regex           | xr   | regular expressions    |
+| rx-elisp        | xre  | emacs lisp             |
+| rx-pcre         | xrp  | pcre                   |
 |                 | xt   | transpose              |
 |                 | xw   | words                  |
 |                 | z    | zoom                   |
