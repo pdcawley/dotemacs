@@ -3579,6 +3579,19 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
   (use-package autoinsert :ensure t)
 #+END_SRC
 
+**** Org Latex
+:PROPERTIES:
+:CUSTOM_ID: h-B9A9CE73-2B8B-49A4-A168-5B920F7808AC
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-latex
+    :defer t
+    :init
+    (setq org-latex-compiler "xelatex"))
+#+END_SRC
+
+
 ** Org-agenda
 :PROPERTIES:
 :CUSTOM_ID: h-707E66CA-BE6E-4062-BC0E-F3D6E72BCB0F
