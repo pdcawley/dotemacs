@@ -3312,11 +3312,13 @@ Yeah, yeah, org-mode. Everyone raves.
 :CUSTOM_ID: h-0E755206-6B53-4B55-95CF-644FF738C9C2
 :END:
 #+BEGIN_SRC emacs-lisp
-  (after-loading 'org
-    (use-package org-bullets
-      :ensure t
-      :config
-      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+  (use-package org-bullets
+    :ensure t
+    :after org
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+
 #+END_SRC
 
 ** Org-ac
