@@ -3176,7 +3176,19 @@ diary-remind and see where that gets us.
 :PROPERTIES:
 :CUSTOM_ID: h-B8A46BF2-32CE-4E5B-AFBC-98A1DDAA9EFF
 :END:
+
+** Hugo
+:PROPERTIES:
+:CUSTOM_ID: h-DA4F24E0-A493-48B8-BA3C-873B803C3F12
+:END:
+
+*** DISABLED easy-hugo
+:PROPERTIES:
+:CUSTOM_ID: h-238BE791-0D33-41A9-8A89-279F6D712E4B
+:END:
+
 I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
+
 #+BEGIN_SRC emacs-lisp
   (use-package easy-hugo
     :ensure t
@@ -3185,6 +3197,26 @@ I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the mome
     (setq easy-hugo-basedir "~/Documents/singingtogether/")
     (setq easy-hugo-postdir "content/gig"))
 #+END_SRC
+
+*** ox-hugo
+:PROPERTIES:
+:CUSTOM_ID: h-2BBB1483-55FB-4297-863E-E84749F16A9F
+:END:
+
+So easy-hugo seems to have been a bust. Let's try ox-hugo
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-hugo
+    :ensure t
+    :after ox
+    )
+#+END_SRC
+
+
+*** Server management
+:PROPERTIES:
+:CUSTOM_ID: h-98E0E491-A576-43BB-A66A-0B113F6044F3
+:END:
 
 I use prodigy to start and stop local Hugo servers running to preview our changes.
 
