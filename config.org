@@ -1879,15 +1879,50 @@ that's also used by swiper.
     :diminish counsel-mode
     :general
     (pdc|with-leader
-      (:files "f") '(counsel-find-file :which-key "find") 
-      (:git "S") '(counsel-git-grep :which-key "git grep")
-      (:git "f") '(counsel-git :which-key "find file in repo")
-      (:elisp "L") '(counsel-load-library :which-key "load library")
-      (:org "g") '(counsel-org-goto :which-key "goto")
-      (:org "G") '(counsel-org-goto-all :which-key "goto-all"))
+      (:file "f")  '(counsel-find-file :which-key "find")
+      (:file "L")  'counsel-locate
+      (:file "r") 'counsel-recentf
+
+      "?" 'counsel-descbinds
+      "/" 'counsel-projectile-ag
+      "*" 'pdc/counsel-projectile-ag-region-or-symbol
+
+      (:git "S")       '(counsel-git-grep :which-key "git grep")
+      (:git "f")       '(counsel-git :which-key "find file in repo")
+      (:elisp "L")     '(counsel-load-library :which-key "load library")
+      (:org "g")       '(counsel-org-goto :which-key "goto")
+      (:org "G")       '(counsel-org-goto-all :which-key "goto-all")
+      (:insertion "u") 'counsel-unicode-char
+      (:jump "i")      'counsel-imenu
+    
+      (:rings "y")     'counsel-yank-pop
+      (:themes "s")    'counsel-load-theme)
+  
+
+    (pdc|with-leader :infix :help
+      "df" 'counsel-describe-function
+      "dm" 'describe-mode
+      "dv" 'counsel-describe-variable)
+
+    (pdc|with-leader :infix :search
+      "f"  'counsel-ag
+      "F"  'pdc/counsel-ag-region-or-symbol
+      "p"  'counsel-projectile-ag
+      "P"  'pdc/counsel-projectile-ag-region-or-symbol
+      "gp" 'counsel-git-grep)
+
     :init
     (bindings|add-toggle counsel-mode :toggle-keys "Tc")
     :config
+    (ivy-set-actions 'counsel-find-file
+                     '(("f" find-file-other-frame "other frame")
+                       ("w" find-file-other-window "other window")
+                       ("v" pdc/find-file-vsplit "in vertical split")
+                       ("s" pdc/find-file-split "in horizontal split")
+                       ("l" find-file-literally "literally")
+                       ("d" pdc/delete-file-confirm "delete file")
+                       ("r" pdc/rename-file "rename file")))
+
     (--each '((apropos . counsel-apropos)
               (org-goto . counsel-org-goto)
               (set-variable . counsel-set-variable))
