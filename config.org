@@ -2458,16 +2458,51 @@ your sanity. Please, I beg of you don't. But do use them.
 :END:
 We use Projectile here (which I should learn)
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile :ensure t
-    :commands (projectile-mode global-projectile-mode)
+  (use-package projectile
+    :ensure t
+    :defer t
+    :commands (projectile-project-p)
     :diminish projectile-mode
+    :general
+    (pdc|with-leader :infix :projects
+      "b" 'projectile-switch-to-buffer
+      "d" 'projectile-find-dir
+      "f" 'projectile-find-file
+      "F" 'projectile-find-file-dwim
+      "r" 'projectile-recentf
+      "p" 'projectile-switch-project
+      "v" 'projectile-vc
+      "!" 'projectile-run-shell-command-in-root
+      "&" 'projectile-run-async-shell-command-in-root
+      "%" 'projectile-replace-regexp
+      "a" 'projectile-toggle-between-implementation-and-test
+      "c" 'projectile-compile-project
+      "D" 'projectile-dired
+      "g" 'projectile-find-tag
+      "G" 'projectile-regenerate-tags
+      "I" 'projectile-invalidate-cache
+      "k" 'projectile-kill-buffers
+      "R" 'projectile-replace
+      "T" 'projectile-test-project)
     :init
+    (setq projectile-sort-order 'recentf
+          projectile-cache-file (no-littering-expand-var-file-name "projectile.cache")
+          projectile-known-projects-file (no-littering-expand-var-file-name "projectile.bookmarks.eld"))
+    :config
     (projectile-global-mode)
     (setq projectile-completion-system 'ivy))
 
-  (use-package counsel-projectile  :ensure t
-    :config
-    (counsel-projectile-on))
+  (use-package counsel-projectile
+    :ensure t
+    :defer t
+    :general
+    (pdc|with-leader :infix :projects
+      "SPC" 'counsel-projectile
+      "b" 'counsel-projectile-switch-to-buffer
+      "d" 'counsel-projectile-find-dir
+      "p" 'counsel-projectile-switch-project
+      "f" 'counsel-projectile-find-file))
+
 #+END_SRC
 
 ** Version Control (Git)
