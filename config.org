@@ -190,8 +190,6 @@ Initialize our package managment and key binding:
 
 Some libraries just make life easier so we should just load them up
 unconditionally and not worry about dealing with dependencies on them
-and fencing some of our helper functions in calls to =req-package= to
-ensure that the prereqs are required.
 
 **** dash.el
 :PROPERTIES:
