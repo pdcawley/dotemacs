@@ -1853,6 +1853,27 @@ just use the ivy supplied method.
 Wraps a bunch of common functions with the =ivy= completing read
 that's also used by swiper.
 #+BEGIN_SRC emacs-lisp
+  (defun pdc/counsel-projectile-ag-region-or-symbol ()
+    "Use `counsel-projectile-ag' to search for the selected region or
+  the symbol around point in the current project."
+    (interactive)
+    (let ((input (if (region-active-p)
+                     (buffer-substring-no-properties
+                      (region-beginning) (region-end))
+                   (thing-at-point 'symbol t))))
+      (counsel-projectile-ag nil input)))
+
+  (defun pdc/counsel-ag-region-or-symbol ()
+    "Use `counsel-ag' to search for the selected region or the symbol
+  around point in the current project."
+    (interactive)
+    (let ((input (if (region-active-p)
+                     (buffer-substring-no-properties
+                      (region-beginning) (region-end))
+                   (think-at-point 'symbol t))))
+      (counsel-ag nil input)))
+
+
   (use-package  counsel :ensure t
     :commands (counsel-mode)
     :diminish counsel-mode
