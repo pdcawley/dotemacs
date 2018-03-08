@@ -3326,13 +3326,15 @@ Yeah, yeah, org-mode. Everyone raves.
 :CUSTOM_ID: h-10A4486E-4B7C-4102-ADB7-4DC6AB594B80
 :END:
 #+BEGIN_SRC emacs-lisp
-  (after-loading 'org
-    (message "Loading org-ac")
-    (use-package org-ac
-      :ensure t
-      :commands (org-ac/config-default)
-      :init
-      (org-ac/config-default)))
+  (use-package auto-complete-pcmp :ensure t)
+
+  (use-package org-ac
+    :ensure t
+    :commands (org-ac/setup-current-buffer)
+    :hook (org-mode . #'org-ac/setup-current-buffer)
+    :init
+    (add-to-list 'ac-modes 'org-mode))
+
 #+END_SRC
 
 ** Org-journal
@@ -3340,43 +3342,46 @@ Yeah, yeah, org-mode. Everyone raves.
 :CUSTOM_ID: h-685C95DC-776F-496D-8BDB-F42187F98D3D
 :END:
 #+BEGIN_SRC emacs-lisp
-  (after-loading 'org
-    (after-loading 'autoinsert
-      (message "Loadin org-journal")
-      (use-package org-journal
-       :ensure t
-       :commands (org-journal-new-entry)
-       :init
-       (defun pdc//journal-title ()
-         "The journal heading based on the file's name"
-         (let* ((year (string-to-number (substring (buffer-name) 0 4)))
-                (month (string-to-number (substring (buffer-name) 4 6)))
-                (day (string-to-number (substring (buffer-name) 6 8)))
-                (datim (encode-time 0 0 0 day month year)))
-           (format-time-string org-journal-date-format datim)))
+  (use-package org-journal
+    :ensure t
+    :after org
+    :commands (org-journal-new-entry org-journal-new-date-entry)
+    :general
+    (pdc|with-leader :infix (:org)
+      "j" '(org-journal-new-entry :which-key "new journal entry")
+      "J" 'org-journal-new-date-entry)
+    :init
+    (defun pdc//journal-title ()
+      "The journal heading based on the file's name"
+      (let* ((year (string-to-number (substring (buffer-name) 0 4)))
+             (month (string-to-number (substring (buffer-name) 4 6)))
+             (day (string-to-number (substring (buffer-name) 6 8)))
+             (datim (encode-time 0 0 0 day month year)))
+        (format-time-string org-journal-date-format datim)))
 
-       (defun pdc/journal-file-insert ()
-         "Insert the heading based on the file's name."
-         (interactive)
-         (insert (journal-title))
-         (insert "\n\n")
+    (defun pdc/journal-file-insert ()
+      "Insert the heading based on the file's name."
+      (interactive)
+      (insert (journal-title))
+      (insert "\n\n")
 
-         (when (equal (file-name-base (buffer-file-name))
-                      (format-time-string "%Y%m%d"))
-           (when (file-exists-p "journal-dailies-end.org")
-             (insert-file-contents "journal-dailies-end.org")
-             (insert "\n"))
+      (when (equal (file-name-base (buffer-file-name))
+                   (format-time-string "%Y%m%d"))
+        (when (file-exists-p "journal-dailies-end.org")
+          (insert-file-contents "journal-dailies-end.org")
+          (insert "\n"))
 
-           (let ((weekday-template (downcase (format-time-string)
-                                             "journal-%a.org")))
-             (when (file-exists-p weekday-template)
-               (insert-file-contents weekday-template)))
-           (when (file-exists-p "journal-dailies.org")
-             (insert-file-contents "journal-dailies.org"))
-           (previous-line 2)))
+        (let ((weekday-template (downcase (format-time-string)
+                                          "journal-%a.org")))
+          (when (file-exists-p weekday-template)
+            (insert-file-contents weekday-template)))
+        (when (file-exists-p "journal-dailies.org")
+          (insert-file-contents "journal-dailies.org"))
+        (previous-line 2)))
 
-       :config
-       (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))))
+    :config
+    (require 'autoinsert)
+    (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))
 
 #+END_SRC
 
@@ -3389,6 +3394,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
+    :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
     :diminish org-indent
     :mode
     ("\\.org\\'" . org-mode)
