@@ -2650,6 +2650,33 @@ Speculatively installed. Need to work out if I really need it.
     (setq auto-compile-mode-line-counter t))
 #+END_SRC
 
+** PCRE2EL
+:PROPERTIES:
+:CUSTOM_ID: h-5AEA0D16-F5BE-4304-8E40-5D4AFCFFC7F1
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package pcre2el
+    :ensure t
+    :general
+    (pdc|with-leader :infix :regex
+      "/" 'rxt-explain
+      "'" 'rxt-convert-to-strings
+      "t" 'rxt-toggle-elisp-rx
+      "x" 'rxt-convert-to-rx
+      "c" 'rxt-convert-syntax
+      "e/" 'rxt-explain-elisp
+      "e'" 'rxt-elisp-to-strings
+      "ep" 'rxt-elisp-to-pcre
+      "et" 'rxt-toggle-elisp-rx
+      "ex" 'rxt-elisp-to-rx
+      "p/" 'rxt-explain-pcre
+      "p'" 'rxt-pcre-to-strings
+      "pe" 'rxt-pcre-to-elisp
+      "px" 'rxt-pcre-to-rx))
+
+#+END_SRC
+
 ** Programming languages
 :PROPERTIES:
 :CUSTOM_ID: h-75A30E7D-9382-4F97-A20F-E3E9CBAAA5EF
