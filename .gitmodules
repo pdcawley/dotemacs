@@ -22,3 +22,6 @@
 [submodule "vendor/use-package"]
 	path = vendor/use-package
 	url = https://github.com/jwiegley/use-package.git
+[submodule "vendor/pdf-tools"]
+	path = vendor/pdf-tools
+	url = git@github.com:politza/pdf-tools.git
