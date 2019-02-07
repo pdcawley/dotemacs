@@ -15,7 +15,7 @@
 	url = https://github.com/icathing/mode-compile.git
 [submodule "orgmode"]
 	path = vendor/org-mode
-	url = git://orgmode.org/org-mode.git
+	url = https://code.orgmode.org/bzg/org-mode.git
 [submodule "yasnippet-snippets"]
 	path = vendor/etc/yasnippet/snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
