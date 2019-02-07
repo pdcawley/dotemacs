@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: key-prefix
+# key: kprfx
+# --
+
+"$1" '(:ignore t :which-key "${2:desc}")
+$0

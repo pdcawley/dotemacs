@@ -1,0 +1,5 @@
+# key: bnd
+# name: binding
+# --
+"${1:key}" `${2:command}
+${3:bnd}$0
