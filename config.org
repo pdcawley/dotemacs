@@ -5,6 +5,7 @@
 #+LATEX_OPTIONS: [a4paper]
 #+LATEX_HEADER_EXTRA:  \usepackage{fontspec}
 #+OPTIONS: auto-id:t
+#+PROPERTY: header-args :tangle yes :results output silent
 
 This is the Emacs config file of Piers Cawley.
 
@@ -17,11 +18,12 @@ which are marked with =:tangle no= won't be tangled to the =config.el=
 file. This will also make the invisible to Github's Org-mode
 rendering, so the best place to read this is within Emacs.
 
-This approach is shamelessly lifted from [[https://github.com/novoid/dot-emacs/][Novoid's dot-emacs]]. 
+This approach is shamelessly lifted from [[https://github.com/novoid/dot-emacs/][Novoid's dot-emacs]].
 
 * Roadmap
 :PROPERTIES:
 :CUSTOM_ID: h-02C2150A-DD66-4842-BC4A-90A5803968CB
+:ID:       EC592468-4A8F-4F16-9A68-BE3252A088FF
 :END:
 
 Some near-future plans for =config.org=:
@@ -50,51 +52,61 @@ Some near-future plans for =config.org=:
 * General settings and bootstrapping
 :PROPERTIES:
 :CUSTOM_ID: h-19D2D2A2-CEF9-491E-B0F4-B8D616E045E3
+:ID:       110BDE15-84AB-483D-B72F-52E1826B8455
 :END:
 
 profiling:
+#+name: AE9E8B75-AFEE-4685-B0CD-645478ED648D
 #+BEGIN_SRC emacs-lisp
   (defvar my-config-el-start-time (current-time)
     "Time when config.el was started")
 #+END_SRC
 
 Turn off backup files
+#+name: 9909BBC0-40B3-4265-BF49-2A3112894746
 #+BEGIN_SRC emacs-lisp
 (setq backup-inhibited t)
 #+END_SRC
 
 set start of week to Monday (not sunday) http://sunsite.univie.ac.at/textbooks/emacs/emacs_33.html
+#+name: 0AFC2E49-EC23-4D15-8B9E-F05149F5E2E7
 #+BEGIN_SRC emacs-lisp
 (setq calendar-week-start-day 1)
 #+END_SRC
 
 don't indent with tabs
+#+name: 4EB79DCA-C0AA-4924-A1D0-87DD8266B090
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
 #+END_SRC
 
 set warning of opening large files to 100MB
+#+name: 8C3E1F33-771D-4D67-B423-BAB687218618
 #+BEGIN_SRC emacs-lisp
 (setq large-file-warning-threshold 100000000)
 #+END_SRC
 
 do not add double space after periods [[http://www.reddit.com/r/emacs/comments/2l5gtz/real_sentence_in_emacs/][Real sentence in Emacs : emacs]]
+#+name: D7DC31B3-7EA6-41EE-8086-E00B7D1DAF4B
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
 #+END_SRC
 
 inhibit the startup screen
+#+name: D7170BF4-3D0E-4569-BAC2-49DF83375F80
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-screen t)
 #+END_SRC
 
 I'm okay with narrowing
+#+name: 169B37A4-20AC-49A3-BE9C-F7645858C4D2
 #+BEGIN_SRC emacs-lisp
 (put 'narrow-to-region 'disabled nil)
 #+END_SRC
 
 Add a nice short alias for ~with-eval-after-load~
 
+#+name: F644C3EB-2FB4-4C74-86DF-65B5EFA18A1A
 #+BEGIN_SRC emacs-lisp
   (defalias 'after-loading 'with-eval-after-load)
 #+END_SRC
@@ -102,8 +114,10 @@ Add a nice short alias for ~with-eval-after-load~
 ** Finding Emacs lisp
 :PROPERTIES:
 :CUSTOM_ID: h-83DF9133-F475-4760-B6E0-DFCF66C0D4A2
+:ID:       57B7F402-7D65-48CC-8460-87E181B7B967
 :END:
 
+#+name: 0A28ECD9-D821-45F3-9FEB-6F9D5E7EF433
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path (concat my-user-emacs-directory "vendor/"))
 (add-to-list 'load-path (concat my-user-emacs-directory "elisp/"))
@@ -112,33 +126,43 @@ Add a nice short alias for ~with-eval-after-load~
 ** Support functions
 :PROPERTIES:
 :CUSTOM_ID: h-7F523628-9B4F-4727-AFA1-994E706BF089
+:ID:       59BEB22C-29FA-49AF-AEA3-6BCD03E7BA53
 :END:
 
 *** hook-into-modes
 :PROPERTIES:
 :CUSTOM_ID: h-89CC08BB-0642-4BF0-A8D0-9F5BED22E0EF
+:ID:       D124EDA7-822B-4663-AA43-5AFCCE65658D
 :END:
+#+name: FE5852AD-FA8C-4992-BC3C-6D859EE37BE3
 #+BEGIN_SRC emacs-lisp
 (defmacro hook-into-modes (func modes)
   `(--each ,modes (add-hook it ,func)))
 #+END_SRC
 
-** Package
+** Package management
 :PROPERTIES:
 :CUSTOM_ID: h-D044C1BF-EF6B-4621-9F6A-090ADB7D4D11
+:ID:       1347B67E-1957-44FC-8324-C20A9560C401
 :END:
 
-Configure the package manager
+*** Setup the package manager
+:PROPERTIES:
+:ID:       65A9ED6E-1610-477E-9F06-60CA3E911941
+:CUSTOM_ID: h-14617FB2-F9FE-43E1-A79B-203FD3A18E52
+:END:
 
 =package-user-dir= holds the directory where ELPA installs its local
 copies of the packages:
 
+#+name: 4EDE24AF-DDA2-4045-875F-B5B19F3E01B0
 #+BEGIN_SRC emacs-lisp
 (setq package-user-dir (concat my-user-emacs-directory "elpa"))
 #+END_SRC
 
+#+name: EA43AB1A-B8E9-47A5-A7D2-2AFD626C5729
 #+BEGIN_SRC emacs-lisp
-  (package-initialize)
+  ;;(package-initialize)
   (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
   ;; unstable
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -154,10 +178,19 @@ copies of the packages:
   (package-refresh-contents)
 #+END_SRC
 
-Initialize our package managment and key binding:
+*** Setup =use-package=
+:PROPERTIES:
+:ID:       1BA58E84-1AF2-40AA-B14B-551ADB73E5AA
+:CUSTOM_ID: h-B2096749-5C6E-4217-8604-8DE616443ABF
+:END:
 
+Load =use-package= and its partners, =diminish=, =bind-key= and
+=which-key= as well as =general= and =pdc-leader=, which we use to
+configure our key bindings from within ~use-package~ blocks.
+
+#+name: 43FED6DF-F2D0-4327-99C8-CF67A6AFF930
 #+BEGIN_SRC emacs-lisp
-  (eval-when-compile
+  (eval-and-compile
     (progn
       (setq package-enable-at-startup nil)
       (require 'pdc-leader)
@@ -178,70 +211,646 @@ Initialize our package managment and key binding:
 
 #+END_SRC
 
-*** Hook into use-package
+*** Keep packages up to date
 :PROPERTIES:
-:CUSTOM_ID: h-E8D93DEC-1CE9-4132-87AF-BE22687AA621
+:CUSTOM_ID: h-9AE94D1A-FC14-4DAA-A683-C1D45E75564F
+:ID:       843C08F8-2CA9-48D8-A27C-AF0B0E0307B5
 :END:
+
+#+name: B569E7F5-46EB-4FC9-815A-8307412B2909
+#+begin_src emacs-lisp
+(use-package auto-package-update :ensure t
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+
+#+end_src
+
+*** Display
+:PROPERTIES:
+:ID:       555BED8B-16AC-4EA8-848F-D15ED3E16ABA
+:CUSTOM_ID: h-359DEB39-696F-471F-A375-A51A75F933F6
+:END:
+Make it easy to conditionally evaluate code when running on a
+graphical display.
+
+#+name: 4D828972-7AB1-463E-A235-5F58F749BDE0
+#+begin_src emacs-lisp
+(defmacro pdc/on-gui (statement &rest statements)
+  "Evaluate the enclosed body only when run on GUI."
+  `(when (display-graphic-p)
+     ,statements
+     ,@statements))
+
+(defmacro pdc/not-on-gui (statement &rest statements)
+  "Evaluate the enclosed body only when not run on GUI."
+  `(when (not (display-graphic-p))
+     ,statement
+     ,@statements))
+#+end_src
 
 *** Basic libraries
 :PROPERTIES:
 :CUSTOM_ID: h-14F33696-C39A-432C-9C00-CCD474EBB73D
+:ID:       1B810F4D-755F-47B9-A5EC-DE47CA2D9E21
 :END:
 
 Some libraries just make life easier so we should just load them up
 unconditionally and not worry about dealing with dependencies on them
 
-**** dash.el
-:PROPERTIES:
-:CUSTOM_ID: h-0C05250C-AF36-4C00-9A49-F467BADE0EC6
-:END:
-A modern lisp manipulation library
+Lists.
+
+#+name: 26D66E99-3C51-4DC5-BDEA-E0C836D77918
 #+BEGIN_SRC emacs-lisp
-  (use-package dash
-    :ensure t)
-  (eval-when-compile (require 'dash))
+(use-package dash
+  :ensure t
+  :config
+  (dash-enable-font-lock))
+(eval-when-compile (require 'dash))
+(use-package dash-functional
+  :ensure t)
 #+END_SRC
 
-**** s.el
-:PROPERTIES:
-:CUSTOM_ID: h-F9B1AA73-8AB9-4E22-855E-2C2DE58912F1
-:END:
-A modern string manipulation library
+Files and Directories.
+
+#+name: DCE0B67B-677E-4342-BD30-B2E22E63E8C0
+#+begin_src emacs-lisp
+(use-package f :ensure t)
+#+end_src
+
+
+Strings.
+
+#+name: C3B828E0-2CB9-47CA-BA67-FA3C0ADF1EF6
 #+BEGIN_SRC emacs-lisp
-  (use-package s
-    :ensure t)
+  (use-package s :ensure t :pin melpa)
   (eval-when-compile (require 's))
 #+END_SRC
 
-**** kv.el
-:PROPERTIES:
-:CUSTOM_ID: h-54FD9BCC-5E9A-4C9C-8EED-46E2395C20AB
-:END:
-A modern library for messing with dictionaries
+Dictionaries
+#+name: 89A89375-8DD6-4697-8043-6CA20D189E2C
 #+BEGIN_SRC emacs-lisp
-  (use-package kv
-    :ensure t)
+  (use-package kv :ensure t :pin melpa)
   (eval-when-compile (require 'kv))
 #+END_SRC
 
-** Get the environment from the shell
+Hash Tables
+
+#+name: 1DDAE1AA-484A-4190-B4EE-ABB6E2116ABB
+#+begin_src emacs-lisp
+(use-package ht :ensure t :pin melpa)
+(eval-when-compile (require 'ht))
+#+end_src
+
+Caching.
+
+#+name: 4DC9AD1B-9CE9-497B-8DA1-9C68C90D5513
+#+begin_src emacs-lisp
+(use-package persistent-soft :ensure t)
+#+end_src
+
+*** OS/X
 :PROPERTIES:
-:CUSTOM_ID: h-854008B9-B69D-4351-A664-0C9760DF21B9
+:ID:       77BC79EF-4804-4240-BF5D-FA8F55BB2D1B
+:CUSTOM_ID: h-9DC76C4F-6D68-44F7-8616-9050C149ACE9
 :END:
+
+Make it easy to evaluate code when running on OS/X
+
+#+name: 30A47098-7D49-494D-9FB5-9FCC560DEBA8
+#+begin_src emacs-lisp
+(defmacro pdc/on-osx (statement &rest statements)
+  "Evaluate the enclosed body only when run on OS/X."
+  `(when (eq system-type 'darwin)
+     ,statement
+     ,@statements))
+#+end_src
+
+Pull in the =ENVIRONMENT= variables because the GUI version of Emacs
+does not.
+
+#+name: 9DC08D45-A9CC-4407-AF13-D7CAB9BBEA13
+#+begin_src emacs-lisp
+(pdc/on-osx
+ (use-package exec-path-from-shell
+   :ensure t)
+ (setq exec-path-from-shell-arguments (list "-l"))
+ (exec-path-from-shell-initialize))
+#+end_src
+
+Configure the meta keys.
+
+Use the OS X modifiers as Emacs meta keys. Don't pass them through to
+the OS.
+
+Easily allow option pass through for alternate input methods.
+
+#+name: DEBC15E6-F8FF-477F-89B1-6F559FBD4BFA
+#+begin_src emacs-lisp
+(pdc/on-osx
+ (setq mac-control-modifier 'control)
+ (setq mac-right-control-modifier 'left)
+ (setq mac-command-modifier 'super)
+ (setq mac-right-command-modifier 'left)
+ (setq mac-option-modifier 'meta)
+ (setq mac-right-option-modifier 'left)
+ (defun toggle|mac-right-option-modifier ()
+   "Toggle between passing option modifier to Emacs or OS X."
+   (interactive)
+   (let ((old-ropt mac-right-option-modifier))
+     (setq mac-right-option-modifier
+           (if (eq mac-right-option-modifier 'left)
+               'none
+             'left))
+     (message "Toggled `mac-right-option-modifier' from %s to %s."
+              old-ropt
+              mac-right-option-modifier)))
+ (defun toggle|mac-function-modifier ()
+   "Toggle between passing function modifier eitehr to Emacs or OS X."
+   (interactive)
+   (let ((old-func mac-function-modifier))
+     (setq mac-function-modifier
+           (if (eq mac-function-modifier 'hyper)
+               'none
+             'hyper))
+     (message "Toggled `mac-function-modifier' from %s to %s"
+              old-func
+              mac-function-modifier))))
+#+end_src
+
+Emacs dialogues don't work on OSX They lock up Emacs. So we'll use a
+workaround.
+
+#+name: 8EBA8BEB-0F4E-40F3-8569-A32ACF9830BA
+#+begin_src emacs-lisp
+(pdc/on-osx
+ (defun pdc/yes-or-no-p (orig-fun &rest args)
+   "Prevent yes-or-no-p from activating a dialog."
+   (let ((use-dialog-box nil))
+     (apply orig-fun args)))
+ (advice-add #'yes-or-no-p :around #'pdc/yes-or-no-p)
+ (advice-add #'y-or-n-p :around #'pdc/yes-or-no-p))
+#+end_src
+
+*** Windows
+:PROPERTIES:
+:ID:       84FA8B4F-394D-4C34-9BCF-94B5EBF168FA
+:CUSTOM_ID: h-7BCC4ED5-C6F3-4006-ADFC-C347636D2AAF
+:END:
+
+Make it easy to evaluate code only when running on Windows.
+
+#+name: 721F5323-1E61-4B3B-A820-8AF94DC67D30
+#+begin_src emacs-lisp
+(defmacro pdc/on-windows (statement &rest statements)
+  "Evaluate the enclosed body only when run on Windows."
+  `(when (eq system-type 'windows-nt)
+     ,statement
+     ,@statements))
+#+end_src
+
+Provide the proper shell.
+
+#+name: A3EFEC93-5863-42BC-AD4F-75AB19D3EA2A
+#+begin_src emacs-lisp
+(pdc/on-windows
+ (setq shell-file-name "cmdproxy.exe"))
+#+end_src
+
+Enable the =super= key-space.
+
+#+name: 6B197BDB-4E08-451E-863E-89D33B319DDF
+#+begin_src emacs-lisp
+(pdc/on-windows
+ (setq w32-pass-lwindow-to-system nil)
+ (defvar w32-lwindow-modifier 'super)
+ (setq w32-pass-rwindow-to-system 'nil)
+ (defvar w32-rwindow-modifier 'super))
+#+end_src
+
+*** Linux
+:PROPERTIES:
+:ID:       D1C6277B-5011-493A-A172-EAB05F24D507
+:CUSTOM_ID: h-38052B43-7197-4DE4-98DD-61EC5B8EC1A3
+:END:
+
+Make it easy to evalute code only when running on Linux
+
+#+name: 6A6F6663-87F5-4A10-B49A-0881DCC70957
+#+begin_src emacs-lisp
+(defmacro pdc/on-linux (statement &rest statements)
+  "Evaluate the enclosed body only when run on Linux."
+  `(when (eq system-type 'gnu/linux)
+     ,statement
+     ,@statements))
+#+end_src
+
+*** Make things faster
+:PROPERTIES:
+:CUSTOM_ID: h-D5790586-5EF8-450B-A49F-A35EA99A28FA
+:ID:       B27197FD-7107-4CA9-8A26-08049C890B5E
+:END:
+
+Auto compile emacs lisp files as we load or save them.
+#+name: 17A8DF39-5A9F-4936-BE72-76F30AF7075F
 #+BEGIN_SRC emacs-lisp
-  (when (memq window-system '(mac-ns ns))
-    (use-package exec-path-from-shell
-      :ensure t
-      :init
-      (setq exec-path-from-shell-arguments (list "-l"))
-      (exec-path-from-shell-initialize)))
+  (use-package auto-compile :ensure t
+    :config
+    (auto-compile-on-load-mode)
+    (auto-compile-on-save-mode)
+    (setq auto-compile-display-buffer nil)
+    (setq auto-compile-mode-line-counter t))
 #+END_SRC
+
+*** Helper Functions
+:PROPERTIES:
+:ID:       7A609FC4-1510-488D-8961-17E94198870D
+:CUSTOM_ID: h-221D92AE-A357-43FC-BDAD-80CB3A9092ED
+:END:
+
+#+name: 0A971A12-44FB-4A51-AEE4-F8C212819540
+#+begin_src emacs-lisp
+(defun pdc|save-all-file-buffers ()
+  "Saves every buffer associated with a file."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (buffer-file-name) (buffer-modified-p))
+        (save-buffer)))))
+
+(defun pdc|kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc #'kill-buffer (delq (current-buffer) (buffer-list))))
+
+(defvar pdc/delete-trailing-whitespace-p t
+  "Should trailing whitespace be removed?")
+
+
+(defun pdc|delete-trailing-whitespace ()
+  "Delete trailing whitespace for everything but the current line.
+
+If `pdc/delete-trailing-whitespace-p' is non-nil, then delete the
+whitespace. This is useful for fringe cases where trailing
+whitespace is important."
+  (interactive)
+  (when pdc/delete-trailing-whitespace-p
+    (let ((first-part-start (point-min))
+          (first-part-end (point-at-bol))
+          (second-part-start (point-at-eol))
+          (second-part-end (point-max)))
+      (delete-trailing-whitespace first-part-start first-part-end)
+      (delete-trailing-whitespace second-part-start second-part-end))))
+
+(defun pdc|indent-curly-block (&rest _ignored)
+  "Open a new brace or bracket expression, with relevant newlines and indent."
+  (interactive)
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(defun beginning-of-line-dwim ()
+  "Toggles between moving point tothe first non-whitespace character and the start of the line."
+  (interactive)
+  (let ((start-position (point)))
+    (move-beginning-of-line nil)
+    (when (= (point) start-position)
+      (back-to-indentation))))
+
+(defun pdc|lazy-new-open-line ()
+  "Insert a new line without breaking the current line."
+  (interactive)
+  (beginning-of-line)
+  (forward-line 1)
+  (newline)
+  (forward-line -1))
+
+
+(defun pdc|smart-open-line ()
+  "Insert a new line, indent it and move the cursor there.
+
+This behaviour is different from the typical function bound to return
+which may be `open-line' or `newline-and-indent'. When you call with
+the cursor between ^ and $, the contents of the line to the right of
+it will be moved to the newly inserted line. This function will not
+do that. The current line is left alone, a new line is inserted, indented
+and the cursor is moved there."
+  (interactive)
+  (move-end-of-line nil)
+  (newline-and-indent))
+
+
+(defun pdc|insert-ellipsis ()
+  "Insert an ellipsis into the current buffer."
+  (interactive)
+  (insert "\dots{}"))
+
+(defun pdc|insert-checkmark ()
+  "Insert a checkmark into the current buffer."
+  (interactive)
+  (insert "\checkmark{}"))
+
+(defun pdc|insert-noticeable-snip-comment-line ()
+  "Insert a noticeable snip comment line (NSCL)."
+  (interactive)
+  (if (not (bolp))
+      (message "I may only insert a NSCL at the beginning of a line.")
+    (let ((ncl (make-string 70 ?✄)))
+      (newline)
+      (forward-line -1)
+      (insert ncl)
+      (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
+
+(progn
+  (defvar my-read-expression-map
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map read-expression-map)
+      (define-key map [(control ?g)] #'minibuffer-keyboard-quit)
+      (define-key map [up] nil)
+      (define-key map [down] nil)
+      map))
+
+  (defun my-read--expression (prompt &optional initial-contents)
+    (let ((minibuffer-completing-symbol t))
+      (minibuffer-with-setup-hook
+          (lambda ()
+            (emacs-lisp-mode)
+            (use-local-map my-read-expression-map)
+            (setq font-lock-mode t)
+            (funcall font-lock-function 1)
+            (insert "()")
+            (backward-char))
+        (read-from-minibuffer prompt initial-contents
+                              my-read-expression-map nil
+                              'read-expression-history))))
+
+  (defun my-eval-expression (expression &optional arg)
+    "Evaluate EXPRESSION adding the result to the kill-ring then
+either display it in a buffer or with a prefix argument ARG
+insert it into this buffer."
+    (interactive (list (read (my-read--expression "𝔼𝕍𝔸𝕃: "))
+                       current-prefix-arg))
+    (let* ((it (eval expression lexical-binding))
+           (itstr (pp-to-string it)))
+      (kill-new itstr)
+      (if arg
+          (insert itstr)
+        (pp-display-expression it
+                               "*HELP* Eval Output")))))
+
+(defun pdc|uuid ()
+  "Insert a UUID."
+  (interactive)
+  (let ((org-id-prefix nil))
+    (insert (org-id-new))))
+
+(defun endless|sharp ()
+  "Insert #' unless in a string or a comment."
+  (interactive)
+  (call-interactively #'self-insert-command)
+  (let ((ppss (syntax-ppss)))
+    (unless (or (elt ppss 3)
+                (elt ppss 4))
+      (insert "'"))))
+
+(defun pdc|chs ()
+  "Insert opening \"cut here start\" snippet."
+  (interactive)
+  (insert "--8<---------------cut here---------------start------------->8---"))
+
+(defun pdc|che ()
+  "Insert closing \"cut here end\" snippet."
+  (interactive)
+  (insert "--8<---------------cut here---------------end--------------->8---"))
+
+(defmacro pdc/measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY.
+
+Attribution Nikolaj Schumacher: URL `https://lists.gnu.org/archive/html/help-gnu-emacs/2008-06/msg00087.html'"
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
+
+(defun pdc/create-non-existent-directory ()
+  "Attribution URL: `https://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/'"
+  (let ((parent-directory (file-name-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+               (y-or-n-p (format "Directory `%s' does not exist. Create it?" parent-directory)))
+      (make-directory parent-directory t))))
+
+(defun pdc|occur-dwim ()
+  "Call `occur' with a mostly sane default.
+
+Attribution Oleh Krehel (abo-abo): URL `http://oremacs.com/2015/01/26/occur-dwim/'"
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur)
+  (other-window 1))
+
+(defun sacha/unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text.
+
+Attribuation: URL https://github.com/sachac/.emacs.d/blob/gh-pages/Sacha.org#unfill-paragraph"
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (list t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
+
+(defun pdc|org-weave-subtree-gfm (id file)
+  "Export the subtree with ID to FILE in gfm."
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (save-excursion
+    (let ((hidx (org-find-property "ID" id)))
+      (when hidx
+        (goto-char hidx)
+        (org-export-to-file 'gfm file nil t nil)))))
+
+(defun pdc|org-weave-gfm (id)
+  "Select an ID to export to the same name as Github Flavoured Markdown"
+  (interactive "sEnter the ID to export: ")
+  (pdc|weave-subtree-gfm id (s-prepend id ".ml")))
+
+(defun pdc|weave-everything-everywhere ()
+  "Export this entire document in configured weavers."
+  (interactive)
+  (save-excursion
+    (org-ascii-export-to-ascii)
+    (org-html-export-to-html)
+    (org-gfm-export-to-markdown)
+    (org-latex-export-to-pdf)))
+
+(use-package thingatpt
+  :ensure t
+  :init
+  (defun thing-at-point-goto-end-of-integer ()
+    "Go to end of integer at point."
+    (let ((inhibit-changing-match-data t))
+      ;; Skip over optional sign
+      (when (looking-at "[+-]")
+        (forward-char 1))
+      ;; Skip over digits
+      (skip-chars-forward "[[:digit:]]")
+      ;; Check for at least one digit
+      (unless (looking-back "[[:digit:]]" 1)
+        (error "No integer here"))))
+  (put 'integer 'end-op 'thing-at-point-goto-end-of-integer)
+
+  (defun thing-at-point-goto-beginning-of-integer ()
+    "Go to beginning of integer at point."
+    (let ((inhibit-changing-match-data t))
+      ;; Skip backward over digits
+      (skip-chars-backward "[[:digit:]]")
+      (unless (looking-at "[+-]?[[:digit:]]")
+        (error "No integer here"))
+      ;; Skip backward over optional sign
+      (when (looking-back "[+-]" 1)
+        (backward-char 1))))
+  (put 'integer 'beginning-op 'thing-at-point-goto-beginning-of-integer)
+
+  (defun thing-at-point-bounds-of-integer-at-point ()
+    "Get boundaries of integer at point."
+    (save-excursion
+      (let (beg end)
+        (thing-at-point-goto-beginning-of-integer)
+        (setq beg (point))
+        (thing-at-point-goto-end-of-integer)
+        (setq end (point))
+        (cons beg end))))
+  (put 'integer 'bounds-of-thing-at-point 'thing-at-point-bounds-of-integer-at-point)
+
+  (defun thing-at-point-integer-at-point ()
+    "Get integer at point."
+    (let ((bounds (bounds-of-thing-at-point 'integer)))
+      (string-to-number (buffer-substring (car bounds) (cdr bounds)))))
+  (put 'integer 'thing-at-point 'thing-at-point-integer-at-point)
+
+  (defun increment-integer-at-point (&optional inc)
+    "Increment integer at point by one.
+
+With numeric prefix arg INC, increment the integer by INC amount."
+    (interactive "p")
+    (let ((inc (or inc 1))
+          (n (thing-at-point 'integer))
+          (bounds (bounds-of-thing-at-point 'integer)))
+      (delete-region (car bounds) (cdr bounds))
+      (insert (int-to-string (+ n inc)))))
+
+  (defun increment-integer-at-point (&optional dec)
+    "Decrement integer at point by one.
+
+With numeric prefix arg DEC, decrement the integer by INC amount."
+    (interactive "p")
+    (increment-integer-at-point (- (or dec 1)))))
+
+(defun switch-to-previous-buffer ()
+  "Switch to most recent buffer. Repeated calls toggle back and forth between the most recent two buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(defun pdc|safb-flycheck-list-errors ()
+  "Save all the file buffers and switch to flycheck error list"
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (flycheck-list-errors))
+
+(defun pdc|safb-kill-this-buffer ()
+  "Save all the file buffers and maybe kill this buffer."
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (kill-this-buffer))
+
+(defun pdc|sort-lines-ignore-case ()
+  "Sort lines ignoring case."
+  (interactive)
+  (let ((sort-fold-case t))
+    (call-interactively 'sort-lines)))
+
+(defun pdc|delete-this-buffer-and-file ()
+  "Deletes file connected to this buffer and kills this buffer."
+  (interactive)
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Nothing to delete: '%s' is not visiting a file." name)
+      (when (yes-or-no-p "Are you sure you want to delete this file? ")
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "File '%s' successfully deleted." filename)))))
+
+(defun pdc|safb/compile ()
+  "Save all file buffers and call `compile'"
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (call-interactively 'compile))
+
+(defun pdc|insert-formfeed ()
+  (interactive)
+  (insert "\f"))
+
+(defun remove-vowel ($string &optional $from $to)
+  "Remove the following letters: {a e i o u}.
+
+When called interactively, work on current paragraph or text selection.
+
+When called in lisp code, if $string is non-nil, returns a changed string.
+If $string nil, change hte text in the region between positions $from $to."
+  (interactive
+   (if (use-region-p)
+       (list nil (region-beginning) (region-end))
+     (let ((bds (bounds-of-thing-at-point 'paragraph)))
+       (list nil (car bds) (cdr bds)))))
+
+  (let* ((work-on-string-p (if $string t nil))
+         (input-string (if work-on-string-p
+                           $string
+                         (buffer-substring-no-properties $from $to)))
+         (output-string
+          (let ((case-fold-search t))
+            (replace-regexp-in-string "[aeiou]" "" input-string))))
+    (if work-on-string-p
+        output-string
+      (save-excursion
+        (delete-region $from $to)
+        (goto-char $from)
+        (insert output-string)))))
+
+(defun pdc|indent-buffer ()
+  "Indent the currently visited buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defun pdc|indent-region-or-buffer ()
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive)
+  (save-excursion
+    (if (region-active-p)
+        (progn
+          (indent-region (region-beginning) (region-end))
+          (message "Indented selected region."))
+      (progn
+        (pdc|indent-buffer)
+        (message "Indented buffer.")))))
+#+end_src
 
 ** Interacting with the shell
 :PROPERTIES:
 :CUSTOM_ID: h-AB78AC60-C1EF-4AC9-A943-C7A9993123DC
+:ID:       3D995BF0-6605-416E-B318-2D347590E692
 :END:
 
+#+name: B232FA71-C51E-49F9-A7E9-ECB2669AEF4E
 #+BEGIN_SRC emacs-lisp
   (use-package comint
     :general
@@ -250,22 +859,13 @@ A modern library for messing with dictionaries
               "<down>" 'comint-next-input))
 #+END_SRC
 
-** Never type "yes" when "y" will do
-:PROPERTIES:
-:CUSTOM_ID: h-62B9CDB0-3316-4067-8602-DBBB4BA1825B
-:END:
-
-=yes-or-no-p= can die in a fire
-
-#+BEGIN_SRC emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
 ** Eliminate duplicates from the minibuffer history
 :PROPERTIES:
 :CUSTOM_ID: h-CB5C541F-20DA-4698-AF19-274B37AB33D5
+:ID:       8D79CC60-FEAF-4B53-9C0A-7F249C766107
 :END:
 
+#+name: FA1FB671-92CD-4183-BA91-068AFA5BD62B
 #+BEGIN_SRC emacs-lisp
 (setq history-delete-duplicates t)
 #+END_SRC
@@ -273,6 +873,7 @@ A modern library for messing with dictionaries
 ** no-littering
 :PROPERTIES:
 :CUSTOM_ID: h-9A381074-44B2-44D6-9FF1-1EBF7A4894B5
+:ID:       2B69EB2F-D3DB-42D9-B8C4-3A320722B987
 :END:
 
 From:
@@ -282,6 +883,7 @@ From:
 It sets some default paths in order to separate automatically created
 files and directories.
 
+#+name: 0EE34AEA-4D03-4786-A8B1-4B6DE4AAD604
 #+BEGIN_SRC emacs-lisp
   (use-package no-littering
     :ensure t
@@ -297,27 +899,32 @@ files and directories.
 * Styling
 :PROPERTIES:
 :CUSTOM_ID: h-D882C9E0-D7A1-45CD-B291-EBFC57A1919B
+:ID:       9B7C1C59-3AC4-439D-ADB4-333CF64A025E
 :END:
 
 Making emacs look nice
 
 Show current column:
+#+name: F0CE4637-AA37-4075-BCE4-626C011D05A8
 #+BEGIN_SRC emacs-lisp
 (setq column-number-mode t)
 #+END_SRC
 
 Cursor settings:
+#+name: 6C823845-783A-41D9-BD6C-ED3A376DEF30
 #+BEGIN_SRC emacs-lisp
 ;; Prevent the cursor from blinking
 (blink-cursor-mode 0)
 #+END_SRC
 
 Turn off the visible bell:
+#+name: AFE40E93-9DCC-47D0-A731-DA83A39A40A5
 #+BEGIN_SRC emacs-lisp
 (setq visible-bell nil)
 #+END_SRC
 
 Make sure we have more emoji
+#+name: 5E126DDB-76A6-4C91-8461-867D59D7A9CC
 #+BEGIN_SRC emacs-lisp
     (use-package emoji-fontset
       :ensure t
@@ -329,16 +936,166 @@ Make sure we have more emoji
 #+END_SRC
 
 Turn off the toolbar
+#+name: 8F267CC4-77E1-4454-B924-93BBA3D0E0CB
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode -1)
 #+END_SRC
 
+** Typography
+:PROPERTIES:
+:ID:       485764E8-6E69-448F-A5BB-8C803C14AC16
+:CUSTOM_ID: h-4EB028A2-C651-48DC-B10F-2E3FFC0528E7
+:END:
 
+- Use 78 characters for a text document
+  - Column 0 is the first possible character
+  - Column 77 is the last possible character
+  - Column 78 will always be empty
+    - This is the fill column
+    - This gives some spacing between the text body and the 80 column indicator
+  - Column 79 will always be the fill column indicator
+    - It *isn't* the fill column though
+    - I want it to indicate 80 chars, typically the maximum number of
+      columns for a line, to know how to size the window itself
+  - Store this as the fill column because all supporting functions
+    will do the right thing here
+
+#+name: 6D8CE95F-9416-416F-9D99-BD3E777375D2
+#+begin_src emacs-lisp
+(defconst pdc|column-width 78)
+(setq-default fill-column pdc|column-width)
+#+end_src
+
+Every file must end with a newline.
+
+#+name: 51D34AAD-190E-4653-ABC1-AABC8A37A404
+#+begin_src emacs-lisp
+(setq require-final-newline t)
+#+end_src
+
+If you are on the end of a line and go up or down, then go to the end
+of the line on that new line. Do not account for anythign special
+about the character there.
+
+#+name: A8E0B454-F028-4502-8A1F-6F51EAD0EB2F
+#+begin_src emacs-lisp
+(setq track-eol t)
+(setq line-move-visual nil)
+#+end_src
+
+Take the cursor with scroll activities
+
+#+name: A9B24474-BD30-4C58-80B0-B2028E7EDFBC
+#+begin_src emacs-lisp
+(setq scroll-preserve-screen-position t)
+#+end_src
+
+Scroll text line-by-line as the cursor scrolls off the screen. Nice to
+keep the document from jumping around. Not nice for scrolling when you
+want to quickly see the next ten or twenty lines. But
+~recenter-top-bottom~ give you that so you can both features easily.
+
+#+name: AAE40A9D-77B0-4DFA-B1AB-00280A9AAD19
+#+begin_src emacs-lisp
+(setq scroll-conservatively 101)
+#+end_src
+
+More easily visualize tabular data. Considered to non-subjective.
+
+#+name: DA961BE4-A93C-43CF-905D-EE5266738976
+#+begin_src emacs-lisp
+(use-package stripe-buffer :ensure t)
+#+end_src
+
+Ban white-space at the end of lines, globally
+
+#+name: 91A4CAEC-2C2A-4646-802D-C1B99095A5C8
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook #'pdc|delete-trailing-whitespace)
+#+end_src
+
+
+Intelligently select the current char, then word, then object, then
+block, then document.
+
+#+name: 3F5DFDF2-AC99-4D75-A5BE-DB13C10DE834
+#+begin_src emacs-lisp
+(use-package expand-region :ensure t
+  :general
+  (pdc|with-leader
+    "v" 'er/expand-region))
+#+end_src
+
+Configure Page-Break-Lines-Mode to visualize the formfeed character:
+~C-q C-l~.
+
+#+name: 084F89CE-0716-4D96-8CDF-35AF68423EB0
+#+begin_src emacs-lisp
+(use-package page-break-lines
+  :ensure t
+  :diminish page-break-lines-mode)
+#+end_src
+
+Centre the buffer after navigating pages.
+
+#+name: 1AD562E8-4B21-447F-B7FB-1723BD6E2E4C
+#+begin_src emacs-lisp
+(advice-add #'backward-page :after #'recenter)
+(advice-add #'forward-page :after #'recenter)
+#+end_src
+
+Do the /right thing/ for getting to the start of the line.
+
+#+name: A62C9EC2-120A-4FD4-B73C-E0B34C36D247
+#+begin_src emacs-lisp
+(use-package mwim
+  :ensure t
+  :general
+  ("C-a" 'mwim-beginning-of-code-or-line))
+#+end_src
+
+- Easily see the fill-column (or close to it)
+  - Sometimes I set the fvi rule at 81 because a char at 79 pushes the gci
+    rule out one extra space. Sometimes it is not an issue.
+  #+name: FFC0F620-B4BB-41D0-ABFD-A122C254907C
+  #+begin_src emacs-lisp
+(use-package fill-column-indicator
+  :ensure t
+  :config
+  (setq fci-rule-column 79))
+  #+end_src
+
+Show text indentation guide lines.
+
+~highlight-indentation~ is too difficult to see
+
+#+name: 430021A2-D748-4BF3-A011-25EFE7068353
+#+begin_src emacs-lisp
+(use-package indent-guide
+  :ensure t
+  :diminish indent-guide-mode)
+#+end_src
+
+*** Fallback Unicode Font
+:PROPERTIES:
+:ID:       4B85534E-4D4B-4BB0-83A6-7F98BC0CE4C1
+:CUSTOM_ID: h-796B82A4-DADC-445F-AEB1-9FAD0E66882B
+:END:
+
+Configure the manual configuration of a fallback Unicode font
+
+#+name: 210B2D03-4691-4348-8C83-023369C100EE
+#+begin_src emacs-lisp
+(set-fontset-font "fontset-default" nil
+                  (font-spec :size 20 :name "Symbola"))
+#+end_src
 
 ** Spaceline
 :PROPERTIES:
 :CUSTOM_ID: h-4B8DBB73-485F-4E54-A0EB-32FEDEF037AD
+:ID:       7C1D2413-CF6D-41B3-B5BC-E214F0AF557B
 :END:
+#+name: 03F39E55-1EF2-4BA6-AC06-70B0EDCCE238
 #+BEGIN_SRC emacs-lisp
   (use-package which-func :ensure t)
 
@@ -356,7 +1113,7 @@ Turn off the toolbar
     (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
           powerline-height 24)
     (spaceline-compile)
-  
+
     :config
     (require 'spaceline-config)
 
@@ -386,30 +1143,28 @@ Turn off the toolbar
 ** Diminish some modes
 :PROPERTIES:
 :CUSTOM_ID: h-EF20149D-DEF2-41E6-8CB5-52FAA265CC7C
+:ID:       93D86B42-D667-4D10-898B-A925F64C8BFA
 :END:
+#+name: 0F957DD6-4A68-415B-9A07-1E991B7BBE6D
 #+BEGIN_SRC emacs-lisp
-    (diminish 'auto-fill-function " Ⓕ")
-    (use-package autorevert 
-      :ensure t
-      :diminish (auto-revert-mode . " ⎌"))
+  (diminish 'auto-fill-function " Ⓕ")
 
-    ;;; These will be moved to org-mode config when we have an org-mode
-    ;;; config section
-    (after-loading 'org-src
-      (diminish 'org-src-mode " ⓞ")
-      (setq org-src-window-setup 'current-window))
-    (after-loading 'org-indent
-      (diminish 'org-indent-mode))
+  ;;; These will be moved to org-mode config when we have an org-mode
+  ;;; config section
+  (after-loading 'org-indent
+    (diminish 'org-indent-mode))
 #+END_SRC
 
 
 ** Themes
 :PROPERTIES:
 :CUSTOM_ID: h-74298D38-7F6A-488A-8938-ACD632632F81
+:ID:       977E283E-829F-4C53-A3A4-760499AC4933
 :END:
 
 Zenburn, it's the only way to be sure!
 
+#+name: 97DCE932-2053-4F0B-9E96-C26A42A533A7
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
     :ensure t
@@ -420,8 +1175,10 @@ Zenburn, it's the only way to be sure!
 ** Only one window on startup
 :PROPERTIES:
 :CUSTOM_ID: h-2ED36663-02C2-46BD-8354-EBEE99410D74
+:ID:       BBA417DF-8B88-44AD-9A3D-9E967063F698
 :END:
 
+#+name: D3EF9DA0-1CCE-49E0-A18D-AB1ED50C32AC
 #+BEGIN_SRC emacs-lisp
 (add-hook 'emacs-startup-hook 'delete-other-windows t)
 #+END_SRC
@@ -429,7 +1186,9 @@ Zenburn, it's the only way to be sure!
 ** Pretty symbols
 :PROPERTIES:
 :CUSTOM_ID: h-73ADA751-ABBE-4C38-B781-50B1AC82B4BB
+:ID:       1681F5F7-749A-4558-9934-B58015FECAE2
 :END:
+#+name: 7076A6DB-E191-4F04-B6A1-2CB80284C33A
 #+BEGIN_SRC emacs-lisp
   (global-prettify-symbols-mode)
 #+END_SRC
@@ -437,8 +1196,10 @@ Zenburn, it's the only way to be sure!
 ** Font sizes
 :PROPERTIES:
 :CUSTOM_ID: h-36EE2A21-6F06-4CCF-8CCA-9C5E488175D2
+:ID:       87E93372-C5ED-48CA-ACA2-7ACEA530DDA1
 :END:
 
+#+name: 92D041C0-C0B1-4362-95C9-0353123FE51C
 #+BEGIN_SRC emacs-lisp
   (use-package default-text-scale :ensure t
     :commands (default-text-scale-increase default-text-scale-decrease)
@@ -451,7 +1212,9 @@ Zenburn, it's the only way to be sure!
 ** Highlight TODO etc in comments and strings
 :PROPERTIES:
 :CUSTOM_ID: h-808266E5-51B1-40B2-A021-AE42CC784AD4
+:ID:       DDC8F997-FA3A-4B41-9EB0-707FDF357ACD
 :END:
+#+name: 1A8042AB-220B-41A4-90B3-3B7E675CCEBC
 #+BEGIN_SRC emacs-lisp
   (use-package hl-todo :ensure t
     :init
@@ -461,7 +1224,9 @@ Zenburn, it's the only way to be sure!
 ** Display battery info in modeline
 :PROPERTIES:
 :CUSTOM_ID: h-5F450082-3805-49E7-97B2-F43DD0CBD5BF
+:ID:       7119D006-4AC6-41BA-BA03-AFC2B58D5CAC
 :END:
+#+name: AEE01A06-90BA-4CD0-8FB5-051938810CB1
 #+BEGIN_SRC emacs-lisp
   (use-package fancy-battery :ensure t
     :init
@@ -474,8 +1239,10 @@ Zenburn, it's the only way to be sure!
 ** Linum mode
 :PROPERTIES:
 :CUSTOM_ID: h-ADE621A5-B565-44DA-9150-88D1EF6EB786
+:ID:       B3B65F2C-E799-49BE-8872-72C10F2B0E24
 :END:
 
+#+name: 55EFB87C-680A-4EF0-8021-4C8FDD5F64B3
 #+BEGIN_SRC emacs-lisp
   (use-package linum
     :init
@@ -489,13 +1256,14 @@ Zenburn, it's the only way to be sure!
 
 #+END_SRC
 
-
-* UTF-8 and codings
+** UTF-8 and codings
 :PROPERTIES:
 :CUSTOM_ID: h-4B7EB94D-2C65-424D-AF96-46439E2A90E8
+:ID:       77B9CE6E-420F-4AB2-9A85-A0A756F97649
 :END:
 
 Activate UTF-8 mode:
+#+name: 9002D9FE-9B6F-42E0-A3C3-826D34D9DA29
 #+BEGIN_SRC emacs-lisp
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -510,13 +1278,16 @@ Activate UTF-8 mode:
 * Leader key based bindings
 :PROPERTIES:
 :CUSTOM_ID: h-ACEC3B27-32B3-4A44-B3DC-5BE214AAEE7C
+:ID:       62F0C223-5B16-48EB-8F02-F6C3DAD07540
 :END:
 
 ** We want ESC to quit lots of things
 :PROPERTIES:
 :CUSTOM_ID: h-8363C137-22C9-4FD5-A0F6-BDD0F2681A75
+:ID:       32166513-ECB8-41D4-B4DC-EB07FFAD8463
 :END:
 
+#+name: 03CE69F3-943A-4676-ACC1-005094A1C4CD
 #+BEGIN_SRC emacs-lisp
   (general-define-key :keymaps '(minibuffer-local-map
                                  minibuffer-local-ns-map
@@ -529,6 +1300,7 @@ Activate UTF-8 mode:
 ** Keymap prefixes
 :PROPERTIES:
 :CUSTOM_ID: h-64E0A17D-1DCC-4BDF-B8DE-DD94400545F5
+:ID:       29C56C7C-4A6B-4713-A230-0CD22E939917
 :END:
 
 The idea is that most of our commands come under a tree of prefixes,
@@ -544,6 +1316,7 @@ calls to =use-package=
 *** Our prefixes
 :PROPERTIES:
 :CUSTOM_ID: h-A105DFBE-E7F0-4634-8615-B6E2A78EDDA9
+:ID:       1E9BA209-1B1F-42FD-864E-0A0D7F58326F
 :END:
 
 #+NAME: prefixes
@@ -609,6 +1382,7 @@ calls to =use-package=
 *** Support prefix declaration and access
 :PROPERTIES:
 :CUSTOM_ID: h-5162F41D-0D16-4F55-AE12-5460C188809C
+:ID:       8DB0BF7B-7564-4703-B0BC-4D2187CE8AE2
 :END:
 
 We used to use a bunch of poorly namespaced variables to track our
@@ -619,6 +1393,7 @@ manage our own prefix registry
 **** TODO Roadmap [0/3]
 :PROPERTIES:
 :CUSTOM_ID: h-AFBDE1FD-E7B1-4572-80F1-AE861FF976C6
+:ID:       BDCA9C83-2071-4186-8DE8-42A9108CB455
 :END:
 - [ ] Similar support for mode leader prefixes
 - [ ] Sweetener for =general-define-key=
@@ -627,7 +1402,9 @@ manage our own prefix registry
 *** Declare the prefixes
 :PROPERTIES:
 :CUSTOM_ID: h-BE22F4DE-C092-434C-A31F-D2F7C9D5EC12
+:ID:       C5A6BFA7-59CD-4588-923F-8058D94D268D
 :END:
+#+name: DBD1D3AC-0564-4AFD-80B5-945A2B060526
 #+BEGIN_SRC emacs-lisp :var prefixes=prefixes
   (dolist (it prefixes)
     (pcase-let* ((`(,namestr ,keys ,desc) it)
@@ -643,12 +1420,15 @@ manage our own prefix registry
 *** Initial bindings
 :PROPERTIES:
 :CUSTOM_ID: h-E6723092-96B9-4C15-BCCF-96B8C5D0389F
+:ID:       EF9C0AFF-FDA4-44B6-9B09-E67CCEB5F01B
 :END:
 
 **** Universal argument
 :PROPERTIES:
 :CUSTOM_ID: h-ED5D4F53-D3C4-4607-A740-6FB605DFBFAE
+:ID:       B3AE3EDF-986F-4915-9424-50FFCE988385
 :END:
+#+name: 21937168-EB13-4441-A40B-BC5CE7081A87
 #+BEGIN_SRC emacs-lisp
   (pdc|with-leader "u" 'universal-argument)
 
@@ -661,7 +1441,9 @@ manage our own prefix registry
 **** More
 :PROPERTIES:
 :CUSTOM_ID: h-ABD8955F-B61B-436E-8987-64B727276170
+:ID:       AC8C2CC8-B93E-4059-9603-E964E3985DC3
 :END:
+#+name: 67D6CC58-9BF6-468C-B9A3-2D9DAB78F6B3
 #+BEGIN_SRC emacs-lisp
   (pdc|with-leader "!" 'shell-command)
 
@@ -702,29 +1484,28 @@ manage our own prefix registry
 
 #+END_SRC
 
-** Extra Help functions
-:PROPERTIES:
-:CUSTOM_ID: h-28773083-DD0B-433A-9B9A-845AC0D03AB5
-:END:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package help-fns+
-    :ensure t
-    :general
-    (pdc|with-leader :infix :describe
-      "K" 'describe-keymap))
-#+END_SRC
-
 * Buffer and window handling
 :PROPERTIES:
+:ID:       F8A9FF6A-4E27-4890-AB0B-B19AA203C45A
+:CUSTOM_ID: h-873232E9-0D58-4877-997B-4100396E5B10
+:END:
+
+*
+
+**
+*
+:PROPERTIES:
 :CUSTOM_ID: h-D969DD41-E87B-403A-B8D6-66AD04F4B533
+:ID:       621E6CD2-9662-418E-BCB3-747655C3880B
 :END:
 
 ** ace-window
 :PROPERTIES:
 :CUSTOM_ID: h-9699C987-934B-46EF-9CCA-12BF20BEBA7B
+:ID:       8C945759-EF1A-4C8C-8E79-8966DE9B2ED9
 :END:
 
+#+name: 906BF222-B822-484E-BC65-DCD2B0270116
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
@@ -766,7 +1547,9 @@ manage our own prefix registry
 ** ibuffer
 :PROPERTIES:
 :CUSTOM_ID: h-89E6B27A-2A28-49B7-ADDB-013F9FB1A2A7
+:ID:       94EF178F-D1E1-4C2C-AD92-FED016892722
 :END:
+#+name: 3C86A02E-777D-48F4-81F0-6198390BE821
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer :ensure t
     :config
@@ -780,7 +1563,9 @@ manage our own prefix registry
 ** ibuffer-vc
 :PROPERTIES:
 :CUSTOM_ID: h-58455513-FCE9-47D6-B53D-67C3D8950B74
+:ID:       892C6D5E-9484-4843-9059-10AB28138FC8
 :END:
+#+name: C85784AB-6D5E-4CF5-95A1-54AFDD33F019
 #+BEGIN_SRC emacs-lisp
   (use-package ibuffer-vc :ensure t
     :config
@@ -799,10 +1584,12 @@ manage our own prefix registry
 ** Window numbering
 :PROPERTIES:
 :CUSTOM_ID: h-C54C7530-6A53-448D-A26C-390CBF8EB10E
+:ID:       7B13C4B7-938A-404A-9C68-7B497E184205
 :END:
 Bouncing around windows using their numbers is fast and
 straightforward.
 
+#+name: 504A8557-F9F0-4FF8-9C71-6CD49F71929F
 #+BEGIN_SRC emacs-lisp
   (use-package winum :ensure t
     :config
@@ -821,7 +1608,7 @@ straightforward.
       "7" 'winum-select-window-7
       "8" 'winum-select-window-8
       "9" 'winum-select-window-9)
-  
+
     ;; (defun window-numbering-install-mode-line (&optional position)
     ;;   "Do nothing, the desplay will be handled by spaceline.")
     (dolist (it (number-sequence 0 9))
@@ -834,8 +1621,10 @@ straightforward.
 ** uniquify
 :PROPERTIES:
 :CUSTOM_ID: h-19D31FE6-9D7E-4F2C-A74E-A823D2CE15A9
+:ID:       38459FB4-D472-4229-B53E-92A1A3E95CEB
 :END:
 Give buffers unique names
+#+name: DC5B39E7-C8D3-40ED-A7E4-6C59C797070B
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
     :config
@@ -846,8 +1635,10 @@ Give buffers unique names
 ** winner-mode
 :PROPERTIES:
 :CUSTOM_ID: h-F8C41DB5-A155-43C1-9D1A-8AC6069E09D7
+:ID:       6C5B35C4-27E3-4B37-83C6-255769430AB4
 :END:
 An undo tree for window configurations. Really handy.
+#+name: BB62EA0B-FFD3-4369-B3D3-0F6BF087CA91
 #+BEGIN_SRC emacs-lisp
   (use-package winner
     :init
@@ -869,6 +1660,7 @@ An undo tree for window configurations. Really handy.
 ** Useful commands
 :PROPERTIES:
 :CUSTOM_ID: h-DD9CF74D-89D4-4C6B-8627-25C1E117E275
+:ID:       7092461D-58CC-4F49-B167-BFFC250D346D
 :END:
 - TODO Use window numbers rather than counts where appropriate [%]
   - [ ] =pdc/transpose-windows=
@@ -876,6 +1668,7 @@ An undo tree for window configurations. Really handy.
 Various commands that affect windows and window layout
 
 =pdc/toggle-window-split=: Toggle the orientation of a single window split.
+#+name: 6DE2C21A-56C8-4784-B837-34C15518C67E
 #+BEGIN_SRC emacs-lisp
   (defun pdc/toggle-window-split ()
     "Switch between a horizontal and vertical split if there are two windows."
@@ -905,6 +1698,7 @@ Various commands that affect windows and window layout
 #+END_SRC
 
 =pdc/transpose-windows=: Swap the buffers between two windows
+#+name: D1BBF317-97A9-4FA3-882D-5B00D68F865E
 #+BEGIN_SRC emacs-lisp
   (defun pdc/transpose-windows (arg)
     "Transpose the buffers shown in two windows"
@@ -943,6 +1737,7 @@ Various commands that affect windows and window layout
 
 =pdc/sync-point-all-windows=: Move the point to the same place in all
 windows. Not sure I've ever used this. Might disable it.
+#+name: 1A07783E-B15E-4AE9-AC55-A8E88A2FF31D
 #+BEGIN_SRC emacs-lisp
 
   (defun pdc/sync-point-all-windows (&optional buffer pnt)
@@ -959,6 +1754,7 @@ windows. Not sure I've ever used this. Might disable it.
 =pdc/bury-buffer-other-windows=: The highlander function. When called,
 it burys the buffer in the current window in all the other windows,
 ensuring that the current window is the only one displaying the buffer.
+#+name: C245823F-3D08-477E-BF76-04ED10428B7D
 #+BEGIN_SRC emacs-lisp
   (defun pdc/bury-buffer-other-windows (&optional buffer)
     "Bury the current buffer in all windows but the current one."
@@ -975,6 +1771,7 @@ ensuring that the current window is the only one displaying the buffer.
 
 =pdc/blank-other-frame-windows=: Sets all other windows in all frames
 to display a =*blank*= buffer.
+#+name: 4789BA5D-B406-4780-AEE9-BDDDF3B2CE1C
 #+BEGIN_SRC emacs-lisp
   (defun pdc/blank-other-frame-windows ()
     (interactive)
@@ -987,6 +1784,7 @@ to display a =*blank*= buffer.
               (set-window-buffer w buffer)))))))
 #+END_SRC
 
+#+name: 3674B6C2-CB1E-4CB0-8F7D-857EAF2FB570
 #+BEGIN_SRC emacs-lisp
   ;;; Lifted from spacemacs
   (defun pdc/split-window-below-and-focus ()
@@ -1097,14 +1895,16 @@ to display a =*blank*= buffer.
 ** Window Keybindings
 :PROPERTIES:
 :CUSTOM_ID: h-29EC2438-5F97-47F0-A45E-4D4F23156B0F
+:ID:       BED52ACE-396D-43F9-8A51-6831BBEEFAA7
 :END:
 
+#+name: CB962772-D285-42E7-8E4B-1406BA3046F9
 #+BEGIN_SRC emacs-lisp
   ;;; For the 'evil-window-*' commands. Lift these into the config later
   ;;; since we don't use Evil.
 
   (use-package evil :ensure t
-    :init 
+    :init
     (require 'evil-commands))
   (pdc|with-leader :infix :windows
     "2" 'pdc/layout-double-columns
@@ -1150,8 +1950,10 @@ to display a =*blank*= buffer.
 ** Text keybindings
 :PROPERTIES:
 :CUSTOM_ID: h-42916A89-7E93-46F2-BBB9-96BE5C98D739
+:ID:       1064054E-BC5A-4493-917E-41C5719A57F9
 :END:
 
+#+name: EA56667B-9BD0-4C17-9E30-073959412A7F
 #+BEGIN_SRC emacs-lisp
 
   (defalias 'count-region 'count-words-region)
@@ -1309,7 +2111,7 @@ to display a =*blank*= buffer.
         (whitespace-cleanup))))
 
   (defun pdc/split-and-new-line ()
-    "Split a quoted string or s-expression and insert a new line with 
+    "Split a quoted string or s-expression and insert a new line with
   auto-indent."
     (interactive)
     (paredit-split-sexp 1)
@@ -1410,15 +2212,193 @@ to display a =*blank*= buffer.
 
 
 #+END_SRC
+* File based System
+:PROPERTIES:
+:ID:       5A88F20D-9AA2-4207-95DF-C266631C6459
+:CUSTOM_ID: h-0E9C6410-0DF4-4287-B500-7F65D2D869F8
+:END:
+This system uses artifacts stored in files. It tries to persiste file-stores
+every chance it gets without interrupting the user's flow. Flow matters.
+
+Don't create backup files. Git is your friend.
+
+Automatically back file-stores if no activity has occurred.
+
+#+name: F94BE988-504F-407B-B611-0C57A17855FF
+#+begin_src emacs-lisp
+(setq auto-save-default t)
+(setq make-backup-files nil)
+(setq auto-save-visited-file-name t)
+(setq auto-save-interval 0)
+(setq auto-save-timeout (* 60 5))
+#+end_src
+
+Backup file-stores when the frame loses focus
+
+#+name: 7A5934E4-6C0E-410A-AE84-2C4527F9D1FD
+#+begin_src emacs-lisp
+(add-hook 'focus-out-hook #'pdc|save-all-file-buffers)
+#+end_src
+
+Always keep buffers in sync with changes in-file.
+
+#+name: 3767F15E-B6D8-4903-8658-BF00A68DF073
+#+begin_src emacs-lisp
+(use-package autorevert
+  :ensure t
+  :diminish ((auto-revert-mode . " ⎌")
+             (global-auto-revert-mode . " ⎌"))
+  :config
+  (global-auto-revert-mode 1))
+#+end_src
+
+Save all files before common activities. Functions are easier to use than
+advice.
+
+#+name: 37C003B6-D91D-42B1-8589-7DE8F30D28A6
+#+begin_src emacs-lisp
+(defun pdc|safb-magit-status ()
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (magit-status))
+
+(defun pdc|safb-org-babel-tangle ()
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (let ((start (current-time)))
+    (message (concat "org-babel-tangle began at: "
+                     (pdc/get-timestamp)))
+    (org-babel-tangle)
+    (let* ((dur (float-time (time-since start)))
+           (msg (format "Tangled for %s" (seconds-to-string dur))))
+      (message (concat "org-babel-tangle completed on: "
+                       (pdc/get-timestamp)))
+      (message msg)
+      (pdc/on-gui (alert msg :title "Org-Mode")))))
+
+(defun pdc|safb-org-babel-detangle ()
+  (interactive)
+  (pdc|save-all-file-buffers)
+  (let ((start (current-time)))
+    (message (concat "org-babel-detangle-began at: "
+                     ">"))
+    (org-babel-detangle)
+    (let* ((dur (float-time (time-since start)))
+           (msg (format "DE-Tangled for %s" (seconds-to-string dur))))
+      (message (concat "org-babel-detangle completed on: "
+                       (pdc/get-timestamp)))
+      (message msg)
+      (pdc/on-gui (alert msg :title "Org-Mode")))))
+
+(defun pdc|safb-other-window ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (other-window 1))
+
+(defun pdc|ace-window ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (call-interactively #'ace-window))
+
+(defun pdc|safb-org-edit-src-code ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (org-edit-src-code))
+
+(defun pdc|safb-org-export-dispatch ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (org-export-dispatch))
+
+(defun pdc|safb-TeX-command-master (&optional arg)
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (TeX-command-master arg))
+
+(defun pdc|safb-org-babel-execute-buffer ()
+  "Immediately save results."
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (org-babel-execute-buffer)
+  (pdc/save-all-file-buffers))
+
+(defun pdc|safb-org-babel-execute-subtree ()
+  "Immediately save results."
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (org-babel-execute-subtree)
+  (pdc/save-all-file-buffers))
+
+(defun pdc|safb-pdc|org-babel-demarcate-block ()
+  (interactive)
+  (pdc|org-babel-demarcate-block)
+  (pdc/save-all-file-buffers))
+
+(defun pdc|safb-save-buffers-kill-terminal ()
+  "Partially redundant; kept for consistency among `SAFB' functions."
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (save-buffers-kill-terminal))
+
+(defun pdc|safb-pdc|goto-line ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (pdc|goto-line))
+
+(defun pdc|safb-switch-to-previous-buffer ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (switch-to-previous-buffer))
+
+(defun pdc|safb-normal-mode ()
+  (interactive)
+  (pdc/save-all-file-buffers)
+  (call-interactively #'normal-mode)
+  (pdc/save-all-file-buffers))
+#+end_src
+
+Be aware of files larger than 2MiB. Turn off Aggressive-Indent and other
+expensive features in those buffers.
+
+#+name: 93786E5A-23CB-4DB4-A1D7-7AAF0C35E884
+#+begin_src emacs-lisp
+(setq large-file-warning-threshold (* 1024 1024 2))
+#+end_src
+
+Always use =/tmp= for temporary files. Plays better with tramp, apparently.
+
+#+name: B039DBDD-548F-45F0-ADE3-8F9931882F8C
+#+begin_src emacs-lisp
+(setq temporary-file-directory "/tmp")
+#+end_src
+
+Some files are really the domain of the application that owns them, editing
+them in Emacs is asking for trouble. So we'll done a hard hat and protect
+ourselves from accidentally screwing such files up.
+
+#+name: 48278757-C4EA-4D6E-800C-B91602061ADC
+#+begin_src emacs-lisp
+(use-package hardhat
+  :ensure t
+  :diminish global-hardhat-mode
+  :config
+  (global-hardhat-mode 1))
+#+end_src
+
+
+
 * Basic editing
 :PROPERTIES:
 :CUSTOM_ID: h-3B35BDE0-B859-44B3-A766-EBDFE2A000A3
+:ID:       F21A190C-C3FB-45AE-BD05-1C01403230D2
 :END:
 
 ** Our commands
 :PROPERTIES:
 :CUSTOM_ID: h-12175468-F3CA-43BB-A102-FA46C7F76C84
+:ID:       898101A5-6738-4A02-AD3A-A3DDA313EEF6
 :END:
+#+name: C0AFE96D-0EFC-4813-8CAD-7EDA58988B69
 #+BEGIN_SRC emacs-lisp
   (defun pdc/set-undo-boundary ()
     (interactive)
@@ -1523,7 +2503,9 @@ to display a =*blank*= buffer.
 ** Packages
 :PROPERTIES:
 :CUSTOM_ID: h-DAE98409-A47C-4C92-85D9-9C7A980192E5
+:ID:       FCB9A40B-6B32-4F68-B144-432A29E7B061
 :END:
+#+name: 3A063334-3E57-4844-8F7B-EEE276F164A2
 #+BEGIN_SRC emacs-lisp
    (use-package subword
      :defer t
@@ -1541,18 +2523,24 @@ to display a =*blank*= buffer.
      :commands (global-undo-tree-mode)
      :diminish undo-tree-mode
      :init
-     (global-undo-tree-mode))
+     (global-undo-tree-mode)
+     (setq undo-tree-enable-undo-in-region t
+           undo-tree-auto-save-history t
+           undo-tree-visualizer-timestamps t))
 
-   (use-package goto-last-change :ensure t
-     :config
-     (setq highlight-changes-visibility-initial-state nil))
+
+(use-package goto-last-change :ensure t
+  :config
+  (setq highlight-changes-visibility-initial-state nil))
 
 #+END_SRC
 
 ** Bindings
 :PROPERTIES:
 :CUSTOM_ID: h-E7738290-32A2-4617-B5B8-BDA661DAD4A6
+:ID:       6B4D8026-E06E-4756-B4EC-E08BB3CBEFB9
 :END:
+#+name: 3477FFFD-7799-4670-A0DE-31E057C21C96
 #+BEGIN_SRC emacs-lisp
   (pdc|general-bind-hydra transpose "t"
     ("t" transpose-chars "chars")
@@ -1569,6 +2557,7 @@ to display a =*blank*= buffer.
 ** Abbreviations
 :PROPERTIES:
 :CUSTOM_ID: h-4BAD042D-161C-4957-B014-E0253610DF5A
+:ID:       D4CFA08F-65AC-4B41-B214-01C9F94C7E7A
 :END:
 #+NAME: abbrev
 | Base | Expansion                   |
@@ -1578,10 +2567,12 @@ to display a =*blank*= buffer.
 | wi   | with                        |
 | qm   | piers@singingtogether.co.uk |
 
+#+name: DF3A6D6A-EEC3-4D27-BDC4-6F0ED07E6F9D
 #+BEGIN_SRC emacs-lisp :var data=abbrev
 (mapc (lambda (x) (define-global-abbrev (car x) (cadr x))) (cddr data))
 #+END_SRC
 
+#+name: 1E9A69F8-942F-46E3-A023-703E8A5FA978
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'abbrev-mode)
 (diminish 'abbrev-mode "")
@@ -1590,7 +2581,9 @@ to display a =*blank*= buffer.
 ** Multiple cursors
 :PROPERTIES:
 :CUSTOM_ID: h-9C6FC47B-93FE-4658-8476-768BB7EE1590
+:ID:       2A6F0971-07DB-4F18-B116-383CC7578DCA
 :END:
+#+name: 157D5D54-74DD-43E5-B299-A0E61548986E
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors :ensure t
     :config
@@ -1611,56 +2604,626 @@ to display a =*blank*= buffer.
      "C-e" 'mc/edit-ends-of-lines
      "e" 'mc/edit-lines))
 #+END_SRC
-** Auto completion
+** "Intellisense"
 :PROPERTIES:
 :CUSTOM_ID: h-BB506573-584F-462A-A767-2258376D6706
+:ID:       083CD332-63D4-4AF5-8B57-5BAB9B49CA71
 :END:
+#+name: 8F2309CA-3C1E-4394-B7B4-CDF931DB598C
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-complete :ensure t
-    :diminish " ⓐ"
+(use-package fuzzy :ensure t)
+(use-package auto-complete :ensure t
+  :diminish " ⓐ"
+  :init
+  (setq ac-auto-start nil
+        ac-delay 0.2
+        ac-quick-help-delay 1.
+        ac-quick-help-prefer-pos-tip nil
+        ac-use-fuzzy t
+        ac-fuzzy-enable t
+        tab-always-indent 'complete
+        ac-dwim t)
+  (global-auto-complete-mode t)
+  :config
+  (use-package auto-complete-config)
+  (setq-default ac-sources '(ac-source-yasnippet
+                             ac-source-abbrev
+                             ac-source-dictionary
+                             ac-source-words-in-same-mode-buffers))
+  (pdc/on-gui (ac-set-trigger-key "<tab>"))
+  (add-to-list 'completion-styles 'initials t)
+  (general-define-key :keymaps 'ac-completing-map
+                      "C-j" 'ac-next
+                      "C-k" 'ac-previous
+                      "<S-tab>" 'ac-previous))
+#+END_SRC
+
+Auto-completion for =.=-separated words.
+
+#+name: 8D07F369-08CF-49D3-8EEF-B8D9B58BE6E3
+#+begin_src emacs-lisp
+(use-package auto-complete-chunk :ensure t)
+#+end_src
+
+** Keyboard Macros
+:PROPERTIES:
+:ID:       D436A7E6-6121-45AB-A269-F07C42D5181A
+:CUSTOM_ID: h-F1B49C48-E075-4EAA-9A3E-983FF2BE416B
+:END:
+
+Keep many keyboard macros
+
+#+name: 0B219355-86EC-4117-8E72-7D362C1F4232
+#+begin_src emacs-lisp
+(setq kmacro-ring-max 32)
+#+end_src
+
+Persist keyboard macros in Emacs Lisp alternative to ~insert-kbd-macro~
+
+#+name: 28187470-91D3-4C7F-81CC-4708BCA61F5F
+#+begin_src emacs-lisp
+(use-package elmacro
+  :ensure t
+  :diminish elmacro-mode
+  :config
+  (elmacro-mode))
+#+end_src
+
+** Mark, Kill and Region
+:PROPERTIES:
+:ID:       9F192AF9-DEAE-4F55-9BAC-01F9679B815D
+:CUSTOM_ID: h-0D6AB8E8-AA00-4BDD-B51E-F584DA877D1B
+:END:
+
+Easy kill ring access
+
+#+name: A9B3A97E-85F4-4852-A296-E1E069149EEC
+#+begin_src emacs-lisp
+(use-package browse-kill-ring :ensure t
+  :general
+  ("M-y"  'browse-kill-ring)
+  :config
+  (browse-kill-ring-default-keybindings)
+  (setq browse-kill-ring-highlight-current-entry t)
+  (setq browse-kill-ring-highlight-inserted-item t)
+  (setq browse-kill-ring-show-preview nil)
+  (setq browse-kill-ring-separator
+        ".-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-
+"))
+#+end_src
+
+When you start typing and text is selected, replace it with what you are
+typing or pasting
+
+#+name: B883DC5E-7140-4248-9930-CFE49AB0FBB6
+#+begin_src emacs-lisp
+(delete-selection-mode t)
+#+end_src
+
+Automatically save data copied from the system clipboard into the kill ring
+before killing Emacs data.
+
+#+name: 7CFAC191-AA27-4F7E-A122-5BAE4AFE8203
+#+begin_src emacs-lisp
+(setq save-interprogram-paste-before-kill t)
+#+end_src
+
+Copy selected text to the clip board
+
+#+name: C2EB725E-2288-4EDD-A12F-B5524FFCE586
+#+begin_src emacs-lisp
+(setq mouse-drag-copy-region t)
+#+end_src
+
+** Minibuffer
+:PROPERTIES:
+:ID:       EE24B6A0-36DB-4DDD-8446-13F9FE64EAFF
+:CUSTOM_ID: h-53E6B54A-B2D2-40AC-97CA-5EE2A60049D0
+:END:
+=yes-or-no-p= can die in a fire
+
+#+name: 004E49E3-51FC-4330-93F2-2B840B204362
+#+begin_src emacs-lisp
+(fset #'yes-or-no-p #'y-or-n-p)
+#+end_src
+
+Comfortably display information
+#+name: DF5031B7-9EF6-47ED-9569-E7AC5B73F237
+#+begin_src emacs-lisp
+(setq resize-mini-windows t)
+(setq max-mini-window-height 0.33)
+#+end_src
+
+Allow recursive commands-in-commands and highlight the levels of recursion
+#+name: C5E38733-77E5-41DF-B2C7-03BB2B65C4F9
+#+begin_src emacs-lisp
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode)
+#+end_src
+
+Temporarily give it more memory to speed it up
+#+name: F9BBBC63-9470-496E-BBDA-6D7CC166676C
+#+begin_src emacs-lisp
+(add-hook 'minibuffer-setup-hook #'pdc/double-gc-cons-threshold)
+(add-hook 'minibuffer-setup-hook #'pdc/set-gc-cons-threshold)
+#+end_src
+
+** Mouse
+:PROPERTIES:
+:ID:       F4ED0583-69FD-4544-8A84-96F80AB3EC04
+:CUSTOM_ID: h-9C4632D0-C49B-49AD-BC2E-734B07DBE587
+:END:
+
+Scroll pleasantly with the mouse wheel. A slow turn moves the buffer up and
+down one line at a tim. So does a fast turn. Anything further than 5-10 lines
+deserves a fast navigation vehicle.
+#+name: 6D13B374-C2A4-4A75-8F79-FBB48A63C114
+#+begin_src emacs-lisp
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+(setq mouse-wheel-follow-mouse t)
+#+end_src
+
+** Occur
+:PROPERTIES:
+:ID:       8EED74FF-F1F0-40F1-9B05-2A7C0DFD8FDF
+:CUSTOM_ID: h-8661D179-020C-4D6C-BA8F-52494145FE3E
+:END:
+- Multiple Occur buffers
+- ~n~ and ~p~ navigate search results
+- TODO Jump near buffer top
+
+#+name: 7F92A99A-CC85-4875-9018-9E0742BA40E7
+#+begin_src emacs-lisp
+(defun pdc|occur-mode-hook-fn ()
+  "My Occur customizations."
+  (interactive)
+  (turn-on-stripe-buffer-mode)
+  (occur-rename-buffer))
+(add-hook 'occur-mode-hook #'pdc|occur-mode-hook-fn)
+(general-define-key
+ :keymaps 'occur-mode-map
+ "n" #'next-logical-line
+ "p" #'previous-logical-line)
+#+end_src
+
+** Popups
+:PROPERTIES:
+:ID:       AA0057CD-AC64-4197-A47F-2C25ECB03EC3
+:CUSTOM_ID: h-E6438D51-BB86-458B-8AB9-44028A04FF55
+:END:
+Provide popup notifications.
+
+#+name: 79263A6C-938F-4356-BC95-692CD7F6C789
+#+begin_src emacs-lisp
+(use-package alert
+  :ensure t
+  :config
+  (setq alert-fade-time 10)
+  (setq alert-default-style 'message)
+  (pdc/on-gui
+   (pdc/on-osx
+    (setq alert-default-style 'notifier)))
+  (setq alert-reveal-idle-time 120))
+#+end_src
+
+** Projects
+:PROPERTIES:
+:CUSTOM_ID: h-A3FA2DD9-23B4-4D5A-A9E8-2F60338414BE
+:ID:       C125DA94-B52A-4618-B5AC-77276296C1B4
+:END:
+
+Directories that have Git working copies are logically projects. Manage them
+with Projectile.
+#+name: 50F60F56-21C0-4A8D-8CF7-4AFDA629921F
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :defer t
+    :commands (projectile-project-p)
+    :diminish projectile-mode
+    :general
+    (pdc|with-leader :infix :projects
+      "b" 'projectile-switch-to-buffer
+      "d" 'projectile-find-dir
+      "f" 'projectile-find-file
+      "F" 'projectile-find-file-dwim
+      "r" 'projectile-recentf
+      "p" 'projectile-switch-project
+      "v" 'projectile-vc
+      "!" 'projectile-run-shell-command-in-root
+      "&" 'projectile-run-async-shell-command-in-root
+      "%" 'projectile-replace-regexp
+      "a" 'projectile-toggle-between-implementation-and-test
+      "c" 'projectile-compile-project
+      "D" 'projectile-dired
+      "g" 'projectile-find-tag
+      "G" 'projectile-regenerate-tags
+      "I" 'projectile-invalidate-cache
+      "k" 'projectile-kill-buffers
+      "R" 'projectile-replace
+      "T" 'projectile-test-project)
     :init
-    (setq ac-auto-start 0
-          ac-delay 0.2
-          ac-quick-help-delay 1.
-          ac-use-fuzzy t
-          ac-fuzzy-enable t
-          tab-always-indent 'complete
-          ac-dwim t)
-    (global-auto-complete-mode t)
+    (setq projectile-sort-order 'recentf
+          projectile-cache-file (no-littering-expand-var-file-name "projectile.cache")
+          projectile-known-projects-file (no-littering-expand-var-file-name "projectile.bookmarks.eld"))
     :config
-    (require 'auto-complete-config)
-    (setq-default ac-sources '(ac-source-yasnippet
-                               ac-source-abbrev
-                               ac-source-dictionary
-                               ac-source-words-in-same-mode-buffers))
-    (add-to-list 'completion-styles 'initials t)
-    (general-define-key :keymaps 'ac-completing-map
-                        "C-j" 'ac-next
-                        "C-k" 'ac-previous
-                        "<S-tab>" 'ac-previous))
+    (pdc/on-windows
+     (setq projectile-indexing-method 'alien))
+    (projectile-global-mode)
+    (setq projectile-completion-system 'ivy)
+    (setq magit-repository-directories
+          (mapcar (lambda (dir)
+                    (substring dir 0 -1))
+                  (remove-if-not (lambda (project)
+                                   (file-directory-p (concat project "/.git/")))
+                                 (projectile-relevant-known-projects))))
+    (setq magit-repository-directories-depth 1))
+
+
+(use-package counsel-projectile
+  :ensure t
+  :defer t
+  :general
+  (pdc|with-leader :infix :projects
+    "SPC" 'counsel-projectile
+    "b" 'counsel-projectile-switch-to-buffer
+    "d" 'counsel-projectile-find-dir
+    "p" 'counsel-projectile-switch-project
+    "f" 'counsel-projectile-find-file))
 
 #+END_SRC
-** Expanding the region
+
+** Printing
 :PROPERTIES:
-:CUSTOM_ID: h-E6FACCB1-E5FD-4DCB-9018-1B238EC409F9
+:ID:       0248E50A-3B03-4F51-A3D7-292FBD6451EB
+:CUSTOM_ID: h-2ECA5570-14C0-49D9-934E-D5A14ECD8273
 :END:
+
+#+name: 008BAE49-A6EF-4FB8-9293-FA25784F7736
+#+begin_src emacs-lisp
+(use-package pp
+  :commands (pp-display-expression))
+#+end_src
+
+** Registers
+:PROPERTIES:
+:ID:       35CB043A-219C-46C4-868D-7248FBD2E3B9
+:CUSTOM_ID: h-0A746455-786B-44D4-9EBD-BDA4A678A496
+:END:
+#+name: B3045F52-C1B4-4EA2-B397-06941B16878E
+#+begin_src emacs-lisp
+(setq register-preview-delay 2)
+(setq register-separator "\n\n")
+#+end_src
+
+** Save and Restore Operating State
+:PROPERTIES:
+:ID:       2C1C32BC-C8A0-46AA-86F4-0D66CCADFDCA
+:CUSTOM_ID: h-FF7F7928-3DC3-4AAB-A6D2-8CF0D90AE79A
+:END:
+
+*** Mark
+:PROPERTIES:
+:ID:       8873D318-00E0-46FD-98EE-58FB790F8FF4
+:CUSTOM_ID: h-54044A7B-EA46-45F5-B0CC-7981476FFDF4
+:END:
+When you reopen a file, return the mark to its last position
+
+#+name: 801A1726-E140-417B-846F-D55D87AE1444
 #+BEGIN_SRC emacs-lisp
-  (use-package expand-region :ensure t
+  (use-package saveplace
+    :init
+    (if (fboundp 'save-place-mode)
+        (save-place-mode)
+      (setq save-place t)))
+#+END_SRC
+*** Minibuffer
+:PROPERTIES:
+:CUSTOM_ID: h-A16B73BC-6EAB-4573-AF44-318B15F14D49
+:ID:       AD784806-825B-4275-BDE1-15BF5D4CCD23
+:END:
+It's nice to have commands and their history saved so that every time you get
+back to work, you can just re-run stuff as you need it.
+
+#+name: CF6555F8-34B8-4D0C-8C8D-FB7BC036D4EC
+#+BEGIN_SRC emacs-lisp
+  (use-package savehist
+    :init
+    (setq enable-recursive-minibuffers t
+          history-length 1000
+          savehist-additional-variables '(kill-ring
+                                          mark-ring
+                                          global-mark-ring
+                                          search-ring
+                                          regexp-search-ring
+                                          extended-command-history
+                                          last-kbd-macro
+                                          kmacro-ring
+                                          shell-command-history)
+          savehist-autosave-interval 60)
+    (savehist-mode t))
+#+END_SRC
+
+Use history as a look up instead of a log.
+#+name: C99C19D5-258C-47E1-87C7-65F3EFF2835F
+#+begin_src emacs-lisp
+(setq history-delete-duplicates t)
+#+end_src
+** Searching
+:PROPERTIES:
+:ID:       A2B4491D-27A0-4A89-A364-A7BE9BF2B74C
+:CUSTOM_ID: h-E371EA71-8B2C-473E-8810-2B549A861CAC
+:END:
+*** Internal
+:PROPERTIES:
+:ID:       7AF48788-9DAC-4A28-A23A-FB8439ABC7AD
+:CUSTOM_ID: h-FEDAC677-2057-4541-BECB-E9FC37B3024B
+:END:
+=Swiper= is a most excellent improvement on  the default incremental search.
+
+#+name: 4A0991DC-044F-4CCB-9EE0-9A4BD63C647D
+#+BEGIN_SRC emacs-lisp
+    (use-package swiper :ensure t
+      :pin "melpa"
+      :commands (swiper swiper-all)
+      :general
+      (pdc|with-leader :infix (:search)
+       "s" 'swiper
+       "S" 'swiper-all)
+      :config
+      (global-set-key [remap isearch-forward] 'swiper)
+      (global-set-key [remap isearch-forward-regexp] 'swiper)
+      (global-set-key [remap isearch-backward] 'swiper)
+      (global-set-key [remap isearch-backward-regexp] 'swiper))
+#+END_SRC
+
+Make searching automatically search for Unicode homoglyphs of the search characters.
+
+#+name: F4BDE137-1AB9-48C3-86A3-32BD7B72D892
+#+begin_src emacs-lisp
+(setq search-default-mode #'char-fold-to-regexp)
+#+end_src
+
+Ditto for replace
+#+name: 172E34EF-34EB-48A8-AE3E-386DFB9483D7
+#+begin_src emacs-lisp
+(setq replace-char-fold t)
+#+end_src
+*** External
+:PROPERTIES:
+:ID:       B3266D77-2AAD-442F-A188-BDFA654091BB
+:CUSTOM_ID: h-A79CD394-BDBE-4BC8-9C5A-4A00C2A41B3B
+:END:
+Writeable Grep integration
+#+name: 10E19313-1FB7-4F4B-8C69-940F434C7BE3
+#+begin_src emacs-lisp
+(use-package wgrep
+  :ensure t
+  :config
+  (setq wgrep-auto-save-buffer t))
+#+end_src
+
+Ag integration
+
+#+name: 9CC24F14-2012-4083-86C6-5631C71C6CB2
+#+begin_src emacs-lisp
+(use-package ag
+  :ensure t
+  :config
+  (setq ag-highligh-search t)
+  (setq ag-reuse-window nil)
+  (setq ag-reuse-buffers nil)
+  (add-to-list 'ag-arguments "--hidden")
+  (defun pdc|ag-mode-hook-fn ()
+    "Ag customizations."
+    (interactive)
+    (turn-on-stripe-buffer-mode))
+  (defun pdc|ag-mode-finished-hook-fn ()
+    "Ag finished hook function."
+    (interactive)
+    (let ((compilation-scroll-output 'first-error))
+      (pop-to-buffer next-error-last-buffer)))
+  (add-hook 'ag-mode-hook #'pdc|ag-mode-hook-fn)
+  (add-hook 'ag-search-finished-hook #'pdc|ag-mode-finished-hook-fn))
+#+end_src
+
+Writeable Ag
+
+#+name: 73ED9F62-22D9-402D-9F32-459B3C6E87F2
+#+begin_src emacs-lisp
+(use-package wgrep-ag
+  :ensure t
+  :after ag)
+#+end_src
+
+
+** Version Control
+:PROPERTIES:
+:CUSTOM_ID: h-C8C6371D-1DF9-410E-92B7-E7388505756A
+:ID:       0DDB5171-7AD1-4FD0-800E-47020EC5B97B
+:END:
+
+Git config files.
+
+#+name: 02F9CB0D-17F1-476E-BAFF-9E511FC98102
+#+begin_src emacs-lisp
+(use-package gitignore-mode :ensure t)
+
+(use-package gitconfig-mode :ensure t)
+
+(use-package gitattributes-mode :ensure t)
+#+end_src
+
+*** Magit
+:PROPERTIES:
+:CUSTOM_ID: h-6B8BA595-A05A-4042-ADD4-0BE5E4FBD9CA
+:ID:       B27B00B8-45CF-4DDC-ACE5-F0F9C28DA305
+:END:
+Magit is awesome and I'd hate to be without it
+#+name: A0CA6683-AD74-4D3D-A9E4-A46CB9C347F8
+#+BEGIN_SRC emacs-lisp
+
+  (use-package with-editor :ensure t
+    :diminish "")
+
+  (use-package magit :ensure t
+    :commands (magit-get-top-dir magit-status)
+    :general
+    ("M-," 'pdc/vc-status)
+    ("C-. g s" 'magit-status)
+    (:prefix leader-key
+             "g"   '(:ignore t :which-key "git")
+             "g s" 'magit-status)
+    :init
+    (setq magit-last-seen-setup-instructions "1.4.0")
+    (setq magit-branch-arguments nil)
+    (setq magit-push-always-verify nil)
+    :config
+    (defun pdc/bookmark-magit-status (bookmark)
+      "Run magit-status on the bookmarked file"
+      (interactive
+       (list (bookmark-completing-read "Status of bookmark"
+                                       (bmkp-default-bookmark-name))))
+      (magit-status (bookmark-prop-get bookmark 'filename)))
+    (defun pdc/vc-status ()
+      (interactive)
+      (cond ((magit-get-top-dir default-directory)
+             (call-interactively 'magit-status))
+            (t
+             (call-interactively 'dired)))))
+#+END_SRC
+
+Change browsing
+#+name: 6181CCFA-3445-4F9A-AD0C-A0843A822C5F
+#+begin_src emacs-lisp
+  (use-package git-timemachine :ensure t)
+#+end_src
+
+*** Gist
+:PROPERTIES:
+:CUSTOM_ID: h-1EF110DD-C7A0-4D86-BB59-8C3B20A021A6
+:ID:       C3725FAB-4013-42A1-965C-58AD7C2B8F33
+:END:
+Manage code samples on github
+#+name: D30CA25C-F805-4F3A-B86C-F454BAC94C3A
+#+BEGIN_SRC emacs-lisp
+  (use-package gist :ensure t
+    :init
+    (setq gist-authenticate-function 'gist-oauth2-authentication)
     :general
     (pdc|with-leader
-      "v" 'er/expand-region))
+     "g G" 'gist-region-or-buffer))
 
 #+END_SRC
+
+*** Helpful gutters/fringes
+:PROPERTIES:
+:CUSTOM_ID: h-8ABB2308-C42A-410D-840C-24BA6E8D5452
+:ID:       2A589BBC-7764-47BD-A0AA-C890D4048643
+:END:
+The fringe is a very handy bit of interface, especially when it knows
+about the git status of things.
+#+name: C5CDF282-AA12-4D3E-9FCF-BFA566399C25
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter+ :ensure t
+    :diminish git-gutter+-mode
+    :diminish git-gutter-mode
+    :init
+    (bindings|add-toggle git-gutter :mode git-gutter+-mode :toggle-keys "Tg")
+    (global-git-gutter+-mode 1))
+
+  (use-package git-gutter-fringe+ :ensure t
+    :config
+    (git-gutter-fr+-minimal))
+
+#+END_SRC
+
+** Video
+:PROPERTIES:
+:ID:       010F2E74-0AE8-40B9-AFA4-5CCE89A2664F
+:CUSTOM_ID: h-0BA5E443-9BD3-4B6D-8FEF-221644AA273E
+:END:
+
+Embedding Youtube videos with org-mode links.
+
+#+name: CC755460-F689-43B9-8524-EB1440E1FA58
+#+begin_src emacs-lisp
+;; (defvar yt-iframe-format
+;;   (s-join " "
+;;           "<iframe width=\"440\""
+;;           "height=\"335\""
+;;           "src=\"https:/www.youtube.com/embed/%s\""
+;;           "frameborder=\"0\""
+;;           "allowfullscreen>%s</iframe>"))
+
+;; (org-add-link-type
+;;  "yt"
+;;  (lambda (handle)
+;;    (browse-url
+;;     (concat "https://www.youtube.com/embed"
+;;             handle)))
+;;  (lambda (path desc backend)
+;;    (cl-case backend
+;;      (html (format yt-iframe-format
+;;                    path (or desc "")))
+;;      (latex (format "\href{%s}{%s}"
+;;                     path (or desc "video"))))))
+#+end_src
+
+** Whitespace Management
+:PROPERTIES:
+:ID:       82006D53-AF1F-4382-8303-C874241E11AB
+:CUSTOM_ID: h-D5446ED1-9659-465E-8835-FDE53D7BA192
+:END:
+
+- Visible Whitespace
+  - Tabs
+
+#+name: 25EBBF6B-592E-4319-9434-6DF4CD77311B
+#+begin_src emacs-lisp
+(use-package whitespace
+  :ensure t
+  :config
+  (setq whitespace-style '(tab-mark))
+  (setq whitespace-display-mappings
+        '((tab-mark ?\t [?↹ ?\t] [?␉ ?\t] [?\t])))
+  (setq whitespace-line-column pdc|column-width)
+  (global-whitespace-mode t)
+  (setq whitespace-global-modes '(not go-mode))
+  :diminish whitespace-mode global-whitespace-mode)
+#+end_src
+a
+** Word Wrap
+:PROPERTIES:
+:ID:       2236553E-4285-4FD5-ADAA-9C27EA1FE3E9
+:CUSTOM_ID: h-A82C2EFD-D012-494F-9E4E-AB0407A5B41E
+:END:
+
+#+name: A28EF075-9173-4CFC-8213-4C13F9D22B59
+#+begin_src emacs-lisp
+(diminish 'visual-line-mode)
+#+end_src
+
+Remind me that VLM is turned on so I pay attention ot the wrap.
+
+#+name: 6B8C6F7F-17CE-4987-A284-3106C3A2627A
+#+begin_src emacs-lisp
+(setq visual-line-fringe-indicators '(nil right-curly-arrow))
+#+end_src
 
 * Navigation
 :PROPERTIES:
 :CUSTOM_ID: h-3CBDC359-6FE1-4CA5-B36B-D11FB27B4904
+:ID:       06B8A893-B147-4D5E-A970-873CF2189639
 :END:
 
 ** Standard locations
 :PROPERTIES:
 :CUSTOM_ID: h-A81459E3-6585-49BB-9821-2546EB1A5648
+:ID:       518F0B33-4D30-4034-BF33-C137D45FACF3
 :END:
+#+name: 591FEE90-023B-4013-AD92-25A4E778C050
 #+BEGIN_SRC emacs-lisp
   (defun pdc/find-config ()
     "Edit the `config.org', in the current window."
@@ -1691,7 +3254,7 @@ to display a =*blank*= buffer.
   (defun pdc/sudo-edit (&optional initial-input)
     (interactive "P")
     (counsel-find-file-as-root (pdc//read-file-name initial-input)))
-  
+
   (pdc|with-leader :infix (:emacs-d)
     "c" '(pdc/find-config :which-key "config.org")
     "i" '(pdc/find-user-init-file :which-key "init.el"))
@@ -1704,15 +3267,17 @@ to display a =*blank*= buffer.
     "s" 'save-buffer
     "v" '(:ignore t :which-key "variables")
     "vd" 'add-dir-local-variable
-    "vf" 'add-file-local-varihable
+    "vf" 'add-file-local-variable
     "vp" 'add-file-local-variable-prop-line)
 #+END_SRC
 
 ** Avy
 :PROPERTIES:
 :CUSTOM_ID: h-F2157C17-D646-439E-A8BA-6DAAFFCB0599
+:ID:       567BAE96-C445-4CF1-A06A-2AE2D789568F
 :END:
 For jumping to characters and words in the frame
+#+name: 839D76E0-3938-466F-971F-5B2800FF2F3C
 #+BEGIN_SRC emacs-lisp
   (use-package avy :ensure t
     :general
@@ -1723,40 +3288,19 @@ For jumping to characters and words in the frame
      "w" 'avy-goto-word-1))
 #+END_SRC
 
-** Swiper
-:PROPERTIES:
-:CUSTOM_ID: h-7229F57A-371D-4394-BB5A-F860A39C183B
-:END:
-A better incremental search
-
-#+BEGIN_SRC emacs-lisp
-    (use-package swiper :ensure t
-      :pin "melpa"
-      :commands (swiper swiper-all)
-      :general
-      (pdc|with-leader :infix (:search)
-       "s" 'swiper
-       "S" 'swiper-all)
-      :config
-      (global-set-key [remap isearch-forward] 'swiper)
-      (global-set-key [remap isearch-forward-regexp] 'swiper)
-      (global-set-key [remap isearch-backward] 'swiper)
-      (global-set-key [remap isearch-backward-regexp] 'swiper))
-
-
-#+END_SRC
-
 ** Ivy
 :PROPERTIES:
 :CUSTOM_ID: h-3B23B470-EE75-4617-920A-D38E3FA2BE29
+:ID:       001ED415-7104-44D2-B638-5250F4CFD8B6
 :END:
-A better completing read. Similar to helm but rather less intrusive. 
+A better completing read. Similar to helm but rather less intrusive.
 
 We define a =pdc-find-file-other-window= function, but it seems the
 'proper' ivy based approach is to do =M-o j= once we've selected the
 correct file using counsel-find-file. Not sure how to suggest this in
 the method itself, short of erroring out and telling the user (me) to
 just use the ivy supplied method.
+#+name: 31C55E71-FAB8-4D4A-85DC-5C2782309629
 #+BEGIN_SRC emacs-lisp
 
   (use-package ivy :ensure t
@@ -1776,6 +3320,7 @@ just use the ivy supplied method.
     :config
     (after-loading 'recentf
       (setq ivy-use-virtual-buffers t))
+    (setq ivy-count-format "%d/%d")
 
     (defun pdc-find-file-other-window (&optional initial-input)
       "Forward to `find-file-other-window'.
@@ -1839,6 +3384,12 @@ just use the ivy supplied method.
                 (ivy-pdc-help//toggle-candidates)
                 :action 'ivy-pdc-help//toggle)))
 
+;; (use-package ivy-posframe
+;;   :ensure t
+;;   :config
+;;   (setq ivy-display-function #'ivy-posframe-display)
+;;   (ivy-posframe-enable))
+
 
   (use-package ivy-hydra :ensure t)
 
@@ -1848,10 +3399,12 @@ just use the ivy supplied method.
 ** Counsel
 :PROPERTIES:
 :CUSTOM_ID: h-CB8056EA-07A0-4DFD-A2F0-9327F7B4A0BC
+:ID:       A0A5B90E-967B-48B4-BB3F-E3E8E0E38C39
 :END:
 
 Wraps a bunch of common functions with the =ivy= completing read
 that's also used by swiper.
+#+name: 8F86A636-4B1F-4A81-8E69-356633461EFB
 #+BEGIN_SRC emacs-lisp
   (defun pdc/counsel-projectile-ag-region-or-symbol ()
     "Use `counsel-projectile-ag' to search for the selected region or
@@ -1894,15 +3447,15 @@ that's also used by swiper.
       (:org "G")       '(counsel-org-goto-all :which-key "goto-all")
       (:insertion "u") 'counsel-unicode-char
       (:jump "i")      'counsel-imenu
-    
+
       (:rings "y")     'counsel-yank-pop
       (:themes "s")    'counsel-load-theme)
-  
 
-    (pdc|with-leader :infix :help
-      "df" 'counsel-describe-function
-      "dm" 'describe-mode
-      "dv" 'counsel-describe-variable)
+
+    ;; (pdc|with-leader :infix :help
+    ;;   "df" 'counsel-describe-function
+    ;;   "dm" 'describe-mode
+    ;;   "dv" 'counsel-describe-variable)
 
     (pdc|with-leader :infix :search
       "f"  'counsel-ag
@@ -1929,13 +3482,20 @@ that's also used by swiper.
       (when (fboundp (cdr it))
         (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
+
+(use-package counsel-dash :ensure t)
+(use-package counsel-projectile :ensure t)
+(use-package counsel-osx-app :ensure t)
+
 #+END_SRC
 
 ** Bookmarks
 :PROPERTIES:
 :CUSTOM_ID: h-5B5C1CFF-7511-4FEE-84FC-BC656FC65509
+:ID:       34F59F3E-4789-4B57-B018-7CB393B42790
 :END:
 
+#+name: F491D61A-0AA7-46BF-8E90-B792EC5DEDCB
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark
     :general
@@ -1949,23 +3509,53 @@ that's also used by swiper.
 ** Imenu
 :PROPERTIES:
 :CUSTOM_ID: h-C6F10736-F427-420B-8DFD-76552771EA0E
+:ID:       D125BCCE-A89D-44E7-86AC-99C92432CB62
 :END:
 
+Major productivity hack
+
+#+name: 98C20523-708A-4BA3-BA82-60C4A53280DE
 #+BEGIN_SRC emacs-lisp
-  (use-package imenu
-    :general
-    (pdc|with-leader :infix :jump "i" 'imenu))
+(use-package imenu
+  :general
+  (pdc|with-leader :infix :jump "i" 'imenu)
+  :config
+  (setq imenu-sort-function #'imenu--sort-by-name))
+
+(defun pdc/try-to-add-imenu ()
+  "Add Imenu to modes that have `font-lock-mode' activated.
+
+Attribution: URL http://www.emacswiki.org/emacs/ImenuMode"
+  (condition-case nil (imenu-add-to-menubar "Imenu") (error nil)))
+(add-hook 'font-lock-mode-hook #'pdc/try-to-add-imenu)
 #+END_SRC
+
+Provide it in a buffer.
+
+#+name: 5A23820D-4BDB-4400-9433-5B324F9BE1AF
+#+begin_src emacs-lisp
+(use-package imenu-list
+  :ensure t
+  :config
+  (setq imenu-list-focus-after-activation t)
+  (setq imenu-list-auto-resize t)
+  (setq imenu-list-position 'left)
+  (setq imenu-list-size 40))
+#+end_src
+
 
 ** Files
 :PROPERTIES:
 :CUSTOM_ID: h-324E32DA-4291-4A44-9CC4-82D7C1BF1C57
+:ID:       89A9C386-68FF-4FAA-8990-AB4E7A64726F
 :END:
 *** Dired
 :PROPERTIES:
 :CUSTOM_ID: h-1800E44B-9B8A-4FD1-9632-560C9795618D
+:ID:       1A398284-9930-4503-9DAB-57E3EF65050D
 :END:
 
+#+name: 07CDCEA3-7ED1-4934-82F2-6CC038704E80
 #+BEGIN_SRC emacs-lisp
 
   (use-package dired
@@ -1990,8 +3580,10 @@ that's also used by swiper.
 *** Recentf
 :PROPERTIES:
 :CUSTOM_ID: h-CF54635A-644D-4ED3-8F30-741227FD1960
+:ID:       7D3D4F44-6F97-449B-91E4-A699C2C4D8D4
 :END:
 
+#+name: 5E24F4F6-7492-4B6C-8C68-4F51D8AFC9EC
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
     :ensure t
@@ -2008,50 +3600,17 @@ that's also used by swiper.
     (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+END_SRC
-** Remembering stuff between Sessions
-:PROPERTIES:
-:CUSTOM_ID: h-A839AD38-0003-4FA6-96E9-C5CDA951C442
-:END:
-*** Savehist
-:PROPERTIES:
-:CUSTOM_ID: h-A16B73BC-6EAB-4573-AF44-318B15F14D49
-:END:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package savehist
-    :init
-    (setq enable-recursive-minibuffers t
-          history-length 1000
-          savehist-additional-variables '(mark-ring
-                                          global-mark-ring
-                                          search-ring
-                                          regexp-search-ring
-                                          extended-command-history)
-          savehist-autosave-interval 60)
-    (savehist-mode t))
-#+END_SRC
-*** Saveplace
-:PROPERTIES:
-:CUSTOM_ID: h-22B91BA9-F33A-4031-9F1E-50959BF8D0F9
-:END:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package saveplace
-    :init
-    (if (fboundp 'save-place-mode)
-        (save-place-mode)
-      (setq save-place t)))
-
-#+END_SRC
-
 * Bindings
 :PROPERTIES:
 :CUSTOM_ID: h-30248995-CFFF-4BF8-B0DC-56AF934E58F4
+:ID:       449CDAB9-5672-4D5B-8D44-E619019FCA9D
 :END:
 ** Toggles for stuff that's preloaded
 :PROPERTIES:
 :CUSTOM_ID: h-AC98C3EC-1BF0-4FB1-BF41-39421DE26C6F
+:ID:       B5398494-05AA-4B8E-91B2-28A41E6C0307
 :END:
+#+name: 8A21AABF-6294-4E8F-AD25-C0041B532824
 #+BEGIN_SRC emacs-lisp
 
   (bindings|add-toggle auto-fill-mode
@@ -2134,7 +3693,9 @@ that's also used by swiper.
 ** Quitting emacs
 :PROPERTIES:
 :CUSTOM_ID: h-F11E7FE9-10C9-4A15-BCCC-512F699FC570
+:ID:       8726DD0D-510D-4D3E-9D96-3A515861E1DA
 :END:
+#+name: 8EC44974-0104-4304-88FC-4EE45644EDB8
 #+BEGIN_SRC emacs-lisp
   (defun pdc/frame-killer ()
     "Kill server buffer and hide the main Emacs window"
@@ -2155,7 +3716,9 @@ that's also used by swiper.
 ** Other bindings
 :PROPERTIES:
 :CUSTOM_ID: h-29F880BF-21C4-44E4-866F-8C8CCA9EB1AD
+:ID:       164AAEDC-9196-4EFF-A47F-B22C07A88374
 :END:
+#+name: 1B3A7B07-8328-4605-A2F8-3B8B56BF18CD
 #+BEGIN_SRC emacs-lisp
   (defun pdc/execute-extended-command-short (prefixarg &optional function)
     "Massively simplified execute extended command.
@@ -2226,7 +3789,7 @@ that's also used by swiper.
   ;;; A describe-foo leader
   ;; First unbind a bunch of non-menu bindings
   (--each '(;; apropos-*
-            "a" 
+            "a"
             ;; describe-*
             "b" "C-c" "C-o" "c" "C" "f" "g" "I"
             "k" "L" "m" "C-w" "P" "o" "s" "v"
@@ -2235,7 +3798,7 @@ that's also used by swiper.
 
     (global-unset-key (kbd (format "%c %s" help-char it))))
 
-  (pdc|with-leader :infix "h d"
+  (pdc|with-leader :infix :describe
     ""     '(nil :which-key "describe-*")
     "b" 'describe-bindings
     "B" 'describe-personal-bindings
@@ -2244,6 +3807,7 @@ that's also used by swiper.
     "F" 'describe-face
     "I" 'describe-input-mode
     "k" 'describe-key
+    "K" 'describe-keymap
     "o" 'describe-symbol
     "L" 'describe-language-environment
     "m" 'describe-mode
@@ -2260,7 +3824,7 @@ that's also used by swiper.
 
   (pdc|with-leader :infix "h i"
     "" '(nil :which-key "Info")
-    "e" 'info-elisp-manual                
+    "e" 'info-elisp-manual
     "i" 'info
     "F" 'Info-goto-emacs-command-node
     "K" 'Info-goto-emacs-key-command-node
@@ -2295,8 +3859,8 @@ that's also used by swiper.
       "\""     '(pdc|doublequote-behind :which-key "\" behind")
 
       ;; operate on file and buffer, so put beneath both leaders
-      "f R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer") 
-      "b R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")   
+      "f R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")
+      "b R"    '(pdc|rename-file-and-buffer :which-key "rename file & buffer")
       "f M"    '(pdc|move-buffer-file :which-key "move buffer file")
       "b M"    '(pdc|move-buffer-file :which-key "move buffer file")
 
@@ -2366,7 +3930,7 @@ that's also used by swiper.
            ("w" kill-word "word"))
          :which-key "+kill")
     "K" (list kmacro-keymap :which-key "kmacro")
-  
+
     ;; "r q" 'query-replace-regexp
     "r R" 'replace-rectangle)
 #+END_SRC
@@ -2374,6 +3938,7 @@ that's also used by swiper.
 * Snippets
 :PROPERTIES:
 :CUSTOM_ID: h-5178C460-6EB9-488C-9220-03D421F39EB4
+:ID:       B50B378C-3316-47E3-8878-51718112B0DD
 :END:
 
 Snippet systems are the good sort of magical. Insane in many ways, and
@@ -2383,10 +3948,12 @@ your sanity. Please, I beg of you don't. But do use them.
 ** yasnippet
 :PROPERTIES:
 :CUSTOM_ID: h-630A6836-98B7-4476-964F-14E4CCF69379
+:ID:       7F0CF106-BC2D-4652-9335-E804E3B982EE
 :END:
 
 [[https://github.com/joaotavora/yasnippet][Yasnippet]] seems to be winning the snippet tool race now
 
+#+name: 323758EA-3582-44B5-8BBB-7A5FC3ED6701
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet :ensure t
     :commands (yas-global-mode yas-minor-mode)
@@ -2398,11 +3965,11 @@ your sanity. Please, I beg of you don't. But do use them.
     (setq yas-triggers-in-field t
           yas-wrap-around-region t)
     (setq yas-prompt-functions '(yas-completing-prompt))
-    (setq yas-minor-mode-map (make-sparse-keymap))
-    (general-define-key :keymaps 'yas-minor-mode-map
-                        "M-s-/" 'yas-next-field)
+    ;; (setq yas-minor-mode-map (make-sparse-keymap))
     (yas-global-mode 1)
     :config
+    (general-define-key :keymaps 'yas-minor-mode-map
+                        "M-s-/" 'yas-next-field)
     (yas-load-directory (no-littering-expand-etc-file-name "yasnippet/snippets/")))
 
 #+END_SRC
@@ -2410,8 +3977,10 @@ your sanity. Please, I beg of you don't. But do use them.
 ** Snippet like functions
 :PROPERTIES:
 :CUSTOM_ID: h-AFB7D774-421A-4DAB-BB5C-F07DE8695D79
+:ID:       82472CB6-A8E7-4836-8C17-CF8E0FC43C00
 :END:
 
+#+name: 679B3716-98D8-4751-B93D-4AC5070C036B
 #+BEGIN_SRC emacs-lisp
   (defun my-org-insert-elisp ()
     (interactive)
@@ -2451,160 +4020,15 @@ your sanity. Please, I beg of you don't. But do use them.
 * Programming
 :PROPERTIES:
 :CUSTOM_ID: h-D4441E23-3749-4167-8030-EC38FF203644
+:ID:       1E7EEC0C-BF64-4D91-901C-D0AA2815E273
 :END:
-** Project management
-:PROPERTIES:
-:CUSTOM_ID: h-A3FA2DD9-23B4-4D5A-A9E8-2F60338414BE
-:END:
-We use Projectile here (which I should learn)
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :defer t
-    :commands (projectile-project-p)
-    :diminish projectile-mode
-    :general
-    (pdc|with-leader :infix :projects
-      "b" 'projectile-switch-to-buffer
-      "d" 'projectile-find-dir
-      "f" 'projectile-find-file
-      "F" 'projectile-find-file-dwim
-      "r" 'projectile-recentf
-      "p" 'projectile-switch-project
-      "v" 'projectile-vc
-      "!" 'projectile-run-shell-command-in-root
-      "&" 'projectile-run-async-shell-command-in-root
-      "%" 'projectile-replace-regexp
-      "a" 'projectile-toggle-between-implementation-and-test
-      "c" 'projectile-compile-project
-      "D" 'projectile-dired
-      "g" 'projectile-find-tag
-      "G" 'projectile-regenerate-tags
-      "I" 'projectile-invalidate-cache
-      "k" 'projectile-kill-buffers
-      "R" 'projectile-replace
-      "T" 'projectile-test-project)
-    :init
-    (setq projectile-sort-order 'recentf
-          projectile-cache-file (no-littering-expand-var-file-name "projectile.cache")
-          projectile-known-projects-file (no-littering-expand-var-file-name "projectile.bookmarks.eld"))
-    :config
-    (projectile-global-mode)
-    (setq projectile-completion-system 'ivy))
-
-  (use-package counsel-projectile
-    :ensure t
-    :defer t
-    :general
-    (pdc|with-leader :infix :projects
-      "SPC" 'counsel-projectile
-      "b" 'counsel-projectile-switch-to-buffer
-      "d" 'counsel-projectile-find-dir
-      "p" 'counsel-projectile-switch-project
-      "f" 'counsel-projectile-find-file))
-
-#+END_SRC
-
-** Version Control (Git)
-:PROPERTIES:
-:CUSTOM_ID: h-C8C6371D-1DF9-410E-92B7-E7388505756A
-:END:
-*** Magit
-:PROPERTIES:
-:CUSTOM_ID: h-6B8BA595-A05A-4042-ADD4-0BE5E4FBD9CA
-:END:
-Magit is awesome and I'd hate to be without it
-#+BEGIN_SRC emacs-lisp
-
-  (use-package with-editor :ensure t
-    :diminish "")
-
-  (use-package magit :ensure t
-    :commands (magit-get-top-dir magit-status)
-    :general
-    ("M-," 'pdc/vc-status)
-    ("C-. g s" 'magit-status)
-    (:prefix leader-key
-             "g"   '(:ignore t :which-key "git")
-             "g s" 'magit-status)
-    :init
-    (setq magit-last-seen-setup-instructions "1.4.0")
-    (setq magit-branch-arguments nil)
-    (setq magit-push-always-verify nil)
-    :config
-    (defun pdc/bookmark-magit-status (bookmark)
-      "Run magit-status on the bookmarked file"
-      (interactive
-       (list (bookmark-completing-read "Status of bookmark"
-                                       (bmkp-default-bookmark-name))))
-      (magit-status (bookmark-prop-get bookmark 'filename)))
-    (defun pdc/vc-status ()
-      (interactive)
-      (cond ((magit-get-top-dir default-directory)
-             (call-interactively 'magit-status))
-            (t
-             (call-interactively 'dired)))))
-
-#+END_SRC
-*** Gist
-:PROPERTIES:
-:CUSTOM_ID: h-1EF110DD-C7A0-4D86-BB59-8C3B20A021A6
-:END:
-Manage code samples on github
-#+BEGIN_SRC emacs-lisp
-  (use-package gist :ensure t
-    :init
-    (setq gist-authenticate-function 'gist-oauth2-authentication)
-    :general
-    (pdc|with-leader
-     "g G" 'gist-region-or-buffer))
-
-#+END_SRC
-
-*** Helpful gutters/fringes
-:PROPERTIES:
-:CUSTOM_ID: h-8ABB2308-C42A-410D-840C-24BA6E8D5452
-:END:
-The fringe is a very handy bit of interface, especially when it knows
-about the git status of things.
-#+BEGIN_SRC emacs-lisp
-  (use-package git-gutter+ :ensure t
-    :diminish git-gutter+-mode
-    :diminish git-gutter-mode
-    :init
-    (bindings|add-toggle git-gutter :mode git-gutter+-mode :toggle-keys "Tg")
-    (global-git-gutter+-mode 1))
-
-  (use-package git-gutter-fringe+ :ensure t
-    :config
-    (git-gutter-fr+-minimal))
-
-#+END_SRC
-
-*** DISABLED magithub
-:PROPERTIES:
-:CUSTOM_ID: h-082FC1D6-1A9F-4F5A-B044-8D027416BF57
-:END:
-Apparently has useful integration with github, but I need to look into
-how to configure it properly.
-#+BEGIN_SRC emacs-lisp
-  (use-package magithub :ensure t)
-#+END_SRC
-
-*** git-timemachine
-:PROPERTIES:
-:CUSTOM_ID: h-34ECBFBA-98CA-45E0-BA28-D9A1A482EEBC
-:END:
-Speculatively installed. Need to work out if I really need it.
-#+BEGIN_SRC emacs-lisp
-  (use-package git-timemachine :ensure t)
-#+END_SRC
-
 ** Ediff
 :PROPERTIES:
 :CUSTOM_ID: h-FA6A7C6E-2D85-41FB-AB9A-D2F9A5D4B328
+:ID:       21E8D10C-BF1F-4332-9836-777906CF1766
 :END:
 
+#+name: 8382F5DF-21D0-4BB3-A3AE-5B9E1A38B68F
 #+BEGIN_SRC emacs-lisp
   (use-package ediff
     :defer t
@@ -2624,9 +4048,11 @@ Speculatively installed. Need to work out if I really need it.
 ** Flycheck
 :PROPERTIES:
 :CUSTOM_ID: h-B5612D66-5C2B-42FC-AD95-3C550EDA50A2
+:ID:       5005114B-630A-4FEC-B5D1-68871F4133F6
 :END:
+#+name: C4132E3E-A783-4009-9B53-5E36E6B82B27
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck 
+  (use-package flycheck
     :ensure t
     :pin "melpa"
     :commands global-flycheck-mode
@@ -2636,25 +4062,13 @@ Speculatively installed. Need to work out if I really need it.
     (global-flycheck-mode t))
 #+END_SRC
 
-** Auto-compile
-:PROPERTIES:
-:CUSTOM_ID: h-D5790586-5EF8-450B-A49F-A35EA99A28FA
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package auto-compile :ensure t
-    :commands (auto-compile-on-load-mode auto-compile-on-save-mode)
-    :init
-    (auto-compile-on-load-mode)
-    (auto-compile-on-save-mode)
-    (setq auto-compile-display-buffer nil)
-    (setq auto-compile-mode-line-counter t))
-#+END_SRC
-
 ** PCRE2EL
 :PROPERTIES:
 :CUSTOM_ID: h-5AEA0D16-F5BE-4304-8E40-5D4AFCFFC7F1
+:ID:       3E15A0CC-5D42-45CF-BED3-1E2602662D2F
 :END:
 
+#+name: 67485DF1-06D0-47AD-A964-C46CBF2DDA97
 #+BEGIN_SRC emacs-lisp
   (use-package pcre2el
     :ensure t
@@ -2680,16 +4094,19 @@ Speculatively installed. Need to work out if I really need it.
 ** Programming languages
 :PROPERTIES:
 :CUSTOM_ID: h-75A30E7D-9382-4F97-A20F-E3E9CBAAA5EF
+:ID:       D55B0B53-882C-480D-A7E5-62CC1819F9C8
 :END:
 
 *** Lisps
 :PROPERTIES:
 :CUSTOM_ID: h-1E43EDEA-6688-4B60-9331-AA4F2C9DC3E6
+:ID:       D9008D5E-49D1-4597-875B-1B8C1F14D50D
 :END:
 
 There are multiple lispy modes, and we want many of them to be
 initialized the same way. So we'll set up some variables to assist
 with this
+#+name: D064664B-1AEA-4568-AA04-DF3F755B5C3A
 #+BEGIN_SRC emacs-lisp
   (defvar lisp-modes '(emacs-lisp-mode
                        inferior-emacs-lisp-mode
@@ -2707,6 +4124,7 @@ with this
 #+END_SRC
 
 Configure our base Lisp mode
+#+name: 5D957B03-E000-4361-9A47-E811279FFF72
 #+BEGIN_SRC emacs-lisp
   ;; Helpers (move targets)
   (defun pdc/display-syntax (syntax-type)
@@ -2884,8 +4302,6 @@ Configure our base Lisp mode
 
     (defun my-lisp-mode-hook ()
       (auto-fill-mode -1)
-      (require 'lispy)
-      (lispy-mode +1)
       (paredit-mode +1)
       ;; (redshank-mode 1)
       ;; (elisp-slime-nav-mode 1)
@@ -2916,15 +4332,6 @@ Configure our base Lisp mode
       (setq mode-name "EL"))
     (add-hook 'emacs-lisp-mode-hook 'pdc/elisp-mode-hook ())
     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
-
-  (use-package lispy
-    :ensure t
-    :diminish " Ⓛ"
-    :init
-    (bindings|add-toggle lispy-mode :toggle-keys "Tl")
-    :config
-    (lispy-set-key-theme '(special c-digits))
-    (unbind-key "M-m" lispy-mode-map-lispy))
 
   (use-package paredit
     :ensure t
@@ -3018,7 +4425,7 @@ Configure our base Lisp mode
         (call-interactively 'kill-ring-save)))
 
     (defun pdc/paredit-open-parenthesis (&optional n)
-      (interactive "P") 
+      (interactive "P")
       (cond ((and (looking-back "\(" 1)
                   (looking-at "\)"))
              (paredit-open-parenthesis n))
@@ -3046,7 +4453,7 @@ Configure our base Lisp mode
             ((equal last-command this-command)
              (undo)
              (self-insert-command 1))
-            ((and (not mark-active) 
+            ((and (not mark-active)
                   (looking-at-p "^[[:blank:]]*$"))
              (insert ";;; "))
             ((and (not mark-active)
@@ -3068,14 +4475,32 @@ Configure our base Lisp mode
     (unbind-key "M-r" paredit-mode-map)
     (unbind-key "M-s" paredit-mode-map)
 
-    (defun pdc/in-slime-repl-p ()
-      (equal mode-name "REPL")))
+    ;; (defun pdc/in-slime-repl-p ()
+    ;; (equal mode-name "REPL"))
+    )
 #+END_SRC
 
-*** Emacs Lisp
+**** Sly
+:PROPERTIES:
+:CUSTOM_ID: h-66A68FBE-E42C-4FE7-90A2-994E1DE62677
+:ID:       D612B0BF-DADB-48BD-8A23-647A9DA25AB1
+:END:
+
+#+name: 71B7F20D-D87B-441E-84C5-741F8AEA2C76
+#+begin_src emacs-lisp
+(use-package sly
+  :pin melpa
+  :ensure t
+  :init
+  (setq inferior-lisp-program "/usr/local/bin/ccl64"))
+#+end_src
+
+**** Emacs Lisp
 :PROPERTIES:
 :CUSTOM_ID: h-11543CB9-63F3-4A8D-BC2B-A20A40B471E7
+:ID:       82976145-791F-4470-8788-7741794FABA7
 :END:
+#+name: 5EE78B20-A6F9-4F7F-ADBB-A9DC40F7A162
 #+BEGIN_SRC emacs-lisp
   (use-package macrostep
     :ensure t
@@ -3087,14 +4512,261 @@ Configure our base Lisp mode
 
 #+END_SRC
 
+**** Extempore
+:PROPERTIES:
+:CUSTOM_ID: h-8117221B-32FE-467D-8162-B73B2563030A
+:ID:       63746A22-EC46-47EB-A642-591D71FB52E0
+:END:
+Extempore is a scheme for livecoding, primarily music, but it's very flexible.
+
+Most of this initial config is lifted from [[https://github.com/benswift/.dotfiles/][Ben Swift's dotfiles]] on Github.
+
+#+name: 36778A07-3391-48BF-874E-8F65B93C9BEE
+#+begin_src emacs-lisp
+(use-package extempore-mode
+  :ensure t
+  :commands extempore-create-template
+  :mode
+  ("\\.xtm$" . extempore-mode)
+  :general
+  (pdc|with-mode-leader :keymaps '(extempore-mode-map)
+    "'" 'extempore-repl
+
+    "C" 'switch-to-extempore
+    "j" 'extempore-connect-or-disconnect
+    "C-j" 'paredit-join-with-next-list
+
+    "c" '(:ignore t :which-key "connect")
+    "c c" 'switch-to-extempore
+    "c j" 'extempore-connect-or-disconnect
+
+    "e" '(:ignore t :which-key "eval")
+    "e e" 'extempore-send-last-sexp
+    "e f" 'extempore-send-definition
+    "e r" 'extempore-send-region
+    "e b" 'extempore-send-buffer-or-region
+
+    "f" 'extempore-send-definition
+    "r" 'extempore-send-region
+    "b" 'extempore-send-buffer-or-region
+    )
+  :config
+  (defun pdc/extempore-mode-hook ()
+    (setq prettify-symbols-alist lisp-prettify-symbols-alist))
+
+  (add-hook 'extempore-mode-hook #'pdc/extempore-mode-hook)
+
+  (setq extempore-tab-completion nil)
+  (setq extempore-documentation-function
+        'extempore-eldoc-documentation-function)
+
+  (setq extempore-share-directory (expand-file-name "~/Projects/extempore/")
+        user-extempore-lib-directory (expand-file-name "~/Projects/xtm/lib/"))
+
+  (defun extempore-create-template-file (base-path filename &optional header)
+    (let ((full-path (format "%s/%s" base-path filename)))
+      (unless (file-exists-p full-path)
+        (with-temp-file full-path
+          (if header (insert header))))))
+
+  (defun extempore-create-template (name)
+    "Set up the directory structure and files for extempore session/gig."
+    (interactive "sSession name: ")
+    (let* ((xtm-dir (expand-file-name "~/Projects/xtm/"))
+           (base-path (concat xtm-dir "sessions/" name))
+           (setup-header (concat
+                          ";;; setup.xtm --- setup file for " name "\n"
+                          "(sys:load \"" xtm-dir "lib/pdclib-scm.xtm\")\n"
+                          "(ipc:load \"utility\" \"" xtm-dir "lib/pdclib-scm.xtm\")\n\n"
+                          "dsp")))
+      (if (file-exists-p base-path)
+          (error "Cannot create xtm session: directory already exists")
+        (make-directory base-path t)
+        (extempore-create-template-file base-path "prac-utility.xtm" "headeru")
+        (extempore-create-template-file base-path "prac-primary.xtm" "headerp")
+        ;; gig files
+        (extempore-create-template-file base-path "gig-utility.xtm" "headeru")
+        (extempore-create-template-file base-path "gig-primary.xtm" "headerp")
+        ;; setup file
+        (extempore-create-template-file base-path "setup.xtm" setup-header)
+        (dired base-path))))
+
+    (defun extempore-yas-println-debug-expander (pl-str format-str)
+    (if (not (string= pl-str ""))
+        (mapconcat (lambda (name) (format format-str name name))
+                   (cl-remove-if (lambda (x) (or (string-match "^'.*:$" x)
+                                            (string-match "^\".*:\"$" x)))
+                                 (split-string pl-str " "))
+                   " ")
+      pl-str))
+
+  (defvar extempore-yas-oscillator-list '("osc" "square" "triangle" "rect" "saw" "pulse" "fade" "delay" "delay_t" "comb" "flanger" "chorus" "tap_delay" "allpass" "reverb" "reverb2" "hold" "svf" "lpf" "lpf2" "bpf" "hpf" "notch" "peak" "lshelf" "hshelf" "skf" "lpfbq" "hpfbq" "bpfbq" "notchbq" "vcf" "hann" "hann_t" "linear"))
+
+  (defun extempore-yas-get-sample-map-list ()
+    (if (boundp 'user-extempore-lib-directory)
+        (with-temp-buffer (insert-file-contents (concat user-extempore-lib-directory "sampler-maps.xtm"))
+                          (goto-char (point-min))
+                          (cl-labels ((sm-parse-fn (sm-list)
+                                                   (if (re-search-forward "(define \\(*sm-[^ \n]*\\)" nil :no-error)
+                                                       (funcall #'sm-parse-fn (cons (match-string-no-properties 1) sm-list))
+                                                     sm-list)))
+                            (sm-parse-fn nil)))
+      '("")))
+
+  (defun extempore-yas-get-chord-sym (maj-min)
+    ;; symbol lists from libs/core/pc_ivl.xtm
+    (mapcar #'symbol-name
+            (case maj-min
+              ('^ 5 '(i i6 i64 i7 i- i-7 n n6 ii ii6 ii7 ii9 ii^ ii^7 iii iii6 iii7 iii^ iii^7 iv iv6 iv7 iv- iv-7 v v6 v7 v- v-7 vi vi6 vi7 vi^ vi^7 viio viio7 vii vii7))
+              ('- '(i i6 i64 i7 i^ i^6 i^64 i^7 n n6 ii ii6 ii7 ii- ii-6 ii-7 ii^ ii^7 iii iii6 iii7 iii- iii-6 iii-7 iv iv6 iv7 iv^ iv^6 iv^7 v v^ v6 v7 v- v-6 v-6 v-7 vi vi6 vi7 vi- vi-6 vi-7 vii vii6 vii7 viio viio6 viio7))
+              (t nil))))
+
+  ;; help displaying LLVM IR
+  (defun extempore-show-ir-in-temp-buffer (beg end)
+    (interactive "r")
+    (save-excursion
+      (let ((ir-str (buffer-substring-no-properties beg end)))
+        (with-current-buffer (get-buffer-create "*extempore LLVM IR*")
+          (if (not (equal major-mode 'llvm-mode))
+              (llvm-mode))
+          (delete-region (point-min) (point-max))
+          (insert (replace-regexp-in-string "\\\\n" "\n" ir-str))
+          (display-buffer "*extempore LLVM IR*" #'display-buffer-pop-up-window)))))
+
+  ;; AOT-compilation help
+  (defun extempore-AOT-compile-lib (&optional initial-input)
+    (interactive)
+    (ivy-read "Library: " 'read-file-name-internal
+              :matcher #'counsel--find-file-matcher
+              :initial-input initial-input
+              :action
+              (lambda (x)
+                (with-ivy-window
+                  (let ((default-directory extempore-share-directory))
+                    (async-shell-command (format "extempore --port=17199 --eval \"(impc:aot:compile-xtm-file \\\"%s\\\" #t #t)\"" x)))))
+              :require-match 'confirm-after-completion
+              :keymap counsel-find-file-map)))
+
+
+#+end_src
+
+*** SQL
+:PROPERTIES:
+:CUSTOM_ID: h-D52EF3A2-70E2-41C8-9FD8-D23D3A1FC796
+:ID:       A6B29F6D-39CF-492C-A3D2-8D75B7DBB8EE
+:END:
+
+**** Emacsql
+:PROPERTIES:
+:CUSTOM_ID: h-A1BB7714-4D22-479B-8547-47A5BDE701B7
+:ID:       E2A8E03D-6B6E-4B14-9B5F-9D7CB5F7A454
+:END:
+
+#+name: B8DA01B3-FDA0-405B-A032-0DD61ADA82C5
+#+begin_src emacs-lisp
+(use-package emacsql :ensure t :pin melpa)
+(use-package emacsql-psql :ensure t :pin melpa
+  :config
+  (defvar pdc/db (emacsql-psql "pdcawley")
+    "Our personal database"))
+
+#+end_src
+*** Tidal
+:PROPERTIES:
+:CUSTOM_ID: h-50F75810-0901-487B-8015-74C8D006A491
+:ID:       4E6756B6-5075-47C1-804E-2AC6E46851D2
+:END:
+Another livecoding environment, built on haskell
+
+#+name: D13492AD-3929-4C7C-BF59-FF839DAB3A04
+#+begin_src emacs-lisp
+(use-package tidal
+  :ensure t
+  :init
+  (setq tidal-interpreter "ghci"
+        tidal-interpreter-arguments '("-XOverloadedStrings")))
+
+
+#+end_src
+* Bakery management
+:PROPERTIES:
+:CUSTOM_ID: h-DD7A7919-5D05-42E3-B423-BD704AD21096
+:ID:       FA67106F-8C6F-4A07-BFCD-A72911BC1A29
+:END:
+
+** SQL connection
+:PROPERTIES:
+:CUSTOM_ID: h-9890B946-0116-4998-B2A1-842A3498D8D9
+:ID:       5436ACAB-44D6-43E5-879E-E1063F7994AA
+:END:
+#+name: 2C32E8E9-4127-40E2-8E5D-2EBDA2E9BF53
+#+begin_src emacs-lisp
+#+end_src
+
+** Bake Days
+:PROPERTIES:
+:CUSTOM_ID: h:BB36E84A-F1CA-435B-A47E-FE1CA6E8094B
+:ID:       74AF87AA-0CEF-400A-82B3-A1C2AC4C9D09
+:END:
+
+#+name: bake_days
+| daynum |
+|      2 |
+|      5 |
+
+#+name: 64ECE4C0-08D7-4D0A-B4ED-B12243F38808
+#+begin_src emacs-lisp :var bake-days=bake_days
+(defvar baking-days (cdr (-flatten bake-days))
+  "The days of the week on which we bake")
+
+(defun pdc/baking-day? (&optional timestamp)
+  "Is the given day a baking day?"
+  (let* ((timestamp (or timestamp
+                        (current-time)))
+         (current-dow (nth 6 (decode-time timestamp))))
+    (-contains? baking-days current-dow)))
+
+#+end_src
+
+** Shared Code Blocks
+:PROPERTIES:
+:CUSTOM_ID: h-1C405028-2702-4A2C-B98A-1354434D3B52
+:ID:       F7962C10-1574-4496-A1FB-866DBB7F4CEF
+:END:
+
+Grab the SQL used in the bakehouse daybook and load it into our library of
+babel.
+
+#+name: B7022D48-3E69-4F9B-89FD-6E5386135234
+#+begin_src emacs-lisp :noweb-ref org-loafery :tangle no
+(defun pdc/org-expand-file (file)
+  "Expand file name relative to org-directory"
+  (let ((location (cond ((equal file "") file)
+                        ((stringp file) (expand-file-name file org-directory))
+                        (t nil))))
+
+    (or (org-string-nw-p location)
+        (error "Invalid file location: %S" location))))
+
+(defun loafery-refresh-lob ()
+  (interactive)
+  (org-babel-lob-ingest
+   (pdc/org-expand-file "bakery-lob-sources.org")))
+
+(loafery-refresh-lob)
+
+#+end_src
+
 * Diary/calendar
 :PROPERTIES:
 :CUSTOM_ID: h-4B4AB6B8-D333-4F2D-B7DA-8800A42833C7
+:ID:       EA9D2C41-4AC0-43EE-B2F8-395EF79EE62D
 :END:
 
 ** Relative dates
 :PROPERTIES:
 :CUSTOM_ID: h-70EA6939-96CB-4727-A1DA-BCC76775E109
+:ID:       9C2471F4-3308-4167-BBC8-43211E982711
 :END:
 Folk festivals and the like are often scheduled around floating dates,
 e.g. Chippenham runs from the Friday before the last Monday in May
@@ -3103,6 +4775,7 @@ doesn't display terriby well) but specifying the start date isn't
 currently supported by =diary-lib.el=. So we'll lift some ideas from
 diary-remind and see where that gets us.
 
+#+name: CD8F4905-8358-4773-BD86-836F35AA5F44
 #+BEGIN_SRC emacs-lisp
   (defvar date)
   (defvar entry)
@@ -3118,7 +4791,7 @@ diary-remind and see where that gets us.
            (limit (or limit (* direction 6)))
            (deltas (or deltas
                        (number-sequence (if inclusive 0 direction) limit direction))))
-    
+
       (unless (= (* direction limit)
                  (abs limit))
         (error ":limit and :direction must have the same sign"))
@@ -3150,7 +4823,7 @@ diary-remind and see where that gets us.
                              (cdr diary-entry)
                            diary-entry))))))
 
-  (with-eval-after-load 'ert 
+  (with-eval-after-load 'ert
     (require 'diary-lib)
     (ert-deftest pdc//diary-stuff ()
       (let ((entry "Diary search test")
@@ -3175,20 +4848,24 @@ diary-remind and see where that gets us.
 * Blogging & Web
 :PROPERTIES:
 :CUSTOM_ID: h-B8A46BF2-32CE-4E5B-AFBC-98A1DDAA9EFF
+:ID:       74F0A5F2-AFA5-48C2-9C3D-4EFBA399EBCD
 :END:
 
 ** Hugo
 :PROPERTIES:
 :CUSTOM_ID: h-DA4F24E0-A493-48B8-BA3C-873B803C3F12
+:ID:       2A483002-165C-4FD1-BED5-CA46FF13539E
 :END:
 
 *** DISABLED easy-hugo
 :PROPERTIES:
 :CUSTOM_ID: h-238BE791-0D33-41A9-8A89-279F6D712E4B
+:ID:       45205AEF-3109-4F3C-9EF0-9C8B173C47E9
 :END:
 
 I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the moment.
 
+#+name: FBBC8A7F-0677-4543-9E7B-8C6367BE90BC
 #+BEGIN_SRC emacs-lisp
   (use-package easy-hugo
     :ensure t
@@ -3201,10 +4878,12 @@ I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the mome
 *** ox-hugo
 :PROPERTIES:
 :CUSTOM_ID: h-2BBB1483-55FB-4297-863E-E84749F16A9F
+:ID:       32A562BD-1640-4825-B3A8-FA3CF7355BCA
 :END:
 
 So easy-hugo seems to have been a bust. Let's try ox-hugo
 
+#+name: A94ADE22-8288-4D86-A6C2-4F95B2D9F196
 #+BEGIN_SRC emacs-lisp
   (use-package ox-hugo
     :ensure t
@@ -3216,10 +4895,12 @@ So easy-hugo seems to have been a bust. Let's try ox-hugo
 *** Server management
 :PROPERTIES:
 :CUSTOM_ID: h-98E0E491-A576-43BB-A66A-0B113F6044F3
+:ID:       1318F02F-5097-4F7B-9EE7-5E1CE12881B2
 :END:
 
 I use prodigy to start and stop local Hugo servers running to preview our changes.
 
+#+name: 925FC211-6CAE-41E9-A4D1-F8965B2E2893
 #+BEGIN_SRC emacs-lisp
       (use-package prodigy
         :ensure t
@@ -3250,7 +4931,9 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 ** Web mode
 :PROPERTIES:
 :CUSTOM_ID: h-8AF065E9-4515-4CA7-AE1C-3DB005077CAC
+:ID:       30AFBD40-4802-4DC6-800B-CF4A7FDB3418
 :END:
+#+name: 6062AA77-DFA6-4C87-BA23-6DC67BF2FB70
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :ensure t
@@ -3270,7 +4953,9 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 ** Javascript
 :PROPERTIES:
 :CUSTOM_ID: h-BC68FBDE-7D00-499A-A5FF-C13B2444A9F7
+:ID:       496D3D41-D3C3-4D6E-B3D7-64D5588201C0
 :END:
+#+name: 3FFA56F8-0A31-4D67-86EA-16E38ED490D8
 #+BEGIN_SRC emacs-lisp
     (use-package ac-js2 :ensure t)
 
@@ -3301,198 +4986,285 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 
 #+END_SRC
 
+* Media viewers
+:PROPERTIES:
+:CUSTOM_ID: h-0F30750B-FD80-4E64-918B-41A629CD4A07
+:ID:       B55490E8-E273-453D-A0F2-6E14694CCDD0
+:END:
+
+** PDF Tools
+:PROPERTIES:
+:CUSTOM_ID: h-20E9A883-15F7-4751-AB71-D2AFAC172F0F
+:ID:       F9DA610D-EC76-4558-91D1-F8CF32C63696
+:END:
+#+name: 4B08AA6E-6808-4BFC-B7D5-EEA7CB51A386
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :load-path "vendor/pdf-tools/lisp"
+  :init
+  (setenv "PKG_CONFIG_PATH" "/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig")
+  (pdf-tools-install))
+#+end_src
+
 * Org-mode
-:PROPERTIES:
-:CUSTOM_ID: h-9B7F8382-588B-410F-8252-5027A6B3D7AD
-:END:
-Yeah, yeah, org-mode. Everyone raves.
-
-** Org-bullets
-:PROPERTIES:
-:CUSTOM_ID: h-0E755206-6B53-4B55-95CF-644FF738C9C2
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :after org
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-
-#+END_SRC
-
-** Org-ac
-:PROPERTIES:
-:CUSTOM_ID: h-10A4486E-4B7C-4102-ADB7-4DC6AB594B80
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package auto-complete-pcmp :ensure t)
-
-  (use-package org-ac
-    :ensure t
-    :commands (org-ac/setup-current-buffer)
-    :hook (org-mode . #'org-ac/setup-current-buffer)
-    :init
-    (add-to-list 'ac-modes 'org-mode))
-
-#+END_SRC
-
-** Org-journal
-:PROPERTIES:
-:CUSTOM_ID: h-685C95DC-776F-496D-8BDB-F42187F98D3D
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package org-journal
-    :ensure t
-    :after org
-    :commands (org-journal-new-entry org-journal-new-date-entry)
-    :general
-    (pdc|with-leader :infix (:org)
-      "j" '(org-journal-new-entry :which-key "new journal entry")
-      "J" 'org-journal-new-date-entry)
-    :init
-    (defun pdc//journal-title ()
-      "The journal heading based on the file's name"
-      (let* ((year (string-to-number (substring (buffer-name) 0 4)))
-             (month (string-to-number (substring (buffer-name) 4 6)))
-             (day (string-to-number (substring (buffer-name) 6 8)))
-             (datim (encode-time 0 0 0 day month year)))
-        (format-time-string org-journal-date-format datim)))
-
-    (defun pdc/journal-file-insert ()
-      "Insert the heading based on the file's name."
-      (interactive)
-      (insert (journal-title))
-      (insert "\n\n")
-
-      (when (equal (file-name-base (buffer-file-name))
-                   (format-time-string "%Y%m%d"))
-        (when (file-exists-p "journal-dailies-end.org")
-          (insert-file-contents "journal-dailies-end.org")
-          (insert "\n"))
-
-        (let ((weekday-template (downcase (format-time-string)
-                                          "journal-%a.org")))
-          (when (file-exists-p weekday-template)
-            (insert-file-contents weekday-template)))
-        (when (file-exists-p "journal-dailies.org")
-          (insert-file-contents "journal-dailies.org"))
-        (previous-line 2)))
-
-    :config
-    (require 'autoinsert)
-    (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))
-
-#+END_SRC
-
-** Org-mode
-:PROPERTIES:
-:CUSTOM_ID: h-FEC65015-24BF-4C3D-B26D-411A768ABA6D
-:END:
+  :PROPERTIES:
+  :CUSTOM_ID: h-FEC65015-24BF-4C3D-B26D-411A768ABA6D
+  :ID:       3A7B2F2C-EC8C-4DAE-8C44-C7B6EA8C1B5C
+  :ARCHIVE_TIME: 2018-05-14 Mon 10:36
+  :ARCHIVE_FILE: ~/.emacs.d/config.org
+  :ARCHIVE_OLPATH: Org-mode
+  :ARCHIVE_CATEGORY: config
+  :END:
 
 Load org and set up bindings under our leader keys. Includes some utility commands under `init`
 
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
-    :diminish org-indent
-    :mode
-    ("\\.org\\'" . org-mode)
-    :general
-    (org-mode-map
-     "<return>" 'org-return-indent
-     "C-j" 'org-return)
-    (pdc|with-leader :infix "o"
-      "a" 'org-agenda
-      "b" 'org-switchb
-      "c" '(org-capture :which-key "capture")
-      "l" 'org-store-link)
+- Org D20 support :: For campaign logging
 
-    (pdc|with-mode-leader :keymaps '(org-mode-map)
-      "h" '(:ignore t :which-key "structure")
-      "h n" '(org-insert-heading-respect-content :which-key "new")
-      "h s" 'org-insert-subheading
+#+name: EB398D98-F7D3-4F8B-8364-70E70448B471
+#+begin_src emacs-lisp
+(use-package org-d20
+  :ensure t
+  :pin melpa
+  :general
+  (pdc|with-mode-leader :keymaps 'org-d20-mode-map
+    ", i" 'org-d20-initiative-dwim
+    ", a" 'org-d20-initiative-add
+    ", d" 'org-d20-damage
+    ", r" 'org-d20-roll
+    "r" 'org-d20-roll-at-point
+    "." 'org-d20-roll-last
+    "d" 'org-d20-d20
+    "D" 'org-d20-d%))
+#+end_src
 
-      "c" '(:ignore t :which-key "clock")
-      "c i" '(org-clock-in :which-key "in")
-      "c i" '(org-clock-in :which-key "in")
-      "c o" '(org-clock-out :which-key "out")
-      "c d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
-      "c ." '(org-time-stamp :which-key "time-stamp")
-      "c c" '(org-clock-cancel :which-key "cancel")
-      "c _" '(org-clock-select-task :which-key "select-task")
-      "c -" '(org-clock-goto :which-key "goto")
-      "c '" '(pdc|org-goto-select-task :which-key "goto-select-task")
-      "c g" '(pdc|org-refile-goto :which-key "refile-goto")
-      "c l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
+- Org bindings :: Define our org mode bindings
+  ,#+name: F9140500-E45B-4C4C-8261-EB14DCAB21E2
+  ,#+begin_src emacs-lisp :noweb-ref org-bindings :tangle no
+(org-mode-map
+ "<return>" 'org-return-indent
+ "C-j"      'org-return)
 
-      "l" 'org-insert-link
-      "p" 'org-set-property
-      "P" 'org-set-property-and-value
+(pdc|with-leader :infix "o"
+  "a" 'org-agenda
+  "b" 'org-switchb
+  "c" '(org-capture :which-key "capture")
+  "l" 'org-store-link)
 
-      "r" '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
-      "R" '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
-    :init
-    (defun pdc|org-goto-select-task ()
-      (interactive)
-      (org-clock-goto '(4)))
-    (defun pdc|org-refile-goto ()
-      (interactive)
-      (org-refile '(4)))
-    (defun pdc|org-refile-goto-last ()
-      (interactive)
-      (org-refile '(16)))
-    (defun pdc|org-reload-uncompiled ()
-      (interactive)
-      (org-reload '(4)))
-    (defun pdc|org-reload-compiled ()
-      (interactive)
-      (org-reload))
+(pdc|with-mode-leader :keymaps '(org-mode-map)
+  "a" 'org-attach
+  "b" 'backward-heading-same-level
+  "c" 'org-ctrl-ctrl-c
+  "d" 'org-deadline
+  "e" 'org-export-dispatch
+  "f" `org-forward-heading-same-level
+  "TAB" `org-ctrl-c-tab
+  "j" `org-goto
+  "k" `org-kill-note-or-show-branches
+  "l"   'org-insert-link
+  "RET" `org-ctrl-c-ret
+  "o" `org-open-at-point
+  "q" `org-set-tags-command
+  "r" `org-reveal
+  "s" `org-schedule
+  "t"   'org-todo
+  "v" '(:ignore t :which-key "babel")
 
-    (setq org-directory (expand-file-name "~/Dropbox/org"))
-    (setq org-startup-with-inline-images t
-          org-imenu-depth 8)
+  "w" `org-refile
+  "x" (general-simulate-key "C-c C-x" :which-key "+prefix")
+  "y" `org-evaluate-time-range
+  "z" 'org-add-note
+  "C-^" 'org-up-element
+  "C-_" 'org-down-element
+  "SPC" 'org-table-blank-field
+  "\"" '(:ignore t :which-key "plot")
+  "#" `org-update-statistics-cookies
+  "$" `org-archive-subtree
+  "%" `org-mark-ring-push
+  "'" 'org-edit-special
+  "*" `org-ctrl-c-star
+  "+" `org-table-sum
+  ","   'org-priority
+  "-" `org-ctrl-c-minus
+  "." `org-time-stamp
+  "/" `org-sparse-tree
+  ":" `org-toggle-fixed-width
+  ";" `org-toggle-comment
+  "<" `org-date-from-calendar
+  "=" `org-table-eval-formula
+  ">" `org-goto-calendar
+  "?" `org-table-field-info
+  "@" `org-mark-subtree
+  "[" `org-agenda-file-to-front
+  "\\" `org-match-sparse-tree
+  "]" `org-remove-file
+  "^" `org-sort
+  "`" `org-table-edit-field
+  "{" `org-table-toggle-formula-debugger
+  "|" `org-table-create-or-convert-from-region
+  "}" `org-table-toggle-coordinate-overlays
+  "~" `org-table-create-with-table.el
+  "C-*" `org-list-make-subtree
+  "M-," `org-insert-structure-template
 
-    :config
-    (use-package org-src
-      :init
-      (defun pdc//disable-checkdoc-in-org-src ()
-        (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-      :config
-      (add-hook 'org-src-mode-hook 'pdc//disable-checkdoc-in-org-src))
+  "h"   '(:ignore t :which-key "structure")
+  "h n" '(org-insert-heading-respect-content :which-key "new")
+  "h s" 'org-insert-subheading
 
-    (add-to-list 'Info-directory-list
-                 (expand-file-name "../doc" (org-find-library-dir "org")))
+  "C"   '(:ignore t :which-key "clock")
+  "C i" '(org-clock-in :which-key "in")
+  "C i" '(org-clock-in :which-key "in")
+  "C o" '(org-clock-out :which-key "out")
+  "C d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
+  "C ." '(org-time-stamp :which-key "time-stamp")
+  "C c" '(org-clock-cancel :which-key "cancel")
+  "C _" '(org-clock-select-task :which-key "select-task")
+  "C -" '(org-clock-goto :which-key "goto")
+  "C    '" '(pdc|org-goto-select-task :which-key "goto-select-task")
+  "C g" '(pdc|org-refile-goto :which-key "refile-goto")
+  "C l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
 
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (shell . t)
-       (perl . t)
-       (haskell . t)))
+  "p"   'org-set-property
+  "P"   'org-set-property-and-value
 
-    (setq org-confirm-babel-evaluate nil
-          org-src-fontify-natively t
-          org-src-tab-acts-natively t
-          org-iswitchb-completing-read 'ivy-completing-read)
+  "C-r"   '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
+  "C-R"   '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
 
-    (require 'org-contacts)
-    (setq org-default-notes-file (concat org-directory "/notes.org"))
-    (setq org-capture-templates
-          `(("t" "Todo" entry (file+headline ,(concat org-directory "/gtd.org") "Tasks")
-                 "* TODO %?\n  %i\n  %a")
-            ("F" "Folk contacts")
-            ("Ff" "Festival" entry (file+datetree+prompt ,(concat org-directory "/gig-contacts.org") "Festivals")
-             (file ,(concat org-directory "/capture-templates/festival.otpl")))
-            ("D" "D&D")
-            ("DB" "Bil Brewster" entry (file+datetree ,(concat org-directory "/bil-brewster.org" "Sessions"))
-             " Session at %^{Location} 
+
+;; Find files in our org-directory
+
+
+(pdc|with-leader :prefix (:files)
+  "o" '(:ignore t :which-key "Org")
+  "o o" '(pdc/visit-org-directory :which-key "visit-org-directory"))
+  #+end_src
+
+- Org helper functions :: Some helper functions
+     #+name: 38599981-523D-459B-B4B8-24757B95964C
+     #+begin_src emacs-lisp :noweb-ref org-helpers :tangle no
+       (defun pdc|org-goto-select-task ()
+         (interactive)
+         (org-clock-goto '(4)))
+       (defun pdc|org-refile-goto ()
+         (interactive)
+         (org-refile '(4)))
+       (defun pdc|org-refile-goto-last ()
+         (interactive)
+         (org-refile '(16)))
+       (defun pdc|org-reload-uncompiled ()
+         (interactive)
+         (org-reload '(4)))
+       (defun pdc|org-reload-compiled ()
+         (interactive)
+         (org-reload))
+     #+end_src
+
+- Org Source :: setup org-src
+    #+name: B8B793AF-19E4-42E9-A385-AD76A20094A3
+    #+begin_src emacs-lisp :tangle no :noweb-ref org-src
+      (use-package org-src
+        :diminish " ⓞ"
+        :init
+        (setq org-src-window-setup 'current-window)
+        (defun pdc//disable-checkdoc-in-org-src ()
+          (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+        :config
+        (add-hook 'org-src-mode-hook 'pdc//disable-checkdoc-in-org-src)
+
+        (add-to-list 'Info-directory-list
+                     (expand-file-name "../doc" (org-find-library-dir "org"))))
+    #+end_src
+
+- Literate programming support :: Setup org-babel
+     #+name: 6AFF6F5C-16D9-4D2D-8593-72D2D555C74A
+     #+begin_src emacs-lisp :tangle no :noweb-ref lp-support
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '((emacs-lisp . t)
+          (shell . t)
+          (perl . t)
+          (haskell . t)
+          (ditaa . t)))
+
+       (setq org-confirm-babel-evaluate nil)
+
+     #+end_src
+
+
+#+name: 84759F2C-B224-4A76-A9D3-7CE43BAFBF55
+#+BEGIN_SRC emacs-lisp :noweb yes
+;;*
+(use-package org
+  :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
+  :diminish org-indent
+  :mode
+  ("\\.org\\'" . org-mode)
+  :general
+  «org-bindings»
+  :init
+  «org-helpers»
+
+  (setq org-directory (expand-file-name "~/Dropbox/org/"))
+  (setq org-startup-with-inline-images t
+        org-imenu-depth 8)
+
+  :config
+  «org-src»
+  «lp-support»
+
+  «org-loafery»
+
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-iswitchb-completing-read 'ivy-completing-read)
+
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+  (defvar daybook-file (f-join org-directory "loafery-daybook.org")
+    "Location of the bakery Daybook, which has a datetree in it")
+
+  (defun pdc//in-bakery-daybook? ()
+    "Are we in the bakery daybook?"
+    (equal (buffer-name) "CAPTURE-loafery-daybook.org"))
+
+  (defun pdc/set-daybook-entry-properties ()
+    "Set the properties we rely on in our boilerplated daybook queries"
+    (save-excursion
+      (while (not (looking-at "*+ [[:digit:]]\\{4\\}\\(-[[:digit:]]\\{2\\}\\)\\{2\\}"))
+        (org-up-element))
+      (let ((entry-date (first (s-split " " (org-entry-get (point) "ITEM")))))
+        (org-entry-put
+         (point)
+         "header-args+"
+         (format ":var work_date=\"'%s'\"" entry-date)))
+      (org-babel-execute-subtree)))
+
+  (defun pdc/org-capture-before-finalize-daybook-entry ()
+    (when (pdc//in-bakery-daybook?)
+      (pdc/set-daybook-entry-properties)))
+
+  (add-hook 'org-capture-before-finalize-hook
+            #'pdc/org-capture-before-finalize-daybook-entry)
+
+  (setq org-capture-templates
+        `(("t" "Todo" entry (file+headline ,(concat org-directory "/gtd.org") "Tasks")
+           "* TODO %?\n  %i\n  %a")
+
+          ("B" "Daybook Entry" entry
+           (file+olp+datetree ,(f-join org-directory "loafery-daybook.org"))
+           (file ,(f-join org-directory "capture-templates/daybook-entry.otpl")))
+          ("F" "Folk contacts")
+          ("Ff" "Festival" plain (file+datetree+prompt ,(concat org-directory "/gig-contacts.org") "Festivals")
+           (file ,(f-join org-directory "/capture-templates/festival.otpl")))
+          ("D" "D&D")
+          ("DB" "Bil Brewster" entry (file+olp+datetree ,(concat org-directory "/bil-brewster.org") "Sessions")
+           " Session at %^{Location}
     :PROPERTIES:
     :XP_delta:  %^{XP earned}
     :Gold_delta: %^Gold earned
     :DM:
     :Title:
     :Adventure_session_no:
+    :Date: %<'%Y-%m%d'>
     :END:
     ,** Party members
       - Bil Brewster
@@ -3501,12 +5273,20 @@ Load org and set up bindings under our leader keys. Includes some utility comman
       -
     ,** Writeup
     ")))
-    :ensure t)
+
+  (defun pdc/visit-org-directory ()
+    "Open dired on `org-directory'."
+    (interactive)
+    (dired org-directory))
+  :ensure t)
+
+  (use-package org-contacts)
 
 #+END_SRC
 
 Setting 'good' (ie consistent) ids for org entries. This means that when we export, even if we've inserted extra headings in the mean time, our IDs will remain consistent, and our URLs will remain cool (because cool urls don't change)
 
+#+name: 21C09B8B-ADC3-4523-A8E7-4B72BE8ACAA8
 #+BEGIN_SRC emacs-lisp
   (use-package org-id
     :defer t
@@ -3516,9 +5296,9 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
     (defun pdc/org-custom-id-get (&optional pom create prefix)
       "GET the CUSTOM_ID property of the entry at point-or-marker POM.
   If POM is nil, refer to the entry at point. If the entry does
-  not have a CUSTOM_ID, then return ni. However, when CREATE is non 
+  not have a CUSTOM_ID, then return ni. However, when CREATE is non
   nil, create a CUSTOM_ID if none is present already. PREFIX will be
-  passed through to `org-id-new'. In any case, return the CUSTOM_ID of 
+  passed through to `org-id-new'. In any case, return the CUSTOM_ID of
   the entry"
       (interactive)
       (require 'org-id)
@@ -3573,11 +5353,13 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+END_SRC
 
 
-*** Org exporters
-:PROPERTIES:
-:CUSTOM_ID: h-9A12C54D-10F1-4724-9704-42D49264E3C9
-:END:
+** Org exporters
+   :PROPERTIES:
+   :CUSTOM_ID: h-9A12C54D-10F1-4724-9704-42D49264E3C9
+   :ID:       2F33D5B7-8653-46D4-BBBB-C9915325FD73
+   :END:
 
+#+name: 784EBB97-ED34-45D0-BFCC-65AFBF7A9FA7
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
     (use-package ox-gfm
@@ -3587,11 +5369,13 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
   (use-package autoinsert :ensure t)
 #+END_SRC
 
-**** Org Latex
-:PROPERTIES:
-:CUSTOM_ID: h-B9A9CE73-2B8B-49A4-A168-5B920F7808AC
-:END:
+*** Org Latex
+    :PROPERTIES:
+    :CUSTOM_ID: h-B9A9CE73-2B8B-49A4-A168-5B920F7808AC
+    :ID:       6042101F-7C56-45DC-B852-9E187D2AEF84
+    :END:
 
+#+name: D6276B84-5ACE-43AA-B43E-5248897632A1
 #+BEGIN_SRC emacs-lisp
   (use-package ox-latex
     :defer t
@@ -3600,10 +5384,114 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+END_SRC
 
 
+** Org-journal
+:PROPERTIES:
+:CUSTOM_ID: h-685C95DC-776F-496D-8BDB-F42187F98D3D
+:ID:       3D2A2A44-2C95-477B-A189-1A8940EE511E
+:END:
+#+name: 56AED621-67F4-4C1B-9687-0C3423F6F64A
+#+BEGIN_SRC emacs-lisp
+  (use-package org-journal
+    :ensure t
+    :after org
+    :commands (org-journal-new-entry org-journal-new-date-entry)
+    :general
+    (pdc|with-leader :infix (:org)
+      "j" '(org-journal-new-entry :which-key "new journal entry")
+      "J" 'org-journal-new-date-entry)
+    :init
+    (defun pdc//journal-title ()
+      "The journal heading based on the file's name"
+      (let* ((year (string-to-number (substring (buffer-name) 0 4)))
+             (month (string-to-number (substring (buffer-name) 4 6)))
+             (day (string-to-number (substring (buffer-name) 6 8)))
+             (datim (encode-time 0 0 0 day month year)))
+        (format-time-string org-journal-date-format datim)))
+
+    (defun pdc/journal-file-insert ()
+      "Insert the heading based on the file's name."
+      (interactive)
+      (insert (journal-title))
+      (insert "\n\n")
+
+      (when (equal (file-name-base (buffer-file-name))
+                   (format-time-string "%Y%m%d"))
+        (when (file-exists-p "journal-dailies-end.org")
+          (insert-file-contents "journal-dailies-end.org")
+          (insert "\n"))
+
+        (let ((weekday-template (downcase (format-time-string)
+                                          "journal-%a.org")))
+          (when (file-exists-p weekday-template)
+            (insert-file-contents weekday-template)))
+        (when (file-exists-p "journal-dailies.org")
+          (insert-file-contents "journal-dailies.org"))
+        (previous-line 2)))
+
+    :config
+    (require 'autoinsert)
+    (define-auto-insert "/[0-9]\\{8\\}$" [pdc|journal-file-insert]))
+
+#+END_SRC
+
+** Org-Drill
+:PROPERTIES:
+:CUSTOM_ID: h-EA3BB739-B0EF-49A6-85D1-EB13D3314CF7
+:ID:       565E18BC-8F83-475C-BC22-9ED19A41C8B3
+:END:
+Spaced repetition is a great way of learning facts. So set it up.
+
+#+name: 41572616-6FAB-439A-9E2B-A9D91A9528F3
+#+BEGIN_SRC emacs-lisp
+(use-package pamparam
+  :ensure t
+  :after org
+  :init
+  (setq pamparam-path (expand-file-name "sets/" org-directory)))
+
+#+END_SRC
+
+
+** Org-bullets
+:PROPERTIES:
+:CUSTOM_ID: h-0E755206-6B53-4B55-95CF-644FF738C9C2
+:ID:       2B0C0D8E-B926-4401-B83B-6A0B56291C9A
+:END:
+#+name: F03BA814-F450-41FA-9128-E33A5582AE0F
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :after org
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+
+#+END_SRC
+
+** DISABLED Org-ac
+:PROPERTIES:
+:CUSTOM_ID: h-10A4486E-4B7C-4102-ADB7-4DC6AB594B80
+:ID:       90702D67-7422-4D94-90BE-91A09380327C
+:END:
+#+name: 158EFB4D-F09A-481C-A3BB-477210685F59
+#+BEGIN_SRC emacs-lisp :tangle no
+ ;; (use-package auto-complete-pcmp :ensure t)
+
+ ;;  (use-package org-ac
+ ;;    :ensure t
+ ;;    :demand t
+ ;;    :commands (org-ac/setup-current-buffer)
+ ;;    :hook (org-mode . #'org-ac/setup-current-buffer)
+ ;;    :init
+ ;;    (add-to-list 'ac-modes 'org-mode))
+#+END_SRC
+
 ** Org-agenda
 :PROPERTIES:
 :CUSTOM_ID: h-707E66CA-BE6E-4062-BC0E-F3D6E72BCB0F
+:ID:       E223BA99-394E-49E7-9F22-3EB0E25C2433
 :END:
+#+name: 1952DF4C-2439-424C-BE1C-DF6DF3AC83F3
 #+BEGIN_SRC emacs-lisp
 (use-package diary-lib)
 (use-package org-agenda
@@ -3611,3 +5499,11 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
   :init
   (setq org-agenda-files `(,org-directory "~/Documents/journal")))
 #+END_SRC
+
+* Miscellaneous and testing
+:PROPERTIES:
+:CUSTOM_ID: h-047322BD-9292-408D-A251-3868619FFD18
+:ID:       885909FD-53FA-4BED-B84E-91345022E57A
+:END:
+This is where new and experimental packages live before I decide whether I actually want to use the or not.
+
