@@ -25,3 +25,6 @@
 [submodule "vendor/pdf-tools"]
 	path = vendor/pdf-tools
 	url = git@github.com:politza/pdf-tools.git
+[submodule "vendor/general"]
+	path = vendor/general
+	url = https://github.com/noctuid/general.el.git

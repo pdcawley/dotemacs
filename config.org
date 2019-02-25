@@ -3100,6 +3100,19 @@ Change browsing
   (use-package git-timemachine :ensure t)
 #+end_src
 
+*** Forges (mostly github)
+:PROPERTIES:
+:CUSTOM_ID: h-2B8629BC-63AC-40F0-9C3C-9BC0D12A9CB5
+:ID:       EE38B43D-189D-46FC-84A9-0AD6BC9ECB76
+:END:
+
+#+name: BF8E464A-72F0-4BB8-BD8F-0FD9E1D7528A
+#+begin_src emacs-lisp
+(use-package ghub :ensure t)
+(use-package forge :ensure t)
+
+#+end_src
+
 *** Gist
 :PROPERTIES:
 :CUSTOM_ID: h-1EF110DD-C7A0-4D86-BB59-8C3B20A021A6
@@ -5038,8 +5051,8 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+end_src
 
 - Org bindings :: Define our org mode bindings
-  ,#+name: F9140500-E45B-4C4C-8261-EB14DCAB21E2
-  ,#+begin_src emacs-lisp :noweb-ref org-bindings :tangle no
+  #+name: F9140500-E45B-4C4C-8261-EB14DCAB21E2
+  #+begin_src emacs-lisp :noweb-ref org-bindings :tangle no
 (org-mode-map
  "<return>" 'org-return-indent
  "C-j"      'org-return)
