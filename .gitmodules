@@ -28,3 +28,6 @@
 [submodule "vendor/general"]
 	path = vendor/general
 	url = https://github.com/noctuid/general.el.git
+[submodule "vendor/org-d20"]
+	path = vendor/org-d20
+	url = git@github.com:pdcawley/org-d20.git
