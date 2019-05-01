@@ -1076,6 +1076,21 @@ Show text indentation guide lines.
   :diminish indent-guide-mode)
 #+end_src
 
+*** Mixed pitch fonts
+:PROPERTIES:
+:CUSTOM_ID: h-22A89F6A-6C7A-45F6-8483-8FF2D9E523E5
+:ID:       CD71AA00-D994-47E5-B60A-AA77E5BE51DE
+:END:
+This is the 21st century already, why am I reading large blocks of text in a monospaced font still? Experiment with proportional fonts.
+
+#+name: EA9BB12C-8CF1-4BEF-B842-F48BDDC43392
+#+begin_src emacs-lisp
+(use-package mixed-pitch
+  :ensure t
+  :hook
+  (org-mode . mixed-pitch-mode))
+#+end_src
+
 *** Fallback Unicode Font
 :PROPERTIES:
 :ID:       4B85534E-4D4B-4BB0-83A6-7F98BC0CE4C1
