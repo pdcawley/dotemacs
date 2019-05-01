@@ -4915,9 +4915,9 @@ So easy-hugo seems to have been a bust. Let's try ox-hugo
 #+BEGIN_SRC emacs-lisp
   (use-package ox-hugo
     :ensure t
-    :after ox
-    )
-#+END_SRC
+    :pin melpa
+    :after ox)
+  #+END_SRC
 
 
 *** Server management
