@@ -18,6 +18,7 @@
 (defconst my-custom-file (expand-file-name "preferences.el"
                                            my-user-emacs-directory))
 (defconst my-config-org (expand-file-name "config.org" my-user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "vendor/use-package" my-user-emacs-directory))
 (load-file (expand-file-name "litprog.el" my-user-emacs-directory))
 
 ;; =============================================================================
