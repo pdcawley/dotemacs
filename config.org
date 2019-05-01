@@ -5051,8 +5051,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+name: EB398D98-F7D3-4F8B-8364-70E70448B471
 #+begin_src emacs-lisp
 (use-package org-d20
-  :ensure t
-  :pin melpa
+  :load-path "vendor/org-d20/"
   :general
   (pdc|with-mode-leader :keymaps 'org-d20-mode-map
     ", i" 'org-d20-initiative-dwim
