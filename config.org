@@ -3333,7 +3333,7 @@ just use the ivy supplied method.
 
   (use-package ivy :ensure t
     :pin "melpa"
-    :diminish " 🍃"
+    :diminish " ❦"
     :general
     (pdc|with-leader
       (:replace "l") 'ivy-resume
