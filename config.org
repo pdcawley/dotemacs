@@ -5005,10 +5005,81 @@ So easy-hugo seems to have been a bust. Let's try ox-hugo
 
 #+name: A94ADE22-8288-4D86-A6C2-4F95B2D9F196
 #+BEGIN_SRC emacs-lisp
-  (use-package ox-hugo
-    :ensure t
-    :pin melpa
-    :after ox)
+(use-package ox-hugo
+  :ensure t
+  :pin melpa
+  :after ox
+  :config
+  (defun pdc/wrap-table-in-shortcode (md)
+    (if (s-matches? "{{[%<] +table" md)
+        md
+      (s-wrap md "{{% table %}}\n" "{{% /table %}}")))
+  (advice-add 'org-blackfriday-table :filter-return #'pdc/wrap-table-in-shortcode)
+
+  (defun pdc/unfuck-bare-url (url)
+    (if (s-matches? "^<.*>$" url)
+        (s-replace-regexp "^<\\|>$" "" url)
+      url))
+
+  (advice-add 'org-hugo-link :filter-return #'pdc/unfuck-bare-url)
+
+
+  (defun pdc/org-replace-footnote-with-marginnote (ref)
+    (let ((fntext (nth 3 (org-footnote-get-definition ref)))
+          (x (org-footnote-at-reference-p)))
+      (unless (and x (equalp (car x) ref))
+        (org-footnote-goto-previous-reference ref))
+      (org-footnote-delete ref)
+      (pdc/org-marginnote-new)
+      (insert fntext)))
+
+  (defun pdc/convert-footnote-to-marginnote (&optional label)
+    "Convert the footnote reference at point to a marginnote"
+    (interactive)
+    (let ((label (cond
+                  (label)
+                  ((setq x (org-footnote-at-reference-p))
+                   (or (car x)
+                       (error "We don't currently handle anonymous footnoetes. TODO")))
+
+                  ((setq x (org-footnote-at-definition-p))
+                   (car x))
+                  (t (error "Don't know which footnote to remove")))))
+      (pdc/org-replace-footnote-with-marginnote label)))
+
+  (defun pdc/wrap-in-shortcode (code)
+    "Wrap the point/region with a shortcode, `CODE'."
+    (let ((string "")
+          (startcode (concat "{{% " code " %}}"))
+          (endcode (concat "{{% /" code " %}}"))
+          beg end move)
+      (if (org-region-active-p)
+          (setq beg (region-beginning)
+                end (region-end)
+                string (buffer-substring beg end))
+        (setq move t))
+      (setq string (s-wrap string startcode endcode))
+      (when beg (delete-region beg end))
+      (insert string)
+      (and move (backward-sexp))))
+
+  (defun pdc/org-marginnote-new ()
+    "Insert a new marginnote."
+    (interactive)
+    (pdc/wrap-in-shortcode "marginnote"))
+
+  (defun pdc/org-newthought ()
+    "Wrap point/region wiht a newthought shortcode"
+    (interactive)
+    (pdc/wrap-in-shortcode "newthought"))
+
+(defun pdc/marginnote-dwim ()
+    "Either convert footnote at point to a MN or start a new MN."
+    (interactive)
+    (cond ((or (org-footnote-at-definition-p)
+               (org-footnote-at-reference-p))
+           (save-excursion (pdc/convert-footnote-to-marginnote)))
+          (t (pdc/org-marginnote-new)))))
   #+END_SRC
 
 
