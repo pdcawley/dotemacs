@@ -113,10 +113,14 @@ inhibit the startup screen
 (setq inhibit-startup-screen t)
 #+END_SRC
 
-I'm okay with narrowing
+I'm okay with narrowing, downcasing a region and finding an alternate file in dired.
 #+name: 169B37A4-20AC-49A3-BE9C-F7645858C4D2
 #+BEGIN_SRC emacs-lisp
 (put 'narrow-to-region 'disabled nil)
+
+(put 'downcase-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
 #+END_SRC
 
 Add a nice short alias for ~with-eval-after-load~
