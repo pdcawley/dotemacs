@@ -2012,7 +2012,12 @@ to display a =*blank*= buffer.
     "/" 'split-window-right
     "w" 'other-window
     "=" 'balance-windows
-    "_" 'pdc/maximize-horizontally)
+    "_" 'pdc/maximize-horizontally
+    "]" 'enlarge-window-horizontally
+    "[" 'shrink-window-horizontally
+    "^" 'enlarge-window
+    "M-^" 'shrink-window)
+
 #+END_SRC
 
 ** Text keybindings
