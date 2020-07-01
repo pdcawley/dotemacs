@@ -4118,6 +4118,16 @@ your sanity. Please, I beg of you don't. But do use them.
 :CUSTOM_ID: h-D4441E23-3749-4167-8030-EC38FF203644
 :ID:       1E7EEC0C-BF64-4D91-901C-D0AA2815E273
 :END:
+** Ample Regexps
+:PROPERTIES:
+:CUSTOM_ID: h-EE7187E6-AF58-4613-B6C6-179BF3F8A5EB
+:ID:       F53FDB3B-4F92-4DE8-8FEE-DB3E5FCAB358
+:END:
+
+#+name: 5C07190A-4611-46F2-933F-51EB71C6E4DC
+#+begin_src emacs-lisp
+(use-package ample-regexps :ensure t)
+#+end_src
 ** Ediff
 :PROPERTIES:
 :CUSTOM_ID: h-FA6A7C6E-2D85-41FB-AB9A-D2F9A5D4B328
