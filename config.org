@@ -5464,7 +5464,11 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 
   (defun pdc//in-bakery-daybook? ()
     "Are we in the bakery daybook?"
-    (equal (buffer-name) "CAPTURE-loafery-daybook.org"))
+    (require 'rx)
+    (s-matches? (rx "CAPTURE-"
+                    (? (+ num) "-")
+                    "loafery-daybook.org")
+                (buffer-name)))
 
   (defun pdc/set-daybook-entry-properties ()
     "Set the properties we rely on in our boilerplated daybook queries"
