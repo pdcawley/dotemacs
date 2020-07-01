@@ -2933,9 +2933,13 @@ with Projectile.
                                  (projectile-relevant-known-projects))))
     (setq magit-repository-directories-depth 1))
 
+(use-package ibuffer-projectile
+  :ensure t
+  :defer t)
 
 (use-package counsel-projectile
   :ensure t
+  :pin melpa
   :defer t
   :general
   (pdc|with-leader :infix :projects
@@ -3141,7 +3145,8 @@ Magit is awesome and I'd hate to be without it
     :diminish "")
 
   (use-package magit :ensure t
-    :commands (magit-get-top-dir magit-status)
+    :pin melpa
+    :commands (magit-toplevel magit-status)
     :general
     ("M-," 'pdc/vc-status)
     ("C-. g s" 'magit-status)
@@ -3161,10 +3166,14 @@ Magit is awesome and I'd hate to be without it
       (magit-status (bookmark-prop-get bookmark 'filename)))
     (defun pdc/vc-status ()
       (interactive)
-      (cond ((magit-get-top-dir default-directory)
+      (cond ((magit-toplevel default-directory)
              (call-interactively 'magit-status))
             (t
              (call-interactively 'dired)))))
+
+(use-package smerge-mode :ensure t
+  :init
+  (setq smerge-command-prefix (kbd "M-, S")))
 #+END_SRC
 
 Change browsing
@@ -3181,8 +3190,8 @@ Change browsing
 
 #+name: BF8E464A-72F0-4BB8-BD8F-0FD9E1D7528A
 #+begin_src emacs-lisp
-(use-package ghub :ensure t)
-(use-package forge :ensure t)
+(use-package ghub :ensure t :pin melpa)
+(use-package forge :ensure t :pin melpa)
 
 #+end_src
 
@@ -3514,6 +3523,7 @@ that's also used by swiper.
 
 
   (use-package  counsel :ensure t
+    :pin melpa
     :commands (counsel-mode)
     :diminish counsel-mode
     :general
@@ -3569,9 +3579,9 @@ that's also used by swiper.
         (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
 
-(use-package counsel-dash :ensure t)
-(use-package counsel-projectile :ensure t)
-(use-package counsel-osx-app :ensure t)
+(use-package counsel-dash :ensure t :pin melpa)
+(use-package counsel-projectile :ensure t :pin melpa)
+(use-package counsel-osx-app :ensure t :pin melpa)
 
 #+END_SRC
 
