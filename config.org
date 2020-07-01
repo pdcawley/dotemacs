@@ -1090,7 +1090,8 @@ block, then document.
 (use-package expand-region :ensure t
   :general
   (pdc|with-leader
-    "v" 'er/expand-region))
+    "^" 'er/expand-region
+    "v" 'er/contract-region))
 #+end_src
 
 Configure Page-Break-Lines-Mode to visualize the formfeed character:
