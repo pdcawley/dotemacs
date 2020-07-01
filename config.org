@@ -311,6 +311,29 @@ Caching.
 (use-package persistent-soft :ensure t)
 #+end_src
 
+Dates and times
+
+#+name: 21A54515-DB4B-4111-BDFC-CD9DF2B30989
+#+begin_src emacs-lisp
+(use-package ts :ensure t)
+#+end_src
+
+Buffers
+
+#+name: DFCFC38F-3440-4F0D-BF2C-9A8FCD9F2A77
+#+BEGIN_SRC emacs-lisp
+(use-package m-buffer :ensure t)
+#+END_SRC
+
+XML/HTML manipulation
+
+#+name: 3F477DF3-225D-45D7-AF78-B92B99AAD1D1
+#+BEGIN_SRC emacs-lisp
+(use-package esxml :ensure t :pin melpa)
+#+END_SRC
+
+
+
 *** OS/X
 :PROPERTIES:
 :ID:       77BC79EF-4804-4240-BF5D-FA8F55BB2D1B
