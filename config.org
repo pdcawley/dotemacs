@@ -5209,6 +5209,26 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 
 Load org and set up bindings under our leader keys. Includes some utility commands under `init`
 
+- Org Download :: For grabbing images and such from anywhere.
+
+  #+name: DFADB8C9-2E7B-42B9-B1BB-15C0A0AD2081
+  #+begin_src emacs-lisp
+(use-package org-download
+  :pin melpa
+  :ensure t
+  :defer nil
+  :hook (dired-mode . org-download-enable)
+  :general
+  (pdc|with-mode-leader :keymaps 'org-mode-map
+    "S" 'org-download-screenshot
+    "D" 'org-download-image)
+  :config
+  (setq org-download-edit-cmd "open -a Preview %s")
+  (setq org-download-method 'attach)
+  (setq org-download-screenshot-method "screencapture -i %s")
+  )
+#+end_src
+
 - Org D20 support :: For campaign logging
 
 #+name: EB398D98-F7D3-4F8B-8364-70E70448B471
