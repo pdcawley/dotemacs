@@ -31,3 +31,6 @@
 [submodule "vendor/org-d20"]
 	path = vendor/org-d20
 	url = git@github.com:pdcawley/org-d20.git
+[submodule "vendor/emacs-pcre"]
+	path = vendor/emacs-pcre
+	url = https://github.com/syohex/emacs-pcre.git
