@@ -1159,20 +1159,6 @@ This is the 21st century already, why am I reading large blocks of text in a mon
   (org-mode . mixed-pitch-mode))
 #+end_src
 
-*** Fallback Unicode Font
-:PROPERTIES:
-:ID:       4B85534E-4D4B-4BB0-83A6-7F98BC0CE4C1
-:CUSTOM_ID: h-796B82A4-DADC-445F-AEB1-9FAD0E66882B
-:END:
-
-Configure the manual configuration of a fallback Unicode font
-
-#+name: 210B2D03-4691-4348-8C83-023369C100EE
-#+begin_src emacs-lisp
-(set-fontset-font "fontset-default" nil
-                  (font-spec :size 20 :name "Symbola"))
-#+end_src
-
 ** Spaceline
 :PROPERTIES:
 :CUSTOM_ID: h-4B8DBB73-485F-4E54-A0EB-32FEDEF037AD
