@@ -4064,6 +4064,7 @@ your sanity. Please, I beg of you don't. But do use them.
     ;; (setq yas-minor-mode-map (make-sparse-keymap))
     (yas-global-mode 1)
     :config
+    (yas-reload-all)
     (general-define-key :keymaps 'yas-minor-mode-map
                         "M-s-/" 'yas-next-field)
     (yas-load-directory (no-littering-expand-etc-file-name "yasnippet/snippets/")))
