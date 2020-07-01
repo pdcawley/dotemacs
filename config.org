@@ -961,6 +961,15 @@ files and directories.
 
 #+END_SRC
 
+** Exiting Emacs
+:PROPERTIES:
+:CUSTOM_ID: h-F6390E1E-E9BD-4EB2-A7DF-BE4D6DE67CAA
+:ID:       3ABB9704-B37C-460A-BB8A-D826DDF36BBE
+:END:
+#+name: EB069026-C6B2-4758-8298-3C03AEFAD097
+#+begin_src emacs-lisp
+(setq confirm-kill-processes nil)
+#+end_src
 * Styling
 :PROPERTIES:
 :CUSTOM_ID: h-D882C9E0-D7A1-45CD-B291-EBFC57A1919B
