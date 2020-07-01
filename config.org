@@ -366,6 +366,17 @@ Make it easy to evaluate code when running on OS/X
      ,@statements))
 #+end_src
 
+#+name: pdc/on-emacs-mac
+#+BEGIN_SRC emacs-lisp
+(defmacro pdc/on-emacs-mac (statement &rest statements)
+  "Evaluate the enclosed body only when run on emacs-mac"
+  `(pdc/on-osx
+    (when (string-match-p "Carbon" (emacs-version))
+    ,statement
+    ,@statements)))
+#+END_SRC
+
+
 Pull in the =ENVIRONMENT= variables because the GUI version of Emacs
 does not.
 
@@ -431,6 +442,17 @@ workaround.
  (advice-add #'yes-or-no-p :around #'pdc/yes-or-no-p)
  (advice-add #'y-or-n-p :around #'pdc/yes-or-no-p))
 #+end_src
+
+When we're on the dedicated =emacs-mac= port we get some shiny extra features like osabridge support
+
+#+name: 48A37BEC-DFC7-471E-9F39-14F29B662A87
+#+BEGIN_SRC emacs-lisp
+(pdc/on-emacs-mac
+ (use-package osa :ensure t
+   :pin melpa))
+
+#+END_SRC
+
 
 *** Windows
 :PROPERTIES:
@@ -965,13 +987,19 @@ Turn off the visible bell:
 Make sure we have more emoji
 #+name: 5E126DDB-76A6-4C91-8461-867D59D7A9CC
 #+BEGIN_SRC emacs-lisp
-    (use-package emoji-fontset
-      :ensure t
-      :config
-      (setq emoji-fontset-check-version 'force)
-      (emoji-fontset-enable "Symbola")
-      ;(emoji-fontset-enable "Apple Color Emoji")
-      )
+    ;; (use-package emoji-fontset
+    ;;   :ensure t
+    ;;   :config
+    ;;   (setq emoji-fontset-check-version 'force)
+    ;;   (emoji-fontset-enable "Symbola")
+    ;;   ;(emoji-fontset-enable "Apple Color Emoji")
+    ;;   )
+
+;; (if (version< "27.0" emacs-version)
+;;     (set-fontset-font
+;;      "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
+;;   (set-fontset-font
+;;    t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
 #+END_SRC
 
 Turn off the toolbar
