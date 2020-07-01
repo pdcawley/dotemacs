@@ -1238,7 +1238,10 @@ Zenburn, it's the only way to be sure!
   (use-package zenburn-theme
     :ensure t
     :init
+    (setq zenburn-use-variable-pitch t
+          zenburn-scale-org-headlines t)
     (load-theme 'zenburn t))
+
 #+END_SRC
 
 ** Only one window on startup
