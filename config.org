@@ -1308,7 +1308,7 @@ Zenburn, it's the only way to be sure!
       :toggle-keys  "Tb"))
 
 #+END_SRC
-** Linum mode
+** Line Numbering
 :PROPERTIES:
 :CUSTOM_ID: h-ADE621A5-B565-44DA-9150-88D1EF6EB786
 :ID:       B3B65F2C-E799-49BE-8872-72C10F2B0E24
@@ -1316,15 +1316,11 @@ Zenburn, it's the only way to be sure!
 
 #+name: 55EFB87C-680A-4EF0-8021-4C8FDD5F64B3
 #+BEGIN_SRC emacs-lisp
-  (use-package linum
-    :init
-    (setq linum-format "%4d")
-    (bindings|add-toggle line-numbers
-      :mode linum-mode
-      :documentation "Show the line numbers."
-      :toggle-keys "tn")
-    :config
-    (global-linum-mode))
+(setq display-line-numbers-width-start 3
+      display-line-numbers-type 'relative)
+
+(global-display-line-numbers-mode)
+;;(setq-default display-line-numbers 'visual)
 
 #+END_SRC
 
