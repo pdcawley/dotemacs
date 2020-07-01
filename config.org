@@ -4608,6 +4608,20 @@ Configure our base Lisp mode
 
 #+END_SRC
 
+***** Displaying evaluation results via an overlay
+:PROPERTIES:
+:ID:       AE336B9A-E9FF-49D6-A8C2-30CF1555C249
+:CUSTOM_ID: h-14B2B69B-64FD-456C-A94F-130B89447C1C
+:END:
+#+name: 7F5536F0-F930-44DC-A883-A22754082930
+#+BEGIN_SRC emacs-lisp
+(use-package eros :ensure t
+  :pin melpa
+  :init
+  (eros-mode 1))
+#+END_SRC
+
+
 **** Extempore
 :PROPERTIES:
 :CUSTOM_ID: h-8117221B-32FE-467D-8162-B73B2563030A
