@@ -5267,10 +5267,14 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   "d" 'org-deadline
   "e" 'org-export-dispatch
   "f" `org-forward-heading-same-level
+  "F" 'org-footnote-action
   "TAB" `org-ctrl-c-tab
   "j" `org-goto
   "k" `org-kill-note-or-show-branches
   "l"   'org-insert-link
+  "L" 'org-latex-preview
+  "m" 'pdc/marginnote-dwim
+  "n" 'pdc/org-newthought
   "RET" `org-ctrl-c-ret
   "o" `org-open-at-point
   "q" `org-set-tags-command
@@ -5393,7 +5397,10 @@ Load org and set up bindings under our leader keys. Includes some utility comman
           (shell . t)
           (perl . t)
           (haskell . t)
-          (ditaa . t)))
+          (ditaa . t)
+          (restclient . t)
+          (swift . t)
+          (lua . t)))
 
        (setq org-confirm-babel-evaluate nil)
 
@@ -5406,6 +5413,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 (use-package org
   :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
   :diminish org-indent
+  :hooks 'turn-on-visual-line-mode
   :mode
   ("\\.org\\'" . org-mode)
   :general
@@ -5416,6 +5424,28 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   (setq org-directory (expand-file-name "~/Dropbox/org/"))
   (setq org-startup-with-inline-images t
         org-imenu-depth 8)
+
+  (setq org-catch-invisible-edits 'show-and-error
+        org-cycle-separator-lines 0)
+  (setq org-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+  (setq org-hide-emphasis-markers t)
+  (setq org-edit-src-content-indentation 0
+        org-src-tab-acts-natively t
+        org-src-fontify-natively t
+        org-support-shift-select 'always)
+
+  (defun tangle-on-save-org-mode-file ()
+    (when (and (eq major-mode 'org-mode)
+               (not (string= "config.org" (buffer-name))))
+      (org-babel-tangle)))
+  (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
+
+  (defun to-agenda-on-save-org-mode-file ()
+    (when (eq major-mode 'org-mode)
+      (org-agenda-file-to-front)))
+  (add-hook 'after-save-hook 'to-agenda-on-save-org-mode-file)
+
+  (setq org-html-htmlize-output-type 'css)
 
   :config
   «org-src»
