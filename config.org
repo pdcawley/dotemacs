@@ -3350,6 +3350,11 @@ Remind me that VLM is turned on so I pay attention ot the wrap.
     (interactive "P")
     (counsel-find-file-as-root (pdc//read-file-name initial-input)))
 
+  (defun pdc/find-talon-scripts ()
+    "Find the Talon user scripts directory"
+    (interactive)
+    (dired (expand-file-name "~/.talon/user/")))
+
   (pdc|with-leader :infix (:emacs-d)
     "c" '(pdc/find-config :which-key "config.org")
     "i" '(pdc/find-user-init-file :which-key "init.el"))
@@ -3360,6 +3365,7 @@ Remind me that VLM is turned on so I pay attention ot the wrap.
     "l" 'find-file-literally
     "E" 'pdc/sudo-edit
     "s" 'save-buffer
+    "T" '(pdc/find-talon-scripts :which-key "Talon scripts")
     "v" '(:ignore t :which-key "variables")
     "vd" 'add-dir-local-variable
     "vf" 'add-file-local-variable
