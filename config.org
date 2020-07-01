@@ -55,9 +55,24 @@ Some near-future plans for =config.org=:
 :ID:       110BDE15-84AB-483D-B72F-52E1826B8455
 :END:
 
+** Lexical bindings
+:PROPERTIES:
+:CUSTOM_ID: h-8D3901F2-C4C1-415C-8A93-DC8AA4D8C94D
+:ID:       9D8023B4-95E4-4110-8B3F-5C8B02C82E94
+:END:
+
+#+name: 0919239A-1B2E-4A82-A4E7-871198252730
+#+begin_src emacs-lisp
+;;; config.el -- a file generated from config.org - do not edit by hand
+;; -*- lexical-binding: t; -*-
+;;; Commentary:
+;;;     Org tangled from config.org. Edit the org file to change this
+;;; Code:
+#+end_src
+
 profiling:
-#+name: AE9E8B75-AFEE-4685-B0CD-645478ED648D
-#+BEGIN_SRC emacs-lisp
+,#+name: AE9E8B75-AFEE-4685-B0CD-645478ED648D
+,#+BEGIN_SRC emacs-lisp
   (defvar my-config-el-start-time (current-time)
     "Time when config.el was started")
 #+END_SRC
