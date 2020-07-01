@@ -3841,6 +3841,9 @@ Provide it in a buffer.
   (general-define-key
    "C-x C-m" 'pdc/execute-extended-command-short)
 
+  (pdc|with-leader "RET" 'pdc/execute-extended-command-short)
+
+
   ;; Command name shorthands. Thanks Steve Yegge
   (defalias 'qrr 'query-replace-regexp)
   (defalias 'rr 'replace-regexp)
@@ -3901,7 +3904,7 @@ Provide it in a buffer.
     "c" 'describe-key-briefly
     "C" 'describe-coding-system "f" 'describe-function
     "F" 'describe-face
-    "I" 'describe-input-mode
+    "I" 'describe-input-method
     "k" 'describe-key
     "K" 'describe-keymap
     "o" 'describe-symbol
@@ -3926,6 +3929,22 @@ Provide it in a buffer.
     "K" 'Info-goto-emacs-key-command-node
     "r" 'info-emacs-manual
     "S" 'info-lookup-symbol)
+
+
+(pdc|with-leader :infix :help
+  "C-a" 'about-emacs
+  "C-d" 'view-emacs-debugging
+  "C-e" 'view-external-packages
+  "C-p" 'view-emacs-problems
+  "a" 'apropos
+  "e" 'view-echo-area-messages
+  "l" 'view-lossage
+  "n" 'view-emacs-news
+  "p" 'finder-by-keyword
+  "q" 'help-quit
+  "t" 'help-with-tutorial
+  "w" 'where-is
+  "." 'display-local-help)
 
   ;; A vi-like %
 
