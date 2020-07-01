@@ -163,11 +163,12 @@ copies of the packages:
 #+name: EA43AB1A-B8E9-47A5-A7D2-2AFD626C5729
 #+BEGIN_SRC emacs-lisp
   ;;(package-initialize)
-  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
   ;; unstable
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("lambdaisland" . "http://lambdaisland.github.io/elpa/") t)
 
   (setq package-archive-priorities
         '(("melpa-stable" . 10)
