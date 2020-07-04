@@ -218,7 +218,8 @@ configure our key bindings from within ~use-package~ blocks.
       (add-to-list 'load-path (expand-file-name "vendor/use-package"
                                                 my-user-emacs-directory))
       (require 'use-package)
-      (require 'cl)))
+      (require 'cl-lib)))
+
 
   (use-package diminish
     :ensure t)
