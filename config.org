@@ -3686,7 +3686,9 @@ Provide it in a buffer.
     (pdc|with-mode-leader :keymaps 'dired-mode-map
       "w" 'wdired-change-to-wdired-mode)
     :init
-    (setq dired-use-ls-dired nil))
+    (setq dired-use-ls-dired nil)
+    (setq-default dired-omit-files-p t)
+    (setq dired-omit-files "^\\.?#"))
 
   (use-package dired-x
      :commands (dired-jump
