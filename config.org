@@ -4858,9 +4858,31 @@ Another livecoding environment, built on haskell
 (use-package tidal
   :ensure t
   :init
-  (setq tidal-interpreter "ghci"
-        tidal-interpreter-arguments '("-XOverloadedStrings")))
+  (setq tidal-interpreter "~/.ghcup/bin/ghci"
+        tidal-interpreter-arguments '(
+                                      ;;"-XOverloadedStrings"
+                                      ;;"-XFlexibleContexts"
+                                      )
+        tidal-boot-script-path "/Users/pdcawley/.cabal/store/ghc-8.6.5/tdl-1.4.4-dd936bef/share/BootTidal.hs"))
 
+
+
+
+                                      #+end_src
+*** Haskell
+:PROPERTIES:
+:CUSTOM_ID: h-C016CBB8-EDCD-4817-B8BF-1F4FFC9C6ADE
+:ID:       905A8980-5424-42DA-9619-06F2AFC3FC19
+:END:
+
+Configure Haskell and intero
+
+#+name: D996CCBB-7EDA-4F53-B455-4D0AE5AA599C
+#+begin_src emacs-lisp
+(use-package haskell-mode :ensure t)
+
+(use-package intero :ensure t
+  :hook (haskell-mode . intero-mode))
 
 #+end_src
 * Bakery management
