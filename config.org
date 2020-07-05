@@ -5234,10 +5234,7 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+name: 4B08AA6E-6808-4BFC-B7D5-EEA7CB51A386
 #+begin_src emacs-lisp
 (use-package pdf-tools
-  :load-path "vendor/pdf-tools/lisp"
-  :init
-  (setenv "PKG_CONFIG_PATH" "/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig")
-  (pdf-tools-install))
+  :load-path "vendor/pdf-tools/lisp")
 #+end_src
 
 * Org-mode
