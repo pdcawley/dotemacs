@@ -5456,7 +5456,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 (use-package org
   :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
   :diminish org-indent
-  :hooks 'turn-on-visual-line-mode
+  :hook 'turn-on-visual-line-mode
   :mode
   ("\\.org\\'" . org-mode)
   :general
