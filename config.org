@@ -5488,11 +5488,6 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   (setq org-html-htmlize-output-type 'css)
 
   :config
-  «org-src»
-  «lp-support»
-
-  «org-loafery»
-
   (setq org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-iswitchb-completing-read 'ivy-completing-read)
@@ -5563,6 +5558,10 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     (interactive)
     (dired org-directory))
   :ensure t)
+  «org-src»
+  «lp-support»
+
+  «org-loafery»
 
   (use-package org-contacts)
 
