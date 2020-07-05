@@ -3512,6 +3512,18 @@ just use the ivy supplied method.
 
 #+END_SRC
 
+** Prescient
+:PROPERTIES:
+:CUSTOM_ID: h-90E27BAE-D282-4911-976A-6BD785697B29
+:ID:       37AA53D9-F6A1-43EE-81A4-EA4276FB61DC
+:END:
+
+#+name: FEE38DB8-2B3B-4BFC-9202-4D87125D844A
+#+begin_src emacs-lisp
+(use-package prescient :ensure t)
+(use-package ivy-prescient :ensure t)
+#+end_src
+
 ** Counsel
 :PROPERTIES:
 :CUSTOM_ID: h-CB8056EA-07A0-4DFD-A2F0-9327F7B4A0BC
