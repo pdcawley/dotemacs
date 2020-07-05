@@ -4885,6 +4885,18 @@ Configure Haskell and intero
   :hook (haskell-mode . intero-mode))
 
 #+end_src
+*** AHK
+:PROPERTIES:
+:CUSTOM_ID: h-CE09B3F9-047E-43A1-82B0-492CEEB4FBAE
+:ID:       43A9DF00-E0DE-4CEB-AE32-579CDAF25D3E
+:END:
+#+name: 132D01E6-C468-44B6-854D-E0D449A61306
+#+begin_src emacs-lisp
+(use-package ahk-mode
+  :ensure t
+  :defer t
+  :mode "\\.ahk\\'")
+#+end_src
 * Bakery management
 :PROPERTIES:
 :CUSTOM_ID: h-DD7A7919-5D05-42E3-B423-BD704AD21096
