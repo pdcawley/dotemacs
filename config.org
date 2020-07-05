@@ -4258,6 +4258,18 @@ your sanity. Please, I beg of you don't. But do use them.
 :ID:       D55B0B53-882C-480D-A7E5-62CC1819F9C8
 :END:
 
+*** LSP based stuff
+:PROPERTIES:
+:ID:       EDE62979-4FE7-4B80-8898-86B46CE6E5D7
+:CUSTOM_ID: h-2AF761E0-DF22-43F5-93E1-B464E3A39940
+:END:
+I'm not sure what's going on with LSP, but I think it might be the future. If I take on a new language that has an implementation, I'll definitely be using this, I think.
+#+name: E44EFBC6-04D6-4509-B562-58FBC7AA8DC7
+#+begin_src emacs-lisp
+(use-package eglot :ensure t
+  :pin melpa
+  )
+#+end_src
 *** Lisps
 :PROPERTIES:
 :CUSTOM_ID: h-1E43EDEA-6688-4B60-9331-AA4F2C9DC3E6
