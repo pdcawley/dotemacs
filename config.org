@@ -1169,6 +1169,7 @@ This is the 21st century already, why am I reading large blocks of text in a mon
 #+begin_src emacs-lisp
 (use-package mixed-pitch
   :ensure t
+  :diminish mixed-pitch-mode
   :hook
   (org-mode . mixed-pitch-mode))
 #+end_src
