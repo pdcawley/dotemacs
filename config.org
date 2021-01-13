@@ -155,8 +155,8 @@ Add a nice short alias for ~with-eval-after-load~
 :END:
 #+name: FE5852AD-FA8C-4992-BC3C-6D859EE37BE3
 #+BEGIN_SRC emacs-lisp
-(defmacro hook-into-modes (func modes)
-  `(--each ,modes (add-hook it ,func)))
+  (defmacro hook-into-modes (func modes)
+    `(--each ,modes (add-hook it ,func)))
 #+END_SRC
 
 ** Package management
@@ -232,7 +232,7 @@ configure our key bindings from within ~use-package~ blocks.
 
 #+END_SRC
 
-*** Keep packages up to date
+*** Keep pack up to date
 :PROPERTIES:
 :CUSTOM_ID: h-9AE94D1A-FC14-4DAA-A683-C1D45E75564F
 :ID:       843C08F8-2CA9-48D8-A27C-AF0B0E0307B5
@@ -3313,6 +3313,11 @@ a
 #+name: A28EF075-9173-4CFC-8213-4C13F9D22B59
 #+begin_src emacs-lisp
 (diminish 'visual-line-mode)
+(global-visual-line-mode)
+(use-package visual-fill-column :ensure t
+  :init
+  (global-visual-line-mode 1)
+  (global-visual-fill-column-mode 1))
 #+end_src
 
 Remind me that VLM is turned on so I pay attention ot the wrap.
@@ -4263,12 +4268,21 @@ your sanity. Please, I beg of you don't. But do use them.
 :ID:       EDE62979-4FE7-4B80-8898-86B46CE6E5D7
 :CUSTOM_ID: h-2AF761E0-DF22-43F5-93E1-B464E3A39940
 :END:
-I'm not sure what's going on with LSP, but I think it might be the future. If I take on a new language that has an implementation, I'll definitely be using this, I think.
-#+name: E44EFBC6-04D6-4509-B562-58FBC7AA8DC7
+#+name: D2495574-B1DA-4303-BB75-3A0E3B7E62C5
 #+begin_src emacs-lisp
-(use-package eglot :ensure t
-  :pin melpa
-  )
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "M-, l")
+  :hook ((ruby-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+
+(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package dap-mode)
+
 #+end_src
 *** Lisps
 :PROPERTIES:
@@ -5329,6 +5343,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 
 - Org D20 support :: For campaign logging
 
+  hopefully logging stuff
 #+name: EB398D98-F7D3-4F8B-8364-70E70448B471
 #+begin_src emacs-lisp
 (use-package org-d20
@@ -5357,27 +5372,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   "b" 'org-switchb
   "c" '(org-capture :which-key "capture")
   "l" 'org-store-link)
-
-(pdc|with-mode-leader :keymaps '(org-mode-map)
-  "a" 'org-attach
-  "b" 'backward-heading-same-level
-  "c" 'org-ctrl-ctrl-c
-  "d" 'org-deadline
-  "e" 'org-export-dispatch
-  "f" `org-forward-heading-same-level
-  "F" 'org-footnote-action
-  "TAB" `org-ctrl-c-tab
-  "j" `org-goto
-  "k" `org-kill-note-or-show-branches
-  "l"   'org-insert-link
-  "L" 'org-latex-preview
-  "m" 'pdc/marginnote-dwim
-  "n" 'pdc/org-newthought
-  "RET" `org-ctrl-c-ret
-  "o" `org-open-at-point
-  "q" `org-set-tags-command
-  "r" `org-reveal
-  "s" `org-schedule
+s
   "t"   'org-todo
   "v" '(:ignore t :which-key "babel")
 
@@ -5498,11 +5493,24 @@ Load org and set up bindings under our leader keys. Includes some utility comman
           (ditaa . t)
           (restclient . t)
           (swift . t)
-          (lua . t)))
+          (lua . t)
+          (sqlite . t)
+          (sql . t)))
 
        (setq org-confirm-babel-evaluate nil)
 
      #+end_src
+
+- Orgba :: Experimenting 'Org better API'
+
+  Orgba claims to be a more consistent API for getting data from an org document. Got to be worth a play
+
+#+name: 67A86EE9-4F0C-4248-9F85-27DB25AE1F6E
+#+begin_src emacs-lisp
+(use-package orgba
+  :load-path "vendor/orgba")
+#+end_src
+
 
 
 #+name: 84759F2C-B224-4A76-A9D3-7CE43BAFBF55
@@ -5563,6 +5571,8 @@ Load org and set up bindings under our leader keys. Includes some utility comman
                     "loafery-daybook.org")
                 (buffer-name)))
 
+
+
   (defun pdc/set-daybook-entry-properties ()
     "Set the properties we rely on in our boilerplated daybook queries"
     (save-excursion
@@ -5616,7 +5626,21 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     (interactive)
     (dired org-directory))
   :ensure t)
-  «org-src»
+
+  (defun pdc/formatted-copy ()
+    "Export region to HTML, and copy it to the clipboard."
+    (interactive)
+    (save-window-excursion
+      (let* ((buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+             (html (with-current-buffer buf (buffer-string))))
+        (with-current-buffer buf
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           "textutil -stdin -format html -convert rtf -stdout | pbcopy"))
+        (kill-buffer buf))))
+
+«org-src»
   «lp-support»
 
   «org-loafery»
