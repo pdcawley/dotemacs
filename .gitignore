@@ -41,3 +41,6 @@ network-security.data
 /elpa
 /tutorial
 /preferences.el
+straight/repos
+straight/build
+straight/build-cache.el

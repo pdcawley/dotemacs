@@ -171,82 +171,18 @@ Add a nice short alias for ~with-eval-after-load~
 :CUSTOM_ID: h-14617FB2-F9FE-43E1-A79B-203FD3A18E52
 :END:
 
-=package-user-dir= holds the directory where ELPA installs its local
-copies of the packages:
-
-#+name: 4EDE24AF-DDA2-4045-875F-B5B19F3E01B0
-#+BEGIN_SRC emacs-lisp
-(setq package-user-dir (concat my-user-emacs-directory "elpa"))
-#+END_SRC
+**** Setup Straight
+:PROPERTIES:
+:ID:       EB3A29F6-0050-4F19-B36A-5344FE711F45
+:CUSTOM_ID: h-0B921FE4-6201-48B1-8CEF-CAA2C2D57539
+:END:
 
 #+name: EA43AB1A-B8E9-47A5-A7D2-2AFD626C5729
 #+BEGIN_SRC emacs-lisp
-  ;;(package-initialize)
-  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-  ;; unstable
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives '("lambdaisland" . "http://lambdaisland.github.io/elpa/") t)
-
-  (setq package-archive-priorities
-        '(("melpa-stable" . 10)
-          ("melpa" . 5)
-          ("org" . 15)
-          ("gnu" . 0)))
-
-  (package-refresh-contents)
-#+END_SRC
-
-*** Setup =use-package=
-:PROPERTIES:
-:ID:       1BA58E84-1AF2-40AA-B14B-551ADB73E5AA
-:CUSTOM_ID: h-B2096749-5C6E-4217-8604-8DE616443ABF
-:END:
-
-Load =use-package= and its partners, =diminish=, =bind-key= and
-=which-key= as well as =general= and =pdc-leader=, which we use to
-configure our key bindings from within ~use-package~ blocks.
-
-#+name: 43FED6DF-F2D0-4327-99C8-CF67A6AFF930
-#+BEGIN_SRC emacs-lisp
-  (eval-and-compile
-    (progn
-      (setq package-enable-at-startup nil)
-      (require 'pdc-leader)
-      (require 'general)
-      (add-to-list 'load-path (expand-file-name "vendor/use-package"
-                                                my-user-emacs-directory))
-      (require 'use-package)
-      (require 'cl-lib)))
-
-
-  (use-package diminish
-    :ensure t)
-  (use-package bind-key
-    :ensure t)
-  (use-package which-key
-    :ensure t
-    :init
-    (bindings|add-toggle which-key-mode :toggle-keys "TK"))
-
-#+END_SRC
-
-*** Keep pack up to date
-:PROPERTIES:
-:CUSTOM_ID: h-9AE94D1A-FC14-4DAA-A683-C1D45E75564F
-:ID:       843C08F8-2CA9-48D8-A27C-AF0B0E0307B5
-:END:
-
-#+name: B569E7F5-46EB-4FC9-815A-8307412B2909
-#+begin_src emacs-lisp
-(use-package auto-package-update :ensure t
+(use-package pdc-leader :straight (pdc-leader :type built-in)
   :config
-  (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
-
-#+end_src
+  (bindings|add-toggle which-key-mode :toggle-keys "TK"))
+#+END_SRC
 
 *** Display
 :PROPERTIES:
@@ -285,19 +221,17 @@ Lists.
 #+name: 26D66E99-3C51-4DC5-BDEA-E0C836D77918
 #+BEGIN_SRC emacs-lisp
 (use-package dash
-  :ensure t
   :config
   (dash-enable-font-lock))
 (eval-when-compile (require 'dash))
-(use-package dash-functional
-  :ensure t)
+(use-package dash-functional)
 #+END_SRC
 
 Files and Directories.
 
 #+name: DCE0B67B-677E-4342-BD30-B2E22E63E8C0
 #+begin_src emacs-lisp
-(use-package f :ensure t)
+(use-package f)
 #+end_src
 
 
@@ -305,14 +239,14 @@ Strings.
 
 #+name: C3B828E0-2CB9-47CA-BA67-FA3C0ADF1EF6
 #+BEGIN_SRC emacs-lisp
-  (use-package s :ensure t :pin melpa)
+  (use-package s)
   (eval-when-compile (require 's))
 #+END_SRC
 
 Dictionaries
 #+name: 89A89375-8DD6-4697-8043-6CA20D189E2C
 #+BEGIN_SRC emacs-lisp
-  (use-package kv :ensure t :pin melpa)
+  (use-package kv)
   (eval-when-compile (require 'kv))
 #+END_SRC
 
@@ -320,7 +254,7 @@ Hash Tables
 
 #+name: 1DDAE1AA-484A-4190-B4EE-ABB6E2116ABB
 #+begin_src emacs-lisp
-(use-package ht :ensure t :pin melpa)
+(use-package ht)
 (eval-when-compile (require 'ht))
 #+end_src
 
@@ -328,28 +262,28 @@ Caching.
 
 #+name: 4DC9AD1B-9CE9-497B-8DA1-9C68C90D5513
 #+begin_src emacs-lisp
-(use-package persistent-soft :ensure t)
+(use-package persistent-soft)
 #+end_src
 
 Dates and times
 
 #+name: 21A54515-DB4B-4111-BDFC-CD9DF2B30989
 #+begin_src emacs-lisp
-(use-package ts :ensure t)
+(use-package ts)
 #+end_src
 
 Buffers
 
 #+name: DFCFC38F-3440-4F0D-BF2C-9A8FCD9F2A77
 #+BEGIN_SRC emacs-lisp
-(use-package m-buffer :ensure t)
+(use-package m-buffer)
 #+END_SRC
 
 XML/HTML manipulation
 
 #+name: 3F477DF3-225D-45D7-AF78-B92B99AAD1D1
 #+BEGIN_SRC emacs-lisp
-(use-package esxml :ensure t :pin melpa)
+(use-package esxml)
 #+END_SRC
 
 
@@ -388,8 +322,7 @@ does not.
 #+name: 9DC08D45-A9CC-4407-AF13-D7CAB9BBEA13
 #+begin_src emacs-lisp
 (pdc/on-osx
- (use-package exec-path-from-shell
-   :ensure t)
+ (use-package exec-path-from-shell)
  (setq exec-path-from-shell-arguments (list "-l"))
  (exec-path-from-shell-initialize))
 #+end_src
@@ -453,8 +386,7 @@ When we're on the dedicated =emacs-mac= port we get some shiny extra features li
 #+name: 48A37BEC-DFC7-471E-9F39-14F29B662A87
 #+BEGIN_SRC emacs-lisp
 (pdc/on-emacs-mac
- (use-package osa :ensure t
-   :pin melpa))
+ (use-package osa))
 
 #+END_SRC
 
@@ -521,7 +453,7 @@ Make it easy to evalute code only when running on Linux
 Auto compile emacs lisp files as we load or save them.
 #+name: 17A8DF39-5A9F-4936-BE72-76F30AF7075F
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-compile :ensure t
+  (use-package auto-compile
     :config
     (auto-compile-on-load-mode)
     (auto-compile-on-save-mode)
@@ -757,7 +689,6 @@ Attribuation: URL https://github.com/sachac/.emacs.d/blob/gh-pages/Sacha.org#unf
     (org-latex-export-to-pdf)))
 
 (use-package thingatpt
-  :ensure t
   :init
   (defun thing-at-point-goto-end-of-integer ()
     "Go to end of integer at point."
@@ -919,6 +850,7 @@ If $string nil, change hte text in the region between positions $from $to."
 #+name: B232FA71-C51E-49F9-A7E9-ECB2669AEF4E
 #+BEGIN_SRC emacs-lisp
   (use-package comint
+    :straight (comint :type built-in)
     :general
     (:keymaps 'comint-mode-map
               "<up>" 'comint-previous-input
@@ -952,7 +884,6 @@ files and directories.
 #+name: 0EE34AEA-4D03-4786-A8B1-4B6DE4AAD604
 #+BEGIN_SRC emacs-lisp
   (use-package no-littering
-    :ensure t
     :config
     ;; Don't shit autosave files all over the place
     (setq auto-save-file-name-transforms
@@ -1002,7 +933,7 @@ Make sure we have more emoji
 #+name: 5E126DDB-76A6-4C91-8461-867D59D7A9CC
 #+BEGIN_SRC emacs-lisp
     ;; (use-package emoji-fontset
-    ;;   :ensure t
+    ;;
     ;;   :config
     ;;   (setq emoji-fontset-check-version 'force)
     ;;   (emoji-fontset-enable "Symbola")
@@ -1085,7 +1016,7 @@ More easily visualize tabular data. Considered to non-subjective.
 
 #+name: DA961BE4-A93C-43CF-905D-EE5266738976
 #+begin_src emacs-lisp
-(use-package stripe-buffer :ensure t)
+(use-package stripe-buffer)
 #+end_src
 
 Ban white-space at the end of lines, globally
@@ -1101,7 +1032,7 @@ block, then document.
 
 #+name: 3F5DFDF2-AC99-4D75-A5BE-DB13C10DE834
 #+begin_src emacs-lisp
-(use-package expand-region :ensure t
+(use-package expand-region
   :general
   (pdc|with-leader
     "^" 'er/expand-region
@@ -1114,7 +1045,6 @@ Configure Page-Break-Lines-Mode to visualize the formfeed character:
 #+name: 084F89CE-0716-4D96-8CDF-35AF68423EB0
 #+begin_src emacs-lisp
 (use-package page-break-lines
-  :ensure t
   :diminish page-break-lines-mode)
 #+end_src
 
@@ -1131,7 +1061,6 @@ Do the /right thing/ for getting to the start of the line.
 #+name: A62C9EC2-120A-4FD4-B73C-E0B34C36D247
 #+begin_src emacs-lisp
 (use-package mwim
-  :ensure t
   :general
   ("C-a" 'mwim-beginning-of-code-or-line))
 #+end_src
@@ -1142,7 +1071,6 @@ Do the /right thing/ for getting to the start of the line.
   #+name: FFC0F620-B4BB-41D0-ABFD-A122C254907C
   #+begin_src emacs-lisp
 (use-package fill-column-indicator
-  :ensure t
   :config
   (setq fci-rule-column 79))
   #+end_src
@@ -1154,7 +1082,6 @@ Show text indentation guide lines.
 #+name: 430021A2-D748-4BF3-A011-25EFE7068353
 #+begin_src emacs-lisp
 (use-package indent-guide
-  :ensure t
   :diminish indent-guide-mode)
 #+end_src
 
@@ -1168,7 +1095,6 @@ This is the 21st century already, why am I reading large blocks of text in a mon
 #+name: EA9BB12C-8CF1-4BEF-B842-F48BDDC43392
 #+begin_src emacs-lisp
 (use-package mixed-pitch
-  :ensure t
   :diminish mixed-pitch-mode
   :hook
   (org-mode . mixed-pitch-mode))
@@ -1181,17 +1107,17 @@ This is the 21st century already, why am I reading large blocks of text in a mon
 :END:
 #+name: 03F39E55-1EF2-4BA6-AC06-70B0EDCCE238
 #+BEGIN_SRC emacs-lisp
-  (use-package which-func :ensure t)
+  (use-package which-func)
 
-  (use-package powerline :ensure t
-    :config
-    (defun pdc/customize-powerline-faces ()
-      "Alter powerline faces to make them work with more themes"
-      (set-face-attribute 'powerline-inactive2 nil
-                          :inherit 'font-lock-comment-face))
-    (pdc/customize-powerline-faces))
+  ;; (use-package powerline
+  ;;   :config
+  ;;   (defun pdc/customize-powerline-faces ()
+  ;;     "Alter powerline faces to make them work with more themes"
+  ;;     (set-face-attribute 'powerline-inactive2 nil
+  ;;                         :inherit 'font-lock-comment-face))
+  ;;   (pdc/customize-powerline-faces))
 
-  (use-package spaceline :ensure t
+  (use-package spaceline
     :commands spaceline-compile
     :init
     (setq powerline-default-separator (if (display-graphic-p) 'brace 'utf-8)
@@ -1251,7 +1177,6 @@ Zenburn, it's the only way to be sure!
 #+name: 97DCE932-2053-4F0B-9E96-C26A42A533A7
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
-    :ensure t
     :init
     (setq zenburn-use-variable-pitch t
           zenburn-scale-org-headlines t)
@@ -1288,7 +1213,7 @@ Zenburn, it's the only way to be sure!
 
 #+name: 92D041C0-C0B1-4362-95C9-0353123FE51C
 #+BEGIN_SRC emacs-lisp
-  (use-package default-text-scale :ensure t
+  (use-package default-text-scale
     :commands (default-text-scale-increase default-text-scale-decrease)
     :init
     (pdc|with-leader
@@ -1303,7 +1228,7 @@ Zenburn, it's the only way to be sure!
 :END:
 #+name: 1A8042AB-220B-41A4-90B3-3B7E675CCEBC
 #+BEGIN_SRC emacs-lisp
-  (use-package hl-todo :ensure t
+  (use-package hl-todo
     :init
     (hook-into-modes 'hl-todo-mode '(text-mode-hook prog-mode-hook)))
 
@@ -1315,7 +1240,7 @@ Zenburn, it's the only way to be sure!
 :END:
 #+name: AEE01A06-90BA-4CD0-8FB5-051938810CB1
 #+BEGIN_SRC emacs-lisp
-  (use-package fancy-battery :ensure t
+  (use-package fancy-battery
     :init
     (bindings|add-toggle mode-line-battery
       :mode fancy-battery-mode
@@ -1392,7 +1317,7 @@ essentially sparse keymaps, and I've not worked out how to easily
 define them on the fly, so we predeclare the major branches of our
 tree here.
 
-We use =use-package ... :ensure t= here to ensure that
+We use =use-package ...= here to ensure that
 =pdc|with-leader= is avaialable to the =:general= clause of subsequent
 calls to =use-package=
 
@@ -1537,6 +1462,7 @@ manage our own prefix registry
     "u" 'undo-tree-visualize)
 
   (use-package pdc-buffer-helpers
+    :straight (pdc-buffer-helpers :type built-in)
     :config
     (pdc|with-leader "TAB" 'pdc/alternate-buffer)
     (pdc|with-leader :infix (:buffers)
@@ -1558,6 +1484,7 @@ manage our own prefix registry
                   (intern (format "buffer-to-window-%i" n)))))
 
   (use-package pdc-error-helpers
+    :straight (pdc-error-helpers :type built-in)
     :general
     (pdc|with-leader :infix (:errors)
       "n" 'pdc/next-error
@@ -1591,7 +1518,6 @@ manage our own prefix registry
 #+name: 906BF222-B822-484E-BC65-DCD2B0270116
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :ensure t
     :general
     (pdc|with-leader :infix :buffers
       "D" 'pdc/ace-kill-this-buffer)
@@ -1634,7 +1560,7 @@ manage our own prefix registry
 :END:
 #+name: 3C86A02E-777D-48F4-81F0-6198390BE821
 #+BEGIN_SRC emacs-lisp
-  (use-package ibuffer :ensure t
+  (use-package ibuffer
     :config
     (fset 'list-buffers 'ibuffer)
     (defun pdc/list-buffers-int ()
@@ -1650,7 +1576,7 @@ manage our own prefix registry
 :END:
 #+name: C85784AB-6D5E-4CF5-95A1-54AFDD33F019
 #+BEGIN_SRC emacs-lisp
-  (use-package ibuffer-vc :ensure t
+  (use-package ibuffer-vc
     :config
     (setq ibuffer-formats
           '((mark pdc-modified vc-status-mini
@@ -1674,7 +1600,7 @@ straightforward.
 
 #+name: 504A8557-F9F0-4FF8-9C71-6CD49F71929F
 #+BEGIN_SRC emacs-lisp
-  (use-package winum :ensure t
+  (use-package winum
     :config
     (setq winum-auto-assign-0-to-minibuffer t
           winum-auto-setup-mode-line nil
@@ -1710,6 +1636,7 @@ Give buffers unique names
 #+name: DC5B39E7-C8D3-40ED-A7E4-6C59C797070B
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
+    :straight (uniquify :type built-in)
     :config
     (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
     (setq uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
@@ -1986,7 +1913,7 @@ to display a =*blank*= buffer.
   ;;; For the 'evil-window-*' commands. Lift these into the config later
   ;;; since we don't use Evil.
 
-  (use-package evil :ensure t
+  (use-package evil
     :init
     (require 'evil-commands))
   (pdc|with-leader :infix :windows
@@ -2333,7 +2260,6 @@ Always keep buffers in sync with changes in-file.
 #+name: 3767F15E-B6D8-4903-8658-BF00A68DF073
 #+begin_src emacs-lisp
 (use-package autorevert
-  :ensure t
   :diminish ((auto-revert-mode . " ⎌")
              (global-auto-revert-mode . " ⎌"))
   :config
@@ -2467,7 +2393,6 @@ ourselves from accidentally screwing such files up.
 #+name: 48278757-C4EA-4D6E-800C-B91602061ADC
 #+begin_src emacs-lisp
 (use-package hardhat
-  :ensure t
   :diminish global-hardhat-mode
   :config
   (global-hardhat-mode 1))
@@ -2602,12 +2527,12 @@ ourselves from accidentally screwing such files up.
 
   (require 'misc)      ; forward-to-word & backward-to-word
 
-   (use-package visible-mark :ensure t
+   (use-package visible-mark
      :commands (global-visible-mark-mode)
      :init
      (global-visible-mark-mode t))
 
-   (use-package undo-tree :ensure t
+   (use-package undo-tree
      :commands (global-undo-tree-mode)
      :diminish undo-tree-mode
      :init
@@ -2617,7 +2542,7 @@ ourselves from accidentally screwing such files up.
            undo-tree-visualizer-timestamps t))
 
 
-(use-package goto-last-change :ensure t
+(use-package goto-last-change
   :config
   (setq highlight-changes-visibility-initial-state nil))
 
@@ -2673,7 +2598,7 @@ ourselves from accidentally screwing such files up.
 :END:
 #+name: 157D5D54-74DD-43E5-B299-A0E61548986E
 #+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors :ensure t
+  (use-package multiple-cursors
     :config
     (general-define-key "s-<mouse-1>" 'mc/add-cursor-on-click)
     (pdc|general-bind-hydra mc (bindings//prefix :cursor)
@@ -2699,8 +2624,9 @@ ourselves from accidentally screwing such files up.
 :END:
 #+name: 8F2309CA-3C1E-4394-B7B4-CDF931DB598C
 #+BEGIN_SRC emacs-lisp
-(use-package fuzzy :ensure t)
-(use-package auto-complete :ensure t
+(use-package fuzzy)
+(use-package auto-complete
+
   :diminish " ⓐ"
   :init
   (setq ac-auto-start nil
@@ -2713,7 +2639,7 @@ ourselves from accidentally screwing such files up.
         ac-dwim t)
   (global-auto-complete-mode t)
   :config
-  (use-package auto-complete-config)
+  (require 'auto-complete-config)
   (setq-default ac-sources '(ac-source-yasnippet
                              ac-source-abbrev
                              ac-source-dictionary
@@ -2730,7 +2656,7 @@ Auto-completion for =.=-separated words.
 
 #+name: 8D07F369-08CF-49D3-8EEF-B8D9B58BE6E3
 #+begin_src emacs-lisp
-(use-package auto-complete-chunk :ensure t)
+(use-package auto-complete-chunk)
 #+end_src
 
 ** Keyboard Macros
@@ -2751,7 +2677,6 @@ Persist keyboard macros in Emacs Lisp alternative to ~insert-kbd-macro~
 #+name: 28187470-91D3-4C7F-81CC-4708BCA61F5F
 #+begin_src emacs-lisp
 (use-package elmacro
-  :ensure t
   :diminish elmacro-mode
   :config
   (elmacro-mode))
@@ -2767,7 +2692,7 @@ Easy kill ring access
 
 #+name: A9B3A97E-85F4-4852-A296-E1E069149EEC
 #+begin_src emacs-lisp
-(use-package browse-kill-ring :ensure t
+(use-package browse-kill-ring
   :general
   ("M-y"  'browse-kill-ring)
   :config
@@ -2885,7 +2810,6 @@ Provide popup notifications.
 #+name: 79263A6C-938F-4356-BC95-692CD7F6C789
 #+begin_src emacs-lisp
 (use-package alert
-  :ensure t
   :config
   (setq alert-fade-time 10)
   (setq alert-default-style 'message)
@@ -2906,7 +2830,6 @@ with Projectile.
 #+name: 50F60F56-21C0-4A8D-8CF7-4AFDA629921F
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :ensure t
     :defer t
     :commands (projectile-project-p)
     :diminish projectile-mode
@@ -2949,12 +2872,9 @@ with Projectile.
     (setq magit-repository-directories-depth 1))
 
 (use-package ibuffer-projectile
-  :ensure t
   :defer t)
 
 (use-package counsel-projectile
-  :ensure t
-  :pin melpa
   :defer t
   :general
   (pdc|with-leader :infix :projects
@@ -3056,8 +2976,7 @@ Use history as a look up instead of a log.
 
 #+name: 4A0991DC-044F-4CCB-9EE0-9A4BD63C647D
 #+BEGIN_SRC emacs-lisp
-    (use-package swiper :ensure t
-      :pin "melpa"
+    (use-package swiper
       :commands (swiper swiper-all)
       :general
       (pdc|with-leader :infix (:search)
@@ -3091,7 +3010,6 @@ Writeable Grep integration
 #+name: 10E19313-1FB7-4F4B-8C69-940F434C7BE3
 #+begin_src emacs-lisp
 (use-package wgrep
-  :ensure t
   :config
   (setq wgrep-auto-save-buffer t))
 #+end_src
@@ -3101,7 +3019,6 @@ Ag integration
 #+name: 9CC24F14-2012-4083-86C6-5631C71C6CB2
 #+begin_src emacs-lisp
 (use-package ag
-  :ensure t
   :config
   (setq ag-highligh-search t)
   (setq ag-reuse-window nil)
@@ -3125,7 +3042,6 @@ Writeable Ag
 #+name: 73ED9F62-22D9-402D-9F32-459B3C6E87F2
 #+begin_src emacs-lisp
 (use-package wgrep-ag
-  :ensure t
   :after ag)
 #+end_src
 
@@ -3140,11 +3056,11 @@ Git config files.
 
 #+name: 02F9CB0D-17F1-476E-BAFF-9E511FC98102
 #+begin_src emacs-lisp
-(use-package gitignore-mode :ensure t)
+(use-package gitignore-mode)
 
-(use-package gitconfig-mode :ensure t)
+(use-package gitconfig-mode)
 
-(use-package gitattributes-mode :ensure t)
+(use-package gitattributes-mode)
 #+end_src
 
 *** Magit
@@ -3156,11 +3072,10 @@ Magit is awesome and I'd hate to be without it
 #+name: A0CA6683-AD74-4D3D-A9E4-A46CB9C347F8
 #+BEGIN_SRC emacs-lisp
 
-  (use-package with-editor :ensure t
+  (use-package with-editor
     :diminish "")
 
-  (use-package magit :ensure t
-    :pin melpa
+  (use-package magit
     :commands (magit-toplevel magit-status)
     :general
     ("M-," 'pdc/vc-status)
@@ -3186,7 +3101,7 @@ Magit is awesome and I'd hate to be without it
             (t
              (call-interactively 'dired)))))
 
-(use-package smerge-mode :ensure t
+(use-package smerge-mode
   :init
   (setq smerge-command-prefix (kbd "M-, S")))
 #+END_SRC
@@ -3194,7 +3109,7 @@ Magit is awesome and I'd hate to be without it
 Change browsing
 #+name: 6181CCFA-3445-4F9A-AD0C-A0843A822C5F
 #+begin_src emacs-lisp
-  (use-package git-timemachine :ensure t)
+  (use-package git-timemachine)
 #+end_src
 
 *** Forges (mostly github)
@@ -3205,8 +3120,8 @@ Change browsing
 
 #+name: BF8E464A-72F0-4BB8-BD8F-0FD9E1D7528A
 #+begin_src emacs-lisp
-(use-package ghub :ensure t :pin melpa)
-(use-package forge :ensure t :pin melpa)
+(use-package ghub)
+(use-package forge)
 
 #+end_src
 
@@ -3218,7 +3133,7 @@ Change browsing
 Manage code samples on github
 #+name: D30CA25C-F805-4F3A-B86C-F454BAC94C3A
 #+BEGIN_SRC emacs-lisp
-  (use-package gist :ensure t
+  (use-package gist
     :init
     (setq gist-authenticate-function 'gist-oauth2-authentication)
     :general
@@ -3236,14 +3151,14 @@ The fringe is a very handy bit of interface, especially when it knows
 about the git status of things.
 #+name: C5CDF282-AA12-4D3E-9FCF-BFA566399C25
 #+BEGIN_SRC emacs-lisp
-  (use-package git-gutter+ :ensure t
+  (use-package git-gutter+
     :diminish git-gutter+-mode
     :diminish git-gutter-mode
     :init
     (bindings|add-toggle git-gutter :mode git-gutter+-mode :toggle-keys "Tg")
     (global-git-gutter+-mode 1))
 
-  (use-package git-gutter-fringe+ :ensure t
+  (use-package git-gutter-fringe+
     :config
     (git-gutter-fr+-minimal))
 
@@ -3293,7 +3208,6 @@ Embedding Youtube videos with org-mode links.
 #+name: 25EBBF6B-592E-4319-9434-6DF4CD77311B
 #+begin_src emacs-lisp
 (use-package whitespace
-  :ensure t
   :config
   (setq whitespace-style '(tab-mark))
   (setq whitespace-display-mappings
@@ -3314,7 +3228,7 @@ a
 #+begin_src emacs-lisp
 (diminish 'visual-line-mode)
 (global-visual-line-mode)
-(use-package visual-fill-column :ensure t
+(use-package visual-fill-column
   :init
   (global-visual-line-mode 1)
   (global-visual-fill-column-mode 1))
@@ -3400,7 +3314,7 @@ Remind me that VLM is turned on so I pay attention ot the wrap.
 For jumping to characters and words in the frame
 #+name: 839D76E0-3938-466F-971F-5B2800FF2F3C
 #+BEGIN_SRC emacs-lisp
-  (use-package avy :ensure t
+  (use-package avy
     :general
     (pdc|with-leader :infix (:jump)
      "j" 'avy-goto-char-timer
@@ -3424,8 +3338,7 @@ just use the ivy supplied method.
 #+name: 31C55E71-FAB8-4D4A-85DC-5C2782309629
 #+BEGIN_SRC emacs-lisp
 
-  (use-package ivy :ensure t
-    :pin "melpa"
+  (use-package ivy
     :diminish " ❦"
     :general
     (pdc|with-leader
@@ -3506,13 +3419,13 @@ just use the ivy supplied method.
                 :action 'ivy-pdc-help//toggle)))
 
 ;; (use-package ivy-posframe
-;;   :ensure t
+;;
 ;;   :config
 ;;   (setq ivy-display-function #'ivy-posframe-display)
 ;;   (ivy-posframe-enable))
 
 
-  (use-package ivy-hydra :ensure t)
+  (use-package ivy-hydra)
 
 
 #+END_SRC
@@ -3525,8 +3438,8 @@ just use the ivy supplied method.
 
 #+name: FEE38DB8-2B3B-4BFC-9202-4D87125D844A
 #+begin_src emacs-lisp
-(use-package prescient :ensure t)
-(use-package ivy-prescient :ensure t)
+(use-package prescient)
+(use-package ivy-prescient)
 #+end_src
 
 ** Counsel
@@ -3560,8 +3473,7 @@ that's also used by swiper.
       (counsel-ag nil input)))
 
 
-  (use-package  counsel :ensure t
-    :pin melpa
+  (use-package  counsel
     :commands (counsel-mode)
     :diminish counsel-mode
     :general
@@ -3617,9 +3529,9 @@ that's also used by swiper.
         (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
     (counsel-mode t))
 
-(use-package counsel-dash :ensure t :pin melpa)
-(use-package counsel-projectile :ensure t :pin melpa)
-(use-package counsel-osx-app :ensure t :pin melpa)
+(use-package counsel-dash)
+(use-package counsel-projectile)
+(use-package counsel-osx-app)
 
 #+END_SRC
 
@@ -3669,7 +3581,6 @@ Provide it in a buffer.
 #+name: 5A23820D-4BDB-4400-9433-5B324F9BE1AF
 #+begin_src emacs-lisp
 (use-package imenu-list
-  :ensure t
   :config
   (setq imenu-list-focus-after-activation t)
   (setq imenu-list-auto-resize t)
@@ -3693,6 +3604,7 @@ Provide it in a buffer.
 #+BEGIN_SRC emacs-lisp
 
   (use-package dired
+    :straight (dired :type built-in)
     :general
     (pdc|with-leader :infix :apps
       "d" 'dired)
@@ -3709,6 +3621,7 @@ Provide it in a buffer.
     (setq dired-omit-files "^\\.?#"))
 
   (use-package dired-x
+     :straight (dired-x :type built-in)
      :commands (dired-jump
                dired-jump-other-window
                dired-omit-mode))
@@ -3722,7 +3635,6 @@ Provide it in a buffer.
 #+name: 5E24F4F6-7492-4B6C-8C68-4F51D8AFC9EC
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
-    :ensure t
     :defer t
     :init
     (add-hook 'find-file-hook (lambda () (unless recentf-mode
@@ -3753,7 +3665,7 @@ Provide it in a buffer.
     :status auto-fill-function
     :toggle-keys "Tf")
 
-  (use-package hl-line :ensure t
+  (use-package hl-line
     :diminish hl-highlight-mode
     :commands (global-hl-line-mode hl-line-mode)
     :init
@@ -3891,6 +3803,7 @@ Provide it in a buffer.
   ;; Buffer spruce up - could be cleverer. Per-mode spruce up strategies
   ;; for instance
   (use-package pdc-spruce-up-buffer
+    :straight (pdc-spruse-up-buffer :type built-in)
     :general
     ((bindings//leader :buffer "T") 'pdc|spruce-up-buffer))
 
@@ -3999,7 +3912,8 @@ Provide it in a buffer.
 
   (general-define-key "%" 'pdc|match-paren)
 
-  (use-package pdc-helpers
+(use-package pdc-helpers
+    :straight (pdc-helpers :type built-in)
     :commands
     pdc|smarter-move-beginning-of-line
     :general
@@ -4110,7 +4024,7 @@ your sanity. Please, I beg of you don't. But do use them.
 
 #+name: 323758EA-3582-44B5-8BBB-7A5FC3ED6701
 #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet :ensure t
+  (use-package yasnippet
     :commands (yas-global-mode yas-minor-mode)
     :functions (yas-load-directory)
     :diminish (yas-minor-mode . " ⓨ")
@@ -4186,7 +4100,7 @@ your sanity. Please, I beg of you don't. But do use them.
 
 #+name: 5C07190A-4611-46F2-933F-51EB71C6E4DC
 #+begin_src emacs-lisp
-(use-package ample-regexps :ensure t)
+(use-package ample-regexps)
 #+end_src
 ** Ediff
 :PROPERTIES:
@@ -4219,8 +4133,6 @@ your sanity. Please, I beg of you don't. But do use them.
 #+name: C4132E3E-A783-4009-9B53-5E36E6B82B27
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :ensure t
-    :pin "melpa"
     :commands global-flycheck-mode
     :diminish " ⓢ"
     :init
@@ -4237,7 +4149,6 @@ your sanity. Please, I beg of you don't. But do use them.
 #+name: 67485DF1-06D0-47AD-A964-C46CBF2DDA97
 #+BEGIN_SRC emacs-lisp
   (use-package pcre2el
-    :ensure t
     :general
     (pdc|with-leader :infix :regex
       "/" 'rxt-explain
@@ -4273,7 +4184,13 @@ your sanity. Please, I beg of you don't. But do use them.
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "M-, l")
+
   :hook ((ruby-mode . lsp)
+         (css-mode . lsp)
+         (scss-mode . lsp)
+         (html-mode . lsp)
+         (web-mode . lsp)
+         (js-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
@@ -4448,15 +4365,15 @@ Configure our base Lisp mode
               (indent-according-to-mode))
             (forward-line))))))
 
-  (use-package autoinsert :ensure t)
-  (use-package finder :ensure t)
+  (use-package autoinsert)
+  (use-package finder)
 
   (use-package auto-compile
-    :ensure t
     :init (setq load-prefer-newer t)
     :config (auto-compile-on-load-mode))
 
   (use-package lisp-mode
+    :straight (lisp-mode :type built-in)
     :config
 
     (defun pdc/goto-match-paren (arg)
@@ -4507,6 +4424,7 @@ Configure our base Lisp mode
 
 
   (use-package elisp-mode
+    :straight (elisp-mode :type built-in)
     :general
     (pdc|with-leader :infix (:elisp)
       "c" 'finder-commentary
@@ -4521,7 +4439,6 @@ Configure our base Lisp mode
     (setq emacs-lisp-mode-hook (-remove-item 'lexbind-mode emacs-lisp-mode-hook)))
 
   (use-package paredit
-    :ensure t
     :commands paredit-mode
     :diminish " Ⓟ"
     :bind
@@ -4676,8 +4593,6 @@ Configure our base Lisp mode
 #+name: 71B7F20D-D87B-441E-84C5-741F8AEA2C76
 #+begin_src emacs-lisp
 (use-package sly
-  :pin melpa
-  :ensure t
   :init
   (setq inferior-lisp-program "/usr/local/bin/ccl64"))
 #+end_src
@@ -4690,7 +4605,6 @@ Configure our base Lisp mode
 #+name: 5EE78B20-A6F9-4F7F-ADBB-A9DC40F7A162
 #+BEGIN_SRC emacs-lisp
   (use-package macrostep
-    :ensure t
     :general
     (pdc|with-leader :infix (:elisp)
      "m" 'macrostep-expand)
@@ -4706,8 +4620,7 @@ Configure our base Lisp mode
 :END:
 #+name: 7F5536F0-F930-44DC-A883-A22754082930
 #+BEGIN_SRC emacs-lisp
-(use-package eros :ensure t
-  :pin melpa
+(use-package eros
   :init
   (eros-mode 1))
 #+END_SRC
@@ -4725,7 +4638,6 @@ Most of this initial config is lifted from [[https://github.com/benswift/.dotfil
 #+name: 36778A07-3391-48BF-874E-8F65B93C9BEE
 #+begin_src emacs-lisp
 (use-package extempore-mode
-  :ensure t
   :commands extempore-create-template
   :mode
   ("\\.xtm$" . extempore-mode)
@@ -4865,8 +4777,8 @@ Most of this initial config is lifted from [[https://github.com/benswift/.dotfil
 
 #+name: B8DA01B3-FDA0-405B-A032-0DD61ADA82C5
 #+begin_src emacs-lisp
-(use-package emacsql :ensure t :pin melpa)
-(use-package emacsql-psql :ensure t :pin melpa
+(use-package emacsql)
+(use-package emacsql-psql
   :config
   (defvar pdc/db (emacsql-psql "pdcawley")
     "Our personal database"))
@@ -4882,7 +4794,6 @@ Another livecoding environment, built on haskell
 #+name: D13492AD-3929-4C7C-BF59-FF839DAB3A04
 #+begin_src emacs-lisp
 (use-package tidal
-  :ensure t
   :init
   (setq tidal-interpreter "~/.ghcup/bin/ghci"
         tidal-interpreter-arguments '(
@@ -4894,7 +4805,7 @@ Another livecoding environment, built on haskell
 
 
 
-                                      #+end_src
+#+end_src
 *** Haskell
 :PROPERTIES:
 :CUSTOM_ID: h-C016CBB8-EDCD-4817-B8BF-1F4FFC9C6ADE
@@ -4905,9 +4816,9 @@ Configure Haskell and intero
 
 #+name: D996CCBB-7EDA-4F53-B455-4D0AE5AA599C
 #+begin_src emacs-lisp
-(use-package haskell-mode :ensure t)
+(use-package haskell-mode)
 
-(use-package intero :ensure t
+(use-package intero
   :hook (haskell-mode . intero-mode))
 
 #+end_src
@@ -4919,7 +4830,6 @@ Configure Haskell and intero
 #+name: 132D01E6-C468-44B6-854D-E0D449A61306
 #+begin_src emacs-lisp
 (use-package ahk-mode
-  :ensure t
   :defer t
   :mode "\\.ahk\\'")
 #+end_src
@@ -5103,7 +5013,6 @@ I blog with Hugo, so try out easy-hugo mode. It's mostly annoying me at the mome
 #+name: FBBC8A7F-0677-4543-9E7B-8C6367BE90BC
 #+BEGIN_SRC emacs-lisp
   (use-package easy-hugo
-    :ensure t
     :commands easy-hugo
     :init
     (setq easy-hugo-basedir "~/Documents/singingtogether/")
@@ -5121,8 +5030,6 @@ So easy-hugo seems to have been a bust. Let's try ox-hugo
 #+name: A94ADE22-8288-4D86-A6C2-4F95B2D9F196
 #+BEGIN_SRC emacs-lisp
 (use-package ox-hugo
-  :ensure t
-  :pin melpa
   :after ox
   :config
   (defun pdc/wrap-table-in-shortcode (md)
@@ -5209,7 +5116,6 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+name: 925FC211-6CAE-41E9-A4D1-F8965B2E2893
 #+BEGIN_SRC emacs-lisp
       (use-package prodigy
-        :ensure t
         :commands (prodigy-define-service)
         :general
         (pdc|with-leader :infix (:apps)
@@ -5242,8 +5148,6 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 #+name: 6062AA77-DFA6-4C87-BA23-6DC67BF2FB70
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
-    :ensure t
-    :pin melpa
     :mode "\\.html?\\'"
     :mode "\\.vue?\\'"
     :init
@@ -5263,33 +5167,28 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 :END:
 #+name: 3FFA56F8-0A31-4D67-86EA-16E38ED490D8
 #+BEGIN_SRC emacs-lisp
-    (use-package ac-js2 :ensure t)
+    ;; (use-package ac-js2)
 
-    (use-package js2-mode
-      :ensure t
-      :mode "\\.js\\'"
-      :init
-      (add-hook 'js-mode-hook 'js2-minor-mode)
-      (add-hook 'js2-mode-hook 'ac-js2-mode))
+    ;; (use-package js2-mode
+    ;;   :mode "\\.js\\'"
+    ;;   :init
+    ;;   (add-hook 'js-mode-hook 'js2-minor-mode)
+    ;;   (add-hook 'js2-mode-hook 'ac-js2-mode))
 
-    (use-package js2-refactor
-      :ensure t
-      :config
-      (js2r-add-keybindings-with-prefix "C-, m")
-      (add-hook 'js2-mode-hook #'js2-refactor-mode))
+    ;; (use-package js2-refactor
+    ;;   :config
+    ;;   (js2r-add-keybindings-with-prefix "C-, m")
+    ;;   (add-hook 'js2-mode-hook #'js2-refactor-mode))
 
-    (use-package tern-auto-complete
-      :ensure t
-      )
+    ;; (use-package tern-auto-complete
+    ;;   )
 
-    (use-package tern
-      :ensure t
-      :diminish tern-mode
-      :config
-      (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-      (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-      (tern-ac-setup))
-
+    ;; (use-package tern
+    ;;   :diminish tern-mode
+    ;;   :config
+    ;;   (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+    ;;   (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+    ;;   (tern-ac-setup))
 #+END_SRC
 
 * Media viewers
@@ -5326,8 +5225,6 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   #+name: DFADB8C9-2E7B-42B9-B1BB-15C0A0AD2081
   #+begin_src emacs-lisp
 (use-package org-download
-  :pin melpa
-  :ensure t
   :defer nil
   :hook (dired-mode . org-download-enable)
   :general
@@ -5371,8 +5268,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   "a" 'org-agenda
   "b" 'org-switchb
   "c" '(org-capture :which-key "capture")
-  "l" 'org-store-link)
-s
+  "l" 'org-store-link
   "t"   'org-todo
   "v" '(:ignore t :which-key "babel")
 
@@ -5433,6 +5329,7 @@ s
   "p"   'org-set-property
   "P"   'org-set-property-and-value
 
+
   "C-r"   '(pdc|org-reload-compiled :which-key "Reload org-mode (after update)")
   "C-R"   '(pdc|org-reload-uncompiled :which-key "Reload org-mode uncompiled"))
 
@@ -5469,6 +5366,7 @@ s
     #+name: B8B793AF-19E4-42E9-A385-AD76A20094A3
     #+begin_src emacs-lisp :tangle no :noweb-ref org-src
       (use-package org-src
+        :straight (org-src :type built-in)
         :diminish " ⓞ"
         :init
         (setq org-src-window-setup 'current-window)
@@ -5482,8 +5380,17 @@ s
     #+end_src
 
 - Literate programming support :: Setup org-babel
-     #+name: 6AFF6F5C-16D9-4D2D-8593-72D2D555C74A
-     #+begin_src emacs-lisp :tangle no :noweb-ref lp-support
+  Load supporting Babel modules.
+  #+name: 98F592A4-2E6D-4A28-8907-F78E97F87D4B
+  #+begin_src elisp
+(use-package ob-restclient)
+(use-package ob-swift)
+  #+end_src
+
+  These are the language backends we want to enable.
+
+     ,#+name: 6AFF6F5C-16D9-4D2D-8593-72D2D555C74A
+     ,#+begin_src emacs-lisp :tangle no :noweb-ref lp-support
        (org-babel-do-load-languages
         'org-babel-load-languages
         '((emacs-lisp . t)
@@ -5508,6 +5415,7 @@ s
 #+name: 67A86EE9-4F0C-4248-9F85-27DB25AE1F6E
 #+begin_src emacs-lisp
 (use-package orgba
+  :straight (orgba :type built-in)
   :load-path "vendor/orgba")
 #+end_src
 
@@ -5517,6 +5425,7 @@ s
 #+BEGIN_SRC emacs-lisp :noweb yes
 ;;*
 (use-package org
+  :straight (org :type built-in)
   :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
   :diminish org-indent
   :hook 'turn-on-visual-line-mode
@@ -5624,8 +5533,7 @@ s
   (defun pdc/visit-org-directory ()
     "Open dired on `org-directory'."
     (interactive)
-    (dired org-directory))
-  :ensure t)
+    (dired org-directory)))
 
   (defun pdc/formatted-copy ()
     "Export region to HTML, and copy it to the clipboard."
@@ -5645,7 +5553,7 @@ s
 
   «org-loafery»
 
-  (use-package org-contacts)
+  (use-package org-contacts :straight (org-contacts :type built-in))
 
 #+END_SRC
 
@@ -5654,6 +5562,7 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+name: 21C09B8B-ADC3-4523-A8E7-4B72BE8ACAA8
 #+BEGIN_SRC emacs-lisp
   (use-package org-id
+    :straight (org-id :type built-in)
     :defer t
     :init
     (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
@@ -5727,11 +5636,10 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+name: 784EBB97-ED34-45D0-BFCC-65AFBF7A9FA7
 #+BEGIN_SRC emacs-lisp
   (after-loading 'org
-    (use-package ox-gfm
-      :ensure t))
+    (use-package ox-gfm))
 
 
-  (use-package autoinsert :ensure t)
+  (use-package autoinsert)
 #+END_SRC
 
 *** Org Latex
@@ -5743,6 +5651,7 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+name: D6276B84-5ACE-43AA-B43E-5248897632A1
 #+BEGIN_SRC emacs-lisp
   (use-package ox-latex
+    :straight (ox-latex :type built-in)
     :defer t
     :init
     (setq org-latex-compiler "xelatex"))
@@ -5757,7 +5666,6 @@ Setting 'good' (ie consistent) ids for org entries. This means that when we expo
 #+name: 56AED621-67F4-4C1B-9687-0C3423F6F64A
 #+BEGIN_SRC emacs-lisp
   (use-package org-journal
-    :ensure t
     :after org
     :commands (org-journal-new-entry org-journal-new-date-entry)
     :general
@@ -5809,7 +5717,6 @@ Spaced repetition is a great way of learning facts. So set it up.
 #+name: 41572616-6FAB-439A-9E2B-A9D91A9528F3
 #+BEGIN_SRC emacs-lisp
 (use-package pamparam
-  :ensure t
   :after org
   :init
   (setq pamparam-path (expand-file-name "sets/" org-directory)))
@@ -5825,7 +5732,6 @@ Spaced repetition is a great way of learning facts. So set it up.
 #+name: F03BA814-F450-41FA-9128-E33A5582AE0F
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :ensure t
     :after org
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -5840,10 +5746,10 @@ Spaced repetition is a great way of learning facts. So set it up.
 :END:
 #+name: 158EFB4D-F09A-481C-A3BB-477210685F59
 #+BEGIN_SRC emacs-lisp :tangle no
- ;; (use-package auto-complete-pcmp :ensure t)
+ ;; (use-package auto-complete-pcmp)
 
  ;;  (use-package org-ac
- ;;    :ensure t
+
  ;;    :demand t
  ;;    :commands (org-ac/setup-current-buffer)
  ;;    :hook (org-mode . #'org-ac/setup-current-buffer)
@@ -5860,6 +5766,7 @@ Spaced repetition is a great way of learning facts. So set it up.
 #+BEGIN_SRC emacs-lisp
 (use-package diary-lib)
 (use-package org-agenda
+  :straight (org-agenda :type built-in)
   :demand t
   :init
   (setq org-agenda-files `(,org-directory "~/Documents/journal")))
