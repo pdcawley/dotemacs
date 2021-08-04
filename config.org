@@ -2591,6 +2591,15 @@ ourselves from accidentally screwing such files up.
 (diminish 'abbrev-mode "")
 #+END_SRC
 
+** Completion
+:PROPERTIES:
+:CUSTOM_ID: h-20025B2A-8EAD-4CBA-B1A4-8459FC9F1C08
+:ID:       3EDD1292-5690-4A24-834B-30D6ED758FCA
+:END:
+#+name: D20C0880-398F-4C9D-85C9-B2B8C2BF57D2
+#+begin_src elisp
+(use-package company)
+#+end_src
 ** Multiple cursors
 :PROPERTIES:
 :CUSTOM_ID: h-9C6FC47B-93FE-4658-8476-768BB7EE1590
@@ -4174,6 +4183,17 @@ your sanity. Please, I beg of you don't. But do use them.
 :ID:       D55B0B53-882C-480D-A7E5-62CC1819F9C8
 :END:
 
+*** Lua
+:PROPERTIES:
+:CUSTOM_ID: h-2A654D21-9BB9-4D44-8013-0FA2A12EAA4C
+:ID:       053762D0-0639-4412-B4EE-A0C9050A50A9
+:END:
+
+#+name: F6673F26-376A-4165-BF9B-3567B468C80B
+#+begin_src elisp
+(use-package lua-mode)
+
+#+end_src
 *** LSP based stuff
 :PROPERTIES:
 :ID:       EDE62979-4FE7-4B80-8898-86B46CE6E5D7
@@ -4191,6 +4211,7 @@ your sanity. Please, I beg of you don't. But do use them.
          (html-mode . lsp)
          (web-mode . lsp)
          (js-mode . lsp)
+         (lua-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
