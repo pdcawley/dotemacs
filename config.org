@@ -5241,7 +5241,7 @@ I use prodigy to start and stop local Hugo servers running to preview our change
 
 Load org and set up bindings under our leader keys. Includes some utility commands under `init`
 
-- Org Download :: For grabbing images and such from anywhere.
+ - Org Download :: For grabbing images and such from anywhere.
 
   #+name: DFADB8C9-2E7B-42B9-B1BB-15C0A0AD2081
   #+begin_src emacs-lisp
@@ -5259,7 +5259,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   )
 #+end_src
 
-- Org D20 support :: For campaign logging
+ - Org D20 support :: For campaign logging
 
   hopefully logging stuff
 #+name: EB398D98-F7D3-4F8B-8364-70E70448B471
@@ -5278,7 +5278,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     "D" 'org-d20-d%))
 #+end_src
 
-- Org bindings :: Define our org mode bindings
+ - Org bindings :: Define our org mode bindings
   #+name: F9140500-E45B-4C4C-8261-EB14DCAB21E2
   #+begin_src emacs-lisp :noweb-ref org-bindings :tangle no
 (org-mode-map
@@ -5363,7 +5363,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   "o o" '(pdc/visit-org-directory :which-key "visit-org-directory"))
   #+end_src
 
-- Org helper functions :: Some helper functions
+ - Org helper functions :: Some helper functions
      #+name: 38599981-523D-459B-B4B8-24757B95964C
      #+begin_src emacs-lisp :noweb-ref org-helpers :tangle no
        (defun pdc|org-goto-select-task ()
@@ -5383,7 +5383,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
          (org-reload))
      #+end_src
 
-- Org Source :: setup org-src
+ - Org Source :: setup org-src
     #+name: B8B793AF-19E4-42E9-A385-AD76A20094A3
     #+begin_src emacs-lisp :tangle no :noweb-ref org-src
       (use-package org-src
@@ -5400,7 +5400,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
                      (expand-file-name "../doc" (org-find-library-dir "org"))))
     #+end_src
 
-- Literate programming support :: Setup org-babel
+ - Literate programming support :: Setup org-babel
   Load supporting Babel modules.
   #+name: 98F592A4-2E6D-4A28-8907-F78E97F87D4B
   #+begin_src elisp
@@ -5429,7 +5429,40 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 
      #+end_src
 
-- Orgba :: Experimenting 'Org better API'
+  - Org-Roam ::  Note taking stuff.
+
+    Experimenting with this. Folk seem to like it.
+
+    #+name: 5CD09393-9A83-46EF-A700-B43C289E7AC2
+    #+begin_src emacs-lisp
+(use-package org-roam
+  :custom
+  (org-roam-directory "~/Documents/RoamNotes")
+  :init
+  (setq org-roam-v2-ack t)
+  :general
+  (pdc|with-leader :infix "n"
+    "l" 'org-roam-buffer-toggle
+    "f" 'org-roam-node-find
+    "i" 'org-roam-node-insert
+    "r" 'org-roam-add-ref
+    "b" 'org-roam-buffer-toggle
+    "a" 'org-roam-alias-add
+    "t" 'org-roam-dailies-goto-today
+    "d" '(:ignore :which-key "Dailies")
+    "d +" 'org-roam-dailies-goto-tomorrow
+    "d -" 'org-roam-dailies-goto-yesterday
+    "d d" 'org-roam-dailies-goto-date
+    "d D" 'org-roam-dailies-directory)
+  (pdc|with-mode-leader :keymaps 'org-roam-mode
+    "F" 'org-roam-node-find
+    "g" 'org-roam-graph))
+
+
+
+    #+end_src
+
+ - Orgba :: Experimenting 'Org better API'
 
   Orgba claims to be a more consistent API for getting data from an org document. Got to be worth a play
 
@@ -5439,6 +5472,7 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   :straight (orgba :type built-in)
   :load-path "vendor/orgba")
 #+end_src
+
 
 
 
