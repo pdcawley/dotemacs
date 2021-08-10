@@ -5515,9 +5515,9 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+name: 84759F2C-B224-4A76-A9D3-7CE43BAFBF55
 #+BEGIN_SRC emacs-lisp :noweb yes
 ;;*
-(use-package org
-  :straight (org :type built-in)
-  :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
+(use-package org-plus-contrib
+  ;; :straight (org :type built-in)
+  ;; :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
   :diminish org-indent
   :hook 'turn-on-visual-line-mode
   :mode
