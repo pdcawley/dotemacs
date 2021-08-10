@@ -5478,24 +5478,22 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   (setq org-roam-v2-ack t)
   :general
   (pdc|with-leader :infix "n"
-    "l" 'org-roam-buffer-toggle
-    "f" 'org-roam-node-find
-    "i" 'org-roam-node-insert
-    "r" 'org-roam-add-ref
-    "b" 'org-roam-buffer-toggle
     "a" 'org-roam-alias-add
-    "t" 'org-roam-dailies-goto-today
-    "d" '(:ignore :which-key "Dailies")
+    "b" 'org-roam-buffer-toggle
+    "c" 'org-roam-capture
     "d +" 'org-roam-dailies-goto-tomorrow
     "d -" 'org-roam-dailies-goto-yesterday
+    "d D" 'org-roam-dailies-directory
     "d d" 'org-roam-dailies-goto-date
-    "d D" 'org-roam-dailies-directory)
+    "d" '(:ignore :which-key "Dailies")
+    "f" 'org-roam-node-find
+    "i" 'org-roam-node-insert
+    "l" 'org-roam-buffer-toggle
+    "r" 'org-roam-add-ref
+    "t" 'org-roam-dailies-goto-today)
   (pdc|with-mode-leader :keymaps 'org-roam-mode
     "F" 'org-roam-node-find
     "g" 'org-roam-graph))
-
-
-
     #+end_src
 
  - Orgba :: Experimenting 'Org better API'
