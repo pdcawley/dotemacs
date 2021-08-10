@@ -13,9 +13,6 @@
 [submodule "elisp/external/mode-compile"]
 	path = elisp/external/mode-compile
 	url = https://github.com/icathing/mode-compile.git
-[submodule "orgmode"]
-	path = vendor/org-mode
-	url = https://code.orgmode.org/bzg/org-mode.git
 [submodule "yasnippet-snippets"]
 	path = vendor/etc/yasnippet/snippets
 	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
