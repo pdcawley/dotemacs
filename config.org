@@ -1090,14 +1090,14 @@ Show text indentation guide lines.
 :CUSTOM_ID: h-22A89F6A-6C7A-45F6-8483-8FF2D9E523E5
 :ID:       CD71AA00-D994-47E5-B60A-AA77E5BE51DE
 :END:
-This is the 21st century already, why am I reading large blocks of text in a monospaced font still? Experiment with proportional fonts.
+This is the 21st century already, why am I reading large blocks of text in a monospaced font still? Experiment with proportional fonts. Ah yes. Because it doesn't quite work yet.
 
 #+name: EA9BB12C-8CF1-4BEF-B842-F48BDDC43392
 #+begin_src emacs-lisp
-(use-package mixed-pitch
-  :diminish mixed-pitch-mode
-  :hook
-  (org-mode . mixed-pitch-mode))
+;; (use-package mixed-pitch
+;;   :diminish mixed-pitch-mode
+;;   :hook
+;;   (org-mode . mixed-pitch-mode))
 #+end_src
 
 ** Spaceline
@@ -1144,7 +1144,7 @@ This is the 21st century already, why am I reading large blocks of text in a mon
         (setq spaceline-minor-modes-separator
               (if (display-graphic-p) "" " "))))
     (add-hook 'spaceline-pre-hook 'pdc//prepare-diminish)
-    (spaceline-toggle-hud-on)
+    ;; (spaceline-toggle-hud-on)
     (spaceline-toggle-line-column-off)
     (spaceline-emacs-theme))
 
@@ -1178,7 +1178,7 @@ Zenburn, it's the only way to be sure!
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
     :init
-    (setq zenburn-use-variable-pitch t
+    (setq zenburn-use-variable-pitch nil
           zenburn-scale-org-headlines t)
     (load-theme 'zenburn t))
 
