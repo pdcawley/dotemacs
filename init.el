@@ -35,6 +35,12 @@
       "https://github.com/raxod502/straight.el.git && "
       "git -C " straight-repo-dir " checkout 2d407bc")))
   (load bootstrap-file nil 'nomessage))
+
+(if (and (fboundp 'native-comp-available-p)
+         (native-comp-available-p))
+    (setq comp-deferred-compilation t))
+
+
 (straight-use-package 'general)
 (straight-use-package 'use-package)
 (use-package diminish)
