@@ -3,7 +3,7 @@
 # key: sc
 # expand-env: ((yas-indent-line 'fixed))
 # --
-#+name: ${1:`(pdc/org-id-new)`}
-#+begin_src ${2:$$(let ((langs (sort (-map (lambda (x) (symbol-name (car x))) (if (-contains? org-babel-load-languages '(js . t)) (-snoc org-babel-load-languages '(javascript . t)) org-babel-load-languages)) 'string<))) (yas-choose-value (if (-contains? langs "shell") (-snoc langs "sh") langs)))}${2:$(when (-contains? '("ditaa" "dot" "plantuml") yas-text) (concat " :file \\"./image/" (yas-field-value 1) ".png\\""))} $3
-$0
+#+name: `(pdc/org-id-new)`
+#+begin_src ${1:`(or (+yas/org-last-src-lang) "emacs-lisp")`}
+$>$0
 #+end_src

@@ -4045,6 +4045,42 @@ your sanity. Please, I beg of you don't. But do use them.
     (setq yas-prompt-functions '(yas-completing-prompt))
     ;; (setq yas-minor-mode-map (make-sparse-keymap))
     (yas-global-mode 1)
+
+    ;; Support functions
+
+    (defun +yas/org-src-lang ()
+      "Try to find the current language of the src/header at point.
+Return nil otherwise."
+      (save-excursion
+        (pcase
+            (downcase
+             (buffer-substring-no-properties
+              (goto-char (^line-beginning-position))
+              (or (ignore-errors (1- (search-forward " " (line-end-position))))
+                  (1+ (point)))))
+          ("#+property:"
+           (when (re-search-forward "header-args:")
+             (buffer-substring-no-properties
+              (point)
+              (or (and (forward-symbol 1) (point))
+                  (1+ (point))))))
+          ("#+begin_src"
+           (buffer-substring-no-properties
+            (point)
+            (or (and (forward-symbol 1) (point))
+                (1+ (point)))))
+          ("#+header:"
+           (search-forward "#+begin_src")
+           (+yas/org-src-lang))
+          (_ nil))))
+
+    (defun +yas/org-last-src-lang ()
+      (save-excursion
+        (beginning-of-line)
+        (when (search-backward "#+begin_src" nil t)
+          (+yas/org-src-lang))))
+
+
     :config
     (yas-reload-all)
     (general-define-key :keymaps 'yas-minor-mode-map
