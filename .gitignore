@@ -44,3 +44,4 @@ network-security.data
 straight/repos
 straight/build
 straight/build-cache.el
+roam.db
