@@ -2871,7 +2871,7 @@ with Projectile.
     (pdc/on-windows
      (setq projectile-indexing-method 'alien))
     (projectile-global-mode)
-    (setq projectile-completion-system 'ivy)
+    ;; (setq projectile-completion-system 'ivy)
     (setq magit-repository-directories
           (mapcar (lambda (dir)
                     (substring dir 0 -1))
@@ -2981,23 +2981,6 @@ Use history as a look up instead of a log.
 :ID:       7AF48788-9DAC-4A28-A23A-FB8439ABC7AD
 :CUSTOM_ID: h-FEDAC677-2057-4541-BECB-E9FC37B3024B
 :END:
-=Swiper= is a most excellent improvement on  the default incremental search.
-
-#+name: 4A0991DC-044F-4CCB-9EE0-9A4BD63C647D
-#+BEGIN_SRC emacs-lisp
-    (use-package swiper
-      :commands (swiper swiper-all)
-      :general
-      (pdc|with-leader :infix (:search)
-       "s" 'swiper
-       "S" 'swiper-all)
-      :config
-      (global-set-key [remap isearch-forward] 'swiper)
-      (global-set-key [remap isearch-forward-regexp] 'swiper)
-      (global-set-key [remap isearch-backward] 'swiper)
-      (global-set-key [remap isearch-backward-regexp] 'swiper))
-#+END_SRC
-
 Make searching automatically search for Unicode homoglyphs of the search characters.
 
 #+name: F4BDE137-1AB9-48C3-86A3-32BD7B72D892
@@ -3332,217 +3315,15 @@ For jumping to characters and words in the frame
      "w" 'avy-goto-word-1))
 #+END_SRC
 
-** Ivy
+** Vertico/Consult
 :PROPERTIES:
-:CUSTOM_ID: h-3B23B470-EE75-4617-920A-D38E3FA2BE29
-:ID:       001ED415-7104-44D2-B638-5250F4CFD8B6
+:CUSTOM_ID: h-70307FE6-CF97-41C0-AF97-DF211A328555
+:ID:       8BED1268-FCB8-40FF-AD66-96813C123C11
 :END:
-A better completing read. Similar to helm but rather less intrusive.
-
-We define a =pdc-find-file-other-window= function, but it seems the
-'proper' ivy based approach is to do =M-o j= once we've selected the
-correct file using counsel-find-file. Not sure how to suggest this in
-the method itself, short of erroring out and telling the user (me) to
-just use the ivy supplied method.
-#+name: 31C55E71-FAB8-4D4A-85DC-5C2782309629
-#+BEGIN_SRC emacs-lisp
-
-  (use-package ivy
-    :diminish " ❦"
-    :general
-    (pdc|with-leader
-      (:replace "l") 'ivy-resume
-      (:buffer "b") 'ivy-switch-buffer
-      (:project "v") 'projectile-vc
-      (:file "b") 'counsel-bookmark)
-    :init
-    (ivy-mode 1)
-    (bindings|add-toggle ivy-mode :toggle-keys "Ti")
-    (setq ivy-height 15)
-
-    :config
-    (after-loading 'recentf
-      (setq ivy-use-virtual-buffers t))
-    (setq ivy-count-format "%d/%d")
-
-    (defun pdc-find-file-other-window (&optional initial-input)
-      "Forward to `find-file-other-window'.
-  When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
-      (interactive)
-      (ivy-read "Find file: " 'read-file-name-internal
-                :matcher #'counsel--find-file-matcher
-                :initial-input initial-input
-                :action
-                (lambda (x)
-                  (with-ivy-window
-                    (find-file-other-window
-                     (expand-file-name x
-                                       ivy--directory))))
-                :preselect (when counsel-find-file-at-point
-                             (require 'ffap)
-                             (let ((f (ffap-guesser)))
-                               (when f (expand-file-name f))))
-                :require-match 'confirm-after-completion
-                :history 'file-name-history
-                :keymap counsel-find-file-map
-                :caller 'counsel-find-file))
-
-    (defun ivy-pdc-help//toggle-candidates ()
-      "Return the sorted cnadidates for toggle source."
-      (let (result)
-        (dolist (toggle bindings-toggles)
-          (let* ((toggle-symbol (symbol-name (car toggle)))
-                 (toggle-status (funcall (plist-get (cdr toggle) :predicate)))
-                 (toggle-name (capitalize (replace-regexp-in-string "-" " " toggle-symbol)))
-                 (toggle-doc (format "(%s) %s: %s"
-                                     (if toggle-status "+" "-")
-                                     toggle-name
-                                     (propertize
-                                      (or (plist-get (cdr toggle) :documentation) "")
-                                      'face 'font-lock-doc-face))))
-            (when (plist-member (cdr toggle) :toggle-keys)
-              (let* ((key (plist-get (cdr toggle) :toggle-keys))
-                     (key (key-description
-                           (kbd (if (listp key)
-                                    (apply 'bindings//leader key)
-                                  (concat leader-key " " key))))))
-                (setq toggle-doc
-                      (format "%s (%s)"
-                              toggle-doc
-                              (propertize key 'face 'font-lock-keyword-face)))))
-            (if (plist-member (cdr toggle) :documentation)
-                (push `(,toggle-doc . ,toggle-symbol) result)
-              (push `(,toggle-name . ,toggle-symbol) result))))
-        (setq result (cl-sort result 'string< :key 'car))
-        result))
-
-    (defun ivy-pdc-help//toggle (candidate)
-      "Toggle candidate."
-      (when-let* ((toggle (assq (intern (cdr candidate)) bindings-toggles)))
-        (funcall (plist-get (cdr toggle) :function))))
-
-    (defun ivy-pdc-help/toggles ()
-      (interactive)
-      (ivy-read "Toggles: "
-                (ivy-pdc-help//toggle-candidates)
-                :action 'ivy-pdc-help//toggle)))
-
-;; (use-package ivy-posframe
-;;
-;;   :config
-;;   (setq ivy-display-function #'ivy-posframe-display)
-;;   (ivy-posframe-enable))
-
-
-  (use-package ivy-hydra)
-
-
-#+END_SRC
-
-** Prescient
-:PROPERTIES:
-:CUSTOM_ID: h-90E27BAE-D282-4911-976A-6BD785697B29
-:ID:       37AA53D9-F6A1-43EE-81A4-EA4276FB61DC
-:END:
-
-#+name: FEE38DB8-2B3B-4BFC-9202-4D87125D844A
+#+name: 17F1B245-F670-4EE4-A6AF-2013950FAB37
 #+begin_src emacs-lisp
-(use-package prescient)
-(use-package ivy-prescient)
+
 #+end_src
-
-** Counsel
-:PROPERTIES:
-:CUSTOM_ID: h-CB8056EA-07A0-4DFD-A2F0-9327F7B4A0BC
-:ID:       A0A5B90E-967B-48B4-BB3F-E3E8E0E38C39
-:END:
-
-Wraps a bunch of common functions with the =ivy= completing read
-that's also used by swiper.
-#+name: 8F86A636-4B1F-4A81-8E69-356633461EFB
-#+BEGIN_SRC emacs-lisp
-  (defun pdc/counsel-projectile-ag-region-or-symbol ()
-    "Use `counsel-projectile-ag' to search for the selected region or
-  the symbol around point in the current project."
-    (interactive)
-    (let ((input (if (region-active-p)
-                     (buffer-substring-no-properties
-                      (region-beginning) (region-end))
-                   (thing-at-point 'symbol t))))
-      (counsel-projectile-ag nil input)))
-
-  (defun pdc/counsel-ag-region-or-symbol ()
-    "Use `counsel-ag' to search for the selected region or the symbol
-  around point in the current project."
-    (interactive)
-    (let ((input (if (region-active-p)
-                     (buffer-substring-no-properties
-                      (region-beginning) (region-end))
-                   (think-at-point 'symbol t))))
-      (counsel-ag nil input)))
-
-
-  (use-package  counsel
-    :commands (counsel-mode)
-    :diminish counsel-mode
-    :general
-    (pdc|with-leader
-      (:file "f")  '(counsel-find-file :which-key "find")
-      (:file "L")  'counsel-locate
-      (:file "r") 'counsel-recentf
-
-      "?" 'counsel-descbinds
-      "/" 'counsel-projectile-ag
-      "*" 'pdc/counsel-projectile-ag-region-or-symbol
-
-      (:git "S")       '(counsel-git-grep :which-key "git grep")
-      (:git "f")       '(counsel-git :which-key "find file in repo")
-      (:elisp "L")     '(counsel-load-library :which-key "load library")
-      (:org "g")       '(counsel-org-goto :which-key "goto")
-      (:org "G")       '(counsel-org-goto-all :which-key "goto-all")
-      (:insertion "u") 'counsel-unicode-char
-      (:jump "i")      'counsel-imenu
-
-      (:rings "y")     'counsel-yank-pop
-      (:themes "s")    'counsel-load-theme)
-
-
-    ;; (pdc|with-leader :infix :help
-    ;;   "df" 'counsel-describe-function
-    ;;   "dm" 'describe-mode
-    ;;   "dv" 'counsel-describe-variable)
-
-    (pdc|with-leader :infix :search
-      "f"  'counsel-ag
-      "F"  'pdc/counsel-ag-region-or-symbol
-      "p"  'counsel-projectile-ag
-      "P"  'pdc/counsel-projectile-ag-region-or-symbol
-      "gp" 'counsel-git-grep)
-
-    :init
-    (bindings|add-toggle counsel-mode :toggle-keys "Tc")
-    :config
-    (ivy-set-actions 'counsel-find-file
-                     '(("f" find-file-other-frame "other frame")
-                       ("w" find-file-other-window "other window")
-                       ("v" pdc/find-file-vsplit "in vertical split")
-                       ("s" pdc/find-file-split "in horizontal split")
-                       ("l" find-file-literally "literally")
-                       ("d" pdc/delete-file-confirm "delete file")
-                       ("r" pdc/rename-file "rename file")))
-
-    (--each '((apropos . counsel-apropos)
-              (org-goto . counsel-org-goto)
-              (set-variable . counsel-set-variable))
-      (when (fboundp (cdr it))
-        (define-key counsel-mode-map (vector 'remap (car it)) (cdr it))))
-    (counsel-mode t))
-
-(use-package counsel-dash)
-(use-package counsel-projectile)
-(use-package counsel-osx-app)
-
-#+END_SRC
 
 ** Bookmarks
 :PROPERTIES:
@@ -4055,7 +3836,7 @@ Return nil otherwise."
         (pcase
             (downcase
              (buffer-substring-no-properties
-              (goto-char (^line-beginning-position))
+              (goto-char (line-beginning-position))
               (or (ignore-errors (1- (search-forward " " (line-end-position))))
                   (1+ (point)))))
           ("#+property:"
@@ -5805,10 +5586,10 @@ Spaced repetition is a great way of learning facts. So set it up.
 
 #+name: 41572616-6FAB-439A-9E2B-A9D91A9528F3
 #+BEGIN_SRC emacs-lisp
-(use-package pamparam
-  :after org
-  :init
-  (setq pamparam-path (expand-file-name "sets/" org-directory)))
+;; (use-package pamparam
+;;   :after org
+;;   :init
+;;   (setq pamparam-path (expand-file-name "sets/" org-directory)))
 
 #+END_SRC
 
