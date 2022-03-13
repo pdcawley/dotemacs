@@ -368,8 +368,23 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (general-def
   "M-m" 'pdc-leader-map)
 
-(define-prefix-command 'pdc-windows-key-map)
+(general-def
+  :prefix "M-m |"
+  ""   '(nil :which-key "align")
+  ","  '+align-repeat-comma
+  ";"  '+align-repeat-semicolon
+  ":"  '+align-repeat-colon
+  "="  '+align-repeat-equal
+  "+"  '+align-repeat-math-oper
+  "*"  '+align-repeat-math-oper
+  "/"  '+align-repeat-math-oper
+  "-"  '+align-repeat-math-oper
+  "|"  '+align-repeat-bar
+  "("  '+align-repeat-left-paren
+  ")"  '+align-repeat-right-paren
+  "\\" '+align-repeat-backslash)
 
+(define-prefix-command 'pdc-windows-key-map)
 
 (general-def
  :keymaps 'pdc-windows-key-map
@@ -392,13 +407,15 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (setq org-roam-v2-ack t)
   :general
-  ("M-m n l" 'org-roam-buffer-toggle
-   "M-m n f" 'org-roam-node-find
-   "M-m n g" 'org-roam-graph
-   "M-m n i" 'org-roam-node-insert
-   "M-m n c" 'org-roam-capture
+  (:prefix "M-m n"
+   ""  '(nil :which-key "notes")
+   "l" 'org-roam-buffer-toggle
+   "f" 'org-roam-node-find
+   "g" 'org-roam-graph
+   "i" 'org-roam-node-insert
+   "c" 'org-roam-capture
 
-   "M-m n j" 'org-roam-dailies-capture-today))
+   "j" 'org-roam-dailies-capture-today))
 
 ;;; Magit
 (use-package magit
