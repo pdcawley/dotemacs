@@ -423,3 +423,5 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (:prefix "M-m g"
            "" '(nil :which-key "Git")
            "s" 'magit-status))
+
+(require 'pdcmacs-hugo-support)
