@@ -1,0 +1,13 @@
+* Song
+
+  Source: %^{Source}
+  Title: %^{Title}
+  Roud: %^{Roud Number}
+  Child: %^{Child Number}
+
+* Lyric
+
+* Summary
+
+  %?
+

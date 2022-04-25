@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: gr
-# key: gr
-# --
-  "${1:keys}" '(${2:command} :which-key "${3:$2$(replace-regexp-in-string "^.*|" "" yas-text)}"})

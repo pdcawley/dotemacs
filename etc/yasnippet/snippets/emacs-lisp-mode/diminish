@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: Diminish mode-line display of a minor mode
-# key: diminish
-# --
-(eval-after-load "${1:enumerate}"
-  '(diminish '$1))$0

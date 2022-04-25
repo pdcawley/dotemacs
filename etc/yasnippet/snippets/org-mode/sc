@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: sc
-# key: sc
-# expand-env: ((yas-indent-line 'fixed))
-# --
-#+name: `(pdc/org-id-new)`
-#+begin_src ${1:`(or (+yas/org-last-src-lang) "emacs-lisp")`}
-$>$0
-#+end_src
