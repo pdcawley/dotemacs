@@ -295,11 +295,13 @@ The overall load order is as follows:
     (pdc-intialize-modules)
     
 
-    (when (and (or (display-graphic-p)
-		   (daemonp))
-	       pdc-env-file)
-      (setq-default process-environment (get 'process-environment 'initial-value))
-      (pdc-load-envvars-file pdc-env-file 'noerror)))
+    (when (or (display-graphic-p) (daemonp))
+      (cond (pdc-env-file
+	     (setq-default process-environment (get 'process-environment 'initial-value))
+	     (pdc-load-envvars-file pdc-env-file 'noerror))
+	    (t
+	     (use-package exec-path-from-shell :init (exec-path-from-shell-initialize))))))
+  
   pdc-init-p)
 
 (provide 'core)

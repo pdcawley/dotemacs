@@ -1287,9 +1287,40 @@ at the first function to return non-nil.")
   :straight
   (:host github :repo "mickeynp/combobulate"))
 
-(use-package restclient)
+(use-package restclient
+  :straight (:type git :host github :repo "pashky/restclient.el"
+	     :fork (:host github :repo "pdcawley/restclient.el")))
 
-(use-package ob-restclient)
+
+(use-package ob-restclient
+  :straight (:type git :host github :repo "alf/ob-restclient.el"
+		   :fork (:host github :repo "pdcawley/ob-restclient.el")))
+
+(use-package yaml-mode)
+
+(use-package web-mode
+  :mode
+  (("\\.phtml\\'" . web-mode)
+   ("\\.tpl\\.php'" . web-mode)
+   ("\\.[agj]sp\\'" . web-mode)
+   ("\\.as[cp]x\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.djhtml\\'" . web-mode)
+   ("\\.html?\\'" . web-mode)
+   ("\\.s?css\\'" . web-mode)
+   ("\\.xml\\'" . web-mode))
+  :init
+  ;; Engines
+  (setq web-mode-engines-alist
+	'(("go" . "/layouts/.*\\.\\(html?\\|json\\|xml\\|jf2\\)\\'"))
+	web-mode-enable-engine-detection t)
+  ;; indentation
+  (setq-default web-mode-markup-indent-offset 2
+		web-mode-css-indent-offset 2
+		web-mode-code-indent-offset 2)
+  ;; I like autopairing, I think
+  (setq web-mode-enable-auto-pairing t))
 
 
 (custom-set-variables
@@ -1297,7 +1328,7 @@ at the first function to return non-nil.")
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(safe-local-variable-values '((git-commit-major-mode . git-commit-elisp-text-mode)));TODO:
+ '(safe-local-variable-values '((git-commit-major-mode . git-commit-elisp-text-mode))) ;TODO:
  
  '(warning-suppress-log-types '((comp) (comp)))
  '(warning-suppress-types '((comp) (comp) (comp) (comp) (comp) (comp))))
