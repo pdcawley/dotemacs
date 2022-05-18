@@ -3130,7 +3130,7 @@ Change browsing
 #+name: BF8E464A-72F0-4BB8-BD8F-0FD9E1D7528A
 #+begin_src emacs-lisp
 (use-package ghub)
-(use-package forge)
+;; (use-package forge)
 
 #+end_src
 
@@ -4238,6 +4238,8 @@ Return nil otherwise."
 #+name: D2495574-B1DA-4303-BB75-3A0E3B7E62C5
 #+begin_src emacs-lisp
 (use-package lsp-mode
+  :custom
+  ()
   :init
   (setq lsp-keymap-prefix "M-, l")
 
@@ -4836,6 +4838,7 @@ Most of this initial config is lifted from [[https://github.com/benswift/.dotfil
 #+begin_src emacs-lisp
 (use-package emacsql)
 (use-package emacsql-psql
+  :disabled
   :config
   (defvar pdc/db (emacsql-psql "pdcawley")
     "Our personal database"))
@@ -5371,14 +5374,14 @@ Load org and set up bindings under our leader keys. Includes some utility comman
   "h s" 'org-insert-subheading
 
   "C"   '(:ignore t :which-key "clock")
-  "C i" '(org-clock-in :which-key "in")
-  "C i" '(org-clock-in :which-key "in")
-  "C o" '(org-clock-out :which-key "out")
-  "C d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
+  ;;"C i" '(org-clock-in :which-key "in")
+  ;;"C i" '(org-clock-in :which-key "in")
+  ;;"C o" '(org-clock-out :which-key "out")
+  ;;"C d" '(org-clock-mark-default-task :which-key "clock-mark-default-task")
   "C ." '(org-time-stamp :which-key "time-stamp")
-  "C c" '(org-clock-cancel :which-key "cancel")
-  "C _" '(org-clock-select-task :which-key "select-task")
-  "C -" '(org-clock-goto :which-key "goto")
+  ;;"C c" '(org-clock-cancel :which-key "cancel")
+  ;;"C _" '(org-clock-select-task :which-key "select-task")
+  ;;"C -" '(org-clock-goto :which-key "goto")
   "C    '" '(pdc|org-goto-select-task :which-key "goto-select-task")
   "C g" '(pdc|org-refile-goto :which-key "refile-goto")
   "C l" '(pdc|org-refile-goto-last :which-key "goto-last-refile")
@@ -5474,6 +5477,21 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 (use-package org-roam
   :custom
   (org-roam-directory "~/Documents/RoamNotes")
+  (org-roam-completion-everywhere t)
+  (org-roam-capture-templates
+   `(("d" "default" plain
+      "%?" :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed f)
+     ("p" "project" plain
+      (file ,(expand-file-name "Templates/ProjectTemplate.org" org-roam-directory))
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: Project\n")
+      :unnarrowed f)
+     ("s" "song" plain
+      (file ,(expand-file-name "Templates/SongTemplate.org" org-roam-directory))
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Song\n")
+      :unnarrowed f)
+     )
+   )
   :init
   (setq org-roam-v2-ack t)
   :general
@@ -5485,15 +5503,53 @@ Load org and set up bindings under our leader keys. Includes some utility comman
     "d -" 'org-roam-dailies-goto-yesterday
     "d D" 'org-roam-dailies-directory
     "d d" 'org-roam-dailies-goto-date
+    "d n" 'org-roam-dailies-capture-today
     "d" '(:ignore :which-key "Dailies")
     "f" 'org-roam-node-find
     "i" 'org-roam-node-insert
+    "I" 'org-roam-node-insert-immediate
     "l" 'org-roam-buffer-toggle
     "r" 'org-roam-add-ref
     "t" 'org-roam-dailies-goto-today)
   (pdc|with-mode-leader :keymaps 'org-roam-mode
     "F" 'org-roam-node-find
-    "g" 'org-roam-graph))
+    "g" 'org-roam-graph)
+  :config
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (cons arg args))
+          (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                    '(:immediate-finish t)))))
+      (apply #'org-roam-node-insert args)))
+
+  (defun pdc/org-roam-filter-by-tag (tag-name)
+    (lambda (node)
+      (member (tag-name (org-roam-node-tags node)))))
+
+  (defun pdc/org-roam-list-notes-by-tag (tag-name)
+    (mapcar #'org-roam-node-file
+            (seq-filter
+             (pdc/org-roam-filter-by-tag tag-name)
+             (org-roam-node-list))))
+
+  (defun pdc/org-roam-refresh-agenda-list ()
+    (interactive)
+    (setq org-agenda-files (pdc/org-roam-list-notes-by-tag "Project")))
+
+  (defun pdc/org-roam-project-finalize-hook ()
+    "Adds the cpatured template to `org-agenda-files' if the capture was not aborted."
+    (remove-hook 'org-capture-after-finalize-hook #'pdc/org-roam-project-finalize-hook)
+
+    (unless org-note-abort
+      (with-current-buffer (org-capture-get :buffer)
+        (add-to-list 'org-agenda-files (buffer-file-name)))))
+
+  (defun pdc/org-roam-find-project ()
+    (interactive)
+    (add-hook 'org-capture-after-finalize-hook #'pdc/org-roam-project-finalize-hook)
+    )
+  )
+
     #+end_src
 
  - Orgba :: Experimenting 'Org better API'
@@ -5513,7 +5569,8 @@ Load org and set up bindings under our leader keys. Includes some utility comman
 #+name: 84759F2C-B224-4A76-A9D3-7CE43BAFBF55
 #+BEGIN_SRC emacs-lisp :noweb yes
 ;;*
-(use-package org-plus-contrib
+(use-package org-contrib)
+(use-package org
   ;; :straight (org :type built-in)
   ;; :load-path ("vendor/org-mode/lisp" "vendor/org-mode/contrib/lisp")
   :diminish org-indent
