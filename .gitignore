@@ -8,7 +8,6 @@
 /.emacs.desktop
 /.emacs.desktop.lock
 /.local
-/config.el*
 /el-get/
 /elisp/external/Emacs-PDE-0.2.16
 /elisp/external/cedet
