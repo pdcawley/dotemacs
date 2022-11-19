@@ -55,7 +55,40 @@
  ring-bell-function 'ignore)
 
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
-
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :custom
+  (dirvish-quick-access-entries
+   `(("h" "~/")
+     ("d" "~/Downloads/")
+     ("e" ,user-emacs-directory)))
+  :config
+  (setq insert-directory-program "gls"
+        dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group"
+        dirvish-attributes
+        `(,@(for-gui (list all-the-icons)) file-time file-size collapse subtree-state vc-state git-msg))
+  :general
+  ("C-c f" 'dirvish-fd)
+  (:keymaps 'dirvish-mode-map
+            "a"     'dirvish-quick-access
+            "f"     'dirvish-file-info-menu
+            "y"     'dirvish-yank-menu
+            "N"     'dirvish-narrow
+            "^"     'dirvish-history-last
+            "h"     'dirvish-history-jump
+            "s"     'dirvish-quicksort
+            "v"     'dirvish-vc-menu
+            "TAB"   'dirvish-subtree-toggle
+            "M-f"   'dirvish-history-go-forward
+            "M-b"   'dirvish-history-go-backward
+            "M-l"   'dirvish-ls-switches-menu
+            "M-, m" 'dirvish-mark-menu
+            "M-t"   'dirvish-layout-toggle
+            "M-s"   'dirvish-setup-menu
+            "M-e"   'dirvish-emerge-menu
+            "M-j"   'dirvish-fd-jump))
 
 ;; Revert dired and other buffers
 (customize-set-variable 'global-auto-revert-non-file-buffers t)
