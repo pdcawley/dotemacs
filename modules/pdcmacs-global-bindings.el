@@ -51,6 +51,16 @@
 (pdcmacs-leader-def
   "p" '(:keymap project-prefix-map :wk "projects"))
 
+;; Files
+(pdcmacs-leader-def
+  :infix "f"
+  :prefix-map 'pdc-files-map
+  "" '(:ignore t :which-key "files")
+  "f" 'find-file
+  "F" 'dirvish-fd
+  "s" 'save-buffer
+  "w" 'write-file)
+
 ;; Buffer stuff
 (defvar pdc-buffers-map
   (let ((map (make-sparse-keymap)))
