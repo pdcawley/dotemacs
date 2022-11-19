@@ -217,7 +217,8 @@ Do nothing if we're not in a string."
   :custom
   (vertico-cycle t)
   :config
-  (require 'vertico-directory "extensions/vertico-directory.el")  (vertico-mode 1))
+  ;; (require 'vertico-directory "extensions/vertico-directory.el")
+  (vertico-mode 1))
 
 (use-package marginalia
   :config
