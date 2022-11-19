@@ -84,7 +84,8 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-zenburn t))
+  ;; (load-theme 'doom-zenburn t)
+  )
 
 (when (file-exists-p pdcmacs-config-file)
   (load pdcmacs-config-file nil 'nomessage))
