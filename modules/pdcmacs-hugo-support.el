@@ -2,10 +2,19 @@
 ;;;
 ;;; pdcmacs-hugo-support.el -- Sets up our hugo support using ox-hugo
 
+(eval-when-compile
+  (require 'cl-macs))
+
 (use-package ox-hugo
   :after ox
   :config
-  (push '("b" "BOFH Post" entry (file "~/Sites/bofh.org.uk/org-content/all-posts.org")))
+
+  (defun +org-hugo-set-shortcode-props (code &rest props)
+    (setf (alist-get code org-hugo-special-block-type-properties)
+           props))
+
+  (+org-hugo-set-shortcode-props "newthought" :trim-pre nil :trim-post t)
+  (+org-hugo-set-shortcode-props "marginnote" :trim-pre t :trim-post t)
 
   (defun pdc/wrap-table-in-shortcode (md)
     (if (s-matches? "{{[%<] +table" md)
@@ -70,7 +79,7 @@
     (interactive)
     (pdc/wrap-in-shortcode "newthought"))
 
-(defun pdc/marginnote-dwim ()
+  (defun pdc/marginnote-dwim ()
     "Either convert footnote at point to a MN or start a new MN."
     (interactive)
     (cond ((or (org-footnote-at-definition-p)
@@ -92,8 +101,9 @@
       "--buildFuture"
       "--navigateToChanged"
       "--watch"
+      "--environment" "development"
       "--bind" "0.0.0.0"
-      "--baseURL" ,(system-name)))
+      "--baseURL" "studio-mini.local"))
   (defun pdc-define-hugo-site (name dir tags &rest args)
     (apply 'prodigy-define-service
            `(:name ,name
@@ -139,13 +149,38 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 
 (add-hook 'org-capture-prepare-finalize-hook #'+org-hugo--capture-prepare-finalize)
 
-(eval-after-load 'org-capture
-  (lambda ()
-    (require 'cl-lib)
-    (require 's)
-    (cl-pushnew '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
-                  "* TODO %?\n\n" :jump-to-captured t)
-                org-capture-templates
-                :test (lambda (a b) (s-equals? (car a) (car b))))))
+(with-eval-after-load 'org-capture
+  (require 'cl-lib)
+  (require 's)
+  (cl-pushnew '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
+                "* TODO %?\n\n" :jump-to-captured t)
+              org-capture-templates
+              :test (lambda (a b) (s-equals? (car a) (car b))))
+
+  (defun +org-hugo-new-note-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo note.
+See `org-capture-templates' for more information"
+    (let* ((title (read-from-minibuffer)))))
+
+  (add-to-list 'org-capture-templates
+               '("n" "Note" entry
+                 (file+olp+datetree "~/Sites/bofh.org.uk/org-content/all-posts.org" "Notes")
+                 "* %U %?\n:properties:\n:export_file_name: nnn.md\n:end:\n")))
+
+(use-package web-mode
+  :mode
+  "\\.\\(html?\\|json\\|s?css\\)\\'"
+  :init
+  (setq web-mode-engines-alist
+        '(("go" . "/layouts/.*\\.\\(thml?\\|json\\|xml\\|jfw\\)\\'")))
+
+  (setq-default web-mode-markup-indent-offset 2
+                web-mode-css-indent-offset 2
+                web-mode-code-indent-offset 2))
+
+(use-package toml-mode
+  :mode
+  "\\.toml\\'")
+
 
 (provide 'pdcmacs-hugo-support)

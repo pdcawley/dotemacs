@@ -383,6 +383,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
                          (justify nil t)))
                   nil))
 
+(require 'pdcmacs-global-bindings)
 
 (pdc|create-align-repeat-x "comma"     "," nil t)
 (pdc|create-align-repeat-x "semicolon" ";" nil t)
@@ -394,11 +395,8 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (pdc|create-align-repeat-x "left-paren" "(")
 (pdc|create-align-repeat-x "right-paren" ")" t)
 (pdc|create-align-repeat-x "backslash" "\\\\")
+(pdc|create-align-repeat-x "quote" "['`]'")
 
-
-(define-prefix-command 'pdc-leader-map)
-(general-def
-  "M-m" 'pdc-leader-map)
 
 (general-def
   :prefix "M-m |"
@@ -414,20 +412,9 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   "|"  '+align-repeat-bar
   "("  '+align-repeat-left-paren
   ")"  '+align-repeat-right-paren
-  "\\" '+align-repeat-backslash)
-
-(define-prefix-command 'pdc-windows-key-map)
-
-(general-def
- :keymaps 'pdc-windows-key-map
- "u" 'winner-undo
- "n" 'windmove-down
- "p" 'windmove-up
- "b" 'windmove-left
- "f" 'windmove-right)
-
-(general-def
-  "M-m w" 'pdc-windows-key-map)
+  "\\" '+align-repeat-backslash
+  "'"  '+align-repeat-quote
+  "`"  '+align-repeat-quote)
 
 ;;; Org-mode and friends
 
