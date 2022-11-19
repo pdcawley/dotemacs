@@ -1,5 +1,3 @@
-;; config.el --- -*- lexical-binding: t; -*-
-
 (eval-when-compile
   (require 'general)
   (require 'use-package))
