@@ -13,7 +13,7 @@
 ;;; TODO: make the treebuilder state something that's passed around --
 ;;; I want to be able to clean up after an aborted capture, for instance.
 (let ((current-level))
-  (defun +org-pathbuilder-find-create-path (keep-restriction pathspec)
+(defun +org-pathbuilder-find-create-path (keep-restriction pathspec)
     "Find or create a place in FILE at the PATHSPEC given."
     (when pathspec
       (save-restriction
@@ -33,7 +33,7 @@
             (+org-pathbuilder--find-create target insertion)
             (+org-pathbuilder-find-create-path 'subtree-at-point remainder))))))
 
-  (defun +org-pathbuilder-insert-line (insert)
+(defun +org-pathbuilder-insert-line (insert)
     (delete-region
      (save-excursion (skip-chars-backward " \t\n") (point))
      (point))
@@ -106,16 +106,33 @@
   "Find or create today in this week's week note."
 
   ;; This leaves point at the start of the last heading it created.
-  (+org-pathbuilder-find-create-path nil (-concat olp (pdc:weeknote-path)))
+  (+org-pathbuilder-find-create-path
+   nil (-concat olp (pdc:weeknote-path
+                     (calendar-gregorian-from-absolute
+                      (cond (org-overriding-default-time
+                             (time-to-days org-overriding-default-time))
+                            ((or (org-capture-get :time-prompt)
+                                 (equal current-prefix-arg 1))
+                             (let* ((org-time-was-given nil)
+                                    (org-end-time-was-given nil)
+                                    (prompt-time (org-read-date
+                                                  nil t nil "Date for daynote entry:")))
+                               (org-capture-put
+                                :default-time
+                                (if (or org-time-was-given
+                                        (= (time-to-days prompt-time) (org-today)))
+                                    prompt-time
+
+                                  (org-encode-time
+                                   (apply #'list
+                                          0 0 org-extend-today-until
+                                          (cl-cdddr (decode-time prompt-time))))))
+                               (time-to-days prompt-time)))
+                            (t (time-to-days (org-current-effective-time))))))))
   ;; Skip to the end of the subtree
   (save-restriction
     (org-narrow-to-subtree)
-    (goto-char (point-max)))
-  ;; Clean up any trailing whitespace and insert some of our own.
-  (delete-region
-   (save-excursion (skip-chars-backward " \t\n") (point))
-   (point))
-  (insert "\n\n"))
+    (goto-char (point-max))))
 
 (use-package ox-hugo
   :after ox
@@ -201,6 +218,7 @@
 
 ;;; Use prodigy to manage hugo server processes
 
+
 (use-package prodigy
   :commands (prodigy-define-service)
   :general
@@ -219,12 +237,12 @@
   (defun pdc-define-hugo-site (name dir tags &rest args)
     (apply 'prodigy-define-service
            `(:name ,name
-             :command ,pdc-hugo-command
-             :args ,(append pdc-hugo-server-args args)
-             :tags (hugo ,@(-list tags))
-             :cwd ,dir
-             :stop-signal sigkill
-             :kill-process-buffer-on-stop t)))
+                   :command ,pdc-hugo-command
+                   :args ,(append pdc-hugo-server-args args)
+                   :tags (hugo ,@(-list tags))
+                   :cwd ,dir
+                   :stop-signal sigkill
+                   :kill-process-buffer-on-stop t)))
 
   (pdc-define-hugo-site "bofh" "~/Sites/bofh.org.uk/" '(blog bofh))
   (pdc-define-hugo-site "st-serve" "~/Sites/singingtogether.co.uk/" '(singing-together st))
@@ -265,10 +283,11 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (with-eval-after-load 'org-capture
   (require 'cl-lib)
   (require 's)
-  (cl-pushnew '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
-                "* TODO %?\n\n" :jump-to-captured t)
-              org-capture-templates
-              :test (lambda (a b) (s-equals? (car a) (car b))))
+  (add-to-list
+   'org-capture-templates
+   '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
+     "* TODO %?\n\n#+hugo: more\n\n" :jump-to-captured t)
+   t #'(lambda (a b) (s-equals? (car a) (car b))))
 
   (defun +org-hugo-new-note-post-capture-template ()
     "Returns `org-capture' template string for new Hugo note.
@@ -282,11 +301,11 @@ See `org-capture-templates' for more information"
 
   (add-to-list
    'org-capture-templates
-   `("w" "Week Note" entry
+   `("w" "Week Note" plain
      (file+function "~/Sites/bofh.org.uk/org-content/all-posts.org" ,#'(lambda () (+org-hugo-find-weeknote-entry "Week Notes")))
-     "* %u %?\n\n"
-     :tree-type week ))
-  )
+     "%?"
+     :empty-lines 1
+     :jump-to-captured 1)))
 
 (use-package web-mode
   :mode
