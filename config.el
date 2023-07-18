@@ -459,9 +459,14 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :after org-mode)
 (use-package yasnippets)
 
-(use-package visual-fill-column
-  :init
-  (global-visual-fill-column-mode nil))
+;; Need some thought about visual line modes
+(use-package emacs
+  :hook
+  (((text-mode org-mode) . visual-line-mode)
+   (prog-mode . toggle-word-wrap))
+  :custom
+  (truncate-lines nil))
+
 
 (for-terminal
   (xterm-mouse-mode 1))
