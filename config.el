@@ -411,10 +411,10 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   ;;(corfu-scroll-margin 4)
 
   (corfu-quit-at-boundary 'separator)
+  (corfu-preselect 'valid)
   ;; (corfu-separator ?\s)            ; Use space
   ;; (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
   (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
-  (corfu-preselect-first t)        ; Preselect first candidate?
 
   ;; Other
   ;; (corfu-echo-documentation 0.2)        ; Already use corfu-doc
@@ -422,12 +422,9 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
             "RET"   'corfu-insert
-            "TAB"   'corfu-next
-            [tab]     'corfu-next
-            "S-TAB" 'corfu-previous
-            [backtab] 'corfu-previous
             "S-<return>" 'corfu-insert)
   :init
+  ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
   (global-corfu-mode)
   :config
 
