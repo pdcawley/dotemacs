@@ -100,7 +100,7 @@
   (setq-default
    display-line-numbers-grow-only t
    display-line-numbers-type t
-   display-line-numbers-width 2))
+   display-line-numbers-width nil))
 
 ;; Custom file stuff
 
