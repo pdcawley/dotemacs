@@ -422,9 +422,16 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
             "RET"   'corfu-insert
-            "S-<return>" 'corfu-insert)
+            "S-<return>" 'corfu-insert
+            "M-m" '+corfu-move-to-minibuffer)
   :init
   ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
+
+  (defun +corfu-move-to-minibuffer ()
+    (interactive)
+    (let (completion-cycle-threshold completion-cycling)
+      (apply #'consult-completion-in-region completion-in-region--data)))
+
   (global-corfu-mode)
   :config
 
