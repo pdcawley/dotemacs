@@ -3,6 +3,9 @@
 ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
 
 (use-package org
+  :hook
+  (
+   )
   :general
   (pdcmacs-leader-def
     :infix "o"
@@ -34,8 +37,7 @@
   :straight
   (:type git :host github :repo "minad/org-modern")
   :hook
-  ((org-mode . org-modern-mode)
-   (org-agenda-finalize . org-modern-agenda))
+  (org-modern-mode . org-indent-mode)
   :init
   (setq org-auto-align-tags nil
         org-tags-column 0
@@ -53,7 +55,8 @@
           (800 1000 1200 1400 1600 1800 2000)
           " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string
-        "←⭠ now ───────────────────────────────────────────────"))
+        "←⭠ now ───────────────────────────────────────────────")
+  (global-org-modern-mode t))
 
 
 
