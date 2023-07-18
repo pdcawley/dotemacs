@@ -414,14 +414,14 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   ;; (corfu-separator ?\s)            ; Use space
   ;; (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
   (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
-  (corfu-preselect-first nil)        ; Preselect first candidate?
+  (corfu-preselect-first t)        ; Preselect first candidate?
 
   ;; Other
-  (corfu-echo-documentation 0.2)        ; Already use corfu-doc
+  ;; (corfu-echo-documentation 0.2)        ; Already use corfu-doc
   :general
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
-            "RET"   nil
+            "RET"   'corfu-insert
             "TAB"   'corfu-next
             [tab]     'corfu-next
             "S-TAB" 'corfu-previous
@@ -430,6 +430,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (global-corfu-mode)
   :config
+
   (add-hook 'eshell-history-mode
             (lambda () (setq-local corfu-quit-at-boundary t
                                    corfu-quit-no-match t
@@ -439,12 +440,16 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (use-package corfu-terminal
   :if
   (not window-system)
+  ;; :custom
+  ;; (tab-always-indent 'complete)
+  ;; (completion-cycle-threshold nil)
   :init
   (corfu-terminal-mode t))
 
+
 (use-package yaml-mode
-  :mode "\\.ya?ml\\'"
-  )
+  :mode "\\.ya?ml\\'")
+
 (use-package yaml)
 (use-package flycheck-yamllint)
 
@@ -459,7 +464,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package visual-fill-column
   :init
-  (global-visual-fill-column-mode 1))
+  (global-visual-fill-column-mode nil))
 
 (for-terminal
   (xterm-mouse-mode 1))
