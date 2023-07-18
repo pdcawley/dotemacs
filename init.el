@@ -49,6 +49,9 @@
 (require 'use-package)
 (use-package diminish)
 
+;; Get org on the table early
+(straight-use-package 'org)
+
 (setq auto-save-file-name-transforms
       `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(expand-file-name "auto-save/\\2" pdcmacs-var-directory) t)
         (".*" ,(expand-file-name "auto-save/" pdcmacs-var-directory) t)))
@@ -84,11 +87,11 @@
 
 (use-package doom-themes
   :config
-  ;; (load-theme 'doom-zenburn t)
+  (load-theme 'doom-zenburn t)
   )
 
 (when (file-exists-p pdcmacs-config-file)
-  (load pdcmacs-config-file nil 'nomessage))
+  (load pdcmacs-config-file))
 
 (use-package display-line-numbers
   :hook
@@ -101,6 +104,7 @@
 
 ;; Custom file stuff
 
-(load custom-file 'noerror 'nomessage)
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 (setq gc-cons-threshold (* 2 1000 1000))

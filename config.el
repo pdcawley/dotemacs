@@ -18,12 +18,10 @@
 
 (setq warning-suppress-types '((comp)))
 
-
-
 ;;
 ;; More or less sensible defaults
 
-(global-eldoc-mode 1)
+;; (global-eldoc-mode 1)
 (electric-pair-mode 1)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (delete-selection-mode)
@@ -55,40 +53,6 @@
  ring-bell-function 'ignore)
 
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
-(use-package dirvish
-  :init
-  (dirvish-override-dired-mode)
-  :custom
-  (dirvish-quick-access-entries
-   `(("h" "~/")
-     ("d" "~/Downloads/")
-     ("e" ,user-emacs-directory)))
-  :config
-  (setq insert-directory-program "gls"
-        dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group"
-        dirvish-attributes
-        `(,@(for-gui (list all-the-icons)) file-time file-size collapse subtree-state vc-state git-msg))
-  :general
-  ("C-c f" 'dirvish-fd)
-  (:keymaps 'dirvish-mode-map
-            "a"     'dirvish-quick-access
-            "f"     'dirvish-file-info-menu
-            "y"     'dirvish-yank-menu
-            "N"     'dirvish-narrow
-            "^"     'dirvish-history-last
-            "h"     'dirvish-history-jump
-            "s"     'dirvish-quicksort
-            "v"     'dirvish-vc-menu
-            "TAB"   'dirvish-subtree-toggle
-            "M-f"   'dirvish-history-go-forward
-            "M-b"   'dirvish-history-go-backward
-            "M-l"   'dirvish-ls-switches-menu
-            "M-, m" 'dirvish-mark-menu
-            "M-t"   'dirvish-layout-toggle
-            "M-s"   'dirvish-setup-menu
-            "M-e"   'dirvish-emerge-menu
-            "M-j"   'dirvish-fd-jump))
 
 ;; Revert dired and other buffers
 (customize-set-variable 'global-auto-revert-non-file-buffers t)
@@ -98,11 +62,14 @@
 (global-auto-revert-mode 1)
 
 ;; Spaces, not tabs.
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil
+              completions-detailed t
+              read-minibuffer-restore-windows nil
+              mode-line-compact 'long)
+
 
 ;; #'yes-or-no-p can die in a fire
-(fset 'yes-or-no-p 'y-or-n-p)
-
+(setq-default use-short-answers t)
 ;; Turn on recentf mode
 (add-hook 'after-init-hook #'recentf-mode)
 (setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
@@ -222,7 +189,7 @@ Do nothing if we're not in a string."
 
 (use-package marginalia
   :config
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  (setq marginalia-annotators '(marginalia-annotators-light nil))
   (marginalia-mode 1))
 
 (use-package consult
@@ -247,17 +214,22 @@ Do nothing if we're not in a string."
   :config
   (setq prefix-help-command #'embark-prefix-help-command))
 
+(use-package embark-consult)
+(use-package consult-dir)
+(use-package ace-window)
+(use-package 0x0)
+
 ;;; Appearance
 
 (use-package all-the-icons)
-(use-package doom-modeline
-  :custom
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 6)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-buffer-file-name-style 'truncate-except-project)
-  :init
-  (add-hook 'after-init-hook 'doom-modeline-init))
+;; (use-package doom-modeline
+;;   :custom
+;;   (doom-modeline-height 15)
+;;   (doom-modeline-bar-width 6)
+;;   (doom-modeline-minor-modes t)
+;;   (doom-modeline-buffer-file-name-style 'truncate-except-project)
+;;   :init
+;;   (add-hook 'after-init-hook 'doom-modeline-init))
 
 ;; utility libraries
 (use-package dash)
@@ -274,59 +246,55 @@ Do nothing if we're not in a string."
   (require 'ht))
 
 ;; Speedup with auto-compile
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode)
-  (setq auto-compile-display-buffer nil
-        auto-compile-mode-line-counter t))
+;; (use-package auto-compile
+;;   :config
+;;   (auto-compile-on-load-mode)
+;;   (auto-compile-on-save-mode)
+;;   (setq auto-compile-display-buffer nil
+;;         auto-compile-mode-line-counter t))
 
 ;; Make `describe-*' screens more helpful
 
-(use-package helpful
-  :general
-  (:keymaps 'helpful-mode-map
-            [remap revert-buffer] #'helpful-update)
-  ([remap describe-command] #'helpful-command
-   [remap describe-function] #'helpful-callable
-   [remap describe-key] #'helpful-key
-   [remap describe-symbol] #'helpful-symbol
-   [remap describe-variable] #'helpful-variable
-   "C-h C" #'helpful-command
-   "C-h F" #'helpful-function
-   "C-h K" #'describe-keymap)
-  :config
+;; (use-package helpful
+;;   :general
+;;   (:keymaps 'helpful-mode-map
+;;             [remap revert-buffer] #'helpful-update)
+;;   ([remap describe-command] #'helpful-command
+;;    [remap describe-function] #'helpful-callable
+;;    [remap describe-key] #'helpful-key
+;;    [remap describe-symbol] #'helpful-symbol
+;;    [remap describe-variable] #'helpful-variable
+;;    "C-h C" #'helpful-command
+;;    "C-h F" #'helpful-function
+;;    "C-h K" #'describe-keymap)
+;;   :config
 
-  ;; Temporary fix until this all works for Emacs 29 again
-  (defvar read-symbol-positions-list nil)
-  (defun helpful--autoloaded-p (sym buf)
-    (-when-let (file-name (buffer-file-name buf))
-      (setq file-name (s-chop-suffix "*.gz" file-name))
-      (help-fns--autoloaded-p sym)))
+;;   ;; Temporary fix until this all works for Emacs 29 again
+;;   (defvar read-symbol-positions-list nil)
+;;   (defun helpful--autoloaded-p (sym buf)
+;;     (-when-let (file-name (buffer-file-name buf))
+;;       (setq file-name (s-chop-suffix "*.gz" file-name))
+;;       (help-fns--autoloaded-p sym)))
 
 
-  (defun helpful--skip-advice (docstring)
-    "Remove mentions of advice from DOCSTRING."
-    (let* ((lines (s-lines docstring))
-           (relevant-lines
-            (--take-while
-             (not (or (s-starts-with-p ":around advice:" it)
-                      (s-starts-with-p "This function has :around advice:" it)))
-             lines)))
-      (s-trim (s-join "\n" relevant-lines)))))
+;;   (defun helpful--skip-advice (docstring)
+;;     "Remove mentions of advice from DOCSTRING."
+;;     (let* ((lines (s-lines docstring))
+;;            (relevant-lines
+;;             (--take-while
+;;              (not (or (s-starts-with-p ":around advice:" it)
+;;                       (s-starts-with-p "This function has :around advice:" it)))
+;;              lines)))
+;;       (s-trim (s-join "\n" relevant-lines)))))
 
-(use-package elisp-demos
-  :config
-  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+;; ;; add visual pulse when changing focus, like beacon but built-in
+;; (defun pulse-line (&rest _)
+;;   "Pulse the current line"
+;;   (pulse-momentary-highlight-one-line (point)))
 
-;; add visual pulse when changing focus, like beacon but built-in
-(defun pulse-line (&rest _)
-  "Pulse the current line"
-  (pulse-momentary-highlight-one-line (point)))
-
-(dolist (command '(scroll-up-command scroll-down-command
-                                     recenter-top-bottom other-window))
-  (advice-add command :after #'pulse-line))
+;; (dolist (command '(scroll-up-command scroll-down-command
+;;                                      recenter-top-bottom other-window))
+;;   (advice-add command :after #'pulse-line))
 
 ;;;
 ;;; Windows stuff
@@ -416,25 +384,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   "'"  '+align-repeat-quote
   "`"  '+align-repeat-quote)
 
-;;; Org-mode and friends
-
-(use-package org)
-(use-package org-contrib)
-(use-package org-roam
-  :custom
-  (org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
-  :init
-  (setq org-roam-v2-ack t)
-  :general
-  (:prefix "M-m n"
-   ""  '(nil :which-key "notes")
-   "l" 'org-roam-buffer-toggle
-   "f" 'org-roam-node-find
-   "g" 'org-roam-graph
-   "i" 'org-roam-node-insert
-   "c" 'org-roam-capture
-
-   "j" 'org-roam-dailies-capture-today))
 
 ;;; Magit
 (use-package magit
@@ -443,4 +392,83 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
            "" '(nil :which-key "Git")
            "s" 'magit-status))
 
+
+(use-package corfu
+  :custom
+  ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
+  ;; want to perform completion
+  (tab-always-indent 'complete)
+  (completion-cycle-threshold nil)      ; Always show candidates in menu
+
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.0)
+
+  ;;(corfu-min-width 80)
+  ;;(corfu-max-width corfu-min-width)     ; Always have the same width
+  ;;(corfu-count 14)
+  ;;(corfu-scroll-margin 4)
+
+  (corfu-quit-at-boundary 'separator)
+  ;; (corfu-separator ?\s)            ; Use space
+  ;; (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
+  (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
+  (corfu-preselect-first nil)        ; Preselect first candidate?
+
+  ;; Other
+  (corfu-echo-documentation 0.2)        ; Already use corfu-doc
+  :general
+  (:keymaps 'corfu-map
+            "M-SPC" 'corfu-insert-separator
+            "RET"   nil
+            "TAB"   'corfu-next
+            [tab]     'corfu-next
+            "S-TAB" 'corfu-previous
+            [backtab] 'corfu-previous
+            "S-<return>" 'corfu-insert)
+  :init
+  (global-corfu-mode)
+  :config
+  (add-hook 'eshell-history-mode
+            (lambda () (setq-local corfu-quit-at-boundary t
+                                   corfu-quit-no-match t
+                                   corfu-auto nil)
+              (corfu-mode t))))
+
+(use-package corfu-terminal
+  :if
+  (not window-system)
+  :init
+  (corfu-terminal-mode t))
+
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'"
+  )
+(use-package yaml)
+(use-package flycheck-yamllint)
+
+(use-package clipetty
+  :hook (after-init . global-clipetty-mode))
+
+(use-package yasnippet)
+(use-package consult-yasnippet)
+(use-package yasnippets-orgmode
+  :after org-mode)
+(use-package yasnippets)
+
+(use-package visual-fill-column
+  :init
+  (global-visual-fill-column-mode 1))
+
+(for-terminal
+  (xterm-mouse-mode 1))
+
+(use-package powerline
+  :init
+  (powerline-default-theme))
+
+(require 'pdcmacs-org)
+
 (require 'pdcmacs-hugo-support)
+(require 'pdcmacs-webservice)
