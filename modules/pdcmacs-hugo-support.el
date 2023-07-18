@@ -322,5 +322,4 @@ See `org-capture-templates' for more information"
   :mode
   "\\.toml\\'")
 
-
 (provide 'pdcmacs-hugo-support)
