@@ -405,25 +405,20 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.0)
 
-  ;;(corfu-min-width 80)
-  ;;(corfu-max-width corfu-min-width)     ; Always have the same width
-  ;;(corfu-count 14)
-  ;;(corfu-scroll-margin 4)
+  (corfu-quit-at-boundary nil)
 
-  (corfu-quit-at-boundary 'separator)
-  (corfu-preselect 'valid)
-  ;; (corfu-separator ?\s)            ; Use space
-  ;; (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
-  (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
+  :hook
+  (eshell-history-mode . +eshell-history-mode-setup-completion)
+  (lsp-completion-mode . +lsp-mode-setup-completion)
 
-  ;; Other
-  ;; (corfu-echo-documentation 0.2)        ; Already use corfu-doc
   :general
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
+            "SPC"   'corfu-insert-separator
             "RET"   'corfu-insert
             "S-<return>" 'corfu-insert
             "M-m" '+corfu-move-to-minibuffer)
+
   :init
   ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
 
@@ -432,24 +427,23 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
     (let (completion-cycle-threshold completion-cycling)
       (apply #'consult-completion-in-region completion-in-region--data)))
 
-  (global-corfu-mode)
-  :config
+  (defun +lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
 
-  (add-hook 'eshell-history-mode
-            (lambda () (setq-local corfu-quit-at-boundary t
-                                   corfu-quit-no-match t
-                                   corfu-auto nil)
-              (corfu-mode t))))
+  (defun +eshell-history-mode-setup-completion ()
+    (setq-local corfu-quit-at-boundary t
+                corfu-quit-no-match t
+                corfu-auto nil)
+    (corfu-mode t))
+
+  (global-corfu-mode))
 
 (use-package corfu-terminal
   :if
   (not window-system)
-  ;; :custom
-  ;; (tab-always-indent 'complete)
-  ;; (completion-cycle-threshold nil)
   :init
   (corfu-terminal-mode t))
-
 
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
