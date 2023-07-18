@@ -5,7 +5,7 @@
 (eval-when-compile
   (require 'cl-macs))
 
-;;; I really dislike the habit of `defvar'ing private variables, so
+;;; I really dislike the practice of `defvar'ing private variables, so
 ;;; we introduce a let form in which define
 ;;; `+org-pathbuilder-find-create-path' and `+org-pathbuilder-insert-line'
 ;;; to allow them to share a private `current-level' variable.
@@ -13,7 +13,7 @@
 ;;; TODO: make the treebuilder state something that's passed around --
 ;;; I want to be able to clean up after an aborted capture, for instance.
 (let ((current-level))
-(defun +org-pathbuilder-find-create-path (keep-restriction pathspec)
+  (defun +org-pathbuilder-find-create-path (keep-restriction pathspec)
     "Find or create a place in FILE at the PATHSPEC given."
     (when pathspec
       (save-restriction
@@ -33,7 +33,7 @@
             (+org-pathbuilder--find-create target insertion)
             (+org-pathbuilder-find-create-path 'subtree-at-point remainder))))))
 
-(defun +org-pathbuilder-insert-line (insert)
+  (defun +org-pathbuilder-insert-line (insert)
     (delete-region
      (save-excursion (skip-chars-backward " \t\n") (point))
      (point))
