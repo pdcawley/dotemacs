@@ -133,12 +133,13 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (defun pdcmacs-hugo-add-properties ()
   "Derive the hugo export file name from the title"
   (interactive)
-  (save-excursion
-    (+org-hugo-back-to-article-heading)
-    (let* ((headline (org-get-heading t t t t)))
-      (unless (org-entry-get (point) "export_file_name")
-        (org-entry-put (point) "export_file_name"
-                       (+org-hugo-make-default-filename headline))))))
+  (unless (org-entry-get (point) "export_file_name" t)
+    (save-excursion
+      (+org-hugo-back-to-article-heading)
+      (let* ((headline (org-get-heading t t t t)))
+        (unless (org-entry-get (point) "export_file_name")
+          (org-entry-put (point) "export_file_name"
+                         (+org-hugo-make-default-filename headline)))))))
 
 (defun +org-hugo--capture-prepare-finalize ()
   (require 'f)
