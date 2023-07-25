@@ -3,9 +3,6 @@
 ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
 
 (use-package org
-  :hook
-  (
-   )
   :general
   (pdcmacs-leader-def
     :infix "o"
