@@ -41,13 +41,16 @@
 (customize-set-variable 'large-file-warning-threshold (* 100 1000 1000))
 
 (setq straight-use-package-by-default t)
-(straight-use-package 'which-key)
-(which-key-mode 1)
+(straight-use-package 'diminish)
 (straight-use-package 'general)
 (require 'general-autoloads)
 (straight-use-package 'use-package)
 (require 'use-package)
-(use-package diminish)
+
+(use-package which-key
+  :diminish
+  :config
+  (which-key-mode 1))
 
 ;; Get org on the table early
 (straight-use-package 'org)

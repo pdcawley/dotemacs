@@ -1,12 +1,15 @@
+;; -*- lexical-binding: t; -*-
+
 (eval-when-compile
   (require 'general)
   (require 'use-package))
 
-(add-hook 'after-init-hook #'(lambda ()
-                               (interactive)
-                               (require 'server)
-                               (or (server-running-p)
-                                   (server-start))))
+(defun start-server-after-init ()
+  (interactive)
+  (require 'server)
+  (or (server-running-p) (server-start)))
+
+(add-hook 'after-init-hook 'start-server-after-init)
 
 ;;;
 ;;; Performance
@@ -54,12 +57,14 @@
 
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
 
-;; Revert dired and other buffers
-(customize-set-variable 'global-auto-revert-non-file-buffers t)
-
-
-;; Revert buffers when the underlying file changed.
-(global-auto-revert-mode 1)
+;; Autorevert stuff
+(use-package emacs
+  :custom
+  ;; Revert dired and other buffers
+  (global-auto-revert-non-file-buffers t)
+  :config
+  ;; Revert buffers when the underlying file changed.
+  (global-auto-revert-mode 1))
 
 ;; Spaces, not tabs.
 (setq-default indent-tabs-mode nil
@@ -476,6 +481,8 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (powerline-default-theme))
 
+(use-package unfill
+  :bind ([remap fill-paragraph] . unfill-toggle))
 (require 'pdcmacs-org)
 
 (require 'pdcmacs-hugo-support)
