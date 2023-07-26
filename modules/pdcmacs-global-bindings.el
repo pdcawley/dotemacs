@@ -52,6 +52,18 @@
   "p" '(:keymap project-prefix-map :wk "projects"))
 
 ;; Files
+(defun pdc/find-emacs-init ()
+  (interactive)
+  (find-file user-init-file))
+
+(defun pdc/find-emacs-config ()
+  (interactive)
+  (find-file pdcmacs-config-file))
+
+(defun pdc/dired-emacs-config-d ()
+  (interactive)
+  (dired user-emacs-directory))
+
 (pdcmacs-leader-def
   :infix "f"
   :prefix-map 'pdc-files-map
@@ -59,14 +71,42 @@
   "f" 'find-file
   "F" 'dirvish-fd
   "s" 'save-buffer
-  "w" 'write-file)
+  "w" 'write-file
+  "e" '(:ignore t :which-key "emacs")
+  "e i" '(pdc/find-emacs-init :wk "find init.el")
+  "e c" '(pdc/find-emacs-config :wk "find config.el")
+  "e d" '(pdc/dired-emacs-config-d :wk "find .emacs.d"))
 
-;; Buffer stuff
+(defun pdc/dired-sites ()
+  (interactive)
+  (dired (expand-file-name "Sites/" (getenv "HOME"))))
+
+;; Directory stuff
+(pdcmacs-leader-def
+  :infix "d"
+  :prefix-map 'pdc-dir-map
+  "" '(:ignore t :which-key "dir")
+  "d" 'dired
+  "j" 'dired-jump
+  "P" 'project-dired
+  "4" 'dired-other-window
+  "e" '(pdc/dired-emacs-config-d :wk "~/Sites/")
+  "s" '(pdc/dired-sites :wk ".emacs.d"))
+
+(for-gui
+  (pdcmacs-leader-def
+    :infix "d"
+    "t" 'dired-other-tab
+    "5" 'dired-other-frame))
+
+  ;; Buffer stuff
+
 (defvar pdc-buffers-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map ctl-x-x-map)
     map))
 (fset 'list-buffers 'ibuffer)
+
 (pdcmacs-leader-def
   :infix "b"
   ""    '(:keymap pdc-buffers-map :wk "buffers")
