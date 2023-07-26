@@ -466,7 +466,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.0)
 
-  (corfu-quit-at-boundary nil)
+  (corfu-quit-at-boundary 'separator)
 
   :hook
   (eshell-history-mode . +eshell-history-mode-setup-completion)
@@ -475,7 +475,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :general
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
-            "SPC"   'corfu-insert-separator
             "RET"   'corfu-insert
             "S-<return>" 'corfu-insert
             "M-m" '+corfu-move-to-minibuffer)
