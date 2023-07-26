@@ -22,6 +22,9 @@
 (general-create-definer pdcmacs-mode
   :prefix "M-m ,")
 
+(general-create-definer pdcmacs-app-def
+  :prefix "M-m a" :prefix-map 'pdc-apps-map)
+
 (defvar pdc-windows-key-map (make-sparse-keymap))
 (pdcmacs-leader-def
   :infix "w"
@@ -54,7 +57,7 @@
 ;; Files
 (defun pdc/find-emacs-init ()
   (interactive)
-  (find-file user-init-file))
+  (find-file pdcmacs-init-file))
 
 (defun pdc/find-emacs-config ()
   (interactive)
@@ -119,9 +122,7 @@
   "w"   'read-only-mode)
 
 ;; Apps
-(pdcmacs-leader-def
-  :infix "a"
-  :prefix-map 'pdc-apps-map
+(pdcmacs-app-def
   ""    '(:ignore t :which-key "apps")
   "c"   'calc
   "C"   'calc-dispatch
@@ -137,7 +138,7 @@
     :wk ,(if (stringp c) c (string c))))
 
 ;;; C-x 8 helpers for stuff I type relatively often
-(pdcmacs-leader-def
+(general-def
   :infix "C-x 8"
   :prefix-map 'iso-transl-ctl-x-8-map
   ". ," [?…]
