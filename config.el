@@ -130,23 +130,26 @@
   :after paredit
   :general
   (:keymaps 'lispy-mode-map
-            "M-m" nil)
-  s:hook
-  (paredit-mode . lispy-mode))
+            "M-m" nil))
+
+(defun pdc/prioritise-paredit-bindings ()
+  (push (assoc 'paredit-mode minor-mode-map-alist)
+        minor-mode-overriding-map-alist))
 
 (use-package paredit
   :diminish "Ⓟ "
-  :general
-  (:keymaps 'paredit-mode-map
-            "DEL" 'pdc/paredit-backward-delete
-            "("   'pdc/paredit-open-parenthesis
-            ")"   'paredit-close-round-and-newline
-            "M-)" 'paredit-close-round
-            "C-M-l" 'paredit-recenter-on-sexp
-            "C-M-s" 'paredit-backward-up
-            "M-I" 'paredit-splice-sexp
-            "]" 'paredit-close-square-and-newline)
-  :init
+  :config
+  (general-define-key
+   :keymaps 'paredit-mode-map
+   "DEL" 'pdc/paredit-backward-delete
+   "("   'pdc/paredit-open-parenthesis
+   ")"   'paredit-close-round-and-newline
+   "M-)" 'paredit-close-round
+   "C-M-l" 'paredit-recenter-on-sexp
+   "C-M-s" 'paredit-backward-up
+   "M-I" 'paredit-splice-sexp
+   "]" 'paredit-close-square-and-newline)
+
   (defun pdc/paredit-backward-delete ()
     (interactive)
     (if mark-active
@@ -211,17 +214,10 @@
 
   (advice-add 'paredit-doublequote :before-until '+paredit-maybe-close-doublequote-and-newline)
 
-  (defun pdc/prioritise-paredit-bindings ()
-    (push (assoc 'paredit-mode minor-mode-map-alist)
-          minor-mode-overriding-map-alist)
-    (setq minor-mode-alist
-          (assoc-delete-all 'paredit-mode minor-mode-alists)))
-
   :hook
   (paredit-mode . pdc/prioritise-paredit-bindings)
+  (paredit-mode . (lambda () (if (fboundp 'lispy-mode) (lispy-mode))))
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
-
-
 
 (use-package mwim
   :custom
