@@ -128,8 +128,58 @@
 
 (use-package paredit
   :diminish "Ⓟ "
+  :general
+  (:keymaps 'paredit-mode-map
+            "DEL" 'pdc/paredit-backward-delete
+            "("   'pdc/paredit-open-parenthesis
+            ")"   'pdc/paredit-close-round-and-newline
+            "M-)" 'paredit-close-round
+            "C-M-l" 'paredit-recenter-on-sexp
+            "C-M-s" 'paredit-backward-up
+            "M-I" 'paredit-splice-sexp)
+  :config
+  (defun pdc/paredit-backward-delete ()
+    (interactive)
+    (if mark-active
+        (call-interactively 'delete-region)
+      (paredit-backward-delete)))
+
+  (defun pdc/in-string-p ()
+    (eq 'string (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/in-comment-p ()
+    (eq 'comment (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/paredit-open-parenthesis (&optional n)
+    (interactive "P")
+    (cond ((and (looking-back "\(" 1)
+                (looking-at "\)"))
+           (paredit-open-parenthesis n))
+          ((equal last-command this-command)
+           (undo)
+           (insert " ")
+           (backward-char 1)
+           (paredit-open-parenthesis n))
+          ((and (not (or mark-active (pdc/in-string-p)))
+                (looking-at-p "[\(a-z\"#\\[{]"))
+           (mark-sexp)
+           (paredit-open-parenthesis n)
+           (when (looking-at-p "[\(\"#\\[{]")
+             (save-excursion (insert " "))))
+          (t (paredit-open-parenthesis n))))
+
+  (defvar +paredit--post-close-keymap (make-sparse-keymap))
+  (general-define-key :keymaps '+paredit--post-close-keymap
+                      "SPC" (lambda () (interactive) (just-one-space -1)))
+
+  (defun pdc/paredit-close-round-and-newline ()
+    (interactive)
+    (paredit-move-past-close-and-newline ")")
+    (set-transient-map +paredit--post-close-keymap))
+
   :hook
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
+
 
 (use-package mwim
   :custom
