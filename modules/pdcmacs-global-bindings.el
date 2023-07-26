@@ -138,20 +138,18 @@
     :wk ,(if (stringp c) c (string c))))
 
 ;;; C-x 8 helpers for stuff I type relatively often
-(general-def
-  :infix "C-x 8"
-  :prefix-map 'iso-transl-ctl-x-8-map
-  ". ," [?…]
-  ": )" [?🙂]
-  ": D" [?😀]
-  ";"   nil
-  "; )" [?😉]
-  "\\"  [?λ]
-  "a ^" [?↑]
-  "a u" [?↑]
-  "a v" [?↓]
-  "a d" [?↓]
-  "a |" [?↕])
-
+(require 'iso-transl)
+(general-define-key
+      :keymaps 'iso-transl-ctl-x-8-map
+      ". ," "…"
+      ": )" "🙂"
+      ": D" "😀"
+      "; )" "😉"
+      "\\"  "λ"
+      "a ^" "↑"
+      "a u" "↑"
+      "a v" "↓"
+      "a d" "↓"
+      "a |" "↕")
 
 (provide 'pdcmacs-global-bindings)
