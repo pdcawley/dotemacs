@@ -251,55 +251,57 @@ Do nothing if we're not in a string."
   (require 'ht))
 
 ;; Speedup with auto-compile
-;; (use-package auto-compile
-;;   :config
-;;   (auto-compile-on-load-mode)
-;;   (auto-compile-on-save-mode)
-;;   (setq auto-compile-display-buffer nil
-;;         auto-compile-mode-line-counter t))
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode)
+  (setq auto-compile-display-buffer nil
+        auto-compile-mode-line-counter t))
 
 ;; Make `describe-*' screens more helpful
 
-;; (use-package helpful
-;;   :general
-;;   (:keymaps 'helpful-mode-map
-;;             [remap revert-buffer] #'helpful-update)
-;;   ([remap describe-command] #'helpful-command
-;;    [remap describe-function] #'helpful-callable
-;;    [remap describe-key] #'helpful-key
-;;    [remap describe-symbol] #'helpful-symbol
-;;    [remap describe-variable] #'helpful-variable
-;;    "C-h C" #'helpful-command
-;;    "C-h F" #'helpful-function
-;;    "C-h K" #'describe-keymap)
-;;   :config
+(use-package helpful
+  :general
+  (:keymaps 'helpful-mode-map
+            [remap revert-buffer] #'helpful-update)
+  ([remap describe-command] #'helpful-command
+   [remap describe-function] #'helpful-callable
+   [remap describe-key] #'helpful-key
+   [remap describe-symbol] #'helpful-symbol
+   [remap describe-variable] #'helpful-variable
+   "C-h C" #'helpful-command
+   "C-h F" #'helpful-function
+   "C-h K" #'describe-keymap)
+  :config
 
-;;   ;; Temporary fix until this all works for Emacs 29 again
-;;   (defvar read-symbol-positions-list nil)
-;;   (defun helpful--autoloaded-p (sym buf)
-;;     (-when-let (file-name (buffer-file-name buf))
-;;       (setq file-name (s-chop-suffix "*.gz" file-name))
-;;       (help-fns--autoloaded-p sym)))
+  ;; Temporary fix until this all works for Emacs 29 again
+  ;; (defvar read-symbol-positions-list nil)
+  ;; (defun helpful--autoloaded-p (sym buf)
+  ;;   (-when-let (file-name (buffer-file-name buf))
+  ;;     (setq file-name (s-chop-suffix "*.gz" file-name))
+  ;;     (help-fns--autoloaded-p sym)))
 
 
-;;   (defun helpful--skip-advice (docstring)
-;;     "Remove mentions of advice from DOCSTRING."
-;;     (let* ((lines (s-lines docstring))
-;;            (relevant-lines
-;;             (--take-while
-;;              (not (or (s-starts-with-p ":around advice:" it)
-;;                       (s-starts-with-p "This function has :around advice:" it)))
-;;              lines)))
-;;       (s-trim (s-join "\n" relevant-lines)))))
+  ;; (defun helpful--skip-advice (docstring)
+  ;;   "Remove mentions of advice from DOCSTRING."
+  ;;   (let* ((lines (s-lines docstring))
+  ;;          (relevant-lines
+  ;;           (--take-while
+  ;;            (not (or (s-starts-with-p ":around advice:" it)
+  ;;                     (s-starts-with-p "This function has :around advice:" it)))
+  ;;            lines)))
+  ;;     (s-trim (s-join "\n" relevant-lines))))
+  )
 
-;; ;; add visual pulse when changing focus, like beacon but built-in
-;; (defun pulse-line (&rest _)
-;;   "Pulse the current line"
-;;   (pulse-momentary-highlight-one-line (point)))
+;; add visual pulse when changing focus, like beacon but built-in
 
-;; (dolist (command '(scroll-up-command scroll-down-command
-;;                                      recenter-top-bottom other-window))
-;;   (advice-add command :after #'pulse-line))
+(defun pulse-line (&rest _)
+  "Pulse the current line"
+  (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command scroll-down-command
+                                     recenter-top-bottom other-window))
+  (advice-add command :after #'pulse-line))
 
 ;;;
 ;;; Windows stuff
