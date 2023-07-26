@@ -126,6 +126,14 @@
 (electric-pair-mode 1)
 (show-paren-mode 1)
 
+(use-package lispy
+  :after paredit
+  :general
+  (:keymaps 'lispy-mode-map
+            "M-m" nil)
+  s:hook
+  (paredit-mode . lispy-mode))
+
 (use-package paredit
   :diminish "Ⓟ "
   :general
@@ -138,7 +146,7 @@
             "C-M-s" 'paredit-backward-up
             "M-I" 'paredit-splice-sexp
             "]" 'paredit-close-square-and-newline)
-  :config
+  :init
   (defun pdc/paredit-backward-delete ()
     (interactive)
     (if mark-active
@@ -203,7 +211,14 @@
 
   (advice-add 'paredit-doublequote :before-until '+paredit-maybe-close-doublequote-and-newline)
 
+  (defun pdc/prioritise-paredit-bindings ()
+    (push (assoc 'paredit-mode minor-mode-map-alist)
+          minor-mode-overriding-map-alist)
+    (setq minor-mode-alist
+          (assoc-delete-all 'paredit-mode minor-mode-alists)))
+
   :hook
+  (paredit-mode . pdc/prioritise-paredit-bindings)
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
 
 
