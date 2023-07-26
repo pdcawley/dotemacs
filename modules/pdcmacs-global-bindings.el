@@ -92,9 +92,9 @@
   "4" 'dired-other-window
   "P" 'project-dired
   "d" 'dired
-  "e" '(pdc/dired-emacs-config-d :wk "~/Sites/")
+  "e" '(pdc/dired-emacs-config-d :wk ".emacs.d")
   "j" 'dired-jump
-  "s" '(pdc/dired-sites :wk ".emacs.d"))
+  "s" '(pdc/dired-sites :wk "~/Sites/"))
 
 (for-gui
   (pdcmacs-leader-def
