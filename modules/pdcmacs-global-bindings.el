@@ -86,18 +86,18 @@
   :infix "d"
   :prefix-map 'pdc-dir-map
   "" '(:ignore t :which-key "dir")
-  "d" 'dired
-  "j" 'dired-jump
-  "P" 'project-dired
   "4" 'dired-other-window
+  "P" 'project-dired
+  "d" 'dired
   "e" '(pdc/dired-emacs-config-d :wk "~/Sites/")
+  "j" 'dired-jump
   "s" '(pdc/dired-sites :wk ".emacs.d"))
 
 (for-gui
   (pdcmacs-leader-def
     :infix "d"
-    "t" 'dired-other-tab
-    "5" 'dired-other-frame))
+    "5" 'dired-other-frame
+    "t" 'dired-other-tab))
 
   ;; Buffer stuff
 
