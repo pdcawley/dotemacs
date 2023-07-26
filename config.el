@@ -132,11 +132,12 @@
   (:keymaps 'paredit-mode-map
             "DEL" 'pdc/paredit-backward-delete
             "("   'pdc/paredit-open-parenthesis
-            ")"   'pdc/paredit-close-round-and-newline
+            ")"   'paredit-close-round-and-newline
             "M-)" 'paredit-close-round
             "C-M-l" 'paredit-recenter-on-sexp
             "C-M-s" 'paredit-backward-up
-            "M-I" 'paredit-splice-sexp)
+            "M-I" 'paredit-splice-sexp
+            "]" 'paredit-close-square-and-newline)
   :config
   (defun pdc/paredit-backward-delete ()
     (interactive)
@@ -170,15 +171,21 @@
 
   (defvar +paredit--post-close-keymap (make-sparse-keymap))
   (general-define-key :keymaps '+paredit--post-close-keymap
-                      "SPC" (lambda () (interactive) (just-one-space -1)))
+                      "SPC" (lambda () (interactive) (just-one-space -1))
+                      "RET" (lambda () (interactive)))
 
-  (defun pdc/paredit-close-round-and-newline ()
-    (interactive)
-    (paredit-move-past-close-and-newline ")")
+  (defun pdc/enable-post-close-keymap ()
     (set-transient-map +paredit--post-close-keymap))
+
+  (dolist (closer '(paredit-close-square-and-newline
+                    paredit-close-round-and-newline
+                    paredit-close-curly-and-newline
+                    paredit-close-angled-and-newline))
+    (advice-add closer :after 'pdc/enable-post-close-keymap))
 
   :hook
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
+
 
 
 (use-package mwim
