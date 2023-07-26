@@ -489,37 +489,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (use-package unfill
   :bind ([remap fill-paragraph] . unfill-toggle))
 
-;; Probably want to pull this out to a 'pdc-socials feature
-;; Mastodon does *not* want to play nicely on a tty
-
-(use-package mastodon
-  :straight
-  (:source melpa)
-  :hook
-  (mastodon-toot-mode . visual-fill-column-mode)
-  :general
-  (pdcmacs-app-def
-    :infix "m"
-    "" '(:wk "mastodon")
-    "H" '(mastodon-tl--get-home-timeline :wk "Home")
-    "@" '(mastodon-notifications--get-mentions :wk "Mentions")
-    "t" 'mastodon-toot)
-
-  :init
-  (setq-default mastodon-toot--language "en")
-  (setq mastodon-instance-url "https://mendeddrum.org"
-        mastodon-active-user "pdcawley"
-        mastodon-tl--display-media-p window-system
-        mastodon-tl--enable-proportional-fonts window-system)
-  :config
-  (defun ad-mastodon-toot--restore-previous-window-config (window-config)
-    (car window-config))
-  (advice-add 'mastodon-toot--restore-previous-window-config :before-until 'ad-mastodon-toot--restore-previous-window-config)
-
-  (advice-add 'mastodon-toot--format-attachments
-              :before-until #'(lambda () (fboundp 'image-transforms-p)))
-  (mastodon-discover))
-
+(require 'pdcmacs-feeds)
 (require 'pdcmacs-org)
 (require 'pdcmacs-hugo-support)
 (require 'pdcmacs-webservice)
