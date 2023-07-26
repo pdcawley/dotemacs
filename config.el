@@ -118,7 +118,7 @@
 
 ;; trim excess whitespace
 (use-package ws-butler
-  :diminish ""
+  :diminish
   :hook
   ((prog-mode text-mode) . ws-butler-mode))
 
