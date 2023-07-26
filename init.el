@@ -10,6 +10,8 @@
 (defvar pdcmacs-config-file (expand-file-name "config.el"  user-emacs-directory)
   "Our post-init config file.")
 
+(defvar pdcmacs-init-file (expand-file-name "init.el" user-emacs-directory))
+
 (defvar pdcmacs-etc-directory (expand-file-name "etc/" user-emacs-directory)
   "Our etc/ directory.")
 (defvar pdcmacs-var-directory (expand-file-name "var/" user-emacs-directory)
