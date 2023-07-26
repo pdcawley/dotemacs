@@ -132,4 +132,20 @@
 (general-def
   "M-m h" '(help-command :which-key "help"))
 
+(defun make-inserter (c)
+  `((lambda (&rest args) (interactive) (insert ,c))
+    :wk ,(if (stringp c) c (string c))))
+
+;;; C-x 8 helpers for stuff I type relatively often
+(pdcmacs-leader-def
+  :infix "C-x 8"
+  :prefix-map 'iso-transl-ctl-x-8-map
+  ". ," [?…]
+  ": )" [?🙂]
+  ": D" [?😀]
+  ";"   nil
+  "; )" [?😉]
+  "\\"  [?λ])
+
+
 (provide 'pdcmacs-global-bindings)

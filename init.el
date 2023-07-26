@@ -27,12 +27,6 @@
 (set-clipboard-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;;; Add some C-x 8 helpers for things I type commonly
-;;; (so far that's just '…')
-
-(define-key 'iso-transl-ctl-x-8-map ";" "…")
-(define-key 'iso-transl-ctl-x-8-map "\\" "λ")
-
 ;;; Tweak custom-file's location
 (setq custom-file (expand-file-name "preferences.el" pdcmacs-etc-directory))
 
