@@ -457,6 +457,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (use-package flycheck-yamllint)
 
 (use-package clipetty
+  :diminish
   :hook (after-init . global-clipetty-mode))
 
 (use-package yasnippet)
