@@ -183,6 +183,26 @@
                     paredit-close-angled-and-newline))
     (advice-add closer :after 'pdc/enable-post-close-keymap))
 
+  (defun +paredit-maybe-close-doublequote-and-newline (&optional n)
+    (cond ((and (paredit-in-string-p)
+                (eq (point) (- (paredit-enclosing-string-end) 1)))
+           (forward-char)
+           (let ((comment.point (paredit-find-comment-on-line)))
+             (newline)
+             (if comment.point
+                 (save-excursion
+                   (forward-line -1)
+                   (end-of-line)
+                   (indent-to (cdr comment.point))
+                   (insert (car comment.point))))
+             (lisp-indent-line)
+             (paredit-ignore-sexp-errors (indent-sexp))
+             (pdc/enable-post-close-keymap)
+             t))
+          (t nil)))
+
+  (advice-add 'paredit-doublequote :before-until '+paredit-maybe-close-doublequote-and-newline)
+
   :hook
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
 
