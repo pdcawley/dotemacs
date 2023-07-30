@@ -5,6 +5,38 @@
 (eval-when-compile
   (require 'cl-macs))
 
+(defun week< (string time)
+  (string< string (format-time-string "%Y-%m-%d" time)))
+
+(defun weekday< (string time)
+  (< (1+ (-elem-index string '("Monday" "Tuesday" "Wednesday"
+                               "Thursday" "Friday" "Saturday"
+                               "Sunday")))
+     (string-to-number (format-time-string "%u" time))))
+
+(defun pdc:filename-for-week (time)
+  (let ((eow-d (-> time time-to-days
+                   calendar-gregorian-from-absolute
+                   pdc:end-of-week-date)))
+    (format "week-ending-%d%d%d"
+            (calendar-extract-year eow-d)
+            (calendar-extract-month eow-d)
+            (calendar-extract-day eow-d))))
+
+(defvar +org-weeknotes-formats
+  '(("%Y" :comparator #'string<)
+    ("Week ending %Y-%m-%d"
+     :comparator #'week<
+     :matcher (rx "Week ending "
+                  (group-n 1
+                    (= 4 (any digit))
+                    (= 2 (group
+                          "-"
+                          (= 2 (any digit))))))
+     :properties (:export_file_name #'pdc:file-name-for-week))
+    ("%A"
+     :comparator #'weekday<)))
+
 ;;; I really dislike the practice of `defvar'ing private variables, so
 ;;; we introduce a let form in which define
 ;;; `+org-pathbuilder-find-create-path' and `+org-pathbuilder-insert-line'
@@ -220,6 +252,7 @@
 
 
 (use-package prodigy
+
   :commands (prodigy-define-service)
   :general
   (pdcmacs-leader-def :infix "a" "P" 'prodigy)
