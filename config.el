@@ -518,13 +518,46 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :general
   ("M-m e e" 'macrostep-expand))
 
+;;; Repeat mode stuffs
+
+(use-package repeat
+  :custom
+  (repeat-echo-function #'ignore)
+  :config
+  (advice-add 'repeat-post-hook :after
+            (defun repeat-help--which-key-popup ()
+              (if-let ((cmd (or this-command real-this-command))
+                       (keymap (or repeat-map
+                                   (repeat--command-property 'repeat-map))))
+                  (run-at-time
+                   0 nil
+                   (lambda ()
+                     (which-key--create-buffer-and-show nil (symbol-value keymap))))
+                (which-key--hide-popup))))
+  (repeat-mode t))
+
+(use-package smerge-mode
+  :after which-key
+  :straight (:type built-in)
+  :custom
+  (smerge-auto-leave nil)
+  :general
+  (:keymaps 'smerge-mode-map
+            "M-m m" '(smerge-basic-map :wk "merge" :keymap t))
+  :config
+  (map-keymap
+   (lambda (_key cmd)
+     (when (symbolp cmd)
+       (put cmd 'repeat-map 'smerge-basic-map)))
+   smerge-basic-map))
 
 ;;; Magit
 (use-package magit
   :general
   (:prefix "M-m g"
            "" '(nil :which-key "Git")
-           "s" 'magit-status))
+           "s" 'magit-status
+           "l" 'magit-log))
 
 
 (use-package corfu
