@@ -60,7 +60,9 @@
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
 
 ;; Autorevert stuff
-(use-package emacs
+
+(use-package autorevert
+  :straight (autorevert :type built-in)
   :custom
   ;; Revert dired and other buffers
   (global-auto-revert-non-file-buffers t)
