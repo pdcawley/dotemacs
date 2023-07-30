@@ -51,11 +51,13 @@
 ;; Get org on the table early
 (straight-use-package 'org)
 
-(setq auto-save-file-name-transforms
-      `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(expand-file-name "auto-save/\\2" pdcmacs-var-directory) t)
-        (".*" ,(expand-file-name "auto-save/" pdcmacs-var-directory) t)))
+(use-package no-littering
+  :config
+  (setq auto-save-file-name-transforms
+        `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
+          (".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(setq server-socket-dir (expand-file-name "server/" pdcmacs-var-directory))
+  (setq server-socket-dir (no-littering-expand-var-file-name "server/")))
 
 
 ;; Quitting emacs
