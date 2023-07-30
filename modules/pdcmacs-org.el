@@ -13,7 +13,8 @@
 (use-package org-contrib)
 (use-package org-roam
   :custom
-  (org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
+  ((org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
+   (org-use-speed-commands t))
   :init
   (setq org-roam-v2-ack t)
   :general

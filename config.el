@@ -130,7 +130,7 @@
   :after paredit
   :general
   (:keymaps 'lispy-mode-map
-            "M-m" nil))
+            "M-m" nil))                 ; Lispy tries to use our leader key.
 
 (defun pdc/prioritise-paredit-bindings ()
   (push (assoc 'paredit-mode minor-mode-map-alist)
@@ -148,13 +148,43 @@
    "C-M-l" 'paredit-recenter-on-sexp
    "C-M-s" 'paredit-backward-up
    "M-I" 'paredit-splice-sexp
-   "]" 'paredit-close-square-and-newline)
+   "]" 'paredit-close-square-and-newline
+   ";" 'pdc/paredit-semicolon)
 
   (defun pdc/paredit-backward-delete ()
     (interactive)
     (if mark-active
         (call-interactively 'delete-region)
       (paredit-backward-delete)))
+
+  (defun pdc/paredit-semicolon (&optional n)
+    (interactive "P")
+    (when (looking-at-p "  +\(")
+      (search-forward "(")
+      (backward-char))
+    (cond ((and n (not (= 1 n)))
+           (paredit-semicolon n))
+          ((and (equal last-command this-command)
+                (looking-back "; " 2))
+           (undo)
+           (self-insert-command 1))
+          ((or (looking-back ";" 1)
+               (and (looking-at-p "[[:blank:]]*$")
+                    (not (save-excursion
+                           (beginning-of-line)
+                           (looking-at-p "[[:blank:]]*$")))))
+
+           (self-insert-command (or n 1)))
+
+          ((and (not mark-active)
+                (looking-at-p "^[[:blank:]]*$"))
+           (insert ";;; "))
+          ((and (not mark-active)
+                (save-excursion
+                  (beginning-of-line)
+                  (looking-at-p "[[:blank:]]*$")))
+           (insert ";; "))
+          (t (paredit-semicolon n))))
 
   (defun pdc/in-string-p ()
     (eq 'string (syntax-ppss-context (syntax-ppss))))
@@ -183,7 +213,10 @@
   (defvar +paredit--post-close-keymap (make-sparse-keymap))
   (general-define-key :keymaps '+paredit--post-close-keymap
                       "SPC" (lambda () (interactive) (just-one-space -1))
-                      "RET" (lambda () (interactive)))
+                      "RET" (lambda () (interactive))
+                      "DEL" (lambda ()
+                              (interactive)
+                              (delete-all-space t)))
 
   (defun pdc/enable-post-close-keymap ()
     (set-transient-map +paredit--post-close-keymap))
@@ -325,7 +358,9 @@ Do nothing if we're not in a string."
 ;;   (add-hook 'after-init-hook 'doom-modeline-init))
 
 ;; utility libraries
-(use-package dash)
+(use-package dash
+  :config
+  (dash-enable-font-lock))
 (use-package s)
 (use-package f)
 (use-package kv)
