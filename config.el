@@ -83,7 +83,8 @@
 (setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
 
 ;; savehist mode
-(setq history-length 25)
+(setq history-length 25
+      history-delete-duplicates t)
 (savehist-mode 1)
 
 ;; Don't stick duplicates in kill-ring
