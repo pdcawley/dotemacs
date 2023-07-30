@@ -5,6 +5,135 @@
 (eval-when-compile
   (require 'cl-macs))
 
+;;; I really dislike the practice of `defvar'ing private variables, so
+;;; we introduce a let form in which define
+;;; `+org-pathbuilder-find-create-path' and `+org-pathbuilder-insert-line'
+;;; to allow them to share a private `current-level' variable.
+;;;
+;;; TODO: make the treebuilder state something that's passed around --
+;;; I want to be able to clean up after an aborted capture, for instance.
+(let ((current-level))
+  (defun +org-pathbuilder-find-create-path (keep-restriction pathspec)
+    "Find or create a place in FILE at the PATHSPEC given."
+    (when pathspec
+      (save-restriction
+        (cond ((eq keep-restriction 'subtree-at-point)
+               (unless (org-at-heading-p) (error "Not at heading"))
+               (widen)
+               (org-narrow-to-subtree))
+              ((not keep-restriction)
+               (widen)))
+        (goto-char (point-min))
+        (setq current-level (org-get-valid-level (or (org-current-level) 0) 1))
+        (when pathspec
+          (let* ((targetspec (-list (car pathspec)))
+                 (remainder (cdr pathspec))
+                 (target (car targetspec))
+                 (insertion (or (cadr targetspec) target)))
+            (+org-pathbuilder--find-create target insertion)
+            (+org-pathbuilder-find-create-path 'subtree-at-point remainder))))))
+
+  (defun +org-pathbuilder-insert-line (insert)
+    (delete-region
+     (save-excursion (skip-chars-backward " \t\n") (point))
+     (point))
+    (when (org--blank-before-heading-p) (insert "\n"))
+
+    (insert "\n"
+            (make-string current-level ?*)
+            " \n")
+    (backward-char)
+    (insert insert)
+    (org-narrow-to-subtree)
+    (goto-char (point-min))
+    (widen)))
+
+(defun +org-pathbuilder--find-create (target insert)
+  (let* ((target-regex (cond ((string-match-p "\\\\(\\?1:" target)
+                              target)
+                             ((string-match "\\\\(" target)
+                              (replace-match "\\(?1:" nil t target))
+                             (t
+                              (s-wrap target "\\(?1:" "\\)"))))
+         (re (format org-complex-heading-regexp-format target-regex))
+         (match))
+    (goto-char (point-min))
+    (when (setq match (re-search-forward re nil t))
+      (goto-char (match-beginning 1)))
+    (cond ((not match)
+           (goto-char (point-max))
+           (unless (bolp) (insert "\n"))
+           (+org-pathbuilder-insert-line insert))
+          (t (forward-line 0)))))
+
+(defun pdc:weeknote-path (&optional d)
+  (let* ((d (or d (-> (org-current-effective-time)
+                      time-to-days
+                      calendar-gregorian-from-absolute)))
+         (eow-d (pdc:end-of-week-date d))
+         (eow-time (org-encode-time 0 0 0
+                                    (calendar-extract-day eow-d)
+                                    (calendar-extract-month eow-d)
+                                    (calendar-extract-year eow-d))))
+    (list (format-time-string "%Y" eow-time)
+          (let* ((heading-title (format-time-string "Week ending %Y-%m-%d" eow-time))
+                 (full-heading (format-time-string
+                                (s-join "\n"
+                                        `(,(s-concat "OPEN " heading-title)
+                                          ":PROPERTIES:"
+                                          ":export_file_name: week-ending-%Y%m%d"
+                                          ":export_hugo_slug: week-note"
+                                          ":END:"))
+                                eow-time)))
+            (list heading-title full-heading))
+          (format-time-string "%A" (org-current-effective-time)))))
+
+(defun pdc:end-of-week-date (&optional d)
+  "Get the gregorian date of the end of the week for the given gregorian date `D'."
+  (let* ((d (or d (-> (org-current-effective-time)
+                      time-to-days
+                      calendar-gregorian-from-absolute)))
+         (iso-date (-> d calendar-absolute-from-gregorian
+                       calendar-iso-from-absolute))
+         (iso-week (nth 0 iso-date))
+         (iso-year (nth 2 iso-date))
+         (end-of-week-gregorian (-> (list iso-week 7 iso-year)
+                                    calendar-iso-to-absolute
+                                    calendar-gregorian-from-absolute)))
+    end-of-week-gregorian))
+
+(defun +org-hugo-find-weeknote-entry (&rest olp)
+  "Find or create today in this week's week note."
+
+  ;; This leaves point at the start of the last heading it created.
+  (+org-pathbuilder-find-create-path
+   nil (-concat olp (pdc:weeknote-path
+                     (calendar-gregorian-from-absolute
+                      (cond (org-overriding-default-time
+                             (time-to-days org-overriding-default-time))
+                            ((or (org-capture-get :time-prompt)
+                                 (equal current-prefix-arg 1))
+                             (let* ((org-time-was-given nil)
+                                    (org-end-time-was-given nil)
+                                    (prompt-time (org-read-date
+                                                  nil t nil "Date for daynote entry:")))
+                               (org-capture-put
+                                :default-time
+                                (if (or org-time-was-given
+                                        (= (time-to-days prompt-time) (org-today)))
+                                    prompt-time
+
+                                  (org-encode-time
+                                   (apply #'list
+                                          0 0 org-extend-today-until
+                                          (cl-cdddr (decode-time prompt-time))))))
+                               (time-to-days prompt-time)))
+                            (t (time-to-days (org-current-effective-time))))))))
+  ;; Skip to the end of the subtree
+  (save-restriction
+    (org-narrow-to-subtree)
+    (goto-char (point-max))))
+
 (use-package ox-hugo
   :after ox
   :config
@@ -89,6 +218,7 @@
 
 ;;; Use prodigy to manage hugo server processes
 
+
 (use-package prodigy
   :commands (prodigy-define-service)
   :general
@@ -107,12 +237,12 @@
   (defun pdc-define-hugo-site (name dir tags &rest args)
     (apply 'prodigy-define-service
            `(:name ,name
-             :command ,pdc-hugo-command
-             :args ,(append pdc-hugo-server-args args)
-             :tags (hugo ,@(-list tags))
-             :cwd ,dir
-             :stop-signal sigkill
-             :kill-process-buffer-on-stop t)))
+                   :command ,pdc-hugo-command
+                   :args ,(append pdc-hugo-server-args args)
+                   :tags (hugo ,@(-list tags))
+                   :cwd ,dir
+                   :stop-signal sigkill
+                   :kill-process-buffer-on-stop t)))
 
   (pdc-define-hugo-site "bofh" "~/Sites/bofh.org.uk/" '(blog bofh))
   (pdc-define-hugo-site "st-serve" "~/Sites/singingtogether.co.uk/" '(singing-together st))
@@ -133,12 +263,13 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (defun pdcmacs-hugo-add-properties ()
   "Derive the hugo export file name from the title"
   (interactive)
-  (save-excursion
-    (+org-hugo-back-to-article-heading)
-    (let* ((headline (org-get-heading t t t t)))
-      (unless (org-entry-get (point) "export_file_name")
-        (org-entry-put (point) "export_file_name"
-                       (+org-hugo-make-default-filename headline))))))
+  (unless (org-entry-get (point) "export_file_name" t)
+    (save-excursion
+      (+org-hugo-back-to-article-heading)
+      (let* ((headline (org-get-heading t t t t)))
+        (unless (org-entry-get (point) "export_file_name")
+          (org-entry-put (point) "export_file_name"
+                         (+org-hugo-make-default-filename headline)))))))
 
 (defun +org-hugo--capture-prepare-finalize ()
   (require 'f)
@@ -152,10 +283,11 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (with-eval-after-load 'org-capture
   (require 'cl-lib)
   (require 's)
-  (cl-pushnew '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
-                "* TODO %?\n\n" :jump-to-captured t)
-              org-capture-templates
-              :test (lambda (a b) (s-equals? (car a) (car b))))
+  (add-to-list
+   'org-capture-templates
+   '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
+     "* TODO %?\n\n#+hugo: more\n\n" :jump-to-captured t)
+   t #'(lambda (a b) (s-equals? (car a) (car b))))
 
   (defun +org-hugo-new-note-post-capture-template ()
     "Returns `org-capture' template string for new Hugo note.
@@ -165,7 +297,15 @@ See `org-capture-templates' for more information"
   (add-to-list 'org-capture-templates
                '("n" "Note" entry
                  (file+olp+datetree "~/Sites/bofh.org.uk/org-content/all-posts.org" "Notes")
-                 "* %U %?\n:properties:\n:export_file_name: nnn.md\n:end:\n")))
+                 "* %U %?\n:properties:\n:export_file_name: nnn.md\n:end:\n"))
+
+  (add-to-list
+   'org-capture-templates
+   `("w" "Week Note" plain
+     (file+function "~/Sites/bofh.org.uk/org-content/all-posts.org" ,#'(lambda () (+org-hugo-find-weeknote-entry "Week Notes")))
+     "%?"
+     :empty-lines 1
+     :jump-to-captured 1)))
 
 (use-package web-mode
   :mode
@@ -181,6 +321,5 @@ See `org-capture-templates' for more information"
 (use-package toml-mode
   :mode
   "\\.toml\\'")
-
 
 (provide 'pdcmacs-hugo-support)

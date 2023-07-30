@@ -22,6 +22,9 @@
 (general-create-definer pdcmacs-mode
   :prefix "M-m ,")
 
+(general-create-definer pdcmacs-app-def
+  :prefix "M-m a" :prefix-map 'pdc-apps-map)
+
 (defvar pdc-windows-key-map (make-sparse-keymap))
 (pdcmacs-leader-def
   :infix "w"
@@ -51,12 +54,62 @@
 (pdcmacs-leader-def
   "p" '(:keymap project-prefix-map :wk "projects"))
 
-;; Buffer stuff
+;; Files
+(defun pdc/find-emacs-init ()
+  (interactive)
+  (find-file pdcmacs-init-file))
+
+(defun pdc/find-emacs-config ()
+  (interactive)
+  (find-file pdcmacs-config-file))
+
+(defun pdc/dired-emacs-config-d ()
+  (interactive)
+  (dired user-emacs-directory))
+
+(pdcmacs-leader-def
+  :infix "f"
+  :prefix-map 'pdc-files-map
+  "" '(:ignore t :which-key "files")
+  "f" 'find-file
+  "F" 'dirvish-fd
+  "s" 'save-buffer
+  "w" 'write-file
+  "e" '(:ignore t :which-key "emacs")
+  "e i" '(pdc/find-emacs-init :wk "find init.el")
+  "e c" '(pdc/find-emacs-config :wk "find config.el")
+  "e d" '(pdc/dired-emacs-config-d :wk "find .emacs.d"))
+
+(defun pdc/dired-sites ()
+  (interactive)
+  (dired (expand-file-name "Sites/" (getenv "HOME"))))
+
+;; Directory stuff
+(pdcmacs-leader-def
+  :infix "d"
+  :prefix-map 'pdc-dir-map
+  "" '(:ignore t :which-key "dir")
+  "4" 'dired-other-window
+  "P" 'project-dired
+  "d" 'dired
+  "e" '(pdc/dired-emacs-config-d :wk ".emacs.d")
+  "j" 'dired-jump
+  "s" '(pdc/dired-sites :wk "~/Sites/"))
+
+(for-gui
+  (pdcmacs-leader-def
+    :infix "d"
+    "5" 'dired-other-frame
+    "t" 'dired-other-tab))
+
+  ;; Buffer stuff
+
 (defvar pdc-buffers-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map ctl-x-x-map)
     map))
 (fset 'list-buffers 'ibuffer)
+
 (pdcmacs-leader-def
   :infix "b"
   ""    '(:keymap pdc-buffers-map :wk "buffers")
@@ -69,9 +122,7 @@
   "w"   'read-only-mode)
 
 ;; Apps
-(pdcmacs-leader-def
-  :infix "a"
-  :prefix-map 'pdc-apps-map
+(pdcmacs-app-def
   ""    '(:ignore t :which-key "apps")
   "c"   'calc
   "C"   'calc-dispatch
@@ -81,5 +132,24 @@
 
 (general-def
   "M-m h" '(help-command :which-key "help"))
+
+(defun make-inserter (c)
+  `((lambda (&rest args) (interactive) (insert ,c))
+    :wk ,(if (stringp c) c (string c))))
+
+;;; C-x 8 helpers for stuff I type relatively often
+(require 'iso-transl)
+(general-define-key
+      :keymaps 'iso-transl-ctl-x-8-map
+      ". ," "…"
+      ": )" "🙂"
+      ": D" "😀"
+      "; )" "😉"
+      "\\"  "λ"
+      "a ^" "↑"
+      "a u" "↑"
+      "a v" "↓"
+      "a d" "↓"
+      "a |" "↕")
 
 (provide 'pdcmacs-global-bindings)

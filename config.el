@@ -1,12 +1,15 @@
+;; -*- lexical-binding: t; -*-
+
 (eval-when-compile
   (require 'general)
   (require 'use-package))
 
-(add-hook 'after-init-hook #'(lambda ()
-                               (interactive)
-                               (require 'server)
-                               (or (server-running-p)
-                                   (server-start))))
+(defun start-server-after-init ()
+  (interactive)
+  (require 'server)
+  (or (server-running-p) (server-start)))
+
+(add-hook 'after-init-hook 'start-server-after-init)
 
 ;;;
 ;;; Performance
@@ -17,8 +20,6 @@
   (message "No native compilation available"))
 
 (setq warning-suppress-types '((comp)))
-
-
 
 ;;
 ;; More or less sensible defaults
@@ -56,13 +57,14 @@
 
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
 
-
-;; Revert dired and other buffers
-(customize-set-variable 'global-auto-revert-non-file-buffers t)
-
-
-;; Revert buffers when the underlying file changed.
-(global-auto-revert-mode 1)
+;; Autorevert stuff
+(use-package emacs
+  :custom
+  ;; Revert dired and other buffers
+  (global-auto-revert-non-file-buffers t)
+  :config
+  ;; Revert buffers when the underlying file changed.
+  (global-auto-revert-mode 1))
 
 ;; Spaces, not tabs.
 (setq-default indent-tabs-mode nil
@@ -116,7 +118,7 @@
 
 ;; trim excess whitespace
 (use-package ws-butler
-  :diminish ""
+  :diminish
   :hook
   ((prog-mode text-mode) . ws-butler-mode))
 
@@ -124,9 +126,97 @@
 (electric-pair-mode 1)
 (show-paren-mode 1)
 
+(use-package lispy
+  :after paredit
+  :general
+  (:keymaps 'lispy-mode-map
+            "M-m" nil))
+
+(defun pdc/prioritise-paredit-bindings ()
+  (push (assoc 'paredit-mode minor-mode-map-alist)
+        minor-mode-overriding-map-alist))
+
 (use-package paredit
   :diminish "Ⓟ "
+  :config
+  (general-define-key
+   :keymaps 'paredit-mode-map
+   "DEL" 'pdc/paredit-backward-delete
+   "("   'pdc/paredit-open-parenthesis
+   ")"   'paredit-close-round-and-newline
+   "M-)" 'paredit-close-round
+   "C-M-l" 'paredit-recenter-on-sexp
+   "C-M-s" 'paredit-backward-up
+   "M-I" 'paredit-splice-sexp
+   "]" 'paredit-close-square-and-newline)
+
+  (defun pdc/paredit-backward-delete ()
+    (interactive)
+    (if mark-active
+        (call-interactively 'delete-region)
+      (paredit-backward-delete)))
+
+  (defun pdc/in-string-p ()
+    (eq 'string (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/in-comment-p ()
+    (eq 'comment (syntax-ppss-context (syntax-ppss))))
+
+  (defun pdc/paredit-open-parenthesis (&optional n)
+    (interactive "P")
+    (cond ((and (looking-back "\(" 1)
+                (looking-at "\)"))
+           (paredit-open-parenthesis n))
+          ((equal last-command this-command)
+           (undo)
+           (insert " ")
+           (backward-char 1)
+           (paredit-open-parenthesis n))
+          ((and (not (or mark-active (pdc/in-string-p)))
+                (looking-at-p "[\(a-z\"#\\[{]"))
+           (mark-sexp)
+           (paredit-open-parenthesis n)
+           (when (looking-at-p "[\(\"#\\[{]")
+             (save-excursion (insert " "))))
+          (t (paredit-open-parenthesis n))))
+
+  (defvar +paredit--post-close-keymap (make-sparse-keymap))
+  (general-define-key :keymaps '+paredit--post-close-keymap
+                      "SPC" (lambda () (interactive) (just-one-space -1))
+                      "RET" (lambda () (interactive)))
+
+  (defun pdc/enable-post-close-keymap ()
+    (set-transient-map +paredit--post-close-keymap))
+
+  (dolist (closer '(paredit-close-square-and-newline
+                    paredit-close-round-and-newline
+                    paredit-close-curly-and-newline
+                    paredit-close-angled-and-newline))
+    (advice-add closer :after 'pdc/enable-post-close-keymap))
+
+  (defun +paredit-maybe-close-doublequote-and-newline (&optional n)
+    (cond ((and (paredit-in-string-p)
+                (eq (point) (- (paredit-enclosing-string-end) 1)))
+           (forward-char)
+           (let ((comment.point (paredit-find-comment-on-line)))
+             (newline)
+             (if comment.point
+                 (save-excursion
+                   (forward-line -1)
+                   (end-of-line)
+                   (indent-to (cdr comment.point))
+                   (insert (car comment.point))))
+             (lisp-indent-line)
+             (paredit-ignore-sexp-errors (indent-sexp))
+             (pdc/enable-post-close-keymap)
+             t))
+          (t nil)))
+
+  (advice-add 'paredit-doublequote :before-until '+paredit-maybe-close-doublequote-and-newline)
+
   :hook
+  (paredit-mode . pdc/prioritise-paredit-bindings)
+  (paredit-mode . (lambda () (if (fboundp 'lispy-mode) (lispy-mode))))
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
 
 (use-package mwim
@@ -187,7 +277,8 @@ Do nothing if we're not in a string."
   :custom
   (vertico-cycle t)
   :config
-  (require 'vertico-directory "extensions/vertico-directory.el")  (vertico-mode 1))
+  ;; (require 'vertico-directory "extensions/vertico-directory.el")
+  (vertico-mode 1))
 
 (use-package marginalia
   :config
@@ -224,14 +315,14 @@ Do nothing if we're not in a string."
 ;;; Appearance
 
 (use-package all-the-icons)
-(use-package doom-modeline
-  :custom
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 6)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-buffer-file-name-style 'truncate-except-project)
-  :init
-  (add-hook 'after-init-hook 'doom-modeline-init))
+;; (use-package doom-modeline
+;;   :custom
+;;   (doom-modeline-height 15)
+;;   (doom-modeline-bar-width 6)
+;;   (doom-modeline-minor-modes t)
+;;   (doom-modeline-buffer-file-name-style 'truncate-except-project)
+;;   :init
+;;   (add-hook 'after-init-hook 'doom-modeline-init))
 
 ;; utility libraries
 (use-package dash)
@@ -248,55 +339,57 @@ Do nothing if we're not in a string."
   (require 'ht))
 
 ;; Speedup with auto-compile
-;; (use-package auto-compile
-;;   :config
-;;   (auto-compile-on-load-mode)
-;;   (auto-compile-on-save-mode)
-;;   (setq auto-compile-display-buffer nil
-;;         auto-compile-mode-line-counter t))
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode)
+  (auto-compile-on-save-mode)
+  (setq auto-compile-display-buffer nil
+        auto-compile-mode-line-counter t))
 
 ;; Make `describe-*' screens more helpful
 
-;; (use-package helpful
-;;   :general
-;;   (:keymaps 'helpful-mode-map
-;;             [remap revert-buffer] #'helpful-update)
-;;   ([remap describe-command] #'helpful-command
-;;    [remap describe-function] #'helpful-callable
-;;    [remap describe-key] #'helpful-key
-;;    [remap describe-symbol] #'helpful-symbol
-;;    [remap describe-variable] #'helpful-variable
-;;    "C-h C" #'helpful-command
-;;    "C-h F" #'helpful-function
-;;    "C-h K" #'describe-keymap)
-;;   :config
+(use-package helpful
+  :general
+  (:keymaps 'helpful-mode-map
+            [remap revert-buffer] #'helpful-update)
+  ([remap describe-command] #'helpful-command
+   [remap describe-function] #'helpful-callable
+   [remap describe-key] #'helpful-key
+   [remap describe-symbol] #'helpful-symbol
+   [remap describe-variable] #'helpful-variable
+   "C-h C" #'helpful-command
+   "C-h F" #'helpful-function
+   "C-h K" #'describe-keymap)
+  :config
 
-;;   ;; Temporary fix until this all works for Emacs 29 again
-;;   (defvar read-symbol-positions-list nil)
-;;   (defun helpful--autoloaded-p (sym buf)
-;;     (-when-let (file-name (buffer-file-name buf))
-;;       (setq file-name (s-chop-suffix "*.gz" file-name))
-;;       (help-fns--autoloaded-p sym)))
+  ;; Temporary fix until this all works for Emacs 29 again
+  ;; (defvar read-symbol-positions-list nil)
+  ;; (defun helpful--autoloaded-p (sym buf)
+  ;;   (-when-let (file-name (buffer-file-name buf))
+  ;;     (setq file-name (s-chop-suffix "*.gz" file-name))
+  ;;     (help-fns--autoloaded-p sym)))
 
 
-;;   (defun helpful--skip-advice (docstring)
-;;     "Remove mentions of advice from DOCSTRING."
-;;     (let* ((lines (s-lines docstring))
-;;            (relevant-lines
-;;             (--take-while
-;;              (not (or (s-starts-with-p ":around advice:" it)
-;;                       (s-starts-with-p "This function has :around advice:" it)))
-;;              lines)))
-;;       (s-trim (s-join "\n" relevant-lines)))))
+  ;; (defun helpful--skip-advice (docstring)
+  ;;   "Remove mentions of advice from DOCSTRING."
+  ;;   (let* ((lines (s-lines docstring))
+  ;;          (relevant-lines
+  ;;           (--take-while
+  ;;            (not (or (s-starts-with-p ":around advice:" it)
+  ;;                     (s-starts-with-p "This function has :around advice:" it)))
+  ;;            lines)))
+  ;;     (s-trim (s-join "\n" relevant-lines))))
+  )
 
-;; ;; add visual pulse when changing focus, like beacon but built-in
-;; (defun pulse-line (&rest _)
-;;   "Pulse the current line"
-;;   (pulse-momentary-highlight-one-line (point)))
+;; add visual pulse when changing focus, like beacon but built-in
 
-;; (dolist (command '(scroll-up-command scroll-down-command
-;;                                      recenter-top-bottom other-window))
-;;   (advice-add command :after #'pulse-line))
+(defun pulse-line (&rest _)
+  "Pulse the current line"
+  (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command scroll-down-command
+                                     recenter-top-bottom other-window))
+  (advice-add command :after #'pulse-line))
 
 ;;;
 ;;; Windows stuff
@@ -386,6 +479,10 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   "'"  '+align-repeat-quote
   "`"  '+align-repeat-quote)
 
+(use-package macrostep
+  :general
+  ("M-m e e" 'macrostep-expand))
+
 
 ;;; Magit
 (use-package magit
@@ -402,57 +499,88 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (tab-always-indent 'complete)
   (completion-cycle-threshold nil)      ; Always show candidates in menu
 
-  (corfu-auto nil)
+  (corfu-cycle t)
+  (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.25)
+  (corfu-auto-delay 0.0)
 
-  (corfu-min-width 80)
-  (corfu-max-width corfu-min-width)     ; Always have the same width
-  (corfu-count 14)
-  (corfu-scroll-margin 4)
-  (corfu-cycle nil)
+  (corfu-quit-at-boundary 'separator)
 
-  ;; `nil' means to ignore `corfu-separator' behavior, that is, use the older
-  ;; `corfu-quit-at-boundary' = nil behavior. Set this to separator if using
-  ;; `corfu-auto' = `t' workflow (in that case, make sure you also set up
-  ;; `corfu-separator' and a keybind for `corfu-insert-separator', which my
-  ;; configuration already has pre-prepared). Necessary for manual corfu usage with
-  ;; orderless, otherwise first component is ignored, unless `corfu-separator'
-  ;; is inserted.
-  (corfu-quit-at-boundary nil)
-  (corfu-separator ?\s)            ; Use space
-  (corfu-quit-no-match 'separator) ; Don't quit if there is `corfu-separator' inserted
-  (corfu-preview-current 'insert)  ; Preview first candidate. Insert on input if only one
-  (corfu-preselect-first t)        ; Preselect first candidate?
+  :hook
+  (eshell-history-mode . +eshell-history-mode-setup-completion)
+  (lsp-completion-mode . +lsp-mode-setup-completion)
 
-  ;; Other
-  (corfu-echo-documentation nil)        ; Already use corfu-doc
+  :general
+  (:keymaps 'corfu-map
+            "M-SPC" 'corfu-insert-separator
+            "RET"   'corfu-insert
+            "S-<return>" 'corfu-insert
+            "M-m" '+corfu-move-to-minibuffer)
+
   :init
-  (corfu-global-mode))
+  ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
+
+  (defun +corfu-move-to-minibuffer ()
+    (interactive)
+    (let (completion-cycle-threshold completion-cycling)
+      (apply #'consult-completion-in-region completion-in-region--data)))
+
+  (defun +lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+
+  (defun +eshell-history-mode-setup-completion ()
+    (setq-local corfu-quit-at-boundary t
+                corfu-quit-no-match t
+                corfu-auto nil)
+    (corfu-mode t))
+
+  (global-corfu-mode))
+
+(use-package corfu-terminal
+  :if
+  (not window-system)
+  :init
+  (corfu-terminal-mode t))
 
 (use-package yaml-mode
-  :mode "\\.ya?ml\\'"
-  )
+  :mode "\\.ya?ml\\'")
+
 (use-package yaml)
 (use-package flycheck-yamllint)
 
 (use-package clipetty
+  :diminish
   :hook (after-init . global-clipetty-mode))
 
 (use-package yasnippet)
 (use-package consult-yasnippet)
-(use-package yasnippets-orgmode
-  :after org-mode)
+;; (use-package yasnippets-orgmode
+;;   :after org-mode)
 (use-package yasnippets)
 
+;; Need some thought about visual line modes
+(use-package emacs
+  :hook
+  (((text-mode org-mode) . visual-line-mode)
+   (prog-mode . toggle-word-wrap))
+  :custom
+  (truncate-lines nil))
+
 (use-package visual-fill-column
-  :init
-  (global-visual-fill-column-mode 1))
+  :defer nil)
 
 (for-terminal
   (xterm-mouse-mode 1))
 
-(require 'pdcmacs-org)
+(use-package powerline
+  :init
+  (powerline-default-theme))
 
+(use-package unfill
+  :bind ([remap fill-paragraph] . unfill-toggle))
+
+(require 'pdcmacs-feeds)
+(require 'pdcmacs-org)
 (require 'pdcmacs-hugo-support)
 (require 'pdcmacs-webservice)
