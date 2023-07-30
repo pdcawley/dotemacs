@@ -29,7 +29,7 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (delete-selection-mode)
 
-(setq-default
+(setopt
  frame-resize-pixelwise t
 
  indent-tabs-mode nil
@@ -67,14 +67,13 @@
   (global-auto-revert-mode 1))
 
 ;; Spaces, not tabs.
-(setq-default indent-tabs-mode nil
+(setopt indent-tabs-mode nil
               completions-detailed t
               read-minibuffer-restore-windows nil
               mode-line-compact 'long)
 
-
 ;; #'yes-or-no-p can die in a fire
-(setq-default use-short-answers t)
+(setopt use-short-answers t)
 ;; Turn on recentf mode
 (add-hook 'after-init-hook #'recentf-mode)
 (setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
@@ -84,19 +83,19 @@
 (savehist-mode 1)
 
 ;; Don't stick duplicates in kill-ring
-(customize-set-variable 'kill-do-not-save-duplicates t)
+(setopt kill-do-not-save-duplicates t)
 
 ;; Make scrolling a bit less stuttery
 (setq auto-window-vscroll nil)
-(customize-set-variable 'fast-but-imprecises-scrolling t)
-(customize-set-variable 'scroll-conservatively 101)
-(customize-set-variable 'scroll-margin 0)
-(customize-set-variable 'scroll-preserve-screen-position t)
+(setopt fast-but-imprecises-scrolling t)
+(setopt scroll-conservatively 101)
+(setopt scroll-margin 0)
+(setopt scroll-preserve-screen-position t)
 
 
 ;; Better support for files with long names
-(setq-default bidi-paragraph-direction 'left-to-right)
-(setq-default bidi-inhibit-bpa t)
+(setopt bidi-paragraph-direction 'left-to-right)
+(setopt bidi-inhibit-bpa t)
 (global-so-long-mode 1)
 
 ;; Make shebang files executable on save

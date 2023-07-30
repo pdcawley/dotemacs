@@ -34,7 +34,7 @@
 
 
 ;; Quiet a warning
-(customize-set-variable 'large-file-warning-threshold (* 100 1000 1000))
+(setopt large-file-warning-threshold (* 100 1000 1000))
 
 (setq straight-use-package-by-default t)
 (straight-use-package 'diminish)
@@ -96,7 +96,7 @@
   :hook
   ((conf-mode prog-mode text-mode) . 'display-line-numbers-mode)
   :init
-  (setq-default
+  (setopt
    display-line-numbers-grow-only t
    display-line-numbers-type t
    display-line-numbers-width nil))
