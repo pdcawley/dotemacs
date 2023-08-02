@@ -25,6 +25,11 @@
 (general-create-definer pdcmacs-app-def
   :prefix "M-m a" :prefix-map 'pdc-apps-map)
 
+
+(general-create-definer pdcmacs-jump-def
+  :prefix "M-m j" :prefix-map 'pdc-jump-map)
+
+
 (defvar pdc-windows-key-map (make-sparse-keymap))
 (pdcmacs-leader-def
   :infix "w"
@@ -103,7 +108,7 @@
     "t" 'dired-other-tab))
 
   ;; Buffer stuff
-
+34
 (defvar pdc-buffers-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map ctl-x-x-map)
@@ -151,5 +156,7 @@
       "a v" "↓"
       "a d" "↓"
       "a |" "↕")
+
+
 
 (provide 'pdcmacs-global-bindings)
