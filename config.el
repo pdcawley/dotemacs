@@ -756,7 +756,45 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (global-flycheck-mode t))
 
+;;; Setup common lisp mode stuff
 
+(defvar lisp-modes '(emacs-lisp-mode
+                     inferior-emacs-lisp-mode
+                     ielm-mode
+                     lisp-mode
+                     inferior-lisp-mode
+                     lisp-interaction-mode
+                     extempore-mode)
+  "A list of Lisp style modes")
+
+(defvar lisp-mode-hooks
+  (--map (intern (concat (symbol-name it) "-hook"))
+         lisp-modes)
+  "Hook variables associated with `lisp-modes'.")
+
+;; (use-package eldoc
+;;   :straight (eldoc :type built-in)
+;;   :diminish eldoc-mode
+;;   :hook
+;;   ((eval-expression-minibuffer-setup ielm-mode) . 'eldoc-mode))
+
+(use-package elisp-mode
+  :straight (elisp-mode :type built-in)
+  :general
+  (pdcmacs-mode :keymaps 'emacs-lisp-mode-map
+    "c" 'finder-commentary
+    "f" 'find-function
+    "F" 'find-face-definition)
+  :init
+  (defun pdc/elisp-mode-hook ()
+    (eldoc-mode 1)
+    (setq mode-name "EL"))
+  :hook
+  (emacs-lisp-mode . pdc/elisp-mode-hook))
+
+(use-package eros
+  :init
+  (eros-mode 1))
 
 
 
