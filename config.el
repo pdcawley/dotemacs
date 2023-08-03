@@ -703,6 +703,21 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :straight (dired-x :type built-in)
   :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
+(use-package recentf
+  :straight (recentf :type built-in)
+  :init
+  (add-hook 'find-file-hook (lambda ()
+                              (unless recentf-mode
+                                (recentf-mode)
+                                (recentf-track-opened-file))))
+  (setopt recentf-max-saved-items 1000
+          recentf-auto-cleanup 'never
+          recentf-auto-save-teimer (run-with-idle-timer 600 t 'recentf-save-list))
+  :config
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
+  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
+
 
 
 
