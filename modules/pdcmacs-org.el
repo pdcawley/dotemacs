@@ -56,6 +56,7 @@
         "←⭠ now ───────────────────────────────────────────────")
   (global-org-modern-mode t))
 
-
+(use-package orgba
+  :straight (orgba :type git :host github :repo "Fuco1/orgba"))
 
 (provide 'pdcmacs-org)
