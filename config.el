@@ -750,6 +750,12 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (ediff-prepare-buffer . 'show-all)
   (ediff-quit . 'winner-undo))
 
+(use-package flycheck
+  :commands global-flycheck-mode
+  :diminish " ⓢ"
+  :init
+  (global-flycheck-mode t))
+
 
 
 
