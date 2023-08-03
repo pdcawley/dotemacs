@@ -796,7 +796,12 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (eros-mode 1))
 
+(use-package calendar
+  :custom
+  (calendar-date-style 'iso))
 
+(use-package pdf-tools
+  :if (display-graphic-p))
 
 (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
