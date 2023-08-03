@@ -172,4 +172,79 @@
   "Q" '(kill-emacs :wk "Quit!")
   "z" 'pdc/frame-killer)
 
+;;; A few command name shortcuts. Blame Steve Yegge
+(defalias 'qrr 'query-replace-regexp)
+(defalias 'rr 'replace-regexp)
+
+(pdcmacs-leader-def :keymaps 'lisp-mode-shared-map
+  :infix "b"
+  "v" '(eval-buffer :wk "eVal-buffer"))
+
+(general-define-key :keymaps 'help-map
+  :infix "a"
+  ""    '(nil :which-key "apropos")
+  "A"   'apropos
+  "c"   'apropos-command
+  "d"   'apropos-documentation
+  "l"   'apropos-library
+  "m"   'apropos-mode
+  "o"   'apropos-user-option
+  "v"   'apropos-variable
+  "M-v" 'apropos-local-variable
+  "V"   'apropos-value
+  "M-V" 'apropos-local-value)
+
+;;; A describe-foo leader
+(dolist (key '(;; describe-*
+               "b" "C-c" "C-o" "c" "C" "g" "I"
+               "L" "m" "C-w" "P" "o" "s"
+               ;; Apropos stuff
+               "d"
+               ;;  Info stuff
+               "i" "F" "K" "r" "S"))
+        (keymap-unset help-map key))
+
+(general-define-key
+ :keymaps 'help-map
+ :infix "d"
+ "" '(nil :wk "describe…")
+ "b" 'describe-bindings
+ "c" 'describe-key-briefly
+ "C" 'describe-coding-system
+ "f" 'describe-function
+ "F" 'describe-face
+ "i" 'describe-current-input-method
+ "I" 'describe-input-method
+ "k" 'describe-key
+ "K" 'describe-keymap
+ "o" '(describe-symbol :wk "describe-symbOl")
+ "L" 'describe-language-environment
+ "m" 'describe-mode
+ "P" 'describe-package
+ "s" 'describe-syntax
+ "t" 'describe-theme
+ "v" 'describe-variable
+ "C-c" 'describe-current-coding-system)
+
+(defun +info-elisp-manual ()
+  "Display the Elisp manual in Info mode."
+  (interactive)
+  (info "elisp"))
+
+(defun +info-emacs-manual ()
+  "Display the Emacs manual in Info mode."
+  (interactive)
+  (info "emacs"))
+
+(general-define-key
+ :keymaps 'help-map
+ :infix "i"
+ "" '(nil :which-key "Info")
+ "e" '+info-elisp-manual
+ "i" 'info
+ "F" 'Info-goto-emacs-command-node
+ "K" 'Info-goto-emacs-key-command-node
+ "r" '(+info-emacs-manual :wk "Info-emacs-manual")
+ "S" 'info-lookup-symbol)
+
 (provide 'pdcmacs-global-bindings)
