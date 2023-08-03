@@ -47,7 +47,6 @@
  save-interprogram-paste-before-kill t
  apropos-do-all t
  require-final-newline t
- ediff-window-setup-function 'ediff-setup-windows-plain
 
  tramp-default-method "ssh"
  tramp-copy-size-limit nil
@@ -717,6 +716,15 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (add-to-list 'recentf-exclude no-littering-etc-directory)
   (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
   (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
+
+(use-package ediff
+  :straight (ediff :type built-in)
+  :init
+  (setopt ediff-window-setup-function 'ediff-setup-windows-plain)
+  (require 'outline)
+  :hook
+  (ediff-prepare-buffer . 'show-all)
+  (ediff-quit . 'winner-undo))
 
 
 
