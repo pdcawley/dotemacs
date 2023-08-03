@@ -247,4 +247,35 @@
  "r" '(+info-emacs-manual :wk "Info-emacs-manual")
  "S" 'info-lookup-symbol)
 
+(pdcmacs-jump-def
+  "$" 'move-end-of-line
+  ">" 'end-of-buffer
+  "<" 'beginning-of-buffer
+  "a" 'back-to-indentation
+  "[" 'beginning-of-defun
+  "]" 'end-of-defun)
+
+(use-package hydra)
+
+(pdcmacs-leader-def
+  :infix "k"
+  "k" (list
+       (defhydra hydra-kill (nil nil :color red)
+         "Kill"
+         (";" kill-comment "comment")
+         ("<tab>" delete-indentation "indentation")
+         ("L" kill-whole-line "whole line")
+         ("R" kill-rectangle "rectangle" :color blue)
+         ("S" kill-sentence "sentence")
+         ("l" kill-line "line")
+         ("p" kill-paragraph "paragraph")
+         ("r" kill-region "region")
+         ("s" kill-sexp "sexp")
+         ("v" kill-visual-line "visual-line")
+         ("w" kill-word "word"))
+       :which-key "kill")
+  "K" (list kmacro-keymap :which-key "kmacro")
+  "r R" 'replace-rectangle)
+
+
 (provide 'pdcmacs-global-bindings)
