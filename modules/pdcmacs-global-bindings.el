@@ -157,6 +157,19 @@
       "a d" "↓"
       "a |" "↕")
 
+;;; Quitting emacs
 
+(defun pdc/frame-killer ()
+  "Kill server buffer and hide the main Emacs window."
+  (interactive)
+  (condition-case-unless-debug nil
+      (delete-frame nil 1)
+    (error (make-frame-invisible nil 1))))
+
+(pdcmacs-leader-def :infix "q"
+  "s" '(save-buffers-kill-emacs :wk "Save & Kill")
+  "q" '(save-buffers-kill-terminal :wk "Save & disconnect")
+  "Q" '(kill-emacs :wk "Quit!")
+  "z" 'pdc/frame-killer)
 
 (provide 'pdcmacs-global-bindings)
