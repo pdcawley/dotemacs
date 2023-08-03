@@ -624,11 +624,35 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :diminish
   :hook (after-init . global-clipetty-mode))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :commands (yas-global-mode yas-minor-mode)
+  :functions (yas-load-directory)
+  :diminish (yas-minor-mode . " ⓨ")
+  :mode ("/yasnippet/snippets" . snippet-mode)
+  :init
+  (defvar yas-global-mode nil)
+  (setopt yas-triggers-in-field t
+          yas-wrap-around-region t
+          yas-prompt-functions '(yas-completing-prompt))
+  (defvar pdc-snippet-dirs (-filter 'file-directory-p
+                                    (list (expand-file-name "snippets/" user-emacs-directory)
+                                          (expand-file-name "~/.config/snippets"))))
+
+
+  (setq yas-snippet-dirs pdc-snippet-dirs))
+
+
 (use-package consult-yasnippet)
 ;; (use-package yasnippets-orgmode
 ;;   :after org-mode)
-(use-package yasnippets)
+(use-package yasnippets
+  :after yasnippet
+
+  :init
+  (setq yas-snippet-dirs (cons (straight--el-get-package-directory 'yasnippets)
+                               pdc-snippet-dirs))
+  (yas-global-mode t))
+
 
 ;; Need some thought about visual line modes
 (use-package emacs
