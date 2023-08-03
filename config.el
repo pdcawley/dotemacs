@@ -670,7 +670,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :hook
   (font-lock-mode .  pdc/try-to-add-imenu)
   :custom
-  (imenu-sort-function imenu--sort-by-name)
+  (imenu-sort-function 'imenu--sort-by-name)
   :init
   (defun pdc/try-to-add-imenu ()
       "Add Imenu to modes that have font-lock-mode activated."
