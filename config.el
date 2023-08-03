@@ -688,14 +688,20 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :straight (dired :type built-in)
   :general
   (pdcmacs-app-def "d" 'dired)
-  (pdcmacs-jump-def "j"
+  (pdcmacs-jump-def
     "d" 'dired-jump
     "D" 'dired-jump-other-window)
+  (:keymaps 'dired-mode-map
+    ", w" 'wdired-change-to-wdired-mode)
 
   :init
   (setopt dired-use-ls-dired nil
           dired-omit-file-p t
           dired-omit-files "^\\.?#"))
+
+(use-package dired-x
+  :straight (dired-x :type built-in)
+  :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
 
 
