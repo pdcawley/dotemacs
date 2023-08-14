@@ -800,6 +800,10 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :custom
   (calendar-date-style 'iso))
 
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
 (use-package pdf-tools
   :if (display-graphic-p))
 
