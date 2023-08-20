@@ -264,6 +264,8 @@
   "]" 'end-of-defun)
 
 (use-package hydra)
+(use-package kmacro
+  :straight (kmacro :type built-in))
 
 (pdcmacs-leader-def
   :infix "k"
