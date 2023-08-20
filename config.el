@@ -728,7 +728,8 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :init
   (setopt dired-use-ls-dired nil
           dired-omit-file-p t
-          dired-omit-files "^\\.?#"))
+          dired-omit-files "^\\.?#"
+          dired-dwim-target t))
 
 (use-package dired-x
   :straight (dired-x :type built-in)
