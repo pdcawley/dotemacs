@@ -51,8 +51,8 @@
 (pdcmacs-leader-def
   "!" 'shell-command
   ":" 'execute-extended-command
-  "/" (cond ((fboundp 'swiper)       'swiper)
-            ((fboundp 'consult-line) 'consult-line)
+  "/" (cond ((fboundp 'consult-line) 'consult-line)
+            ((fboundp 'swiper)       'swiper)
             (t                        'isearch-forward-regexp)))
 
 ;;; Universal argument stuff
