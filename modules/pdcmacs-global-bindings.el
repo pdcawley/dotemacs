@@ -16,6 +16,9 @@
 (general-def
   "M-m" 'pdc-leader-map)
 
+(general-def
+  "M-m s" '(:keymap search-map :which-key "search"))
+
 (general-create-definer pdcmacs-leader-def
   :prefix "M-m")
 
