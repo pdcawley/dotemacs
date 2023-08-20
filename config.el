@@ -313,16 +313,15 @@ Do nothing if we're not in a string."
 (use-package vertico
   :custom
   (vertico-cycle t)
-  :config
-  ;; (require 'vertico-directory "extensions/vertico-directory.el")
-  (with-demoted-errors "%s"
-    (vertico-mode +1)))
+  :hook
+  (after-init . vertico-mode))
+
 
 (use-package marginalia
+  :hook (after-init . marginalia-mode)
   :config
-  (setq marginalia-annotators '(marginalia-annotators-light nil))
-  (with-demoted-errors "%s"
-    (marginalia-mode +1)))
+  (setq marginalia-annotators '(marginalia-annotators-light nil)))
+
 
 (use-package consult
   :general
