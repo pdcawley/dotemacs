@@ -823,6 +823,8 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
+(desktop-save-mode 1)
+(save-place-mode 1)
 (require 'pdcmacs-feeds)
 (require 'pdcmacs-org)
 (require 'pdcmacs-hugo-support)
