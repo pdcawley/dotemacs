@@ -804,6 +804,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (calendar-date-style 'iso))
 
 (use-package editorconfig
+  :diminish
   :config
   (editorconfig-mode 1))
 
