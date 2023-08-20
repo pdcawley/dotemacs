@@ -46,8 +46,8 @@
   "f" 'windmove-right
   "<" 'scroll-left
   ">" 'scroll-right
-  "]" 'enlarge-window-horizontally
-  "[" 'shrink-window-horizontally
+  "}" 'enlarge-window-horizontally
+  "{" 'shrink-window-horizontally
   "^" 'enlarge-window
   "v" 'shrink-window)
 
