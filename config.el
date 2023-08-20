@@ -816,6 +816,10 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (use-package pdf-tools
   :if (display-graphic-p))
 
+(use-package notifications
+  :straight (notifications :type built-in))
+
+
 (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
 (require 'pdcmacs-feeds)
