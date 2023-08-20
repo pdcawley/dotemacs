@@ -666,7 +666,12 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (truncate-lines nil))
 
 (use-package visual-fill-column
-  :defer nil)
+  :defer nil
+  :hook
+  ((text-mode org-mode) . visual-fill-column-mode)
+  :config
+  (setq visual-fill-column-enable-sensible-window-split t))
+
 
 (for-terminal
   (xterm-mouse-mode 1))
