@@ -152,6 +152,7 @@
    "C-M-s" 'paredit-backward-up
    "M-I" 'paredit-splice-sexp
    "]" 'paredit-close-square-and-newline
+   "}" 'paredit-close-curly-and-newline
    ";" 'pdc/paredit-semicolon)
 
   (defun pdc/paredit-backward-delete ()
