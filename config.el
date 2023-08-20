@@ -389,7 +389,7 @@ Do nothing if we're not in a string."
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless))
+  (completion-styles '(substring orderless basic))
   (completion-category-overrides '((file (styles . (partial-completion)))))
   :config
   (setq completion-category-defaults nil))
@@ -627,6 +627,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
   ;; want to perform completion
   (tab-always-indent 'complete)
+  (tab-first-completion 'word)
   (completion-cycle-threshold nil)      ; Always show candidates in menu
 
   (corfu-cycle t)
