@@ -325,11 +325,67 @@ Do nothing if we're not in a string."
 
 (use-package consult
   :general
-  ("C-s" 'consult-line)
-  (:keymaps 'minibuffer-local-map
-        "C-r" 'consult-history)
+  ([remap isearch-forward] 'consult-line
+   [remap Info-search] 'consult-info
+   [remap imenu] 'consult-imenu
+   [remap recentf-open-files] 'consult-recent-file
+
+   "C-x M-:" 'consult-complex-command
+   "C-x b" 'consult-buffer
+   "C-x 4 b" 'consult-buffer-other-window
+   "C-x 5 b" 'consult-buffer-other-frame
+   "C-x r b" 'consult-bookmark
+   "C-x p b" 'consult-project-buffer
+
+   "M-#" 'consult-register-load
+   "M-'" 'consult-register-store
+   "C-M-#" 'consult-register
+
+   "M-y" 'consult-yank-pop
+
+   :keymaps 'search-map
+   "d" 'consult-find
+   "D" 'consult-locate
+   "g" 'consult-grep
+   "G" 'consult-git-grep
+   "r" 'consult-ripgrep
+   "l" 'consult-line
+   "L" 'consult-line-multi
+   "k" 'consult-keep-lines
+   "u" 'consult-focus-lines
+   "e" 'consult-isearch-history
+
+   :keymaps 'isearch-mode-map
+   "M-e" 'consult-isearch-history
+   "M-s e" 'consult-isearch-history
+   "M-s l" 'consult-line
+   "M-s L" 'consult-line-multi
+   :keymaps 'minibuffer-local-map
+   "C-s" `(,(lambda ()
+              "Insert the current symbol"
+              (interactive)
+              (insert (save-excursion
+                        (set-buffer (window-buffer (minibuffer-selected-window)))
+                        (or (thing-at-point 'symbol t) ""))))
+           :which-key "insert-current-symbol")
+   "M-s" 'consult-history
+   "M-r" 'consult-history)
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :init
+  (setopt register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  (with-eval-after-load 'xref
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref))
+
   :config
-  (setq completion-in-region-function #'consult-completion-in-region))
+  (consult-customize
+   consult-goto-line
+   consult-theme :preview-key '(:debounce 0.4 any)))
+
 
 (use-package orderless
   :custom
