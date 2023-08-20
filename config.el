@@ -314,12 +314,14 @@ Do nothing if we're not in a string."
   (vertico-cycle t)
   :config
   ;; (require 'vertico-directory "extensions/vertico-directory.el")
-  (vertico-mode 1))
+  (with-demoted-errors "%s"
+    (vertico-mode +1)))
 
 (use-package marginalia
   :config
   (setq marginalia-annotators '(marginalia-annotators-light nil))
-  (marginalia-mode 1))
+  (with-demoted-errors "%s"
+    (marginalia-mode +1)))
 
 (use-package consult
   :general
