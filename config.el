@@ -435,6 +435,7 @@ Do nothing if we're not in a string."
 ;;; Windows stuff
 
 (use-package winner
+  :straight (winner :type built-in)
   :init
   (winner-mode 1)
   (setq winner-boring-buffers
@@ -543,7 +544,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package smerge-mode
   :after which-key
-  :straight (:type built-in)
+  :straight (smerge-mode :type built-in)
   :custom
   (smerge-auto-leave nil)
   :general
