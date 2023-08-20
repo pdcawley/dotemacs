@@ -702,7 +702,12 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (setq yas-snippet-dirs pdc-snippet-dirs))
 
 
-(use-package consult-yasnippet)
+(use-package consult-yasnippet
+  :after (consult yasnippet)
+  :general
+  ("M-g y" 'consult-yasnippet))
+
+
 ;; (use-package yasnippets-orgmode
 ;;   :after org-mode)
 (use-package yasnippets
