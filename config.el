@@ -825,6 +825,10 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (desktop-save-mode 1)
 (save-place-mode 1)
+(add-hook 'doc-view-mode-hook 'auto-revert-mode)
+(add-hook 'pdf-view-mode-hook 'auto-revert-mode)
+
+
 (require 'pdcmacs-feeds)
 (require 'pdcmacs-org)
 (require 'pdcmacs-hugo-support)
