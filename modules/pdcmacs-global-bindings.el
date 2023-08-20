@@ -34,11 +34,19 @@
 (pdcmacs-leader-def
   :infix "w"
   "" '(:keymap pdc-windows-key-map :which-key "windows")
+  "<left>" 'winner-undo
+  "<right>" 'winner-redo
   "u" 'winner-undo
   "n" 'windmove-down
   "p" 'windmove-up
   "b" 'windmove-left
-  "f" 'windmove-right)
+  "f" 'windmove-right
+  "<" 'scroll-left
+  ">" 'scroll-right
+  "]" 'enlarge-window-horizontally
+  "[" 'shrink-window-horizontally
+  "^" 'enlarge-window
+  "v" 'shrink-window)
 
 (pdcmacs-leader-def
   "!" 'shell-command
