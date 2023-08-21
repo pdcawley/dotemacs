@@ -33,12 +33,20 @@
   :prefix "M-m j" :prefix-map 'pdc-jump-map)
 
 
+(defun pdc-toggle-window-dedication ()
+  "Toggles window dedication in teh selected window."
+  (interactive)
+  (set-window-dedicated-p (selected-window)
+                          (not (window-dedicated-p (selected-window)))))
+
+
 (defvar pdc-windows-key-map (make-sparse-keymap))
 (pdcmacs-leader-def
   :infix "w"
   "" '(:keymap pdc-windows-key-map :which-key "windows")
   "<left>" 'winner-undo
   "<right>" 'winner-redo
+  "d" 'pdc-toggle-window-dedication
   "u" 'winner-undo
   "n" 'windmove-down
   "p" 'windmove-up

@@ -306,6 +306,22 @@ Do nothing if we're not in a string."
 
   (push '+mwim-current-string-end mwim-end-position-functions))
 
+(defgroup pdcmacs nil
+  "Pdcmacs customization.")
+
+(defcustom pdc-icon t
+  "Display icons or not."
+  :group 'pdcmacs
+  :type 'boolean)
+
+
+(defun icons-displayable-p ()
+  "Return non-nil if icons are displayable."
+  (and window-system
+       pdc-icon
+       (or (featurep 'nerd-icons)
+           (require 'nerd-icons nil t))))
+
 
 ;;
 ;; Completion frameworks and such.
@@ -400,6 +416,40 @@ Do nothing if we're not in a string."
   ([remap describe-bindings] #'embark-bindings)
   :config
   (setq prefix-help-command #'embark-prefix-help-command))
+
+;; Window management settings
+
+(setopt switch-to-buffer-in-dedicated-window 'pop
+        switch-to-buffer-obey-display-actions t)
+
+(add-to-list 'display-buffer-alist
+             '("\\*Help\\*"
+               (display-buffer-reuse-window display-buffer-pop-up-window)
+               (inhibit-same-window . t)))
+(add-to-list 'display-buffer-alist
+             '("\\*Compilation\\*"
+               display-buffer-reuse-window))
+(add-to-list 'display-buffer-alist
+             '("\\*info\\*"
+               (display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . 80)
+               (window-parameters
+                (no-delete-other-windows . t))))
+
+(require 'rx)
+(add-to-list 'display-buffer-alist
+             `(,(rx (| "*xref*"
+                       "*grep*"
+                       "*Occur*"))
+               display-buffer-reuse-window
+               (inhibit-same-window . nil)))
+
+(add-to-list 'display-buffer-alist
+             '("\\*compilation\\*" display-buffer-no-window
+               (allow-no-window . t)))
+
 
 (use-package embark-consult)
 (use-package consult-dir)
