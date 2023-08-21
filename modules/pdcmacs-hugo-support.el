@@ -115,7 +115,9 @@
                                           ":PROPERTIES:"
                                           ":export_file_name: week-ending-%Y%m%d"
                                           ":export_hugo_slug: week-note"
-                                          ":END:"))
+                                          ":END:"
+                                          ""
+                                          "#+hugo: more"))
                                 eow-time)))
             (list heading-title full-heading))
           (format-time-string "%A" (org-current-effective-time)))))
