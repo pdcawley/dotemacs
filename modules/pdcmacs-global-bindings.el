@@ -176,6 +176,21 @@
       "a d" "↓"
       "a |" "↕")
 
+;;; Set up a custom inputmode
+
+(progn
+ (quail-define-package
+  "Pdc" "UTF-8" "😎" t
+  "Custom input mode for my convenience"
+  '(("\t" . quail-completion))
+  t t nil nil nil nil nil nil nil t)
+
+ (quail-define-rules
+  (":)" ?🙂)
+  (":P" ?😋)
+  (":D" ?😀)
+  (";)" ?😉)))
+
 ;;; Quitting emacs
 
 (defun pdc/frame-killer ()
