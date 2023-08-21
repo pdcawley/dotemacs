@@ -7,9 +7,16 @@
 (defun start-server-after-init ()
   (interactive)
   (require 'server)
-  (or (server-running-p) (server-start)))
+  (unless (server-running-p)
+    (server-start)
+    (midnight-mode +1)))
 
-(add-hook 'after-init-hook 'start-server-after-init)
+(use-package emacs
+  :hook
+  (after-init . start-server-after-init))
+
+
+
 
 ;;;
 ;;; Performance
