@@ -544,6 +544,13 @@ Do nothing if we're not in a string."
   (advice-add command :after #'pulse-line))
 
 ;;;
+
+(use-package hl-line-mode
+  :straight (hl-line-mode :type built-in)
+  :hook
+  ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
+
+;;;
 ;;; Windows stuff
 
 (use-package winner
