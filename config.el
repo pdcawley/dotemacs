@@ -85,7 +85,6 @@
 ;; #'yes-or-no-p can die in a fire
 (setopt use-short-answers t)
 ;; Turn on recentf mode
-(add-hook 'after-init-hook #'recentf-mode)
 (setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
 
 ;; savehist mode
@@ -856,11 +855,15 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package recentf
   :straight (recentf :type built-in)
+  :hook
+  (after-init . recentf-mode)
+  (find-file . pdc/recentf-find-file-hook)
   :init
-  (add-hook 'find-file-hook (lambda ()
-                              (unless recentf-mode
-                                (recentf-mode)
-                                (recentf-track-opened-file))))
+  (defun pdc/recentf-find-file-hook ()
+    (unless recentf-mode
+      (recentf-mode)
+      (recentf-track-opened-file)))
+
   (setopt recentf-max-saved-items 1000
           recentf-auto-cleanup 'never
           recentf-auto-save-teimer (run-with-idle-timer 600 t 'recentf-save-list))
