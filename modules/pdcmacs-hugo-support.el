@@ -136,37 +136,63 @@
                                     calendar-gregorian-from-absolute)))
     end-of-week-gregorian))
 
+(defun pdc:default-weeknote-path ()
+  (pdc:weeknote-path
+   (calendar-gregorian-from-absolute
+    (cond (org-overriding-default-time
+           (time-to-days org-overriding-default-time))
+          ((or (org-capture-get :time-prompt)
+               (equal current-prefix-arg 1))
+           (let* ((org-time-was-given nil)
+                  (org-end-time-was-given nil)
+                  (prompt-time (org-read-date
+                                nil t nil "Date for daynote entry:")))
+             (org-capture-put
+              :default-time
+              (if (or org-time-was-given
+                      (= (time-to-days prompt-time) (org-today)))
+                  prompt-time
+
+                (org-encode-time
+                 (apply #'list
+                        0 0 org-extend-today-until
+                        (cl-cdddr (decode-time prompt-time))))))
+             (time-to-days prompt-time)))
+          (t (time-to-days (org-current-effective-time)))))))
+
 (defun +org-hugo-find-weeknote-entry (&rest olp)
   "Find or create today in this week's week note."
 
   ;; This leaves point at the start of the last heading it created.
   (+org-pathbuilder-find-create-path
-   nil (-concat olp (pdc:weeknote-path
-                     (calendar-gregorian-from-absolute
-                      (cond (org-overriding-default-time
-                             (time-to-days org-overriding-default-time))
-                            ((or (org-capture-get :time-prompt)
-                                 (equal current-prefix-arg 1))
-                             (let* ((org-time-was-given nil)
-                                    (org-end-time-was-given nil)
-                                    (prompt-time (org-read-date
-                                                  nil t nil "Date for daynote entry:")))
-                               (org-capture-put
-                                :default-time
-                                (if (or org-time-was-given
-                                        (= (time-to-days prompt-time) (org-today)))
-                                    prompt-time
-
-                                  (org-encode-time
-                                   (apply #'list
-                                          0 0 org-extend-today-until
-                                          (cl-cdddr (decode-time prompt-time))))))
-                               (time-to-days prompt-time)))
-                            (t (time-to-days (org-current-effective-time))))))))
+   nil (-concat olp (pdc:default-weeknote-path)))
   ;; Skip to the end of the subtree
   (save-restriction
     (org-narrow-to-subtree)
     (goto-char (point-max))))
+
+(defun +org-hugo-find-weeknote-summary (&rest olp)
+  (+org-pathbuilder-find-create-path
+   nil (-concat olp (-take 2 (pdc:default-weeknote-path))))
+  (save-restriction
+    (org-narrow-to-subtree)
+    (org-goto-first-child)
+    (backward-char)
+    (delete-region
+     (save-excursion (skip-chars-backward " \t\n") (point))
+     (point))
+    (beginning-of-line)
+    (cond ((looking-at (rx "#+hugo: more"))
+           (delete-region
+            (save-excursion (skip-chars-backward " \t\n") (point))
+            (point))
+           (insert "\n\n\n\n")
+           (backward-char 2))
+          (t
+           (end-of-line)
+           (insert "\n\n")))))
+
+
 
 (use-package ox-hugo
   :after ox
@@ -174,7 +200,7 @@
 
   (defun +org-hugo-set-shortcode-props (code &rest props)
     (setf (alist-get code org-hugo-special-block-type-properties)
-           props))
+          props))
 
   (+org-hugo-set-shortcode-props "newthought" :trim-pre nil :trim-post t)
   (+org-hugo-set-shortcode-props "marginnote" :trim-pre t :trim-post t)
@@ -340,7 +366,15 @@ See `org-capture-templates' for more information"
      (file+function "~/Sites/bofh.org.uk/org-content/all-posts.org" ,#'(lambda () (+org-hugo-find-weeknote-entry "Week Notes")))
      "%?"
      :empty-lines 1
+     :jump-to-captured 1))
+  (add-to-list
+   'org-capture-templates
+   `("W" "Week Summary" plain
+     (file+function "~/Sites/bofh.org.uk/org-content/all-posts.org" ,#'(lambda () (+org-hugo-find-weeknote-summary "Week Notes")))
+     "%?"
+     :empty-lines 1
      :jump-to-captured 1)))
+
 
 (use-package web-mode
   :mode
