@@ -59,7 +59,11 @@
 
  vc-follow-symlinks t
 
- ring-bell-function 'ignore)
+ ring-bell-function 'ignore
+
+ ;; Use the new 'sectioned' view of grep:
+ grep-use-headings t)
+
 
 (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
 
