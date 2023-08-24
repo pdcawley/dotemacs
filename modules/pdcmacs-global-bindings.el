@@ -201,6 +201,7 @@
     (error (make-frame-invisible nil 1))))
 
 (pdcmacs-leader-def :infix "q"
+  "" '(nil :wk "quitting")
   "s" '(save-buffers-kill-emacs :wk "Save & Kill")
   "q" '(save-buffers-kill-terminal :wk "Save & disconnect")
   "Q" '(kill-emacs :wk "Quit!")
@@ -295,6 +296,7 @@
 
 (pdcmacs-leader-def
   :infix "k"
+  "" '(nil :wk "kill/macros")
   "k" (list
        (defhydra hydra-kill (nil nil :color red)
          "Kill"

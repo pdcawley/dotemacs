@@ -650,7 +650,8 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package macrostep
   :general
-  ("M-m e e" 'macrostep-expand))
+  (pdcmacs-mode :keymaps 'emacs-lisp-mode-map
+    "e" 'macrostep-expand))
 
 ;;; Repeat mode stuffs
 
