@@ -315,5 +315,13 @@
   "K" (list kmacro-keymap :which-key "kmacro")
   "r R" 'replace-rectangle)
 
+;;;
+;;; Tweak the workings of `cycle-spacing', the new improved `just-one-space'
+;;;
+
+(setq cycle-spacing-actions '(just-one-space
+                              (just-one-space -1)
+                              delete-all-space
+                              restore))
 
 (provide 'pdcmacs-global-bindings)
