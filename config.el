@@ -13,10 +13,8 @@
 
 (use-package emacs
   :hook
-  (after-init . start-server-after-init))
-
-
-
+  (after-init . start-server-after-init)
+  (after-init . kill-ring-deindent-mode))
 
 ;;;
 ;;; Performance
