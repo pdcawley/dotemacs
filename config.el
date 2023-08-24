@@ -430,34 +430,41 @@ Do nothing if we're not in a string."
 (setopt switch-to-buffer-in-dedicated-window 'pop
         switch-to-buffer-obey-display-actions t)
 
-(add-to-list 'display-buffer-alist
-             '("\\*Help\\*"
-               (display-buffer-reuse-window display-buffer-pop-up-window)
-               (inhibit-same-window . t)))
-(add-to-list 'display-buffer-alist
-             '("\\*Compilation\\*"
-               display-buffer-reuse-window))
-(add-to-list 'display-buffer-alist
-             '("\\*info\\*"
-               (display-buffer-in-side-window)
-               (side . right)
-               (slot . 0)
-               (window-width . 80)
-               (window-parameters
-                (no-delete-other-windows . t))))
-
 (require 'rx)
-(add-to-list 'display-buffer-alist
-             `(,(rx (| "*xref*"
-                       "*grep*"
-                       "*Occur*"))
-               display-buffer-reuse-window
-               (inhibit-same-window . nil)))
 
-(add-to-list 'display-buffer-alist
-             '("\\*compilation\\*" display-buffer-no-window
-               (allow-no-window . t)))
+(let ((parameters '(window-parameters . ((no-other-window . t)
+                                         (no-delete-other-windows . t)))))
 
+  (add-to-list 'display-buffer-alist
+               '("\\*compilation\\*" display-buffer-no-window
+                 (allow-no-window . t)))
+  (add-to-list 'display-buffer-alist
+               `(,(rx (| "*info*"
+                         "NEWS"))
+                 (display-buffer-in-side-window)
+                 (side . right)
+                 (slot . 0)
+                 (window-width . fit-window-to-buffer)
+                 ,parameters))
+  (add-to-list
+   'display-buffer-alist
+   `(,(rx "*"
+          "helpful " (*? anychar) ":" (* (not ?*))
+          "*")
+     display-buffer-in-side-window
+     (side . right) (slot . 1) (window-width . fit-window-to-buffer)
+     (window-parameters . ((no-other-window . 1)
+                           (no-delete-other-windows . t)))))
+  (add-to-list 'display-buffer-alist
+               `(,(rx "*"
+                      (| "xref"
+                         "grep"
+                         "Occur"
+                         "Completions")
+                      "*")
+                 display-buffer-in-side-window
+                 (side . bottom) (slot . 1) (preserve-size . (nil . t))
+                 ,parameters)))
 
 (use-package embark-consult)
 (use-package consult-dir)
