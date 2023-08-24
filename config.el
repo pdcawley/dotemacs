@@ -441,10 +441,8 @@ Do nothing if we're not in a string."
   (add-to-list 'display-buffer-alist
                `(,(rx (| "*info*"
                          "NEWS"))
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (slot . 0)
-                 (window-width . fit-window-to-buffer)
+                 (display-buffer-below-selected)
+                 (window-height . fit-window-to-buffer)
                  ,parameters))
   (add-to-list
    'display-buffer-alist
@@ -452,7 +450,7 @@ Do nothing if we're not in a string."
           "helpful " (*? anychar) ":" (* (not ?*))
           "*")
      display-buffer-in-side-window
-     (side . right) (slot . 1) (window-width . fit-window-to-buffer)
+     (side . bottom) (slot . 1) (window-width . fit-window-to-buffer)
      (window-parameters . ((no-other-window . 1)
                            (no-delete-other-windows . t)))))
   (add-to-list 'display-buffer-alist
@@ -462,8 +460,8 @@ Do nothing if we're not in a string."
                          "Occur"
                          "Completions")
                       "*")
-                 display-buffer-in-side-window
-                 (side . bottom) (slot . 1) (preserve-size . (nil . t))
+                 display-buffer-below-selected
+                 (preserve-size . (nil . t))
                  ,parameters)))
 
 (use-package embark-consult)
