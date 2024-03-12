@@ -99,20 +99,18 @@
         history-delete-duplicates t)
   (savehist-mode 1))
 
-;; Don't stick duplicates in kill-ring
-(setopt kill-do-not-save-duplicates t)
 
 ;; Make scrolling a bit less stuttery
 (setq auto-window-vscroll nil)
-(setopt fast-but-imprecises-scrolling t)
-(setopt scroll-conservatively 101)
-(setopt scroll-margin 0)
-(setopt scroll-preserve-screen-position t)
+(setopt fast-but-imprecise-scrolling t
+        scroll-conservatively 101
+        scroll-margin 0
+        scroll-preserve-screen-position t)
 
 
 ;; Better support for files with long names
-(setopt bidi-paragraph-direction 'left-to-right)
-(setopt bidi-inhibit-bpa t)
+(setopt bidi-paragraph-direction 'left-to-right
+        bidi-inhibit-bpa t)
 (global-so-long-mode 1)
 
 ;; Make shebang files executable on save
