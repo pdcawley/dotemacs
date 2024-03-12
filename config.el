@@ -277,9 +277,8 @@
                              mwim-code-end
                              mwim-line-end))
   :general
-  (general-def
-    "C-a" 'mwim-beginning
-    "C-e" '+mwim-next-ending)
+  ("C-a" 'mwim-beginning
+   "C-e" '+mwim-next-ending)
   :config
   (defun +mwim-next-ending ()
     "Move point to the the nearest ending place"
