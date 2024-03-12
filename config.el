@@ -446,6 +446,9 @@ Do nothing if we're not in a string."
   )
 
 
+(use-package aggressive-indent
+  :init (aggressive-indent-global-mode t))
+
 (use-package embark
   :general
   ("C-." #'embark-act)
