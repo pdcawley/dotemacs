@@ -120,7 +120,7 @@
 (diminish 'eldoc-mode "")
 
 ;; sentences do not end with a double space
-(setq sentence-end-double-space nil)
+(setopt sentence-end-double-space nil)
 
 ;; Enable some stuff
 (put 'narrow-to-region 'disabled nil)
