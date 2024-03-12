@@ -391,35 +391,33 @@ Do nothing if we're not in a string."
    "M-'" 'consult-register-store
    "C-M-#" 'consult-register
 
-   "M-y" 'consult-yank-pop
-
-   :keymaps 'search-map
-   "d" 'consult-find
-   "D" 'consult-locate
-   "g" 'consult-grep
-   "G" 'consult-git-grep
-   "r" 'consult-ripgrep
-   "l" 'consult-line
-   "L" 'consult-line-multi
-   "k" 'consult-keep-lines
-   "u" 'consult-focus-lines
-   "e" 'consult-isearch-history
-
-   :keymaps 'isearch-mode-map
+   "M-y" 'consult-yank-pop)
+  (:keymaps 'isearch-mode-map
    "M-e" 'consult-isearch-history
    "M-s e" 'consult-isearch-history
    "M-s l" 'consult-line
-   "M-s L" 'consult-line-multi
-   :keymaps 'minibuffer-local-map
-   "C-s" `(,(lambda ()
-              "Insert the current symbol"
-              (interactive)
-              (insert (save-excursion
-                        (set-buffer (window-buffer (minibuffer-selected-window)))
-                        (or (thing-at-point 'symbol t) ""))))
-           :which-key "insert-current-symbol")
-   "M-s" 'consult-history
-   "M-r" 'consult-history)
+   "M-s L" 'consult-line-multi)
+  (:keymaps 'minibuffer-local-map
+            "C-s" `(,(lambda ()
+                       "Insert the current symbol"
+                       (interactive)
+                       (insert (save-excursion
+                                 (set-buffer (window-buffer (minibuffer-selected-window)))
+                                 (or (thing-at-point 'symbol t) ""))))
+                    :which-key "insert-current-symbol")
+            "M-s" 'consult-history
+            "M-r" 'consult-history)
+  (:keymaps 'search-map
+           "d" 'consult-find
+           "D" 'consult-locate
+           "g" 'consult-grep
+           "G" 'consult-git-grep
+           "r" 'consult-ripgrep
+           "l" 'consult-line
+           "L" 'consult-line-multi
+           "k" 'consult-keep-lines
+           "u" 'consult-focus-lines
+           "e" 'consult-isearch-history)
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setopt register-preview-delay 0.5
