@@ -738,28 +738,39 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   ;; want to perform completion
   (tab-always-indent 'complete)
   (tab-first-completion 'word)
-  (completion-cycle-threshold nil)      ; Always show candidates in menu
+
+  (completion-cycle-threshold 3)
 
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.0)
-
+  (corfu-auto-prefix 3)
+  (corfu-auto-delay 0.2)
+  (corfu-preview-current nil)
   (corfu-quit-at-boundary 'separator)
 
+  (global-corfu-modes '((not org-mode) t))
+
+  (corfu-preselect 'valid)
   :hook
   (eshell-history-mode . +eshell-history-mode-setup-completion)
   (lsp-completion-mode . +lsp-mode-setup-completion)
+
 
   :general
   (:keymaps 'corfu-map
             "M-SPC" 'corfu-insert-separator
             "RET"   'corfu-insert
+            ;; "RET" nil
             "S-<return>" 'corfu-insert
             "M-m" '+corfu-move-to-minibuffer)
 
   :init
   ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
+
+  (defun +pdc/corfu-insert ()
+    "Insert current candidate or newline."
+    (interactive)
+    )
 
   (defun +corfu-move-to-minibuffer ()
     (interactive)
@@ -776,7 +787,7 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
                 corfu-auto nil)
     (corfu-mode t))
 
-  (global-corfu-mode))
+  (global-corfu-mode t))
 
 (use-package corfu-terminal
   :if
