@@ -437,10 +437,14 @@ Do nothing if we're not in a string."
 
 (use-package orderless
   :custom
-  (completion-styles '(substring orderless basic))
+  (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles . (partial-completion)))))
-  :config
-  (setq completion-category-defaults nil))
+  (completion-category-defaults nil)
+
+  :init
+
+  )
+
 
 (use-package embark
   :general
