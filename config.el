@@ -79,12 +79,15 @@
 
 ;; Spaces, not tabs.
 (setopt indent-tabs-mode nil
-              completions-detailed t
-              read-minibuffer-restore-windows nil
-              mode-line-compact 'long)
+        completions-detailed t
+        read-minibuffer-restore-windows nil
+        mode-line-compact 'long
+        ;; #'yes-or-no-p can die in a fire
+        use-short-answers t
+        ;; Don't stick duplicates in kill-ring
+        kill-do-not-save-duplicates t
+)
 
-;; #'yes-or-no-p can die in a fire
-(setopt use-short-answers t)
 ;; Turn on recentf mode
 (setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
 
