@@ -36,6 +36,7 @@
   (:type git :host github :repo "minad/org-modern")
   :hook
   (org-modern-mode . org-indent-mode)
+  (org-mode . maybe-turn-on-org-modern)
   :init
   (setq org-auto-align-tags nil
         org-tags-column 0
@@ -54,7 +55,10 @@
           " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string
         "←⭠ now ───────────────────────────────────────────────")
-  (global-org-modern-mode t))
+  (defun maybe-turn-on-org-modern ()
+    "Turn's org-modern on if we're not in text mode"
+    (for-gui
+      (global-org-modern-mode t))))
 
 (use-package orgba
   :straight (orgba :type git :host github :repo "Fuco1/orgba"))
