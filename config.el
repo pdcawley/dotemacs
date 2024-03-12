@@ -340,7 +340,31 @@ Do nothing if we're not in a string."
   :custom
   (vertico-cycle t)
   :hook
-  (after-init . vertico-mode))
+  (after-init . vertico-mode)
+  (after-init . vertico-multiform-mode)
+  :init
+  (setq vertico-multiform-commands
+        '((consult-recent-file buffer)
+          (consult-mode-command buffer)
+          (consult-complex-command buffer)
+          (embark-bindings buffer)
+          (consult-locate buffer)
+          (consult-project-buffer buffer)
+          (consult-ripgrep buffer)
+          (consult-fd buffer)))
+  :general
+  (:keymaps 'vertico-map
+            "M-," '(nil :which-key options)
+            "M-, r" 'vertico-reverse-mode
+            "M-, g" 'vertico-grid-mode
+            "M-q" 'vertico-quick-insert
+            "C-q" 'vertico-quick-exit
+            "C-k" 'kill-whole-line
+            "C-u" 'kill-whole-line
+            "C-o" 'vertico-next-group
+            "<tab>" 'vertico-complete
+            "TAB" 'vertico-complete
+            "M-<return>" 'minibuffer-force-complete))
 
 
 (use-package marginalia
