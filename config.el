@@ -509,17 +509,18 @@ Do nothing if we're not in a string."
 
 ;;; Appearance
 
-(use-package all-the-icons)
-;; (use-package doom-modeline
-;;   :custom
-;;   (doom-modeline-height 15)
-;;   (doom-modeline-bar-width 6)
-;;   (doom-modeline-minor-modes t)
-;;   (doom-modeline-buffer-file-name-style 'truncate-except-project)
-;;   :init
-;;   (add-hook 'after-init-hook 'doom-modeline-init))
+(use-package all-the-icons
+  :if (display-graphic-p))
+(use-package doom-modeline
+  :if (display-graphic-p)
+  :custom
+  (doom-modeline-height 15)
+  (doom-modeline-bar-width 6)
+  (doom-modeline-minor-modes t)
+  (doom-modeline-buffer-file-name-style 'truncate-except-project)
+  :init
+  (add-hook 'after-init-hook 'doom-modeline-init))
 
-;; utility libraries
 (use-package dash
   :config
   (dash-enable-font-lock))
