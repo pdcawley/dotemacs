@@ -144,7 +144,9 @@
   :after paredit
   :general
   (:keymaps 'lispy-mode-map
-            "M-m" nil))                 ; Lispy tries to use our leader key.
+            "M-m" nil ; Lispy tries to use our leader key.
+            "M-." nil ; And our embark-act binding
+            ))
 
 (defun pdc/prioritise-paredit-bindings ()
   (push (assoc 'paredit-mode minor-mode-map-alist)
@@ -451,8 +453,13 @@ Do nothing if we're not in a string."
 
 (use-package embark
   :general
-  ("C-." #'embark-act)
-  ([remap describe-bindings] #'embark-bindings)
+  ("C-." 'embark-act
+   "M-." 'embark-act
+
+   [remap describe-bindings] #'embark-bindings)
+  :custom
+  (embark-cycle-key "M-.")
+
   :config
   (setq prefix-help-command #'embark-prefix-help-command))
 
