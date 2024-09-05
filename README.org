@@ -2,6 +2,7 @@
 #+author: Piers Cawley
 #+property: header-args:emacs-lisp :tangle yes :results silent :exports code
 #+options: html-style:nil
+#+auto_tangle: t
 
 * Why a Literate Emacs Config?
 
@@ -277,12 +278,11 @@ We also want to plumb ~which-key~ into ~use-package~ and set up a couple of vari
 #+begin_src emacs-lisp
   (defvar pdc-leader "M-m")
   (defvar pdc-mode-leader "C-,")
-g
   (use-package which-key
-  :diminish
-  :config
-  ;; TODO: Replace this with something advice based.
-  (defun which-key--compute-binding (binding)
+    :diminish
+    :config
+    ;; TODO: Replace this with something advice based.
+    (defun which-key--compute-binding (binding)
     (copy-sequence (if-let ((docstring (get binding 'variable-documentation)))
                        (format "+%s" docstring)
                      (symbol-name
@@ -423,7 +423,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
                                      regexp-search-ring
                                      register-alist)
                                    "Save more histories")
-    :hook after-init
+    :hook after-init)
 
   (use-feature recentf-mode
     :hook after-init)
@@ -459,7 +459,7 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
            ("F" . helpful-function)))
 
   (use-package guru-mode
-    :diminish t
+    :diminish guru-mode
     :custom
     (guru-warn-only t)
     :hook (after-init . guru-global-mode))
@@ -483,8 +483,9 @@ I've used Zenburn or variants on it since forever and I'm not about to start now
 ~rainbow-mode~ is a minor mode for Emacs which displays strings representing colours with the colour teh represent as background.
 
 #+begin_src emacs-lisp
-    (use-package rainbow-mode
-      :hook prog-mode)
+  (use-package rainbow-mode
+    :diminish rainbow-mode
+    :hook prog-mode)
 #+end_src
 
 *** Padding between elements
@@ -611,7 +612,8 @@ A customized startup screen. This is experimental, but why not?
     :config
     (add-hook 'window-size-change-functions 'dashboard-resize-on-hook 100)
     :preface
-    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
+    ;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+    )
 
 
 #+end_src
