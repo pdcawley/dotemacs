@@ -748,25 +748,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
            ("m" . mc/edit-lines))
   :config)
 
-(use-feature recentf
-  :hook
-  (after-init . recentf-mode)
-  (find-file  . pdc/recentf-find-file-hook)
-  :custom
-  (recentf-max-saved-items 1000)
-  (recentf-auto-cleanup 'never)
-  (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
-  :init
-  (defun pdc/recentf-find-file-hook ()
-    (unless recentf-mode
-      (recentf-mode)
-      (recentf-track-opened-file)))
-
-  :config
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-  (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
-  (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
-
 (use-feature outline)
 
 (use-feature ediff :after outline
