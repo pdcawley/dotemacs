@@ -39,17 +39,40 @@
 (setq straight-use-package-by-default t)
 (straight-use-package 'diminish)
 (straight-use-package 'general)
+(setq general-use-package-emit-autoloads t)
 (require 'general-autoloads)
-(straight-use-package 'use-package)
-(require 'use-package)
+(or (require 'use-package nil t)
+    (straight-use-package use-package))
 
 (use-package which-key
   :diminish
   :config
+  ;; TODO: Replace this with something advice based.
+  (defun which-key--compute-binding (binding)
+    (copy-sequence (if-let ((docstring (get binding 'variable-documentation)))
+                       (format "+%s" docstring)
+                     (symbol-name
+                      (or (and which-key-compute-remaps
+                               (command-remapping binding))
+                          binding)))))
   (which-key-mode 1))
 
 ;; Get org on the table early
 (straight-use-package 'org)
+
+(defmacro use-feature (pkg &rest body)
+  "`use-package' for stuff that comes with emacs."
+  (declare (indent defun))
+  `(use-package ,pkg
+     :straight (,pkg :type built-in)
+     ,@body))
+
+(defconst use-feature-font-lock-keywords
+  '(("(\\(use-feature\\)\\_>[ \t']*\\(\\(?:\\sw\\|\\s_\\)+\\))?"
+     (1 font-lock-keyword-face)
+     (2 font-lock-constant-face nil t))))
+
+(font-lock-add-keywords 'emacs-lisp-mode use-feature-font-lock-keywords)
 
 (use-package no-littering
   :config
@@ -68,11 +91,11 @@
 
 (defmacro for-terminal (&rest body)
   (declare (indent defun))
-  (unless window-system `(progn ,@body)))
+  (unless (display-graphic-p) `(progn ,@body)))
 
 (defmacro for-gui (&rest body)
   (declare (indent defun))
-  (when window-system `(progn ,@body)))
+  (when (display-graphic-p) `(progn ,@body)))
 
 (defmacro for-mac (&rest body)
   (declare (indent defun))

@@ -28,51 +28,46 @@
 (general-create-definer pdcmacs-app-def
   :prefix "M-m a" :prefix-map 'pdc-apps-map)
 
-
-(general-create-definer pdcmacs-jump-def
-  :prefix "M-m j" :prefix-map 'pdc-jump-map)
-
-
 (defun pdc-toggle-window-dedication ()
   "Toggles window dedication in teh selected window."
   (interactive)
   (set-window-dedicated-p (selected-window)
                           (not (window-dedicated-p (selected-window)))))
 
+(bind-keys
+ :prefix "M-m w"
+ :prefix-map leader/windows-map
+ :prefix-docstring "windows"
+ ("<left>"  . winner-undo)
+ ("<right>" . winner-redo)
+ ("d"       . pdc-toggle-window-dedication)
+ ("u"       . winner-undo)
+ ("n"       . windmove-down)
+ ("p"       . windmove-up)
+ ("b"       . windmove-left)
+ ("f"       . windmove-right)
+ ("<"       . scroll-left)
+ (">"       . scroll-right)
+ ("}"       . enlarge-window-horizontally)
+ ("{"       . shrink-window-horizontally)
+ ("^"       . enlarge-window)
+ ("v"       . shrink-window))
 
-(defvar pdc-windows-key-map (make-sparse-keymap))
-(pdcmacs-leader-def
-  :infix "w"
-  "" '(:keymap pdc-windows-key-map :which-key "windows")
-  "<left>" 'winner-undo
-  "<right>" 'winner-redo
-  "d" 'pdc-toggle-window-dedication
-  "u" 'winner-undo
-  "n" 'windmove-down
-  "p" 'windmove-up
-  "b" 'windmove-left
-  "f" 'windmove-right
-  "<" 'scroll-left
-  ">" 'scroll-right
-  "}" 'enlarge-window-horizontally
-  "{" 'shrink-window-horizontally
-  "^" 'enlarge-window
-  "v" 'shrink-window)
-
-(pdcmacs-leader-def
+(define-keymap
+  :keymap 'pdc-leader-map
   "!" 'shell-command
   ":" 'execute-extended-command
   "/" (cond ((fboundp 'consult-line) 'consult-line)
             ((fboundp 'swiper)       'swiper)
-            (t                        'isearch-forward-regexp)))
+            (t                        'isearch-forward-regexp))
+  "u" 'universal-argument)
 
-;;; Universal argument stuff
-(pdcmacs-leader-def "u" 'universal-argument)
-(general-def :keymaps 'universal-argument-map
-  "u" 'universal-argument-more)
-
-;;; Window manipulation
-
+(bind-keys :map universal-argument-map
+           ("u" . universal-argument-more))
+;; ;;; Universal argument stuff
+;; (pdcmacs-leader-def "u" 'universal-argument)
+;; (general-def :keymaps 'universal-argument-map
+;;   "u" 'universal-argument-more)
 
 ;; Projects -- just lift C-x p for now
 (pdcmacs-leader-def
@@ -152,7 +147,7 @@
   "C"   'calc-dispatch
   "p"   'list-processes
   "C-p" 'proced
-  "u"   'undo-tree-visualize)
+  "u"   'vundo)
 
 (general-def
   "M-m h" '(help-command :which-key "help"))
@@ -200,12 +195,21 @@
       (delete-frame nil 1)
     (error (make-frame-invisible nil 1))))
 
-(pdcmacs-leader-def :infix "q"
-  "" '(nil :wk "quitting")
-  "s" '(save-buffers-kill-emacs :wk "Save & Kill")
-  "q" '(save-buffers-kill-terminal :wk "Save & disconnect")
-  "Q" '(kill-emacs :wk "Quit!")
-  "z" 'pdc/frame-killer)
+(bind-keys
+ :prefix "M-m q"
+ :prefix-map leader/q-map
+ :prefix-docstring "Quitting"
+ ("s" "Save & kill"       . save-buffers-kill-emacs)
+ ("q" "Save & disconnect" . save-buffers-kill-terminal)
+ ("Q" "QUIT!"             . kill-emacs)
+ ("z"                     . pdc/frame-killer))
+
+;; (pdcmacs-leader-def :infix "q"
+;;   "" '(nil :wk "quitting")
+;;   "s" '(save-buffers-kill-emacs :wk "Save & Kill")
+;;   "q" '(save-buffers-kill-terminal :wk "Save & disconnect")
+;;   "Q" '(kill-emacs :wk "Quit!")
+;;   "z" 'pdc/frame-killer)
 
 ;;; A few command name shortcuts. Blame Steve Yegge
 (defalias 'qrr 'query-replace-regexp)
@@ -282,13 +286,17 @@
  "r" '(+info-emacs-manual :wk "Info-emacs-manual")
  "S" 'info-lookup-symbol)
 
-(pdcmacs-jump-def
-  "$" 'move-end-of-line
-  ">" 'end-of-buffer
-  "<" 'beginning-of-buffer
-  "a" 'back-to-indentation
-  "[" 'beginning-of-defun
-  "]" 'end-of-defun)
+(bind-keys
+ :prefix "M-m j"
+ :prefix-map leader/jump-map
+ :prefix-docstring "jump"
+ ("$"             . move-end-of-line)
+ (">"             . end-of-buffer)
+ ("<"             . beginning-of-buffer)
+ ("a"             . back-to-indentation)
+ ("["             . beginning-of-defun)
+ ("]"             . end-of-defun)
+ ("r" "*scRatch*" . scratch-buffer) )
 
 (use-package hydra)
 (use-package kmacro

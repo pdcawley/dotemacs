@@ -32,11 +32,12 @@
 
 (use-package org-modern
   :after org
+  :if (display-graphic-p)
   :straight
   (:type git :host github :repo "minad/org-modern")
   :hook
   (org-modern-mode . org-indent-mode)
-  (org-mode . maybe-turn-on-org-modern)
+  (org-mode . global-org-modern-mode)
   :init
   (setq org-auto-align-tags nil
         org-tags-column 0
@@ -54,11 +55,11 @@
           (800 1000 1200 1400 1600 1800 2000)
           " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string
-        "←⭠ now ───────────────────────────────────────────────")
-  (defun maybe-turn-on-org-modern ()
-    "Turn's org-modern on if we're not in text mode"
-    (for-gui
-      (global-org-modern-mode t))))
+        "←⭠ now ───────────────────────────────────────────────"))
+
+(use-package org-bullets
+  :hook
+  (org-mode . org-bullets-mode))
 
 (use-package orgba
   :straight (orgba :type git :host github :repo "Fuco1/orgba"))

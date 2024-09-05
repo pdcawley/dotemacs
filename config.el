@@ -1,7 +1,6 @@
-;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (require 'general)
   (require 'use-package))
 
 (defun start-server-after-init ()
@@ -13,63 +12,72 @@
 
 (use-package emacs
   :hook
-  (after-init . start-server-after-init)
-  (after-init . kill-ring-deindent-mode))
+  ((text-mode org-mode) . visual-line-mode)
+  (prog-mode   . toggle-word-wrap)
+  (after-init  . start-server-after-init)
+  (after-init  . kill-ring-deindent-mode)
+  (after-init  . electric-pair-mode)
+  (after-init  . show-paren-mode)
+  (after-init  . delete-selection-mode)
+  (after-init  . global-so-long-mode)
+  (after-init  . desktop-save-mode)
+  (after-init  . save-place-mode)
+  (before-save . whitespace-cleanup)
+  ((doc-view-mode pdf-view-mode) . auto-revert-mode)
+  ;; Make shebang files executable on save
+  (after-save  . executable-make-buffer-file-executable-if-script-p)
+  :custom
+  (truncate-lines nil)
+  (bidi-paragraph-direction 'left-to-right)
+  (bidi-inhibit-bpa t)
+  (warning-suppress-types '((comp)))
+  (frame-resize-pixelwise t)
+  (indent-tabs-mode nil)
+  (tab-width 4)
+  (fill-column 79)
+  (gnutls-verify-error t)
+  (gnutls-min-prime-bits 2048)
+  (password-cache-expiry nil)
+  (track-eol t)
+  (mouse-yank-at-point t)
+  (save-interprogram-paste-before-kill t)
+  (apropos-do-all t)
+  (require-final-newline t)
+  (tramp-default-method "ssh")
+  (tramp-copy-size-limit nil)
+  (tramp-use-ssh-controlmaster-options nil)
+  (vc-follow-symlinks t)
+  (ring-bell-function 'ignore)
+  (grep-use-headings t)
+  (indent-tabs-mode nil)
+  (completions-detailed t)
+  (read-minibuffer-restore-windows nil)
+  (mode-line-compact 'long)
+  (use-short-answers t)
+  (kill-do-not-save-duplicates t)
+  (auto-window-vscroll nil)
+  (fast-but-imprecise-scrolling t)
+  (scroll-conservatively 101)
+  (scroll-margin 0)
+  (scroll-preserve-screen-position t)
+  ;; sentences do not end with a double space
+  (sentence-end-double-space nil)
+  ;; Turn on recentf mode
+  (recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
+  ;; Window management settings
+  (switch-to-buffer-in-dedicated-window 'pop)
+  (switch-to-buffer-obey-display-actions t)
 
-;;;
-;;; Performance
-(if (and (fboundp 'native-comp-available-p)
-         (native-comp-available-p))
-    (setq comp-deferred-compilation t
-          package-native-compile t)
-  (message "No native compilation available"))
-
-(setq warning-suppress-types '((comp)))
-
-;;
-;; More or less sensible defaults
-
-;; (global-eldoc-mode 1)
-(electric-pair-mode 1)
-(add-hook 'before-save-hook 'whitespace-cleanup)
-(delete-selection-mode)
-
-(setopt
- frame-resize-pixelwise t
-
- indent-tabs-mode nil
- tab-width 4
- fill-column 79
-
- gnutls-verify-error t
- gnutls-min-prime-bits 2048
-
- password-cache-expiry nil
-
- track-eol t
-
- mouse-yank-at-point t
- save-interprogram-paste-before-kill t
- apropos-do-all t
- require-final-newline t
-
- tramp-default-method "ssh"
- tramp-copy-size-limit nil
- tramp-use-ssh-controlmaster-options nil
-
- vc-follow-symlinks t
-
- ring-bell-function 'ignore
-
- ;; Use the new 'sectioned' view of grep:
- grep-use-headings t)
-
-(add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
+  :config
+  (if (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+      (setq comp-deferred-compilation t
+            package-native-compile t)
+    (message "No native compilation available")))
 
 ;; Autorevert stuff
 
-(use-package autorevert
-  :straight (autorevert :type built-in)
+(use-feature autorevert
   :custom
   ;; Revert dired and other buffers
   (global-auto-revert-non-file-buffers t)
@@ -77,50 +85,14 @@
   ;; Revert buffers when the underlying file changed.
   (global-auto-revert-mode 1))
 
-;; Spaces, not tabs.
-(setopt indent-tabs-mode nil
-        completions-detailed t
-        read-minibuffer-restore-windows nil
-        mode-line-compact 'long
-        ;; #'yes-or-no-p can die in a fire
-        use-short-answers t
-        ;; Don't stick duplicates in kill-ring
-        kill-do-not-save-duplicates t
-)
-
-;; Turn on recentf mode
-(setq recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
-
 ;; savehist mode
-(use-package savehist
-  :straight (savehist :type built-in)
+(use-feature savehist
   :init
   (setq history-length 25
         history-delete-duplicates t)
   (savehist-mode 1))
 
-
-;; Make scrolling a bit less stuttery
-(setq auto-window-vscroll nil)
-(setopt fast-but-imprecise-scrolling t
-        scroll-conservatively 101
-        scroll-margin 0
-        scroll-preserve-screen-position t)
-
-
-;; Better support for files with long names
-(setopt bidi-paragraph-direction 'left-to-right
-        bidi-inhibit-bpa t)
-(global-so-long-mode 1)
-
-;; Make shebang files executable on save
-(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-;; Diminish some annoying stuff
-(diminish 'eldoc-mode "")
-
-;; sentences do not end with a double space
-(setopt sentence-end-double-space nil)
+;;(use-feature eldoc-mode :diminish)
 
 ;; Enable some stuff
 (put 'narrow-to-region 'disabled nil)
@@ -136,38 +108,34 @@
   :hook
   ((prog-mode text-mode) . ws-butler-mode))
 
-;; parentheses
-(electric-pair-mode 1)
-(show-paren-mode 1)
+;; (use-package lispy
+;;   :after (paredit embark)
+;;   ;; TODO: Work out how to do this with 'bind'
+;;   :config
+;;   (keymap-unset lispy-mode-map "M-m")
+;;   (keymap-unset lispy-mode-map "M-."))
 
-(use-package lispy
-  :after paredit
-  :general
-  (:keymaps 'lispy-mode-map
-            "M-m" nil ; Lispy tries to use our leader key.
-            "M-." nil ; And our embark-act binding
-            ))
-
+                                        ;
 (defun pdc/prioritise-paredit-bindings ()
   (push (assoc 'paredit-mode minor-mode-map-alist)
         minor-mode-overriding-map-alist))
 
 (use-package paredit
   :diminish "Ⓟ "
-  :config
-  (general-define-key
-   :keymaps 'paredit-mode-map
-   "DEL" 'pdc/paredit-backward-delete
-   "("   'pdc/paredit-open-parenthesis
-   ")"   'paredit-close-round-and-newline
-   "M-)" 'paredit-close-round
-   "C-M-l" 'paredit-recenter-on-sexp
-   "C-M-s" 'paredit-backward-up
-   "M-I" 'paredit-splice-sexp
-   "]" 'paredit-close-square-and-newline
-   "}" 'paredit-close-curly-and-newline
-   ";" 'pdc/paredit-semicolon)
+  :bind
+  (:map paredit-mode-map
+        ("DEL"   . pdc/paredit-backward-delete)
+        ("("     . pdc/paredit-open-parenthesis)
+        (")"     . paredit-close-round-and-newline)
+        ("M-)"   . paredit-close-round)
+        ("C-M-l" . paredit-recenter-on-sexp)
+        ("C-M-s" . paredit-backward-up)
+        ("M-I"   . paredit-splice-sexp)
+        ("]"     . paredit-close-square-and-newline)
+        ("}"     . paredit-close-curly-and-newline)
+        (";"     . pdc/paredit-semicolon))
 
+  :config
   (defun pdc/paredit-backward-delete ()
     (interactive)
     (if mark-active
@@ -266,7 +234,7 @@
 
   :hook
   (paredit-mode . pdc/prioritise-paredit-bindings)
-  (paredit-mode . (lambda () (if (fboundp 'lispy-mode) (lispy-mode))))
+                                        ; (paredit-mode . (lambda () (if (fboundp 'lispy-mode) (lispy-mode))))
   ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
 
 (use-package mwim
@@ -278,9 +246,8 @@
                              +mwim-current-string-end
                              mwim-code-end
                              mwim-line-end))
-  :general
-  ("C-a" 'mwim-beginning
-   "C-e" '+mwim-next-ending)
+  :bind (("C-a" . mwim-beginning)
+         ("C-e" . +mwim-next-ending))
   :config
   (defun +mwim-next-ending ()
     "Move point to the the nearest ending place"
@@ -339,92 +306,50 @@ Do nothing if we're not in a string."
 ;; Completion frameworks and such.
 
 (use-package vertico
+  :after consult
   :custom
   (vertico-cycle t)
+  (vertico-multiform-commands
+   '((consult-recent-file buffer)
+     (consult-mode-command buffer)
+     (consult-complex-command buffer)
+     (embark-bindings buffer)
+     (consult-locate buffer)
+     (consult-project-buffer buffer)
+     (consult-ripgrep buffer)
+     (consult-fd buffer)))
   :hook
   (after-init . vertico-mode)
   (after-init . vertico-multiform-mode)
-  :init
-  (setq vertico-multiform-commands
-        '((consult-recent-file buffer)
-          (consult-mode-command buffer)
-          (consult-complex-command buffer)
-          (embark-bindings buffer)
-          (consult-locate buffer)
-          (consult-project-buffer buffer)
-          (consult-ripgrep buffer)
-          (consult-fd buffer)))
-  :general
-  (:keymaps 'vertico-map
-            "M-," '(nil :which-key options)
-            "M-, r" 'vertico-reverse-mode
-            "M-, g" 'vertico-grid-mode
-            "M-q" 'vertico-quick-insert
-            "C-q" 'vertico-quick-exit
-            "C-k" 'kill-whole-line
-            "C-u" 'kill-whole-line
-            "C-o" 'vertico-next-group
-            "<tab>" 'vertico-complete
-            "TAB" 'vertico-complete
-            "M-<return>" 'minibuffer-force-complete))
+  :bind
+  (:map vertico-map
+        :prefix "M-,"
+        :prefix-map vertico-options-map
+        ("r" . vertico-reverse-mode)
+        ("g" . vertico-grid-mode))
+  (:map vertico-map
+        ("M-q"        . vertico-quick-insert)
+        ("C-q"        . vertico-quick-exit)
+        ("C-k"        . kill-whole-line)
+        ("C-u"        . kill-whole-line)
+        ("C-o"        . vertico-next-group)
+        ("<tab>"      . vertico-insert)
+        ("TAB"        . vertico-insert)
+        ("M-<return>" . minibuffer-force-complete)))
 
 
 (use-package marginalia
   :hook (after-init . marginalia-mode)
-  :config
-  (setq marginalia-annotators '(marginalia-annotators-light nil)))
+  :custom
+  (marginalia-annotators '(marginalia-annotators-light nil)))
 
 
 (use-package consult
-  :general
-  ([remap isearch-forward] 'consult-line
-   [remap Info-search] 'consult-info
-   [remap imenu] 'consult-imenu
-   [remap recentf-open-files] 'consult-recent-file
-
-   "C-x M-:" 'consult-complex-command
-   "C-x b" 'consult-buffer
-   "C-x 4 b" 'consult-buffer-other-window
-   "C-x 5 b" 'consult-buffer-other-frame
-   "C-x r b" 'consult-bookmark
-   "C-x p b" 'consult-project-buffer
-
-   "M-#" 'consult-register-load
-   "M-'" 'consult-register-store
-   "C-M-#" 'consult-register
-
-   "M-y" 'consult-yank-pop)
-  (:keymaps 'isearch-mode-map
-   "M-e" 'consult-isearch-history
-   "M-s e" 'consult-isearch-history
-   "M-s l" 'consult-line
-   "M-s L" 'consult-line-multi)
-  (:keymaps 'minibuffer-local-map
-            "C-s" `(,(lambda ()
-                       "Insert the current symbol"
-                       (interactive)
-                       (insert (save-excursion
-                                 (set-buffer (window-buffer (minibuffer-selected-window)))
-                                 (or (thing-at-point 'symbol t) ""))))
-                    :which-key "insert-current-symbol")
-            "M-s" 'consult-history
-            "M-r" 'consult-history)
-  (:keymaps 'search-map
-           "d" 'consult-find
-           "D" 'consult-locate
-           "g" 'consult-grep
-           "G" 'consult-git-grep
-           "r" 'consult-ripgrep
-           "l" 'consult-line
-           "L" 'consult-line-multi
-           "k" 'consult-keep-lines
-           "u" 'consult-focus-lines
-           "e" 'consult-isearch-history)
   :hook (completion-list-mode . consult-preview-at-point-mode)
+  :custom
+  (register-preview-delay 0.5)
+  (register-preview-function #'consult-register-format)
   :init
-  (setopt register-preview-delay 0.5
-          register-preview-function #'consult-register-format)
-
   (advice-add #'register-preview :override #'consult-register-window)
 
   (with-eval-after-load 'xref
@@ -432,77 +357,112 @@ Do nothing if we're not in a string."
           xref-show-definitions-function #'consult-xref))
 
   :config
+  (bind-keys ([remap isearch-forward] . consult-line)
+             ([remap Info-search]        . consult-info)
+             ([remap imenu]              . consult-imenu)
+             ([remap recentf-open-files] . consult-recent-file)
+
+             ("C-x M-:" . consult-complex-command)
+             ("C-x b"   . consult-buffer)
+             ("C-x 4 b" . consult-buffer-other-window)
+             ("C-x 5 b" . consult-buffer-other-frame)
+             ("C-x r b" . consult-bookmark)
+             ("C-x p b" . consult-project-buffer)
+             ("M-#"     . consult-register-load)
+             ("M-'"     . consult-register-store)
+             ("C-M-#"   . consult-register)
+             ("M-y"     . consult-yank-pop)
+             :map isearch-mode-map
+             ("M-e" . consult-isearch-history)
+             ("M-s e" . consult-isearch-history)
+             ("M-s l" . consult-line)
+             ("M-s L" . consult-line-multi)
+             :map minibuffer-local-map
+             ("C-s" ("insert-current-symbol" . (lambda ()
+                                                 "Insert the current symbol"
+                                                 (interactive)
+                                                 (insert (save-excursion
+                                                           (set-buffer (window-buffer (minibuffer-selected-window)))
+                                                           (or (thing-at-point 'symbol t) ""))))))
+             ("M-s" . consult-history)
+             ("M-r" . consult-history)
+             :map search-map
+             ("d" . consult-find)
+             ("D" . consult-locate)
+             ("g" . consult-grep)
+             ("G" . consult-git-grep)
+             ("r" . consult-ripgrep)
+             ("l" . consult-line)
+             ("L" . consult-line-multi)
+             ("k" . consult-keep-lines)
+             ("u" . consult-focus-lines)
+             ("e" . consult-isearch-history))
   (consult-customize
    consult-goto-line
-   consult-theme :preview-key '(:debounce 0.4 any)))
+   consult-theme :preview-key '(:debounce 0.4 any))
+  :demand t)
+
 
 
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles . (partial-completion)))))
-  (completion-category-defaults nil)
-
-  :init
-
-  )
-
+  (completion-category-defaults nil))
 
 (use-package aggressive-indent
   :init (aggressive-indent-global-mode t))
 
-(use-package embark
-  :general
-  ("C-." 'embark-act
-   "M-." 'embark-act
+(use-package xref)
 
-   [remap describe-bindings] #'embark-bindings)
+(use-package embark :after xref
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-act)
+   ("M-," . embark-dwim)
+   ("C-;" . embark-dwim)
+   (([remap describe-bindings] . embark-bindings)))
   :custom
   (embark-cycle-key "M-.")
-
-  :config
-  (setq prefix-help-command #'embark-prefix-help-command))
-
-;; Window management settings
-
-(setopt switch-to-buffer-in-dedicated-window 'pop
-        switch-to-buffer-obey-display-actions t)
+  (prefix-help-command #'embark-prefix-help-command))
 
 (require 'rx)
 
-(let ((parameters '(window-parameters . ((no-other-window . t)
-                                         (no-delete-other-windows . t)))))
+;; (let ((parameters '(window-parameters . ((no-other-window . t)
+;;                                          (no-delete-other-windows . t)))))
 
-  (add-to-list 'display-buffer-alist
-               '("\\*compilation\\*" display-buffer-no-window
-                 (allow-no-window . t)))
-  (add-to-list 'display-buffer-alist
-               `(,(rx (| "*info*"
-                         "NEWS"))
-                 (display-buffer-below-selected)
-                 (window-height . fit-window-to-buffer)
-                 ,parameters))
-  (add-to-list
-   'display-buffer-alist
-   `(,(rx "*"
-          "helpful " (*? anychar) ":" (* (not ?*))
-          "*")
-     display-buffer-in-side-window
-     (side . bottom) (slot . 1) (window-width . fit-window-to-buffer)
-     (window-parameters . ((no-other-window . 1)
-                           (no-delete-other-windows . t)))))
-  (add-to-list 'display-buffer-alist
-               `(,(rx "*"
-                      (| "xref"
-                         "grep"
-                         "Occur"
-                         "Completions")
-                      "*")
-                 display-buffer-below-selected
-                 (preserve-size . (nil . t))
-                 ,parameters)))
+;;   (add-to-list 'display-buffer-alist
+;;                '("\\*compilation\\*" display-buffer-no-window
+;;                  (allow-no-window . t)))
+;;   (add-to-list 'display-buffer-alist
+;;                `(,(rx (| "*info*"
+;;                          "NEWS"))
+;;                  (display-buffer-below-selected)
+;;                  (window-height . fit-window-to-buffer)
+;;                  ,parameters))
+;;   (add-to-list
+;;    'display-buffer-alist
+;;    `(,(rx "*"
+;;           "helpful " (*? anychar) ":" (* (not ?*))
+;;           "*")
+;;      display-buffer-in-side-window
+;;      (side . bottom) (slot . 1) (window-width . fit-window-to-buffer)
+;;      (window-parameters . ((no-other-window . 1)
+;;                            (no-delete-other-windows . t)))))
+;;   (add-to-list 'display-buffer-alist
+;;                `(,(rx "*"
+;;                       (| "xref"
+;;                          "grep"
+;;                          "Occur"
+;;                          "Completions")
+;;                       "*")
+;;                  display-buffer-below-selected
+;;                  (preserve-size . (nil . t))
+;;                  ,parameters)))
 
-(use-package embark-consult)
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 (use-package consult-dir)
 (use-package ace-window)
 (use-package 0x0)
@@ -511,6 +471,16 @@ Do nothing if we're not in a string."
 
 (use-package all-the-icons
   :if (display-graphic-p))
+
+;; (use-package all-the-icons-dired-mode
+;;   :after all-the-icons
+;;   :hook (dired-mode . all-the-icons-dired-mode))
+
+;; (use-package all-the-icons-completion
+;;   :after all-the-icons
+;;   :hook
+;;   (marginalia-mode . all-the-icons-completion-marginalia-setup))
+
 (use-package doom-modeline
   :if (display-graphic-p)
   :custom
@@ -518,8 +488,16 @@ Do nothing if we're not in a string."
   (doom-modeline-bar-width 6)
   (doom-modeline-minor-modes t)
   (doom-modeline-buffer-file-name-style 'truncate-except-project)
-  :init
-  (add-hook 'after-init-hook 'doom-modeline-init))
+  :hook
+  (after-init . doom-modeline-init))
+
+(use-package nerd-icons
+  :unless (display-graphic-p))
+
+(use-package nerd-icons-corfu
+  :after (nerd-icons corfu)
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package dash
   :config
@@ -538,26 +516,27 @@ Do nothing if we're not in a string."
 
 ;; Speedup with auto-compile
 (use-package auto-compile
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode)
-  (setq auto-compile-display-buffer nil
-        auto-compile-mode-line-counter t))
+  :hook
+  (after-init . auto-compile-on-load-mode)
+  (after-init . auto-compile-on-save-mode)
+  :custom
+  (auto-compile-display-buffer nil)
+  (auto-compile-mode-line-counter t))
 
 ;; Make `describe-*' screens more helpful
 
 (use-package helpful
-  :general
-  (:keymaps 'helpful-mode-map
-            [remap revert-buffer] #'helpful-update)
-  ([remap describe-command] #'helpful-command
-   [remap describe-function] #'helpful-callable
-   [remap describe-key] #'helpful-key
-   [remap describe-symbol] #'helpful-symbol
-   [remap describe-variable] #'helpful-variable
-   "C-h C" #'helpful-command
-   "C-h F" #'helpful-function
-   "C-h K" #'describe-keymap)
+  :bind
+  (([remap describe-command]  . helpful-command)
+   ([remap describe-function] . helpful-callable)
+   ([remap describe-key]      . helpful-key)
+   ([remap describe-symbol]   . helpful-symbol)
+   ([remap describe-variable] . helpful-variable)
+   ("C-h C"                   . helpful-command)
+   ("C-h F"                   . helpful-function)
+   ("C-h K"                   . describe-keymap)
+   :map helpful-mode-map
+   ([remap revert-buffer]     . helpful-update))
   :config
 
   ;; Temporary fix until this all works for Emacs 29 again
@@ -591,30 +570,28 @@ Do nothing if we're not in a string."
 
 ;;;
 
-(use-package hl-line-mode
-  :straight (hl-line-mode :type built-in)
+(use-feature hl-line-mode
   :hook
   ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
 
 ;;;
 ;;; Windows stuff
 
-(use-package winner
-  :straight (winner :type built-in)
+(use-feature winner
   :init
   (winner-mode 1)
-  (setq winner-boring-buffers
-        (append winner-boring-buffers
-                '("*Completions*"
-                  "*Compile-Log*"
-                  "*inferior-lisp*"
-                  "*Fuzzy Completions*"
-                  "*Apropos*"
-                  "*Help*"
-                  "*cvs*"
-                  "*Buffer List*"
-                  "*Ibuffer*"
-                  "*esh command on file*"))))
+  (setopt winner-boring-buffers
+   (append winner-boring-buffers
+           '("*Completions*"
+             "*Compile-Log*"
+             "*inferior-lisp*"
+             "*Fuzzy Completions*"
+             "*Apropos*"
+             "*Help*"
+             "*cvs*"
+             "*Buffer List*"
+             "*Ibuffer*"
+             "*esh command on file*"))))
 
 ;;;
 ;;; Text wrangling
@@ -640,17 +617,17 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
        (let ((after (not (eq (if switch t nil) ,(if default-after t nil)))))
          (+align-repeat start end ,regexp ,justify-right after)))))
 
-  (defun +align-repeat-decimal (start end)
-    "Align a table of numbers on decimal points and dollar signs (both optional)"
-    (interactive "r")
-    (require 'align)
-    (align-regexp start end nil
-                  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
-                         (repeat . t)
-                         (group 1 2)
-                         (spacing 1 1)
-                         (justify nil t)))
-                  nil))
+(defun +align-repeat-decimal (start end)
+  "Align a table of numbers on decimal points and dollar signs (both optional)"
+  (interactive "r")
+  (require 'align)
+  (align-regexp start end nil
+                '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
+                       (repeat . t)
+                       (group 1 2)
+                       (spacing 1 1)
+                       (justify nil t)))
+                nil))
 
 (require 'pdcmacs-global-bindings)
 
@@ -686,37 +663,27 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   "`"  '+align-repeat-quote)
 
 (use-package macrostep
-  :general
-  (pdcmacs-mode :keymaps 'emacs-lisp-mode-map
-    "e" 'macrostep-expand))
+  :bind
+  (:map emacs-lisp-mode-map
+        :prefix "M-m ,"
+        :prefix-map leader/mode/elisp-map
+        :prefix-docstring "mode(elisp)"
+        ("e" . macrostep-expand)))
 
 ;;; Repeat mode stuffs
 
 (use-package repeat
+  :disabled
   :custom
   (repeat-echo-function #'ignore)
   :config
-  (advice-add 'repeat-post-hook :after
-            (defun repeat-help--which-key-popup ()
-              (if-let ((cmd (or this-command real-this-command))
-                       (keymap (or repeat-map
-                                   (repeat--command-property 'repeat-map))))
-                  (run-at-time
-                   0 nil
-                   (lambda ()
-                     (which-key--create-buffer-and-show nil (symbol-value keymap))))
-                (which-key--hide-popup))))
   (repeat-mode t))
 
-(use-package smerge-mode
-  :after which-key
-  :straight (smerge-mode :type built-in)
+(use-feature smerge-mode :after which-key
   :custom
   (smerge-auto-leave nil)
-  :general
-  (:keymaps 'smerge-mode-map
-            "M-m m" '(smerge-basic-map :wk "merge" :keymap t))
   :config
+  (keymap-set smerge-mode-map "M-m m" '("merge" . smerge-basic-map))
   (map-keymap
    (lambda (_key cmd)
      (when (symbolp cmd)
@@ -725,11 +692,12 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 ;;; Magit
 (use-package magit
-  :general
+  :bind
   (:prefix "M-m g"
-           "" '(nil :which-key "Git")
-           "s" 'magit-status
-           "l" 'magit-log))
+           :prefix-map leader/git-map
+           :prefix-docstring "git"
+           ("s" . magit-status)
+           ("l" . magit-log)))
 
 
 (use-package corfu
@@ -748,29 +716,46 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (corfu-preview-current nil)
   (corfu-quit-at-boundary 'separator)
 
-  (global-corfu-modes '((not org-mode) t))
+  (global-corfu-modes '((not org-mode) prog-mode))
 
-  (corfu-preselect 'valid)
+  (corfu-preselect nil)
   :hook
   (eshell-history-mode . +eshell-history-mode-setup-completion)
   (lsp-completion-mode . +lsp-mode-setup-completion)
 
 
-  :general
-  (:keymaps 'corfu-map
-            "M-SPC" 'corfu-insert-separator
-            "RET"   'corfu-insert
-            ;; "RET" nil
-            "S-<return>" 'corfu-insert
-            "M-m" '+corfu-move-to-minibuffer)
+  :bind
+  (:map corfu-map
+        ("M-SPC"      . corfu-insert-separator)
+        ("RET"        . corfu-insert)
+        ("S-<return>" . corfu-insert)
+        ("M-m"        . +corfu-move-to-minibuffer)
+        ("TAB"        . +pdc/corfu-complete-common-or-next)
+        ("<tab>"        . +pdc/corfu-complete-common-or-next))
 
   :init
   ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
 
+  (defun +pdc/corfu-complete-common-or-next ()
+    "Complete common prefix or go to next candidate."
+    (interactive)
+    (if (= corfu--total 1)
+        (progn
+          (corfu--goto 1)
+          (corfu-insert))
+      (let* ((input (car corfu--input))
+             (str (if (thing-at-point 'filename) (file-name-nondirectory input) input))
+             (pt (length str))
+             (common (try-completion str corfu--candidates)))
+        (if (and (> pt 0)
+                 (stringp common)
+                 (not (string= str common)))
+            (insert (substring common pt))
+          (corfu-next)))))
+
   (defun +pdc/corfu-insert ()
     "Insert current candidate or newline."
-    (interactive)
-    )
+    (interactive))
 
   (defun +corfu-move-to-minibuffer ()
     (interactive)
@@ -799,7 +784,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   :mode "\\.ya?ml\\'")
 
 (use-package yaml)
-(use-package flycheck-yamllint)
 
 (use-package clipetty
   :diminish
@@ -823,45 +807,33 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (setq yas-snippet-dirs pdc-snippet-dirs))
 
 
-(use-package consult-yasnippet
-  :after (consult yasnippet)
-  :general
-  ("M-g y" 'consult-yasnippet))
-
+(use-package consult-yasnippet :after (consult yasnippet)
+  :bind
+  (("M-g y" . consult-yasnippet)))
 
 ;; (use-package yasnippets-orgmode
 ;;   :after org-mode)
-(use-package yasnippets
-  :after yasnippet
-
+(use-package yasnippets :after yasnippet
   :init
   (setq yas-snippet-dirs (cons (straight--el-get-package-directory 'yasnippets)
                                pdc-snippet-dirs))
   (yas-global-mode t))
 
 
-;; Need some thought about visual line modes
-(use-package emacs
-  :hook
-  (((text-mode org-mode) . visual-line-mode)
-   (prog-mode . toggle-word-wrap))
-  :custom
-  (truncate-lines nil))
-
 (use-package visual-fill-column
   :defer nil
   :hook
   ((text-mode org-mode) . visual-fill-column-mode)
-  :config
-  (setq visual-fill-column-enable-sensible-window-split t))
-
+  :custom
+  (visual-fill-column-enable-sensible-window-split t)
+  (visual-fill-column-center-text t))
 
 (for-terminal
   (xterm-mouse-mode 1))
 
 (use-package powerline
-  :init
-  (powerline-default-theme))
+  :hook
+  (after-init . powerline-default-theme))
 
 (use-package unfill
   :bind ([remap fill-paragraph] . unfill-toggle))
@@ -870,87 +842,94 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (defvar pdc-jump-map (make-sparse-keymap))
 
 (use-package avy
-  :general
-  (pdcmacs-jump-def
-    "j" 'avy-goto-char-timer
-    "b" 'avy-goto-char
-    "'" 'avy-goto-char-2
-    "w" 'avy-goto-word-1))
+  :bind
+  (("M-m j j" . avy-goto-char-timer)
+   ("M-m j b" . avy-goto-char)
+   ("M-m j '" . avy-goto-char-2)
+   ("M-m j w" . avy-goto-word-1)))
 
 (use-package imenu
-  :general
-  (pdcmacs-leader-def :infix "j"
-    "i" 'imenu)
+  :bind
+  (("M-m j i" . imenu))
   :hook
   (font-lock-mode .  pdc/try-to-add-imenu)
   :custom
   (imenu-sort-function 'imenu--sort-by-name)
   :init
   (defun pdc/try-to-add-imenu ()
-      "Add Imenu to modes that have font-lock-mode activated."
+    "Add Imenu to modes that have font-lock-mode activated."
     (condition-case nil (imenu-add-to-menubar "Imenu")
       (error nil))))
 
 (use-package imenu-list
-  :init
-  (setq imenu-list-focus-after-activation t
-        imenu-list-auto-resize t
-        imenu-list-position 'left
-        imenu-list-size 40))
+  :custom
+  (imenu-list-focus-after-activation t)
+  (imenu-list-auto-resize t)
+  (imenu-list-position 'left)
+  (imenu-list-size 40))
 
-(use-package dired
-  :straight (dired :type built-in)
-  :general
-  (pdcmacs-app-def "d" 'dired)
-  (pdcmacs-jump-def
-    "d" 'dired-jump
-    "D" 'dired-jump-other-window)
-  (:keymaps 'dired-mode-map
-    ", w" 'wdired-change-to-wdired-mode)
+(use-package multiple-cursors
+  :bind
+  (:prefix "M-m m"
+           :prefix-map pdc-multi-map
+           :prefix-docstring "multi"
+           ("a" . mc/edit-beginnings-of-lines)
+           ("e" . mc/edit-ends-of-lines)
+           ("^" . mc/edit-beginnings-of-lines)
+           ("$" . mc/edit-ends-of-lines)
+           ("m" . mc/edit-lines))
+  :config)
 
+
+(use-feature dired
+  :bind (("M-m a d" . dired)
+         ("M-m j d" . dired-jump)
+         ("M-m j D" . dired-jump-other-window)
+         :map dired-mode-map
+         (", w"     . wdired-change-to-wdired-mode))
   :init
   (setopt dired-use-ls-dired nil
           dired-omit-file-p t
           dired-omit-files "^\\.?#"
           dired-dwim-target t))
 
-(use-package dired-x
-  :straight (dired-x :type built-in)
+
+(use-feature dired-x
   :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
-(use-package recentf
-  :straight (recentf :type built-in)
+(use-feature recentf
   :hook
   (after-init . recentf-mode)
-  (find-file . pdc/recentf-find-file-hook)
+  (find-file  . pdc/recentf-find-file-hook)
+  :custom
+  (recentf-max-saved-items 1000)
+  (recentf-auto-cleanup 'never)
+  (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
   :init
   (defun pdc/recentf-find-file-hook ()
     (unless recentf-mode
       (recentf-mode)
       (recentf-track-opened-file)))
 
-  (setopt recentf-max-saved-items 1000
-          recentf-auto-cleanup 'never
-          recentf-auto-save-teimer (run-with-idle-timer 600 t 'recentf-save-list))
   :config
   (add-to-list 'recentf-exclude no-littering-etc-directory)
   (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
   (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 
-(use-package ediff
-  :straight (ediff :type built-in)
-  :init
-  (setopt ediff-window-setup-function 'ediff-setup-windows-plain)
-  (require 'outline)
-  :hook
-  (ediff-prepare-buffer . 'show-all)
-  (ediff-quit . 'winner-undo))
+(use-feature outline)
 
-(use-package flycheck
-  :commands global-flycheck-mode
-  :diminish " ⓢ"
-  :init
-  (global-flycheck-mode t))
+(use-feature ediff :after outline
+  :custom
+  (ediff-window-setup-function 'ediff-setup-windows-plain)
+  :hook
+  (ediff-prepare-buffer . show-all)
+  (ediff-quit           . winner-undo))
+
+;; (use-package flycheck
+;;   :commands global-flycheck-mode
+;;   :diminish " ⓢ"
+;;   :hook
+;;   (after-init . global-flycheck-mode))
 
 ;;; Setup common lisp mode stuff
 
@@ -961,26 +940,23 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
                      inferior-lisp-mode
                      lisp-interaction-mode
                      extempore-mode)
-  "A list of Lisp style modes")
+  "A list of Lisp style modes.")
 
 (defvar lisp-mode-hooks
   (--map (intern (concat (symbol-name it) "-hook"))
          lisp-modes)
   "Hook variables associated with `lisp-modes'.")
 
-;; (use-package eldoc
-;;   :straight (eldoc :type built-in)
-;;   :diminish eldoc-mode
-;;   :hook
-;;   ((eval-expression-minibuffer-setup ielm-mode) . 'eldoc-mode))
+(use-feature eldoc
+  :diminish eldoc-mode
+  :hook
+  ((eval-expression-minibuffer-setup ielm-mode) . eldoc-mode))
 
-(use-package elisp-mode
-  :straight (elisp-mode :type built-in)
-  :general
-  (pdcmacs-mode :keymaps 'emacs-lisp-mode-map
-    "c" 'finder-commentary
-    "f" 'find-function
-    "F" 'find-face-definition)
+(use-feature elisp-mode
+  ;; :bind ( :map emacs-lisp-mode-map
+  ;;         ("c" . finder-commentary)
+  ;;         ("f" . find-function)
+  ;;         ("F" . find-face-definition))
   :init
   (defun pdc/elisp-mode-hook ()
     (eldoc-mode 1)
@@ -998,23 +974,46 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package editorconfig
   :diminish
+  :hook
+  (after-init . editorconfig-mode))
+
+(use-package pdf-tools :if (display-graphic-p))
+
+(use-feature notifications)
+
+(use-package envrc
+  :hook (after-init . envrc-global-mode)
   :config
-  (editorconfig-mode 1))
+  (keymap-global-set "M-m d E" '("envrc" . envrc-command-map)))
 
-(use-package pdf-tools
-  :if (display-graphic-p))
+(use-package json-ts-mode
+  :mode ("\\.noisette\\'" "\\.json\\'"))
 
-(use-package notifications
-  :straight (notifications :type built-in))
+(use-package project :after envrc
+  :bind (:map project-prefix-map
+              ("C" . 'recompile)
+              ("s" . 'consult-ripgrep))
+  :config (dolist (func '(project-find-file project-find-dir project-eshell))
+            (advice-add func :after #'envrc-allow)))
 
+(use-package geiser-guile)
 
+(use-package suggest
+  :commands (suggest))
+
+(use-package casual-calc
+  :bind (:map calc-mode-map ("C-o" . 'casual-calc-tmenu)))
+(use-package casual-dired
+  :bind (:map dired-mode-map ("C-o" . 'casual-dired-tmenu)))
+(use-package casual-info
+  :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
 (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
-(desktop-save-mode 1)
-(save-place-mode 1)
-(add-hook 'doc-view-mode-hook 'auto-revert-mode)
-(add-hook 'pdf-view-mode-hook 'auto-revert-mode)
+(use-package vundo
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols))
 
+(use-package haskell-mode)
 
 (require 'pdcmacs-feeds)
 (require 'pdcmacs-org)
