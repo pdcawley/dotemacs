@@ -53,3 +53,4 @@ straight/build-cache.el
 straight/repos
 tramp
 url
+/early-init.el
