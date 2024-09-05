@@ -484,25 +484,6 @@ Do nothing if we're not in a string."
   ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
 
 ;;;
-;;; Windows stuff
-
-(use-feature winner
-  :init
-  (winner-mode 1)
-  (setopt winner-boring-buffers
-   (append winner-boring-buffers
-           '("*Completions*"
-             "*Compile-Log*"
-             "*inferior-lisp*"
-             "*Fuzzy Completions*"
-             "*Apropos*"
-             "*Help*"
-             "*cvs*"
-             "*Buffer List*"
-             "*Ibuffer*"
-             "*esh command on file*"))))
-
-;;;
 ;;; Text wrangling
 
 (defun +align-repeat (start end regexp &optional justify-right after)

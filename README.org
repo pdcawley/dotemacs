@@ -687,7 +687,20 @@ Capture and restore window configuration
 
 #+begin_src emacs-lisp
   (use-feature winner
-    :hook after-init)
+    :hook after-init
+    :init
+    (setopt winner-boring-buffers
+            (append winner-boring-buffers
+                    '("*Completions*"
+                      "*Compile-Log*"
+                      "*inferior-lisp*"
+                      "*Fuzzy Completions*"
+                      "*Apropos*"
+                      "*Help*"
+                      "*cvs*"
+                      "*Buffer List*"
+                      "*Ibuffer*"
+                      "*esh command on file*"))))
 #+end_src
 
 *** Buffer name relative
