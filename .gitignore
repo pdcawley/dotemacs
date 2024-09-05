@@ -54,3 +54,4 @@ straight/repos
 tramp
 url
 /early-init.el
+/init.el
