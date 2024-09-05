@@ -10,71 +10,6 @@
     (server-start)
     (midnight-mode +1)))
 
-(use-package emacs
-  :hook
-  ((text-mode org-mode) . visual-line-mode)
-  (prog-mode   . toggle-word-wrap)
-  (after-init  . start-server-after-init)
-  (after-init  . kill-ring-deindent-mode)
-  (after-init  . electric-pair-mode)
-  (after-init  . show-paren-mode)
-  (after-init  . delete-selection-mode)
-  (after-init  . global-so-long-mode)
-  (after-init  . desktop-save-mode)
-  (after-init  . save-place-mode)
-  (before-save . whitespace-cleanup)
-  ((doc-view-mode pdf-view-mode) . auto-revert-mode)
-  ;; Make shebang files executable on save
-  (after-save  . executable-make-buffer-file-executable-if-script-p)
-  :custom
-  (truncate-lines nil)
-  (bidi-paragraph-direction 'left-to-right)
-  (bidi-inhibit-bpa t)
-  (warning-suppress-types '((comp)))
-  (frame-resize-pixelwise t)
-  (indent-tabs-mode nil)
-  (tab-width 4)
-  (fill-column 79)
-  (gnutls-verify-error t)
-  (gnutls-min-prime-bits 2048)
-  (password-cache-expiry nil)
-  (track-eol t)
-  (mouse-yank-at-point t)
-  (save-interprogram-paste-before-kill t)
-  (apropos-do-all t)
-  (require-final-newline t)
-  (tramp-default-method "ssh")
-  (tramp-copy-size-limit nil)
-  (tramp-use-ssh-controlmaster-options nil)
-  (vc-follow-symlinks t)
-  (ring-bell-function 'ignore)
-  (grep-use-headings t)
-  (indent-tabs-mode nil)
-  (completions-detailed t)
-  (read-minibuffer-restore-windows nil)
-  (mode-line-compact 'long)
-  (use-short-answers t)
-  (kill-do-not-save-duplicates t)
-  (auto-window-vscroll nil)
-  (fast-but-imprecise-scrolling t)
-  (scroll-conservatively 101)
-  (scroll-margin 0)
-  (scroll-preserve-screen-position t)
-  ;; sentences do not end with a double space
-  (sentence-end-double-space nil)
-  ;; Turn on recentf mode
-  (recentf-save-file (expand-file-name "recentf" pdcmacs-var-directory))
-  ;; Window management settings
-  (switch-to-buffer-in-dedicated-window 'pop)
-  (switch-to-buffer-obey-display-actions t)
-
-  :config
-  (if (and (fboundp 'native-comp-available-p)
-           (native-comp-available-p))
-      (setq comp-deferred-compilation t
-            package-native-compile t)
-    (message "No native compilation available")))
-
 ;; Autorevert stuff
 
 (use-feature autorevert
@@ -84,13 +19,6 @@
   :config
   ;; Revert buffers when the underlying file changed.
   (global-auto-revert-mode 1))
-
-;; savehist mode
-(use-feature savehist
-  :init
-  (setq history-length 25
-        history-delete-duplicates t)
-  (savehist-mode 1))
 
 ;;(use-feature eldoc-mode :diminish)
 
@@ -480,24 +408,6 @@ Do nothing if we're not in a string."
 ;;   :after all-the-icons
 ;;   :hook
 ;;   (marginalia-mode . all-the-icons-completion-marginalia-setup))
-
-(use-package doom-modeline
-  :if (display-graphic-p)
-  :custom
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 6)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-buffer-file-name-style 'truncate-except-project)
-  :hook
-  (after-init . doom-modeline-init))
-
-(use-package nerd-icons
-  :unless (display-graphic-p))
-
-(use-package nerd-icons-corfu
-  :after (nerd-icons corfu)
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package dash
   :config

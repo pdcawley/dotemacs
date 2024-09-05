@@ -124,7 +124,7 @@ We use straight and configure it a little later.
 
 ** Accelerate startup some
 
-Increasing the GC thresholds and turning off file name handlers during startup makes things a fair bit faster, so we do that. The 'proper' values will be restored by our ~emacs-startup-hook~.
+Increasing the GC thresholds and turning off file name handlers during startup makes things a fair bit faster, so we do that. The 'proper' values will be restored by our ~after-init-hook~.
 
 #+begin_src emacs-lisp
   (let ((initial-gc-cons-threshold gc-cons-threshold)
@@ -133,7 +133,7 @@ Increasing the GC thresholds and turning off file name handlers during startup m
     (setq gc-cons-threshold most-positive-fixnum
           gc-cons-percentage 0.6)
 
-    (add-hook 'emacs-startup-hook
+    (add-hook 'after-init-hook
               (lambda ()
                 (setq gc-cons-threshold initial-gc-cons-threshold
                       gc-cons-percentage initial-gc-cons-percentage
@@ -357,25 +357,263 @@ First, let's set up a ~use-feature~ macro that works like ~use-package~ for libr
   (setq server-socket-dir (no-littering-expand-var-file-name "server/")))
 #+end_src
 
+** Miscellaneous niggly things
+
+There's a bunch of weird defaults in Emacs, so lets set them to be slightly less insane.
+
+#+begin_src emacs-lisp
+  (setopt sentence-end-double-space nil
+          compilation-scroll-output 'first-error
+          use-short-answers t
+          truncate-string-ellipsis "…"
+          create-lockfiles nil
+
+          truncate-lines nil
+          bidi-paragraph-direction 'left-to-right
+          bidi-inhibit-bpa t
+
+          warning-suppress-types '((comp))
+          fill-column 79
+          gnutls-verify-error t
+          gnutls-min-prime-bits 2048
+          password-cache-expiry nil
+          track-eol t
+          mouse-yank-at-point t
+          save-interprogram-paste-before-kill t
+
+          apropos-do-all t
+          require-final-newline t
+          tramp-default-method "ssh"
+          tramp-copy-size-limit nil
+          tramp-use-ssh-controlmaster-options nil
+          vc-follow-symlinks t
+          grep-use-headings t
+          completions-detailed t
+          read-minibuffer-restore-windows nil
+          mode-line-compact 'long
+          kill-do-not-save-duplicates t
+          auto-window-vscroll nil
+          fast-but-imprecise-scrolling t
+          custom-safe-themes t
+
+          delete-old-versions 0
+          vc-make-backup-files t
+
+          history-length t
+          history-delete-duplicates t
+          bookmark-save-flag 1
+
+          ad-redefinition-action 'accept
+
+          tab-width 4
+          indent-tabs-mode nil)
+
+  (defun dont-delay-compile-warnings (fun type &rest args)
+    (if (eq type 'bytecomp)
+        (let ((after-init-time t))
+          (apply fun type args))
+      (apply fun type args)))
+  (advice-add 'display-warning :around #'dont-delay-compile-warnings)
+
+  (use-feature savehist-mode
+    :custom
+    (savehist-save-minibuffer-history t "Save minibuffer history")
+    (savehist-additional-variables '(kill-ring
+                                     search-ring
+                                     regexp-search-ring
+                                     register-alist)
+                                   "Save more histories")
+    :hook after-init
+
+  (use-feature recentf-mode
+    :hook after-init)
+#+end_src
+
+
 ** Set up the UI
 
 #+begin_src emacs-lisp
-  ;;
-  ;; Appearance
-
-  (use-package doom-themes
-    :config
-    (load-theme 'doom-zenburn t)
-    )
-
   (use-package display-line-numbers
     :hook
     ((conf-mode prog-mode text-mode) . 'display-line-numbers-mode)
-    :init
-    (setopt
-     display-line-numbers-grow-only t
-     display-line-numbers-type t
-     display-line-numbers-width nil))
+    :custom
+    (display-line-numbers-grow-only t)
+    (display-line-numbers-type t)
+    (display-line-numbers-width nil))
+#+end_src
+
+** Configuration
+
+*** Help with Emacs commands
+
+The help system in Emacs is great, but it can be improved. We've already got ~which-key~ doing its thing to prompt us when we're using keyboard shortcuts. Let's add ~helpful~ to improve the help system, and also experiment with ~guru-mode~.
+
+#+begin_src emacs-lisp
+  (use-package helpful
+    :bind (("C-c C-d" . helpful-at-point)
+           :map help-map
+           ("f" . helpful-callable)
+           ("v" . helpful-variable)
+           ("k" . helpful-key)
+           ("x" . helpful-command)
+           ("F" . helpful-function)))
+
+  (use-package guru-mode
+    :diminish t
+    :custom
+    (guru-warn-only t)
+    :hook (after-init . guru-global-mode))
+
+#+end_src
+
+** Look and feel
+
+*** Theme
+I've used Zenburn or variants on it since forever and I'm not about to start now. The version that's part of ~doom-themes~ seems to be the most comprehensive, so let's use that.
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config
+    (load-theme 'doom-zenburn t))
+
+#+end_src
+
+*** Display background colour for strings with the colour value
+
+~rainbow-mode~ is a minor mode for Emacs which displays strings representing colours with the colour teh represent as background.
+
+#+begin_src emacs-lisp
+    (use-package rainbow-mode
+      :hook prog-mode)
+#+end_src
+
+*** Padding between elements
+
+This adds some space between various elements in Emacs: https://protesilaos.com/codelog/2023-06-03-emacs-spacious-padding
+
+#+begin_src emacs-lisp
+  (use-package spacious-padding
+    :custom
+    (spacious-padding-widths . ( :internal-border-width 10
+                                 :header-line-width 4
+                                 :mode-line-width 4
+                                 :tab-width 4
+                                 :right-divider-width 10
+                                 :scroll-bar-width 2))
+    :hook
+    (after-init . spacious-padding-mode))
+
+#+end_src
+
+*** Modeline
+
+**** doom-modeline
+So many modeline packages. I ended up settling on the ~doom-modeline~ package.
+
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :if (display-graphic-p)
+    :custom
+    (doom-modeline-height 15)
+    (doom-modeline-bar-width 6)
+    (doom-modeline-minor-modes t)
+    (doom-modeline-buffer-file-name-style 'truncate-except-project)
+    :hook after-init)
+#+end_src
+
+*** Fonts
+
+**** Extend font-lock
+
+#+begin_src emacs-lisp
+  (use-feature font-lock)
+
+  (use-package font-lock+
+    :straight
+    (:type git :host github :repo "emacsmirror/font-lock-plus"))
+#+end_src
+
+**** Icons and such
+~nerd-icons~ seems to fit the bill in terminal mode, ~all-the-icons~ is more comprehensive in graphic mode though, so we'll load that then.
+
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :unless (display-graphic-p))
+
+  (use-package nerd-icons-corfu
+    :after (nerd-icons corfu)
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+  (use-package nerd-icons-dired
+    :after (nerd-icons dired)
+    :hook dired-mode)
+
+  (use-package all-the-icons
+    :if (display-graphic-p))
+
+  (use-package all-the-icons-dired
+    :after (all-the-icons dired)
+    :hook dired-mode)
+
+  (use-package all-the-icons-completion
+    :after (all-the-icons marginalia)
+    :hook
+    (marginalia-mode . all-the-icons-completion-marginalia-setup)
+    (after-init . all-the-icons-completion-mode))
+
+  (use-package all-the-icons-nerd-fonts
+    :straight
+    (:type git :host github :repo "mohkale/all-the-icons-nerd-fonts")
+    :after all-the-icons
+    :config
+    (all-the-icons-nerd-fonts-prefer))
+
+  (use-package all-the-icons-ibuffer
+    :after all-the-icons
+    :hook ibuffer-mode)
+
+  (use-package svg-lib :if (display-graphic-p))
+
+
+#+end_src
+
+
+*** Dashboard
+A customized startup screen. This is experimental, but why not?
+
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :if (display-graphic-p)
+    :config
+    (dashboard-setup-startup-hook)
+    :custom
+    (dashboard-center-content t)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-footer-icons nil)
+    (dashboard-display-icons-p t)
+    (dashboard-items '((recents . 5)
+                       (agenda . 5)
+                       (projects . 5)
+                       (bookmarks . 5)))
+    (dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+    (dashboard-match-agenda-entry "TODO=\"TODO\"|TODO=\"STARTED\"")
+    (dashboard-agenda-tags-format 'ignore)
+    (dashboard-path-style 'truncate-middle)
+    (dashboard-path-max-length 50)
+    (dashboard-bookmarks-item-format "%s")
+    :hook
+    (after-init . dashboard-insert-startupify-lists)
+    (after-init . dashboard-initialize)
+    (window-setup-hook . dashboard-resize-on-hook)
+    :config
+    (add-hook 'window-size-change-functions 'dashboard-resize-on-hook 100)
+    :preface
+    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
+
+
 #+end_src
 
 ** Load extra configuration and customizations
