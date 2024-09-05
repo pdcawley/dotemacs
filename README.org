@@ -738,6 +738,8 @@ Nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-ba
 #+begin_src emacs-lisp
   (use-feature dired
     :after vertico
+    :config
+    (put 'dired-find-alternate-file 'disabled nil)
     :hook
     (after-init . file-name-shadow-mode)
     (rfn-eshadow-update-overlay . vertico-directory-tidy)
