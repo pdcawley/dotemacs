@@ -600,16 +600,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
        (put cmd 'repeat-map 'smerge-basic-map)))
    smerge-basic-map))
 
-;;; Magit
-(use-package magit
-  :bind
-  (:prefix "M-m g"
-           :prefix-map leader/git-map
-           :prefix-docstring "git"
-           ("s" . magit-status)
-           ("l" . magit-log)))
-
-
 (use-package corfu
   :custom
   ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
