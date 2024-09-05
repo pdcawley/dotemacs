@@ -748,23 +748,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
            ("m" . mc/edit-lines))
   :config)
 
-
-(use-feature dired
-  :bind (("M-m a d" . dired)
-         ("M-m j d" . dired-jump)
-         ("M-m j D" . dired-jump-other-window)
-         :map dired-mode-map
-         (", w"     . wdired-change-to-wdired-mode))
-  :init
-  (setopt dired-use-ls-dired nil
-          dired-omit-file-p t
-          dired-omit-files "^\\.?#"
-          dired-dwim-target t))
-
-
-(use-feature dired-x
-  :commands (dired-jump dired-jump-other-window dired-omit-mode))
-
 (use-feature recentf
   :hook
   (after-init . recentf-mode)

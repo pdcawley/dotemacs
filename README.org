@@ -737,7 +737,12 @@ Nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-ba
 
 #+begin_src emacs-lisp
   (use-feature dired
-    :after vertico
+    :after vertico pdcmacs-global-bindings
+    :bind (("M-m a d" . dired)
+           ("M-m j d" . dired-jump)
+           ("M-m j D" . dired-jump-other-window)
+           :map dired-mode-map
+           (", w"      . wdired-change-to-wdired-mode))
     :config
     (put 'dired-find-alternate-file 'disabled nil)
     :hook
@@ -751,7 +756,13 @@ Nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-ba
        ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open")
        (".*" "xdg-open")))
     (dired-recursive-copies 'always)
-    (dired-recursive-deletes 'always))
+    (dired-recursive-deletes 'always)
+    (dired-use-ls-dired nil)
+    (dired-omit-file-p t)
+    (dired-omit-files "^\\.?#"))
+
+  (use-feature dired-x
+    :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
 #+end_src
 
