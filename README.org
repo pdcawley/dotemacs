@@ -1,0 +1,99 @@
+#+title: Piers Cawley's Literate Emacs Config
+#+author: Piers Cawley
+#+property: header-args:emacs-lisp :tangle yes :results silent :exports code
+#+options: html-style:nil
+
+* Why a Literate Emacs Config?
+
+** Background
+I tend to suck at writing comments, but I also tend to leave things for ages between bursts of activity, so having some way of picking up my thoughts is really handy. I want to be able to get context back when I return to a project, and I've found from the experience of [[https://bofh.org.uk/2019/02/25/baking-with-emacs/][running the bakery with emacs]] that a literate programming approach can really help.
+
+** My Setup
+There's any number of ways of setting up a literate Emacs configuration. My plan is to have this file as the Single Source Of Truth for everything emacs related that I've written and which isn't otherwise available in another package.
+
+I'll be using XDG based paths, and placing most of the product files in ~~/.config/pdcmacs/~ and using a [[https://github.com/plexus/chemacs2][Chemacs2]] checkout in ~~/.config/emacs/~ to select this configuration.
+
+The config is devided into the following parts.
+
+1. Bog standard -early-init.el- setting up things like -straight.el-
+2. An -init.el- with the more detailed configuration
+3. Package specific support functions and configuration in a -modules/- subdirectory
+4. My yasnippet snippets in -snippets/-
+
+And, in the "nice to have" department:
+
+1. build script to bring up Emacs how I like it
+2. The various support bits and bobs to allow exporting this to my hugo-based [[https://bofh.org.uk][blog]].
+
+
+
+** TODO Porting from legacy to Literate [0/3]
+
+- [ ] Move ~early-init.el~ to a src block
+  - [ ] Initial import
+  - [ ] Pull comments up into org-mode and break file into sections
+- [ ] Move ~init.el~ to a src block
+  - [ ] Initial import
+  - [ ] Make more literate
+- [ ] Move ~config.el~ to src block
+  - [ ] Initial import
+  - [ ] Break into sections
+  - [ ] Merge with init.el
+- [ ] Move ~modules/~ into src blocks and make literate
+
+* Initial Setup
+
+This only needs executing the first time you use this setup. It moves any prexisting ~~/.emacs.d/~ directory to ~~/.emacs.d.bak/~, ~~.emacs~ goes to ~~/.emacs.bak/~ and any non-chemacs2 version of ~~/.config/emacs/~ goes to ~~/.config/emacs.default/~. Execute the block using =C-c C-c=
+
+#+begin_src sh :results silent :tangle no
+  # Error out early
+
+  set -euo pipefail
+  set -o noclobber
+
+  # Create ~/.config/emacs folder with chemacs2 in it
+  if [ -d ~/.config/emacs ]
+  then
+      # Is it already a chemacs directory?
+      if (cd ~/.config/emacs && git remote show origin | grep -q chemacs2)
+      then
+          echo "Chemacs2 installed!"
+      else
+          if [ -d ~/.config/emacs.legacy ]
+          then
+              echo "We already have emacs.legacy, exiting"
+              exit -1
+          else
+              mv ~/.config/emacs ~/.config/emacs.legacy
+          fi
+      fi
+  fi
+  git clone https://github.com/plexus/chemacs2.git ~/.config/emacs/
+  mkdir -p ~/.config/chemacs/
+  echo >~/.config/chemacs/profiles.el <<EOF
+  (("legacy" . ((user-emacs-directory . "~/.config/emacs.legacy") (server-name .  "emacs-legacy") (straight-p . t)))
+   ("default" . ((user-emacs-directory . "~/.config/pdcmacs") (server-name . "pdcmacs") (straight-p . t))))
+  EOF
+
+  echo "Setting up pdcmacs folder in ~/.config"
+  mkdir -p ~/.config/pdcmacs/secrets
+  mkdir -p ~/.config/pdcmacs/snippets
+  mkdir -p ~/.config/pdcmacs/abbrevs
+
+  if [ -L ~/.emacs.d ] && [ -d ~/.emacs.d ]
+  then
+      echo "~/.emacs.d is already a symlink"
+  else
+      echo "Creating symlink"
+      if [ -d ~/.emacs.d ]
+      then
+          echo "~/.emacs.d exists, moving to .emacs.d.bak"
+          mv ~/.emacs.d ~/.emacs.d.bak
+      fi
+      ln -s ~/.config/emacs ~/.emacs.d
+  fi
+
+
+
+
+#+end_src
