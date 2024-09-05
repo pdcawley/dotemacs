@@ -391,7 +391,6 @@ Do nothing if we're not in a string."
 (use-package embark-consult
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
-(use-package consult-dir)
 (use-package ace-window)
 (use-package 0x0)
 
@@ -588,17 +587,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (repeat-echo-function #'ignore)
   :config
   (repeat-mode t))
-
-(use-feature smerge-mode :after which-key
-  :custom
-  (smerge-auto-leave nil)
-  :config
-  (keymap-set smerge-mode-map "M-m m" '("merge" . smerge-basic-map))
-  (map-keymap
-   (lambda (_key cmd)
-     (when (symbolp cmd)
-       (put cmd 'repeat-map 'smerge-basic-map)))
-   smerge-basic-map))
 
 (use-package corfu
   :custom

@@ -660,6 +660,25 @@ Time to experiment with ~diff-hl~ -- apparently better than ~git-gutter~
     (magit-post-refresh . diff-hl-magit-post-refresh))
 
 #+end_src
+
+*** Smerge
+Smerge is what handles merging and we'd like to plum it into our leader key based bindings
+
+#+begin_src emacs-lisp
+  (use-feature smerge-mode
+    :after which-key
+    :custom
+    (smerge-auto-leave nil)
+    :config
+    (keymap-set smerge-mode-map "M-m m" '("merge . smerge-basic-map"))
+    (map-keymap
+     (lambda (_key cmd)
+       (when (symbolp cmd)
+         (put cmd 'repeat-map 'smerge-basic-map)))
+     smerge-basic-map))
+
+#+end_src
+
 ** Load extra configuration and customizations
 
 The pre-literate version of this file separated initialization into ~init.el~ and ~config.el~ file, so we need to load ~config.el~ and then any customizations. However, eventually, the plan is to eliminate ~config.el~ entirely.
