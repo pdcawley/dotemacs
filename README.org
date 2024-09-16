@@ -440,24 +440,6 @@ And it's handy to retain the history of useful variables and recent files betwee
                                      register-alist)
                                    "Save more histories")
     :hook after-init)
-
-  (use-feature recentf
-    :hook
-    after-init
-    (find-file . pdc/recentf-find-file-hook)
-    :custom
-    (recentf-max-saved-items 1000)
-    (recentf-auto-cleanup 'never)
-    (recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
-    :init
-    (defun pdc/recentf-find-file-hook ()
-      (unless recentf-mode
-        (recentf-mode)
-        (recentf-track-opened-file)))
-    :config
-    (add-to-list 'recentf-exclude no-littering-etc-directory)
-    (add-to-list 'recentf-exclude (expand-file-name package-user-dir))
-    (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+end_src
 
 
