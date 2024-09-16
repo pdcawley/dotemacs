@@ -15,12 +15,6 @@
 ;;
 ;; Editing stuff
 
-;; trim excess whitespace
-(use-package ws-butler
-  :diminish
-  :hook
-  ((prog-mode text-mode) . ws-butler-mode))
-
 ;; (use-package lispy
 ;;   :after (paredit embark)
 ;;   ;; TODO: Work out how to do this with 'bind'
