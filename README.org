@@ -924,6 +924,13 @@ I'm trying ~flymake~ for syntax checking.
                 ("M-m c l" . flymake-show-buffer-diagnostic)))
 #+end_src
 
+*** Add documentation
+#+begin_src emacs-lisp
+  (use-package eldoc
+    :diminish
+    :hook (after-init . global-eldoc-mode))
+#+end_src
+
 *** Lisp
 
 **** Paredit

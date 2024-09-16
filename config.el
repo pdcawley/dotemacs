@@ -592,11 +592,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
          lisp-modes)
   "Hook variables associated with `lisp-modes'.")
 
-(use-feature eldoc
-  :diminish eldoc-mode
-  :hook
-  ((eval-expression-minibuffer-setup ielm-mode) . eldoc-mode))
-
 (use-feature elisp-mode
   ;; :bind ( :map emacs-lisp-mode-map
   ;;         ("c" . finder-commentary)
