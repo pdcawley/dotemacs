@@ -316,13 +316,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   "'"  '+align-repeat-quote
   "`"  '+align-repeat-quote)
 
-(use-package macrostep
-  :bind
-  (:map emacs-lisp-mode-map
-        :prefix "M-m ,"
-        :prefix-map leader/mode/elisp-map
-        :prefix-docstring "mode(elisp)"
-        ("e" . macrostep-expand)))
 
 ;;; Repeat mode stuffs
 
