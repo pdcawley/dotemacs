@@ -932,9 +932,41 @@ I'm trying ~flymake~ for syntax checking.
     :hook (after-init . global-eldoc-mode))
 #+end_src
 
-*** Lisp
+*** Parsing programming languages
 
-**** Paredit
+Let's try using the built in ~tree-sitter~ for syntax and parsing.
+
+#+begin_src emacs-lisp
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install 'prompt)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    :hook (after-init . global-treesit-auto-mode))
+
+#+end_src
+
+*** Languages and Frameworks
+
+**** Lisps
+Setup some common lisp mode stuff
+#+begin_src emacs-lisp
+  (defvar lisp-modes '(emacs-lisp-mode
+                       inferior-emacs-lisp-mode
+                       ielm-mode
+                       lisp-mode
+                       inferior-lisp-mode
+                       lisp-interaction-mode
+                       extempore-mode)
+    "A list of Lisp style modes.")
+
+  (defvar lisp-mode-hooks
+    (dolist (it lisp-modes)
+      (intern (concat (symbol-name it) "-hook")))
+    "Hook variables associated with `lisp-modes'.")
+#+end_src
+
+***** Paredit
 
 Paredit is an excellent mode for working in Lisps. At its simplest it 'just' keeps parens balanced and ensures your lisp is always well formed, but it comes into its own once you start needing to fiddle with the structure of code.
 
@@ -1066,6 +1098,23 @@ Also, paredit and ~embark~ fight a little, so added a hook to add ~paredit-mode~
     ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
 #+end_src
 
+***** Emacs Lisp
+Especially in text mode emacs, modeline space is at a premium, so we shorten ~mode-name~.
+#+begin_src emacs-lisp
+  (use-feature elisp-mode
+    :init
+    (defun pdc/elisp-mode-hook ()
+      (setq mode-name "λ(e)"))
+    :hook
+    (emacs-lisp-mode . pdc/elisp-mode-hook))
+#+end_src
+
+****** Display evaluation results as overlays
+~eros-mode~ displays elisp evaluation results as an overlay, which is a little neater than the default behaviour.
+#+begin_src emacs-lisp
+  (use-package eros
+    :hook (after-init . eros-mode))
+#+end_src
 
 ** Load extra configuration and customizations
 
@@ -1078,9 +1127,9 @@ The pre-literate version of this file separated initialization into ~init.el~ an
 
   (when (file-exists-p custom-file)
     (load custom-file))
-
-
 #+end_src
+
+
 # Local Variables:
 # truncate-lines: nil
 # word-wrap: t

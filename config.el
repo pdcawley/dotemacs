@@ -4,7 +4,6 @@
   (require 'use-package))
 
 (defun start-server-after-init ()
-  (interactive)
   (require 'server)
   (unless (server-running-p)
     (server-start)
@@ -591,22 +590,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (--map (intern (concat (symbol-name it) "-hook"))
          lisp-modes)
   "Hook variables associated with `lisp-modes'.")
-
-(use-feature elisp-mode
-  ;; :bind ( :map emacs-lisp-mode-map
-  ;;         ("c" . finder-commentary)
-  ;;         ("f" . find-function)
-  ;;         ("F" . find-face-definition))
-  :init
-  (defun pdc/elisp-mode-hook ()
-    (eldoc-mode 1)
-    (setq mode-name "EL"))
-  :hook
-  (emacs-lisp-mode . pdc/elisp-mode-hook))
-
-(use-package eros
-  :init
-  (eros-mode 1))
 
 (use-package calendar
   :custom
