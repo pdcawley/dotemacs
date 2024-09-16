@@ -1035,6 +1035,15 @@ An emacs builtin, we're just configuring it.
     (markdown-command "multimarkdown | pandoc"))
 #+end_src
 
+*** CSV Mode
+Let emacs guess and set the separator for ~csv~ files.
+
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :hook (csv-mode . csv-guess-set-separator)
+    :mode ("\\.csv\\'" . csv-mode))
+#+end_src
+
 
 ** Programming stuff
 
