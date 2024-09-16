@@ -921,7 +921,7 @@ I'm trying ~flymake~ for syntax checking.
     :bind (:map flymake-mode
                 ("M-m c n" . flymake-goto-next-error)
                 ("M-m c p" . flymake-goto-prev-error)
-                ("M-m c l" . flymake-show-buffer-diagnostic)))
+                ("M-m c l" . flymake-show-buffer-diagnostics)))
 #+end_src
 
 *** Add documentation
