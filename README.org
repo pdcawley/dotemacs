@@ -914,6 +914,29 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
     ((prog-mode text-mode) . ws-butler-mode))
 #+end_src
 
+** Editing
+
+*** Spell checking
+Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
+
+#+begin_src emacs-lisp
+  (use-package jinx
+    :hook (emacs-startup . global-jinx-mode)
+    :bind (("M-$" . jinx-correct)
+           ("C-M-$" . jinx-languages))
+    :custom (jinx-languages "en_GB")
+    :config
+    (defun +jinx--add-to-abbrev (overlay word)
+      "Add abbreviation to `global-abbrev-table`.
+  The misspelled word is taken from OVERLAY. WORD is the corrected word."
+      (let ((abbrev (buffer-substring-no-properties
+                     (overlay-start overlay)
+                     (overlay-end overlay))))
+        (message "Abbrev: %s -> %s" abbrev word)
+        (define-abbrev global-abbrev-table abbrev word)))
+    (advice-add 'jinx--correct-replace :before #'+jinx--add-to-abbrev))
+#+end_src
+
 ** Programming stuff
 
 *** Syntax checking
