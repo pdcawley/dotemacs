@@ -852,6 +852,144 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
     :hook
     ((prog-mode text-mode) . ws-butler-mode))
 #+end_src
+
+** Programming stuff
+
+*** Lisp
+
+**** Paredit
+
+Paredit is an excellent mode for working in Lisps. At its simplest it 'just' keeps parens balanced and ensures your lisp is always well formed, but it comes into its own once you start needing to fiddle with the structure of code.
+
+I've also added a bit of extra cleverness around what happens after closing a sexp. An early version of paredit used to insert a newline after closing parens, but roll that back if the next character you typed was a space. I liked that behaviour, so when paredit removed the behaviour (presumably because it was too surprising), I added it back in.
+
+Also, paredit and ~embark~ fight a little, so added a hook to add ~paredit-mode~'s bindings to ~minor-mode-overriding-map-alist~. My approach is almost certainly overkill, but it works, which is what matters.
+
+#+begin_src emacs-lisp
+  (use-package paredit
+    :diminish "Ⓟ "
+    :bind
+    (:map paredit-mode-map
+          ("DEL"   . pdc/paredit-backward-delete)
+          ("("     . pdc/paredit-open-parenthesis)
+          (")"     . paredit-close-round-and-newline)
+          ("M-)"   . paredit-close-round)
+          ("C-M-l" . paredit-recenter-on-sexp)
+          ("C-M-s" . paredit-backward-up)
+          ("M-I"   . paredit-splice-sexp)
+          ("]"     . paredit-close-square-and-newline)
+          ("}"     . paredit-close-curly-and-newline)
+          (";"     . pdc/paredit-semicolon))
+
+    :config
+    (defun pdc/paredit-backward-delete ()
+      (interactive)
+      (if mark-active
+          (call-interactively 'delete-region)
+        (paredit-backward-delete)))
+
+    (defun pdc/paredit-semicolon (&optional n)
+      (interactive "P")
+      (when (looking-at-p "  +\(")
+        (search-forward "(")
+        (backward-char))
+      (cond ((and n (not (= 1 n)))
+             (paredit-semicolon n))
+            ((and (equal last-command this-command)
+                  (looking-back "; " 2))
+             (undo)
+             (self-insert-command 1))
+            ((or (looking-back ";" 1)
+                 (and (looking-at-p "[[:blank:]]*$")
+                      (not (save-excursion
+                             (beginning-of-line)
+                             (looking-at-p "[[:blank:]]*$")))))
+
+             (self-insert-command (or n 1)))
+
+            ((and (not mark-active)
+                  (looking-at-p "^[[:blank:]]*$"))
+             (insert ";;; "))
+            ((and (not mark-active)
+                  (save-excursion
+                    (beginning-of-line)
+                    (looking-at-p "[[:blank:]]*$")))
+             (insert ";; "))
+            (t (paredit-semicolon n))))
+
+    (defun pdc/in-string-p ()
+      (eq 'string (syntax-ppss-context (syntax-ppss))))
+
+    (defun pdc/in-comment-p ()
+      (eq 'comment (syntax-ppss-context (syntax-ppss))))
+
+    (defun pdc/paredit-open-parenthesis (&optional n)
+      (interactive "P")
+      (cond ((and (looking-back "\(" 1)
+                  (looking-at "\)"))
+             (paredit-open-parenthesis n))
+            ((equal last-command this-command)
+             (undo)
+             (insert " ")
+             (backward-char 1)
+             (paredit-open-parenthesis n))
+            ((and (not (or mark-active (pdc/in-string-p)))
+                  (looking-at-p "[\(a-z\"#\\[{]"))
+             (mark-sexp)
+             (paredit-open-parenthesis n)
+             (when (looking-at-p "[\(\"#\\[{]")
+               (save-excursion (insert " "))))
+            (t (paredit-open-parenthesis n))))
+
+    (defvar +paredit--post-close-keymap (make-sparse-keymap))
+    (general-define-key :keymaps '+paredit--post-close-keymap
+                        "SPC" (lambda () (interactive) (just-one-space -1))
+                        "RET" (lambda () (interactive))
+                        "DEL" (lambda ()
+                                (interactive)
+                                (delete-all-space t)))
+
+    (defun pdc/enable-post-close-keymap ()
+      (set-transient-map +paredit--post-close-keymap))
+
+    (dolist (closer '(paredit-close-square-and-newline
+                      paredit-close-round-and-newline
+                      paredit-close-curly-and-newline
+                      paredit-close-angled-and-newline))
+      (advice-add closer :after 'pdc/enable-post-close-keymap))
+
+    (defun +paredit-maybe-close-doublequote-and-newline (&optional n)
+      (cond ((and (paredit-in-string-p)
+                  (eq (point) (- (paredit-enclosing-string-end) 1)))
+             (forward-char)
+             (let ((comment.point (paredit-find-comment-on-line)))
+               (newline)
+               (if comment.point
+                   (save-excursion
+                     (forward-line -1)
+                     (end-of-line)
+                     (indent-to (cdr comment.point))
+                     (insert (car comment.point))))
+               (lisp-indent-line)
+               (paredit-ignore-sexp-errors (indent-sexp))
+               (pdc/enable-post-close-keymap)
+               t))
+            (t nil)))
+
+    (advice-add 'paredit-doublequote :before-until '+paredit-maybe-close-doublequote-and-newline)
+
+    :preface
+    (defun pdc/prioritise-paredit-bindings ()
+      (push (assoc 'paredit-mode minor-mode-map-alist)
+            minor-mode-overriding-map-alist))
+
+    :hook
+    (paredit-mode . pdc/prioritise-paredit-bindings)
+                                          ; (paredit-mode . (lambda () (if (fboundp 'lispy-mode) (lispy-mode))))
+    ((lisp-mode scheme-mode racket-mode emacs-lisp-mode) . enable-paredit-mode))
+#+end_src
+
+
 ** Load extra configuration and customizations
 
 The pre-literate version of this file separated initialization into ~init.el~ and ~config.el~ file, so we need to load ~config.el~ and then any customizations. However, eventually, the plan is to eliminate ~config.el~ entirely.
