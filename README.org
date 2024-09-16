@@ -718,7 +718,7 @@ Capture and restore window configuration
 #+begin_src emacs-lisp
   (use-feature winner
     :hook after-init
-    :init
+    :config
     (setopt winner-boring-buffers
             (append winner-boring-buffers
                     '("*Completions*"
