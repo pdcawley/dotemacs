@@ -1070,6 +1070,25 @@ Let emacs guess and set the separator for ~csv~ files.
     (("M-g y" . consult-yasnippet)))
 #+end_src
 
+*** Writing aids
+Make life easier when writing plain-ish text in Emacs.
+
+**** Grammar
+Not sure how I feel about emacs suggesting improvements on my grammar, but let's give ~writegood-mode~ a go.
+
+The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point.
+
+#+begin_src emacs-lisp
+  (use-package writegood-mode
+    :bind ("M-m W" . writegood-mode)
+    :hook text-mode
+    :config
+    (writegood-weasels-turn-on)
+    (writegood-passive-voice-turn-on)
+    (writegood-duplicates-turn-on))
+#+end_src
+
+
 ** Programming stuff
 
 *** Syntax checking
