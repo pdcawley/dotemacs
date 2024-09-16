@@ -10,16 +10,6 @@
     (server-start)
     (midnight-mode +1)))
 
-;; Autorevert stuff
-
-(use-feature autorevert
-  :custom
-  ;; Revert dired and other buffers
-  (global-auto-revert-non-file-buffers t)
-  :config
-  ;; Revert buffers when the underlying file changed.
-  (global-auto-revert-mode 1))
-
 ;;(use-feature eldoc-mode :diminish)
 
 ;;
