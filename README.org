@@ -1044,6 +1044,31 @@ Let emacs guess and set the separator for ~csv~ files.
     :mode ("\\.csv\\'" . csv-mode))
 #+end_src
 
+*** Snippets
+
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :demand t
+    :mode ("~/.config.*/snippets/" . snippet-mode)
+    :hook (emacs-startup . yas-global-mode)
+    :diminish (yas-minor-mode . " ⓨ")
+    :custom
+    (yas-triggers-in-field t)
+    (yas-wrap-around-region t)
+    (yas-prompt-functions '(yas-completing-prompt))
+    :init
+    (defvar pdc-snippet-dirs (seq-filter 'file-directory-p
+                                         (list (expand-file-name "snippets/" user-emacs-directory)
+                                               (expand-file-name "~/.config/snippets"))))
+
+    (setq yas-snippet-dirs pdc-snippet-dirs))
+
+  (use-package yasnippet-snippets :after yasnippet)
+
+  (use-package consult-yasnippet :after (consult yasnippet)
+    :bind
+    (("M-g y" . consult-yasnippet)))
+#+end_src
 
 ** Programming stuff
 
