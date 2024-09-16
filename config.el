@@ -23,53 +23,7 @@
 ;;   (keymap-unset lispy-mode-map "M-."))
 
                                         ;
-(use-package mwim
-  :custom
-  (mwim-position-functions '(mwim-code-beginning
-                             mwim-line-beginning
-                             mwim-comment-beginning
-                             +mwim-current-string-beginning
-                             +mwim-current-string-end
-                             mwim-code-end
-                             mwim-line-end))
-  :bind (("C-a" . mwim-beginning)
-         ("C-e" . +mwim-next-ending))
-  :config
-  (defun +mwim-next-ending ()
-    "Move point to the the nearest ending place"
-    (interactive "^")
-    (mwim-move-to-next-position mwim-end-position-functions #'<))
 
-  (defun +mwim-current-string-beginning ()
-    "Return position of the beginning of the current string.
-Return nil if not inside a string."
-    (let ((syn (syntax-ppss)))
-      (and (nth 3 syn)
-           (nth 8 syn))))
-
-  (defun +mwim-beginning-of-current-string ()
-    "Move point of the beginning of the current string.
-If we're not in a string, do nothing."
-    (interactive "^")
-    (when-let ((string-beg (+mwim-current-string-beginning)))
-      (goto-char string-beg)))
-
-  (defun +mwim-current-string-end ()
-    "Return position of the end of the current string.
-Return nil if not inside a string."
-    (mwim-point-at (+mwim-end-of-current-string)))
-
-  (defun +mwim-end-of-current-string ()
-    "Move point to the end of the current string.
-Do nothing if we're not in a string."
-    (interactive "^")
-    (when-let ((string-beg (+mwim-current-string-beginning)))
-      (goto-char string-beg)
-      (forward-sexp)))
-
-  (push '+mwim-current-string-beginning mwim-beginning-position-functions)
-
-  (push '+mwim-current-string-end mwim-end-position-functions))
 
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
