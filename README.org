@@ -1025,6 +1025,16 @@ An emacs builtin, we're just configuring it.
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+end_src
 
+*** Markdown
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdown\\|mdwn\\)\\'" . markdown-mode))
+    :custom
+    (markdown-command "multimarkdown | pandoc"))
+#+end_src
+
 
 ** Programming stuff
 
