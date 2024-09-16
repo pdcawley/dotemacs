@@ -205,20 +205,6 @@
 (use-package ace-window)
 (use-package 0x0)
 
-;;; Appearance
-
-(use-package all-the-icons
-  :if (display-graphic-p))
-
-;; (use-package all-the-icons-dired-mode
-;;   :after all-the-icons
-;;   :hook (dired-mode . all-the-icons-dired-mode))
-
-;; (use-package all-the-icons-completion
-;;   :after all-the-icons
-;;   :hook
-;;   (marginalia-mode . all-the-icons-completion-marginalia-setup))
-
 (use-package dash
   :config
   (dash-enable-font-lock))
@@ -244,39 +230,6 @@
   (auto-compile-mode-line-counter t))
 
 ;; Make `describe-*' screens more helpful
-
-(use-package helpful
-  :bind
-  (([remap describe-command]  . helpful-command)
-   ([remap describe-function] . helpful-callable)
-   ([remap describe-key]      . helpful-key)
-   ([remap describe-symbol]   . helpful-symbol)
-   ([remap describe-variable] . helpful-variable)
-   ("C-h C"                   . helpful-command)
-   ("C-h F"                   . helpful-function)
-   ("C-h K"                   . describe-keymap)
-   :map helpful-mode-map
-   ([remap revert-buffer]     . helpful-update))
-  :config
-
-  ;; Temporary fix until this all works for Emacs 29 again
-  ;; (defvar read-symbol-positions-list nil)
-  ;; (defun helpful--autoloaded-p (sym buf)
-  ;;   (-when-let (file-name (buffer-file-name buf))
-  ;;     (setq file-name (s-chop-suffix "*.gz" file-name))
-  ;;     (help-fns--autoloaded-p sym)))
-
-
-  ;; (defun helpful--skip-advice (docstring)
-  ;;   "Remove mentions of advice from DOCSTRING."
-  ;;   (let* ((lines (s-lines docstring))
-  ;;          (relevant-lines
-  ;;           (--take-while
-  ;;            (not (or (s-starts-with-p ":around advice:" it)
-  ;;                     (s-starts-with-p "This function has :around advice:" it)))
-  ;;            lines)))
-  ;;     (s-trim (s-join "\n" relevant-lines))))
-  )
 
 ;; add visual pulse when changing focus, like beacon but built-in
 

@@ -480,20 +480,23 @@ And it's handy to retain the history of useful variables and recent files betwee
 The help system in Emacs is great, but it can be improved. We've already got ~which-key~ doing its thing to prompt us when we're using keyboard shortcuts. Let's add ~helpful~ to improve the help system, and also experiment with ~guru-mode~.
 
 #+begin_src emacs-lisp
-  (use-package helpful
-    :bind (("C-c C-d" . helpful-at-point)
-           :map help-map
-           ("f" . helpful-callable)
-           ("v" . helpful-variable)
-           ("k" . helpful-key)
-           ("x" . helpful-command)
-           ("F" . helpful-function)))
+      (use-package helpful
+        :bind (("C-c C-d" . helpful-at-point)
+               ([remap describe-command]  . helpful-command)
+               ([remap describe-function] . helpful-callable)
+               ([remap describe-key]      . helpful-key)
+               ([remap describe-variable] . helpful-variable)
+               ([remap describe-symbol]   . helpful-symbol)
+               :map help-map
+               ("F" . helpful-function)
+               :map helpful-mode-map
+               ([remap revert-buffer] . helpful-update)))
 
-  (use-package guru-mode
-    :diminish guru-mode
-    :custom
-    (guru-warn-only t)
-    :hook (after-init . guru-global-mode))
+      (use-package guru-mode
+        :diminish guru-mode
+        :custom
+        (guru-warn-only t)
+        :hook (after-init . guru-global-mode))
 
 #+end_src
 
