@@ -418,13 +418,18 @@ And, by default, emacs disables a few useful commands, so we re-enable them:
 
 We'd like to see compile warnings promptly.
 
+#+begin_src emacs-lisp
   (defun dont-delay-compile-warnings (fun type &rest args)
     (if (eq type 'bytecomp)
         (let ((after-init-time t))
           (apply fun type args))
       (apply fun type args)))
   (advice-add 'display-warning :around #'dont-delay-compile-warnings)
+#+end_src
 
+And it's handy to retain the history of useful variables and recent files between sessions.
+
+#+begin_src emacs-lisp
   (use-feature savehist-mode
     :custom
     (savehist-save-minibuffer-history t "Save minibuffer history")
