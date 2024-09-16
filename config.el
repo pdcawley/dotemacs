@@ -552,8 +552,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 (use-package suggest
   :commands (suggest))
 
-(use-package casual-calc
-  :bind (:map calc-mode-map ("C-o" . 'casual-calc-tmenu)))
 (use-package casual-dired
   :bind (:map dired-mode-map ("C-o" . 'casual-dired-tmenu)))
 (use-package casual-info

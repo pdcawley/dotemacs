@@ -1108,6 +1108,28 @@ Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ 
 
 #+end_src
 
+**** Thesaurus
+~emacs-powerthesaurus~ is a plugin to integrate Emacs with the powerthesaurus.org service. Not sure I'll actually use this, but why not try it?
+
+#+begin_src emacs-lisp
+  (use-package powerthesaurus)
+
+#+end_src
+
+*** The amazing emacs calculator
+~calc~ and ~casual-calc~ are rather fine.
+#+begin_src emacs-lisp
+  (use-feature calc)
+
+
+  (use-package casual-calc
+    :bind (:map
+           calc-mode-map ("C-o" . 'casual-calc-tmenu)
+           :map
+           calc-alg-map ("C-o" . 'casual-calc-tmenu))
+    :after (calc))
+#+end_src
+
 ** Programming stuff
 
 *** Syntax checking
