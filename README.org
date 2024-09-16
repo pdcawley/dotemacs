@@ -3,6 +3,7 @@
 #+property: header-args:emacs-lisp :tangle yes :results silent :exports code
 #+options: html-style:nil
 #+auto_tangle: t
+#+startup: content
 
 * Why a Literate Emacs Config?
 
@@ -1080,3 +1081,7 @@ The pre-literate version of this file separated initialization into ~init.el~ an
 
 
 #+end_src
+# Local Variables:
+# truncate-lines: nil
+# word-wrap: t
+# End:
