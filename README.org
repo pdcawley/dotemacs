@@ -912,6 +912,18 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
 
 ** Programming stuff
 
+*** Syntax checking
+I'm trying ~flymake~ for syntax checking.
+
+#+begin_src emacs-lisp
+  (use-feature flymake
+    :hook prog-mode
+    :bind (:map flymake-mode
+                ("M-m c n" . flymake-goto-next-error)
+                ("M-m c p" . flymake-goto-prev-error)
+                ("M-m c l" . flymake-show-buffer-diagnostic)))
+#+end_src
+
 *** Lisp
 
 **** Paredit
