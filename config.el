@@ -22,10 +22,6 @@
 
 ;;(use-feature eldoc-mode :diminish)
 
-;; Enable some stuff
-(put 'narrow-to-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
 ;;
 ;; Editing stuff
 

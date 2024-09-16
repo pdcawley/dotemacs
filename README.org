@@ -407,6 +407,16 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
 
           tab-width 4
           indent-tabs-mode nil)
+#+end_src
+
+And, by default, emacs disables a few useful commands, so we re-enable them:
+
+#+begin_src emacs-lisp
+  (put 'narrow-to-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+#+end_src
+
+We'd like to see compile warnings promptly.
 
   (defun dont-delay-compile-warnings (fun type &rest args)
     (if (eq type 'bytecomp)
