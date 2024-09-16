@@ -1088,6 +1088,25 @@ The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix 
     (writegood-duplicates-turn-on))
 #+end_src
 
+**** Distraction free writing
+Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ and ~olivetti~ that purport to do similar things.
+
+#+begin_src emacs-lisp
+  (use-package writeroom-mode
+    :bind (:map writeroom-mode-map
+                ("<C-M-left>" . writeroom-decrease-width)
+                ("<C-M-right>" . writeroom-increase-width)
+                ("C-M-=" . writeroom-adjust-width)
+                ("M-m , [" . writeroom-decrease-width)
+                ("M-m , ]" . writeroom-increase-width)
+                ("M-m , =" . writeroom-adjust-width))
+    :custom
+    (writeroom-mode-line '(" " global-mode-string))
+    (writeroom-local-effects '(display-time-mode))
+    :config
+    (advice-add 'text-scale-adjust :after 'visual-fill-column-adjust))
+
+#+end_src
 
 ** Programming stuff
 
