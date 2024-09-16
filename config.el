@@ -229,24 +229,6 @@
   (auto-compile-display-buffer nil)
   (auto-compile-mode-line-counter t))
 
-;; Make `describe-*' screens more helpful
-
-;; add visual pulse when changing focus, like beacon but built-in
-
-(defun pulse-line (&rest _)
-  "Pulse the current line"
-  (pulse-momentary-highlight-one-line (point)))
-
-(dolist (command '(scroll-up-command scroll-down-command
-                                     recenter-top-bottom other-window))
-  (advice-add command :after #'pulse-line))
-
-;;;
-
-(use-feature hl-line-mode
-  :hook
-  ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
-
 ;;;
 ;;; Text wrangling
 

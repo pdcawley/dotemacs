@@ -937,6 +937,58 @@ Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
     (advice-add 'jinx--correct-replace :before #'+jinx--add-to-abbrev))
 #+end_src
 
+*** Highlighting the line
+Pulse the current line on demand, and after certain commands.
+
+#+begin_src emacs-lisp
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point)))
+
+  (defun pulse-line-command ()
+    "Interactively pulse the current line."
+    (interactive)
+    (pulse-line))
+
+  (defun pdc-reveal-entry ()
+    "Reveal Org or Outline entry and pulse the current line."
+    (cond
+     ((and (eq major-mode 'org-mode)
+           (org-at-heading-p))
+      (org-show-entry))
+     ((and (or (eq major-mode 'outline-mode)
+               (bound-and-true-p outline-minor-mode))
+           (outline-on-heading-p))
+      (outline-show-entry))))
+
+  (dolist (command '(scroll-up-command
+                     scroll-down-command
+                     recenter-top-bottom
+                     other-window))
+    (advice-add command :after #'pulse-line))
+
+  (bind-keys
+   ("C-c h p" . pulse-line-command))
+
+  (add-hook 'minibuffer-setup-hook #'pulse-line)
+  (add-hook 'consult-after-jump-hook (lambda ()
+                                       (recenter-top-bottom 0)))
+  (add-hook 'consult-after-jump-hook #'pdc-reveal-entry)
+
+  (add-hook 'imenu-after-jump-hook (lambda ()
+                                     (recenter-top-bottom 0)))
+  (add-hook 'imenu-after-jump-hook #'pdc-reveal-entry)
+#+end_src
+
+Some modes are less confusing if the current line is /always/ highlighted though.
+
+#+begin_src emacs-lisp
+  (use-feature hl-line-mode
+    :hook
+    ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
+#+end_src
+
+
 ** Programming stuff
 
 *** Syntax checking
