@@ -9,18 +9,6 @@
     (server-start)
     (midnight-mode +1)))
 
-;;(use-feature eldoc-mode :diminish)
-
-;;
-;; Editing stuff
-
-;; (use-package lispy
-;;   :after (paredit embark)
-;;   ;; TODO: Work out how to do this with 'bind'
-;;   :config
-;;   (keymap-unset lispy-mode-map "M-m")
-;;   (keymap-unset lispy-mode-map "M-."))
-
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
 
@@ -53,41 +41,6 @@
 
 (require 'rx)
 
-;; (let ((parameters '(window-parameters . ((no-other-window . t)
-;;                                          (no-delete-other-windows . t)))))
-
-;;   (add-to-list 'display-buffer-alist
-;;                '("\\*compilation\\*" display-buffer-no-window
-;;                  (allow-no-window . t)))
-;;   (add-to-list 'display-buffer-alist
-;;                `(,(rx (| "*info*"
-;;                          "NEWS"))
-;;                  (display-buffer-below-selected)
-;;                  (window-height . fit-window-to-buffer)
-;;                  ,parameters))
-;;   (add-to-list
-;;    'display-buffer-alist
-;;    `(,(rx "*"
-;;           "helpful " (*? anychar) ":" (* (not ?*))
-;;           "*")
-;;      display-buffer-in-side-window
-;;      (side . bottom) (slot . 1) (window-width . fit-window-to-buffer)
-;;      (window-parameters . ((no-other-window . 1)
-;;                            (no-delete-other-windows . t)))))
-;;   (add-to-list 'display-buffer-alist
-;;                `(,(rx "*"
-;;                       (| "xref"
-;;                          "grep"
-;;                          "Occur"
-;;                          "Completions")
-;;                       "*")
-;;                  display-buffer-below-selected
-;;                  (preserve-size . (nil . t))
-;;                  ,parameters)))
-
-(use-package embark-consult
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
 (use-package ace-window)
 (use-package 0x0)
 
@@ -107,13 +60,7 @@
   (require 'ht))
 
 ;; Speedup with auto-compile
-(use-package auto-compile
-  :hook
-  (after-init . auto-compile-on-load-mode)
-  (after-init . auto-compile-on-save-mode)
-  :custom
-  (auto-compile-display-buffer nil)
-  (auto-compile-mode-line-counter t))
+
 
 ;;;
 ;;; Text wrangling
