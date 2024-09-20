@@ -1226,6 +1226,101 @@ Sometimes, it's nice to edit the contents of the mini-buffer in a full buffer. S
     :init (miniedit-install))
 #+end_src
 
+*** Corfu
+The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've yet to find it. ~corfu~ in conjunction with ~vertico~ etc is about as good as I've found.
+
+#+begin_src emacs-lisp
+  (use-package corfu
+    :after savehist
+    :custom
+    ;; Works with `indent-for-tab-command'. Make sure tab doesn't indent when you
+    ;; want to perform completion
+    (tab-always-indent 'complete)
+    (tab-first-completion 'word)
+
+    (completion-cycle-threshold 3)
+
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-auto-prefix 3)
+    (corfu-auto-delay 0.2)
+    (corfu-preview-current nil)
+    (corfu-quit-at-boundary 'separator)
+
+    (global-corfu-modes '((not org-mode) prog-mode))
+
+    (corfu-preselect nil)
+
+    ;; quarantine
+    (corfu-history-mode 1)
+    (corfu-popupinfo-delay (cons nil 1.0))
+    :config
+    (add-to-list 'savehist-additional-variables 'corfu-history)
+
+    :hook
+    (eshell-history-mode . +eshell-history-mode-setup-completion)
+    (lsp-completion-mode . +lsp-mode-setup-completion)
+    ;; (after-init . global-corfu-mode)
+    ;; (after-init . corfu-popupinfo-mode)
+
+    :bind
+    (:map corfu-map
+          ("M-SPC"      . corfu-insert-separator)
+          ("RET"        . corfu-insert)
+          ("S-<return>" . corfu-insert)
+          ("M-m"        . +corfu-move-to-minibuffer)
+          ("TAB"        . +pdc/corfu-complete-common-or-next)
+          ("<tab>"      . +pdc/corfu-complete-common-or-next))
+
+
+    :init
+    (global-corfu-mode)
+    (corfu-popupinfo-mode)
+    ;; TODO: Write a function to attach to tab that first completes a common prefix and, on second hit, inserts the current selection
+
+    (defun +pdc/corfu-complete-common-or-next ()
+      "Complete common prefix or go to next candidate."
+      (interactive)
+      (if (= corfu--total 1)
+          (progn
+            (corfu--goto 1)
+            (corfu-insert))
+        (let* ((input (car corfu--input))
+               (str (if (thing-at-point 'filename) (file-name-nondirectory input) input))
+               (pt (length str))
+               (common (try-completion str corfu--candidates)))
+          (if (and (> pt 0)
+                   (stringp common)
+                   (not (string= str common)))
+              (insert (substring common pt))
+            (corfu-next)))))
+
+    (defun +pdc/corfu-insert ()
+      "Insert current candidate or newline."
+      (interactive))
+
+    (defun +corfu-move-to-minibuffer ()
+      (interactive)
+      (let (completion-cycle-threshold completion-cycling)
+        (apply #'consult-completion-in-region completion-in-region--data)))
+
+    (defun +lsp-mode-setup-completion ()
+      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+            '(orderless)))
+
+    (defun +eshell-history-mode-setup-completion ()
+      (setq-local corfu-quit-at-boundary t
+                  corfu-quit-no-match t
+                  corfu-auto nil)
+      (corfu-mode t))  )
+
+  (use-package corfu-terminal
+    :if
+    (not window-system)
+    :init
+    (corfu-terminal-mode t))
+#+end_src
+
 ** Programming stuff
 
 *** Syntax checking
