@@ -1166,6 +1166,28 @@ We use the in-built ~dabbrev~ package. It doesn't need much configuration, but i
      '(archive-mode image-mode doc-view-mode pdf-view-mode tags-table-mode)))
 #+end_src
 
+*** Abbreviations
+#+begin_src emacs-lisp
+  (use-package emacs
+    :bind ( ("M-/" . 'hippie-expand))
+    :custom
+    (abbrev-mode t)
+    (hippie-expand-try-functions-list
+     '(yas-hippie-try-expand
+       try-expand-all-abbrevs
+       try-complete-file-name-partially
+       try-complete-file-name
+       try-expand-dabbrev
+       try-expand-dabbrev-from-kill
+       try-expand-dabbrev-all-buffers
+       try-expand-list
+       try-expand-line
+       try-complete-lisp-symbol-partially
+       try-complete-lisp-symbol))
+    :config
+    (remove-hook 'save-some-buffers-functions 'abbrev--possibly-save))
+#+end_src
+
 *** Minibuffer
 Let's set up the ~~minibuffer~ to play nicely with the completion frameworks we're going to use.
 
