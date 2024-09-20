@@ -1216,7 +1216,6 @@ Let's set up the ~minibuffer~ to play nicely with the completion frameworks we'r
        (eglot (styles . (emacs22 substring orderless))))))
 
 #+end_src
-
 **** Editing the minibuffer
 Sometimes, it's nice to edit the contents of the mini-buffer in a full buffer. So I'll add the ~miniedit~ package. This binds ~C-M-e~ within a minibuffer to throw the content into a temporary buffer for editing
 
@@ -1225,6 +1224,7 @@ Sometimes, it's nice to edit the contents of the mini-buffer in a full buffer. S
     :commands minibuffer-edit
     :init (miniedit-install))
 #+end_src
+
 
 *** Corfu
 The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've yet to find it. ~corfu~ in conjunction with ~vertico~ etc is about as good as I've found.
@@ -1569,6 +1569,26 @@ Completing the group, we have ~orderless~ a pattern matching package for parsing
                 ("?" . nil)))
 
 
+#+end_src
+
+*** Marginalia
+
+This annotates completion targets rather nicely. Mostly, it just works.
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :hook (after-init . marginalia-mode)
+    :bind (("M-A" . marginalia-cycle)
+           :map minibuffer-local-map
+           ("M-A" . marginalia-cycle))
+    :custom
+    (marginalia-annotators '(marginalia-annotators-light nil)))
+
+  (use-package nerd-icons-completion
+    :after marginalia
+    :hook
+    (after-init . nerd-icons-completion-mode)
+    (marginalia-mode . nerd-icons-completion-marginalia-setup))
 #+end_src
 
 ** Programming stuff

@@ -44,12 +44,6 @@
 
 
 
-(use-package marginalia
-  :hook (after-init . marginalia-mode)
-  :custom
-  (marginalia-annotators '(marginalia-annotators-light nil)))
-
-
 
 (use-package aggressive-indent
   :init (aggressive-indent-global-mode t))
