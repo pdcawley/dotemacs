@@ -21,9 +21,6 @@
 ;;   (keymap-unset lispy-mode-map "M-m")
 ;;   (keymap-unset lispy-mode-map "M-."))
 
-(use-package orderless)                                        ;
-
-
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
 
