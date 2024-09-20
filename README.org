@@ -1321,6 +1321,35 @@ The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've
     (corfu-terminal-mode t))
 #+end_src
 
+As well as corfu, ~cape~ does some good stuff with ~completion-at-point~.
+
+#+begin_src emacs-lisp
+  (use-package cape
+    :bind (("C-c p p" . completion-at-point)
+           ("C-c p t" . complete-tag)
+           ("C-c p d" . cape-dabbrev)
+           ("C-c p h" . cape-history)
+           ("C-c p f" . cape-file)
+           ("C-c p k" . cape-keyword)
+           ("C-c p s" . cape-symbol)
+           ("C-c p a" . cape-abbrev)
+           ("C-c p l" . cape-line)
+           ("C-c p w" . cape-dict)
+           ("C-c p \\" . cape-tex)
+           ("C-c p _" . cape-tex)
+           ("C-c p ^" . cape-tex)
+           ("C-c p &" . cape-sgml)
+           ("C-c p r" . cape-rfc1345))
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-abbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+    (add-to-list 'completion-at-point-functions #'cape-history)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    (add-to-list 'completion-at-point-functions #'cape-tex))
+#+end_src
+
 ** Programming stuff
 
 *** Syntax checking
