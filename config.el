@@ -44,37 +44,7 @@
 ;;
 ;; Completion frameworks and such.
 
-(use-package vertico
-  :after consult
-  :custom
-  (vertico-cycle t)
-  (vertico-multiform-commands
-   '((consult-recent-file buffer)
-     (consult-mode-command buffer)
-     (consult-complex-command buffer)
-     (embark-bindings buffer)
-     (consult-locate buffer)
-     (consult-project-buffer buffer)
-     (consult-ripgrep buffer)
-     (consult-fd buffer)))
-  :hook
-  (after-init . vertico-mode)
-  (after-init . vertico-multiform-mode)
-  :bind
-  (:map vertico-map
-        :prefix "M-,"
-        :prefix-map vertico-options-map
-        ("r" . vertico-reverse-mode)
-        ("g" . vertico-grid-mode))
-  (:map vertico-map
-        ("M-q"        . vertico-quick-insert)
-        ("C-q"        . vertico-quick-exit)
-        ("C-k"        . kill-whole-line)
-        ("C-u"        . kill-whole-line)
-        ("C-o"        . vertico-next-group)
-        ("<tab>"      . vertico-insert)
-        ("TAB"        . vertico-insert)
-        ("M-<return>" . minibuffer-force-complete)))
+
 
 
 (use-package marginalia

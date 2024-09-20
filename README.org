@@ -1361,15 +1361,13 @@ The ~consult~ package provides a way to search, filter, preview and select entri
     :custom
     (register-preview-delay 0.5)
     (register-preview-function #'consult-register-format)
-    ;; (consult-line-numbers widen t)
-    ;; (consult-async-min-input 3)
-    ;; (consult-async-input-debounce 0.5)
-    ;; (consult-async-input-throttle 0.8)
-    ;; (consult-narrow-key "<")
-    ;; (consult-preview-key 'any)
-    ;; ;; (consult-mode-histories
-    ;;  (add-to-list 'consult-mode-histories '(vc-git-log-edit-mode . log-edit-comment-ring)))
-    ;;
+    (consult-line-numbers widen t)
+    (consult-async-min-input 3)
+    (consult-async-input-debounce 0.5)
+    (consult-async-input-throttle 0.8)
+    (consult-narrow-key "<")
+    (consult-preview-key 'any)
+    
     :init
     (advice-add #'register-preview :override #'consult-register-window)
 
@@ -1424,7 +1422,7 @@ The ~consult~ package provides a way to search, filter, preview and select entri
     :demand t)
 #+end_src
 
-*** COMMENT Embark
+*** Embark
 The ~embark~ package is analogous to the right click menu, but rather more… more.
 
 #+begin_src emacs-lisp
@@ -1437,21 +1435,62 @@ The ~embark~ package is analogous to the right click menu, but rather more… mo
      (([remap describe-bindings] . embark-bindings))
      ("C-h B" . embark-bindings))
     :custom
-    ;; (embark-cycle-key "M-.")
-    ;; (prefix-help-command #'embark-prefix-help-command)
-    ;; (embark-confirm-act-all nil)
-    ;; (embark-mixed-indicator-both nil)
-    ;; (embark-mixed-indicator-delay nil)
-    ;; (embark-indicators '(embark-mixed-indicator embark-highlight-indicator))
-    ;; (embark-verbose-indicator-nested nil)
-    ;; (embark-verbose-indicator-buffer-sections '(bindings))
-    ;; (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert))
-    )
+    (embark-cycle-key "M-.")
+    (prefix-help-command #'embark-prefix-help-command)
+    (embark-confirm-act-all nil)
+    (embark-mixed-indicator-both nil)
+    (embark-mixed-indicator-delay nil)
+    (embark-indicators '(embark-mixed-indicator embark-highlight-indicator))
+    (embark-verbose-indicator-nested nil)
+    (embark-verbose-indicator-buffer-sections '(bindings))
+    (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert)))
+
 
   (use-package embark-consult
     :after consult
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
+#+end_src
+
+*** Vertico
+Using ~vertico~ and ~orderless~ together makes for a rather pleasant experience.
+
+#+begin_src emacs-lisp
+  (use-package vertico
+    :after consult
+    :custom
+    (vertico-cycle t)
+    (vertico-scroll-margin 0)
+    (vertico-count 5)
+    (vertico-resize t)
+    (vertico-multiform-mode 1)
+    (vertico-multiform-commands
+     '((consult-recent-file buffer)
+       (consult-mode-command buffer)
+       (consult-complex-command buffer)
+       (embark-bindings buffer)
+       (consult-locate buffer)
+       (consult-project-buffer buffer)
+       (consult-ripgrep buffer)
+       (consult-fd buffer)))
+    (vertico-multiform-categories '((buffer flat (vertico-cycle . t))))
+    :hook
+    (after-init . vertico-mode)
+    :bind
+    (:map vertico-map
+          :prefix "M-,"
+          :prefix-map vertico-options-map
+          ("r" . vertico-reverse-mode)
+          ("g" . vertico-grid-mode))
+    (:map vertico-map
+          ("M-q"        . vertico-quick-insert)
+          ("C-q"        . vertico-quick-exit)
+          ("C-k"        . kill-whole-line)
+          ("C-u"        . kill-whole-line)
+          ("C-o"        . vertico-next-group)
+          ("<tab>"      . vertico-insert)
+          ("TAB"        . vertico-insert)
+          ("M-<return>" . minibuffer-force-complete)))
 #+end_src
 
 ** Programming stuff
