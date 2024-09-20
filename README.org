@@ -1131,6 +1131,22 @@ Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ 
 #+end_src
 
 ** Completion stuff
+Live everyone else and their sibling, I use ~orderless~, ~corfu~, ~consult~, ~embark~, ~marginalia~ and ~vertico~ as the current fleet of completion related packages that work, when I configure them right.
+
+*** History is important
+I like to save the history of the ~mini-buffer~
+
+#+begin_src emacs-lisp
+  (use-package savehist
+    :hook (after-init . savehist-mode)
+    :custom
+    (savehist-file (no-littering-expand-var-file-name "savehist"))
+    (history-length 100)
+    (history-delete-duplicates t)
+    (savehist-save-minibuffer-history t)
+    (savehist-additional-variables
+     (add-to-list 'savehisto-additional-variables 'kill-ring)))
+#+end_src
 
 *** Minibuffer
 Let's set up the ~~minibuffer~ to play nicely with the completion frameworks we're going to use.
