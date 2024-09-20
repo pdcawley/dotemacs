@@ -1350,6 +1350,71 @@ As well as corfu, ~cape~ does some good stuff with ~completion-at-point~.
     (add-to-list 'completion-at-point-functions #'cape-tex))
 #+end_src
 
+*** Consult
+The ~consult~ package provides a way to search, filter, preview and select entries based on lists provided by completion-at-point. I've also added
+
+- ~consult-yasnippet~ to help expand ~yasnippet~
+
+#+begin_src emacs-lisp
+  (use-package consult
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+    :custom
+    (register-preview-delay 0.5)
+    (register-preview-function #'consult-register-format)
+    :init
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    (with-eval-after-load 'xref
+      (setq xref-show-xrefs-function #'consult-xref
+            xref-show-definitions-function #'consult-xref))
+
+    :config
+    (bind-keys ([remap isearch-forward] . consult-line)
+               ([remap Info-search]        . consult-info)
+               ([remap imenu]              . consult-imenu)
+               ([remap recentf-open-files] . consult-recent-file)
+
+               ("C-x M-:" . consult-complex-command)
+               ("C-x b"   . consult-buffer)
+               ("C-x 4 b" . consult-buffer-other-window)
+               ("C-x 5 b" . consult-buffer-other-frame)
+               ("C-x r b" . consult-bookmark)
+               ("C-x p b" . consult-project-buffer)
+               ("M-#"     . consult-register-load)
+               ("M-'"     . consult-register-store)
+               ("C-M-#"   . consult-register)
+               ("M-y"     . consult-yank-pop)
+               :map isearch-mode-map
+               ("M-e" . consult-isearch-history)
+               ("M-s e" . consult-isearch-history)
+               ("M-s l" . consult-line)
+               ("M-s L" . consult-line-multi)
+               :map minibuffer-local-map
+               ("C-s" ("insert-current-symbol" . (lambda ()
+                                                   "Insert the current symbol"
+                                                   (interactive)
+                                                   (insert (save-excursion
+                                                             (set-buffer (window-buffer (minibuffer-selected-window)))
+                                                             (or (thing-at-point 'symbol t) ""))))))
+               ("M-s" . consult-history)
+               ("M-r" . consult-history)
+               :map search-map
+               ("d" . consult-find)
+               ("D" . consult-locate)
+               ("g" . consult-grep)
+               ("G" . consult-git-grep)
+               ("r" . consult-ripgrep)
+               ("l" . consult-line)
+               ("L" . consult-line-multi)
+               ("k" . consult-keep-lines)
+               ("u" . consult-focus-lines)
+               ("e" . consult-isearch-history))
+    (consult-customize
+     consult-goto-line
+     consult-theme :preview-key '(:debounce 0.4 any))
+    :demand t)
+#+end_src
+
 ** Programming stuff
 
 *** Syntax checking
