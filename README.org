@@ -401,7 +401,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
           vc-make-backup-files t
 
           history-length t
-ææ          history-delete-duplicates t
+          history-delete-duplicates t
           bookmark-save-flag 1
 
           ad-redefinition-action 'accept
@@ -1144,8 +1144,26 @@ I like to save the history of the ~mini-buffer~
     (history-length 100)
     (history-delete-duplicates t)
     (savehist-save-minibuffer-history t)
-    (savehist-additional-variables
-     (add-to-list 'savehisto-additional-variables 'kill-ring)))
+    :config
+    (add-to-list 'savehist-additional-variables 'kill-ring))
+#+end_src
+
+*** Dynamic abbreviation
+We use the in-built ~dabbrev~ package. It doesn't need much configuration, but it doesn't hurt to do some.
+
+#+begin_src emacs-lisp
+  (use-feature dabbrev
+    :commands (dabbrev-expand dabbrev-completion)
+    :custom
+    (dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+    (dabbrev-abbrev-skip-leading-regexp "[$*/=~']")
+    (dabbrev-backward-only nil)
+    (dabbrev-case-distinction 'case-replace)
+    (dabbrev-check-other-buffers t)
+    (dabbrev-eliminate-newlines t)
+    (dabbrev-upcase-means-case-search t)
+    (dabbrev-ignored-buffer-modes
+     '(archive-mode image-mode doc-view-mode pdf-view-mode tags-table-mode)))
 #+end_src
 
 *** Minibuffer
