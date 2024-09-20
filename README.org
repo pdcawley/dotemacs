@@ -401,7 +401,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
           vc-make-backup-files t
 
           history-length t
-          history-delete-duplicates t
+ææ          history-delete-duplicates t
           bookmark-save-flag 1
 
           ad-redefinition-action 'accept
@@ -1128,6 +1128,37 @@ Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ 
            :map
            calc-alg-map ("C-o" . 'casual-calc-tmenu))
     :after (calc))
+#+end_src
+
+** Completion stuff
+
+*** Minibuffer
+Let's set up the ~~minibuffer~ to play nicely with the completion frameworks we're going to use.
+
+#+begin_src emacs-lisp
+  (use-feature minibuffer
+    :custom
+    (completions-format 'one-column)
+    (copmletion-auto-help 'always)
+    (completion-auto-select t)
+    (completions-detailed t)
+    (completion-show-inline-help t)
+    (completions-max-height 48)
+    (completions-highlight-face 'completions-highlight)
+    (minibuffer-completion-auto-choose t)
+    (completion-styles '(basic substring initials flex orderless))
+    (completion-category-defaults nil)
+    (completion-category-overrides
+     '((file (styles . (basic partial-completion orderless)))
+       (command (styles . (basic partial-completion orderless)))
+       (bookmark (styles . (basic substring)))
+       (library (styles . (basic substring)))
+       (embark-keybinding (styles . (basic substring)))
+       (imenu (styles . (basic substring orderless)))
+       (consult-location (styles . (basic substring orderless)))
+       (kill-ring (styles . (emacs22 orderless)))
+       (eglot (styles . (emacs22 substring orderless))))))
+
 #+end_src
 
 ** Programming stuff

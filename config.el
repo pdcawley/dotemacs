@@ -141,14 +141,6 @@
    consult-theme :preview-key '(:debounce 0.4 any))
   :demand t)
 
-
-
-(use-package orderless
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles . (partial-completion)))))
-  (completion-category-defaults nil))
-
 (use-package aggressive-indent
   :init (aggressive-indent-global-mode t))
 
