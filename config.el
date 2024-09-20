@@ -21,7 +21,7 @@
 ;;   (keymap-unset lispy-mode-map "M-m")
 ;;   (keymap-unset lispy-mode-map "M-."))
 
-                                        ;
+(use-package orderless)                                        ;
 
 
 (defgroup pdcmacs nil
@@ -89,16 +89,6 @@
 
 (use-package xref)
 
-(use-package embark :after xref
-  :bind
-  (("C-." . embark-act)
-   ("M-." . embark-act)
-   ("M-," . embark-dwim)
-   ("C-;" . embark-dwim)
-   (([remap describe-bindings] . embark-bindings)))
-  :custom
-  (embark-cycle-key "M-.")
-  (prefix-help-command #'embark-prefix-help-command))
 
 (require 'rx)
 

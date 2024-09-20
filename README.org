@@ -1312,7 +1312,7 @@ The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've
       (setq-local corfu-quit-at-boundary t
                   corfu-quit-no-match t
                   corfu-auto nil)
-      (corfu-mode t))  )
+      (corfu-mode t)))
 
   (use-package corfu-terminal
     :if
@@ -1361,6 +1361,15 @@ The ~consult~ package provides a way to search, filter, preview and select entri
     :custom
     (register-preview-delay 0.5)
     (register-preview-function #'consult-register-format)
+    ;; (consult-line-numbers widen t)
+    ;; (consult-async-min-input 3)
+    ;; (consult-async-input-debounce 0.5)
+    ;; (consult-async-input-throttle 0.8)
+    ;; (consult-narrow-key "<")
+    ;; (consult-preview-key 'any)
+    ;; ;; (consult-mode-histories
+    ;;  (add-to-list 'consult-mode-histories '(vc-git-log-edit-mode . log-edit-comment-ring)))
+    ;;
     :init
     (advice-add #'register-preview :override #'consult-register-window)
 
@@ -1413,6 +1422,36 @@ The ~consult~ package provides a way to search, filter, preview and select entri
      consult-goto-line
      consult-theme :preview-key '(:debounce 0.4 any))
     :demand t)
+#+end_src
+
+*** COMMENT Embark
+The ~embark~ package is analogous to the right click menu, but rather more… more.
+
+#+begin_src emacs-lisp
+  (use-package embark :after xref
+    :bind
+    (("C-." . embark-act)
+     ("M-." . embark-act)
+     ("M-," . embark-dwim)
+     ("C-;" . embark-dwim)
+     (([remap describe-bindings] . embark-bindings))
+     ("C-h B" . embark-bindings))
+    :custom
+    ;; (embark-cycle-key "M-.")
+    ;; (prefix-help-command #'embark-prefix-help-command)
+    ;; (embark-confirm-act-all nil)
+    ;; (embark-mixed-indicator-both nil)
+    ;; (embark-mixed-indicator-delay nil)
+    ;; (embark-indicators '(embark-mixed-indicator embark-highlight-indicator))
+    ;; (embark-verbose-indicator-nested nil)
+    ;; (embark-verbose-indicator-buffer-sections '(bindings))
+    ;; (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert))
+    )
+
+  (use-package embark-consult
+    :after consult
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
 ** Programming stuff
