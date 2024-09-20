@@ -634,6 +634,26 @@ A customized startup screen. This is experimental, but why not?
 
 #+end_src
 
+** Coping with running in a terminal
+Sometimes, I run emacs in a terminal emulator on my iPad, it's fine -- not as rich an experience as the GUI, but more than good enough.
+
+*** Mouse support
+~xterm-mouse-mode~ is our friend.
+#+begin_src emacs-lisp
+  (for-terminal
+    (xterm-mouse-mode 1))
+#+end_src
+
+*** Cut/paste integration
+Of course there are multiple clipboards in play. ~clipetty~ fixes at least some of the niggles.
+
+#+begin_src emacs-lisp
+  (for-terminal
+    (use-package clipetty
+      :diminish
+      :hook (after-init . global-clipetty-mode)))
+#+end_src
+
 ** Versioning
 
 Well, of course I'm using [[https://magit.vc/][Magit]] to manage git. I'm not an idiot!
@@ -668,12 +688,17 @@ Time to experiment with ~diff-hl~ -- apparently better than ~git-gutter~
 
 #+begin_src emacs-lisp
   (use-package diff-hl
+    :init
+    (defun +diff-hl-use-margin-on-tty ()
+      (unless (display-graphic-p)
+        (diff-hl-margin-local-mode)))
     :hook
     (after-init . global-diff-hl-mode)
     (after-init . diff-hl-flydiff-mode)
     (dired-mode . diff-hl-dired-mode)
     (magit-pre-refresh . diff-hl-magit-pre-refresh)
-    (magit-post-refresh . diff-hl-magit-post-refresh))
+    (magit-post-refresh . diff-hl-magit-post-refresh)
+    (diff-hl-mode-on . +diff-hl-use-margin-on-tty))
 
 #+end_src
 

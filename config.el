@@ -146,41 +146,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
 
 (use-package yaml)
 
-(use-package clipetty
-  :diminish
-  :hook (after-init . global-clipetty-mode))
-
-;; (use-package yasnippet
-;;   :commands (yas-global-mode yas-minor-mode)
-;;   :functions (yas-load-directory)
-;;   :diminish (yas-minor-mode . " ⓨ")
-;;   :mode ("/yasnippet/snippets" . snippet-mode)
-;;   :init
-;;   (defvar yas-global-mode nil)
-;;   (setopt yas-triggers-in-field t
-;;           yas-wrap-around-region t
-;;           yas-prompt-functions '(yas-completing-prompt))
-;;   (defvar pdc-snippet-dirs (-filter 'file-directory-p
-;;                                     (list (expand-file-name "snippets/" user-emacs-directory)
-;;                                           (expand-file-name "~/.config/snippets"))))
-
-
-;;   (setq yas-snippet-dirs pdc-snippet-dirs))
-
-
-;; (use-package consult-yasnippet :after (consult yasnippet)
-;;   :bind
-;;   (("M-g y" . consult-yasnippet)))
-
-;; ;; (use-package yasnippets-orgmode
-;; ;;   :after org-mode)
-;; (use-package yasnippets :after yasnippet
-;;   :init
-;;   (setq yas-snippet-dirs (cons (straight--el-get-package-directory 'yasnippets)
-;;                                pdc-snippet-dirs))
-;;   (yas-global-mode t))
-
-
 (use-package visual-fill-column
   :defer nil
   :hook
@@ -189,8 +154,6 @@ if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER i
   (visual-fill-column-enable-sensible-window-split t)
   (visual-fill-column-center-text t))
 
-(for-terminal
-  (xterm-mouse-mode 1))
 
 (use-package powerline
   :hook
