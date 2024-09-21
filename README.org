@@ -1170,6 +1170,22 @@ An emacs builtin, we're just configuring it.
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+end_src
 
+*** Undo
+Let's try ~vundo~ for a bit
+
+#+begin_src emacs-lisp
+  (use-package vundo
+    :bind
+    ("M-m a u" . vundo)
+    :custom
+    (vundo-compact-display t)
+    (vundo-window-max-height 8)
+    (vundo-glyph-alist vundo-unicode-symbols))
+
+  (use-package undo-fu-session
+    :hook (after-init . undo-fu-session-global-mode))
+#+end_src
+
 *** Markdown
 
 #+begin_src emacs-lisp

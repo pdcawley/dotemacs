@@ -97,10 +97,6 @@
 
 ;; (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
-(use-package vundo
-  :custom
-  (vundo-glyph-alist vundo-unicode-symbols))
-
 
 (provide 'config)
 ;;; config.el ends here
