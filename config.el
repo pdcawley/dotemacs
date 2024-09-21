@@ -20,15 +20,6 @@
 (use-package kv)
 (use-package ht)
 
-;;; Repeat mode stuffs
-
-(use-package repeat
-  :disabled
-  :custom
-  (repeat-echo-function #'ignore)
-  :config
-  (repeat-mode t))
-
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
 
