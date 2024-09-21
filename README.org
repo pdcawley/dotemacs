@@ -264,6 +264,9 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
   (require 'general-autoloads)
   (or (require 'use-package nil t)
       (straight-use-package use-package))
+
+  ;; get org loaded early
+  (straight-use-package 'org)
 #+end_src
 
 *** Tweak binding
@@ -1824,7 +1827,8 @@ In writing modes, I like the way ~visual-fill-column-mode~ handles things, centr
 It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-feature~ here rather than ~use-package~ to ensure we get the version packaged with emacs. This may be a mistake :)
 
 #+begin_src emacs-lisp
-  (use-feature org)
+  (use-package org
+    :bind
 #+end_src
 
 **** Org Configuration Module
