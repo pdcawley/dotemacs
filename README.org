@@ -293,15 +293,6 @@ We also want to plumb ~which-key~ into ~use-package~ and set up a couple of vari
   (which-key-mode 1))
 #+end_src
 
-** Org Mode
-It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~straight-use-package~ here rather than ~use-package~ to ensure we get the most recent version, not the one that comes with Emacs.
-
-#+begin_src emacs-lisp
-  (straight-use-package 'org)
-#+end_src
-
-*** Org Congfiguration Module
-
 ** Set Helper Functions and Macros
 
 *** use-feature for Emacs builtins
@@ -594,7 +585,6 @@ So many modeline packages. I ended up settling on the ~doom-modeline~ package.
 
 
 #+end_src
-
 
 *** Dashboard
 A customized startup screen. This is experimental, but why not?
@@ -1616,6 +1606,16 @@ This annotates completion targets rather nicely. Mostly, it just works.
     (marginalia-mode . nerd-icons-completion-marginalia-setup))
 #+end_src
 
+** Writing
+*** Org Mode
+It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~straight-use-package~ here rather than ~use-package~ to ensure we get the most recent version, not the one that comes with Emacs.
+
+#+begin_src emacs-lisp
+  (straight-use-package 'org)
+#+end_src
+
+**** Org Configuration Module
+
 ** Programming stuff
 
 *** Syntax checking
@@ -1650,6 +1650,7 @@ Let's try using the built in ~tree-sitter~ for syntax and parsing.
     :hook (after-init . global-treesit-auto-mode))
 
 #+end_src
+
 
 *** Languages and Frameworks
 

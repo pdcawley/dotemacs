@@ -1,37 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
-(eval-when-compile
-  (require 'use-package))
-
-(defun start-server-after-init ()
-  (require 'server)
-  (unless (server-running-p)
-    (server-start)
-    (midnight-mode +1)))
-
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
-
-(defcustom pdc-icon t
-  "Display icons or not."
-  :group 'pdcmacs
-  :type 'boolean)
-
-
-(defun icons-displayable-p ()
-  "Return non-nil if icons are displayable."
-  (and window-system
-       pdc-icon
-       (or (featurep 'nerd-icons)
-           (require 'nerd-icons nil t))))
-
-
-;;
-;; Completion frameworks and such.
-
-
-
-
 
 (use-package aggressive-indent
   :init (aggressive-indent-global-mode t))
