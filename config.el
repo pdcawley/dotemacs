@@ -1,8 +1,11 @@
-;;; -*- lexical-binding: t; -*-
+;;; config --- unsorted configuration -*- lexical-binding: t; no-byte-compile: t -*-
 
-(defgroup pdcmacs nil
-  "Pdcmacs customization.")
+;;; Commentary:
+;;;
+;;; This is where all the miscellaneous crap that hasn't been hoisted to
+;;; README.org lives
 
+;;; Code:
 (use-package xref)
 
 (require 'rx)
@@ -16,19 +19,6 @@
 (use-package f)
 (use-package kv)
 (use-package ht)
-
-(eval-when-compile
-  (require 'dash)
-  (require 's)
-  (require 'f)
-  (require 'kv)
-  (require 'ht))
-
-;; Speedup with auto-compile
-
-
-;;;
-;;; Text wrangling
 
 ;;; Repeat mode stuffs
 
@@ -97,7 +87,8 @@
 
 (use-feature outline)
 
-(use-feature ediff :after outline
+(use-feature ediff
+  :after outline
   :custom
   (ediff-window-setup-function 'ediff-setup-windows-plain)
   :hook
@@ -159,3 +150,6 @@
 (require 'pdcmacs-org)
 (require 'pdcmacs-hugo-support)
 (require 'pdcmacs-webservice)
+
+(provide 'config)
+;;; config.el ends here
