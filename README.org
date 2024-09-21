@@ -1127,6 +1127,23 @@ Like ~paredit~ but for more modes...
       (sp-local-tag "i" "\"<" "\">")))
 #+end_src
 
+*** Auto-pair special characters and parentheses
+This probably needs a bit more work, but paredit mode makes me want at least autopairing if possible
+
+#+begin_src emacs-lisp
+  (use-feature elec-pair
+    :hook
+    (emacs-startup . electric-pair-mode)
+    :custom
+    (electric-quote-paragraph t)
+    (electric-quote-comment t)
+    (electric-pair-pairs '((?\( . ?\))
+                           (?\< . ?\>)
+                           (?\[ . ?\])
+                           (?\{ . ?\})
+                           (?\~ . ?\~))))
+#+end_src
+
 *** Recent files
 An emacs builtin, we're just configuring it.
 
