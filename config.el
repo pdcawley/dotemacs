@@ -3,7 +3,6 @@
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
 
-
 (use-package xref)
 
 (require 'rx)
@@ -112,20 +111,6 @@
 ;;   (after-init . global-flycheck-mode))
 
 ;;; Setup common lisp mode stuff
-
-(defvar lisp-modes '(emacs-lisp-mode
-                     inferior-emacs-lisp-mode
-                     ielm-mode
-                     lisp-mode
-                     inferior-lisp-mode
-                     lisp-interaction-mode
-                     extempore-mode)
-  "A list of Lisp style modes.")
-
-(defvar lisp-mode-hooks
-  (--map (intern (concat (symbol-name it) "-hook"))
-         lisp-modes)
-  "Hook variables associated with `lisp-modes'.")
 
 (use-package calendar
   :custom
