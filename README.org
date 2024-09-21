@@ -804,6 +804,8 @@ Nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-ba
   (use-feature dired-x
     :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
+  (use-package casual-dired
+    :bind (:map dired-mode-map ("C-o" . casual-dired-tmenu)))
 #+end_src
 
 *** Navigate with some buffers in read only mode

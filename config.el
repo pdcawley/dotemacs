@@ -167,8 +167,6 @@
 (use-package suggest
   :commands (suggest))
 
-(use-package casual-dired
-  :bind (:map dired-mode-map ("C-o" . 'casual-dired-tmenu)))
 (use-package casual-info
   :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
 (setq font-lock-mode-hook (cdr font-lock-mode-hook))
