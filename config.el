@@ -26,11 +26,6 @@
 (use-package yaml)
 
 
-
-(use-package powerline
-  :hook
-  (after-init . powerline-default-theme))
-
 (use-package unfill
   :bind ([remap fill-paragraph] . unfill-toggle))
 
@@ -108,9 +103,7 @@
 (use-package suggest
   :commands (suggest))
 
-(use-package casual-info
-  :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
-(setq font-lock-mode-hook (cdr font-lock-mode-hook))
+;; (setq font-lock-mode-hook (cdr font-lock-mode-hook))
 
 (use-package vundo
   :custom

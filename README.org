@@ -592,13 +592,11 @@ This adds some space between various elements in Emacs: https://protesilaos.com/
 #+end_src
 
 *** Modeline
-
 **** doom-modeline
 So many modeline packages. I ended up settling on the ~doom-modeline~ package.
 
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :if (display-graphic-p)
     :custom
     (doom-modeline-height 15)
     (doom-modeline-bar-width 6)
