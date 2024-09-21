@@ -1676,13 +1676,13 @@ I do like a neatly formatted alist etc, so I wrote some alignment functions. Not
       (align-regexp start end complete-regexp group 1 t)))
 
   (defmacro pdc|create-align-repeat-x (name regexp &optional justify-right default-after)
-    (let ((new-func (intern (concat "+align-repeat-" name))))
+    (let ((new-func (intern (concat "+align-" name))))
       `(defun ,new-func (start end switch)
          (interactive "r\nP")
          (let ((after (not (eq (if switch t nil) ,(if default-after t nil)))))
            (+align-repeat start end ,regexp ,justify-right after)))))
 
-  (defun +align-repeat-decimal (start end)
+  (defun +align-decimal (start end)
     "Align a table of numbers on decimal points and dollar signs (both optional)"
     (interactive "r")
     (require 'align)
@@ -1707,26 +1707,28 @@ I do like a neatly formatted alist etc, so I wrote some alignment functions. Not
   (pdc|create-align-repeat-x "quote" "['`]'")
 
 
-  (general-def
-    :prefix "M-m |"
-    ""   '(nil :which-key "align")
-    ","  '+align-repeat-comma
-    ";"  '+align-repeat-semicolon
-    ":"  '+align-repeat-colon
-    "="  '+align-repeat-equal
-    "+"  '+align-repeat-math-oper
-    "*"  '+align-repeat-math-oper
-    "/"  '+align-repeat-math-oper
-    "-"  '+align-repeat-math-oper
-    "|"  '+align-repeat-bar
-    "("  '+align-repeat-left-paren
-    ")"  '+align-repeat-right-paren
-    "\\" '+align-repeat-backslash
-    "'"  '+align-repeat-quote
-    "`"  '+align-repeat-quote)
+  (bind-keys
+   :prefix "M-m |"
+   :prefix-map pdc-align-map
+   :prefix-docstring "Where the alignments live."
 
+   (","  . ("on ," .  +align-comma))
+   (";"  . ("on ;" . +align-semicolon))
+   (":"  . ("on :" . +align-colon))
+   ("="  . ("on =" . +align-equal))
+   ("+"  . ("on +" . +align-math-oper))
+   ("*"  . ("on *" . +align-math-oper))
+   ("/"  . ("on /" . +align-math-oper))
+   ("-"  . ("on -" . +align-math-oper))
+   ("|"  . ("on |" . +align-bar))
+   ("("  . ("on (" . +align-left-paren))
+   (")"  . ("on )" . +align-right-paren))
+   ("\\" . ("on \\" . +align-backslash))
+   ("'"  . ("on '" . +align-quote))
+   ("`"  . ("on `" . +align-quote)))
 
-
+  (which-key-add-key-based-replacements
+    "M-m |" "align")
 #+end_src
 
 *** Languages and Frameworks
