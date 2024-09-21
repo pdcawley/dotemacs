@@ -497,7 +497,7 @@ And it's handy to retain the history of useful variables and recent files betwee
                                      regexp-search-ring
                                      register-alist)
                                    "Save more histories")
-    :hook after-init)
+    :hook emacs-startup)
 #+end_src
 
 
@@ -544,7 +544,7 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
     :diminish guru-mode
     :custom
     (guru-warn-only t)
-    :hook (after-init . guru-global-mode))
+    :hook (emacs-startup . guru-global-mode))
 
 #+end_src
 
@@ -593,7 +593,7 @@ This adds some space between various elements in Emacs: https://protesilaos.com/
                                  :right-divider-width 10
                                  :scroll-bar-width 2))
     :hook
-    (after-init . spacious-padding-mode))
+    (emacs-startup . spacious-padding-mode))
 
 #+end_src
 
@@ -723,7 +723,7 @@ Of course there are multiple clipboards in play. ~clipetty~ fixes at least some 
   (for-terminal
     (use-package clipetty
       :diminish
-      :hook (after-init . global-clipetty-mode)))
+      :hook (emacs-startup . global-clipetty-mode)))
 #+end_src
 
 ** Versioning
@@ -763,8 +763,8 @@ Time to experiment with ~diff-hl~ -- apparently better than ~git-gutter~
       (unless (display-graphic-p)
         (diff-hl-margin-local-mode)))
     :hook
-    (after-init . global-diff-hl-mode)
-    (after-init . diff-hl-flydiff-mode)
+    (emacs-startup . global-diff-hl-mode)
+    (emacs-startup . diff-hl-flydiff-mode)
     (dired-mode . diff-hl-dired-mode)
     (magit-pre-refresh . diff-hl-magit-pre-refresh)
     (magit-post-refresh . diff-hl-magit-post-refresh)
@@ -819,7 +819,7 @@ I'm not sure what it does, but apparently it makes recognising names easier. So,
 
 #+begin_src emacs-lisp
   (use-package buffer-name-relative
-    :hook after-init)
+    :hook emacs-startup)
 #+end_src
 
 *** Buffer management
@@ -1330,7 +1330,7 @@ I like to save the history of the ~mini-buffer~
 
 #+begin_src emacs-lisp
   (use-package savehist
-    :hook (after-init . savehist-mode)
+    :hook (emacs-startup . savehist-mode)
     :custom
     (savehist-file (no-littering-expand-var-file-name "savehist"))
     (history-length 100)
@@ -1764,7 +1764,7 @@ This annotates completion targets rather nicely. Mostly, it just works.
 
 #+begin_src emacs-lisp
   (use-package marginalia
-    :hook (after-init . marginalia-mode)
+    :hook (emacs-startup . marginalia-mode)
     :bind (("M-A" . marginalia-cycle)
            :map minibuffer-local-map
            ("M-A" . marginalia-cycle))
@@ -1774,7 +1774,7 @@ This annotates completion targets rather nicely. Mostly, it just works.
   (use-package nerd-icons-completion
     :after marginalia
     :hook
-    (after-init . nerd-icons-completion-mode)
+    (emacs-startup . nerd-icons-completion-mode)
     (marginalia-mode . nerd-icons-completion-marginalia-setup))
 #+end_src
 
@@ -1936,7 +1936,7 @@ I'm trying ~flymake~ for syntax checking.
 #+begin_src emacs-lisp
   (use-package eldoc
     :diminish
-    :hook (after-init . global-eldoc-mode))
+    :hook (emacs-startup . global-eldoc-mode))
 #+end_src
 
 *** Parsing programming languages
@@ -1949,7 +1949,7 @@ Let's try using the built in ~tree-sitter~ for syntax and parsing.
     (treesit-auto-install 'prompt)
     :config
     (treesit-auto-add-to-auto-mode-alist 'all)
-    :hook (after-init . global-treesit-auto-mode))
+    :hook (emacs-startup . global-treesit-auto-mode))
 
 #+end_src
 
@@ -1959,7 +1959,7 @@ I like it when my editor keeps things indented according to rules. Saves thought
 #+begin_src emacs-lisp
   (use-package aggressive-indent
     :diminish " ⇒"
-    :hook (after-init . aggressive-indent-global-mode))
+    :hook (emacs-startup . aggressive-indent-global-mode))
 #+end_src
 
 *** Alignment helpers
@@ -2202,7 +2202,7 @@ Especially in text mode emacs, modeline space is at a premium, so we shorten ~mo
 ~eros-mode~ displays elisp evaluation results as an overlay, which is a little neater than the default behaviour.
 #+begin_src emacs-lisp
   (use-package eros
-    :hook (after-init . eros-mode))
+    :hook (emacs-startup . eros-mode))
 #+end_src
 
 ****** Macro expansion
