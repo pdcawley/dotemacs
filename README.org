@@ -274,6 +274,64 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
 
 #+end_src
 
+*** Tweak binding
+Out of the box, ~use-package~ is a bit too conservative about what it'll accept in a ~:bind~ stanza -- it rejects stuff like ~("M-m t" . ("wk-description" . some-command))~, which makes me unhappy.
+
+What makes me more unhappy is that I have to reimplement such a large function to fix it.
+
+#+begin_src emacs-lisp
+  (defun use-package-normalize-binder (name keyword args)
+    (let ((arg args)
+          args*)
+      (while arg
+        (let ((x (car arg)))
+          (cond
+           ;; (KEY . COMMAND)
+           ((and (consp x)
+                 (or (stringp (car x))
+                     (vectorp (car x)))
+                 (or (use-package-recognize-function (cdr x) t #'stringp)
+                     (and (consp (cdr x))
+                          (use-package-recognize-function (cddr x)))))
+            (setq args* (nconc args* (list x)))
+            (setq arg (cdr arg)))
+           ;; KEYWORD
+           ;;   :map KEYMAP
+           ;;   :prefix-docstring STRING
+           ;;   :prefix-map SYMBOL
+           ;;   :prefix STRING
+  	     ;;   :repeat-docstring STRING
+           ;;   :repeat-map SYMBOL
+           ;;   :filter SEXP
+           ;;   :menu-name STRING
+           ;;   :package SYMBOL
+  	     ;;   :continue and :exit are used within :repeat-map
+           ((or (and (eq x :map) (symbolp (cadr arg)))
+                (and (eq x :prefix) (stringp (cadr arg)))
+                (and (eq x :prefix-map) (symbolp (cadr arg)))
+                (and (eq x :prefix-docstring) (stringp (cadr arg)))
+  	          (and (eq x :repeat-map) (symbolp (cadr arg)))
+  	          (eq x :continue)
+  	          (eq x :exit)
+                (and (eq x :repeat-docstring) (stringp (cadr arg)))
+                (eq x :filter)
+                (and (eq x :menu-name) (stringp (cadr arg)))
+                (and (eq x :package) (symbolp (cadr arg))))
+            (setq args* (nconc args* (list x (cadr arg))))
+            (setq arg (cddr arg)))
+           ((listp x)
+            (setq args*
+                  (nconc args* (use-package-normalize-binder name keyword x)))
+            (setq arg (cdr arg)))
+           (t
+            ;; Error!
+            (use-package-error
+             (concat (symbol-name name)
+                     " wants arguments acceptable to the `bind-keys' macro,"
+                     " or a list of such values"))))))
+      args*))
+#+end_src
+
 ** Set Helper Functions and Macros
 
 *** use-feature for Emacs builtins
@@ -1726,13 +1784,12 @@ I do like a neatly formatted alist etc, so I wrote some alignment functions. Not
   (pdc|create-align-repeat-x "backslash" "\\\\")
   (pdc|create-align-repeat-x "quote" "['`]'")
 
-
   (bind-keys
    :prefix "M-m |"
    :prefix-map pdc-align-map
    :prefix-docstring "Where the alignments live."
 
-   (","  . ("on ," .  +align-comma))
+   (","  . ("on ," . +align-comma))
    (";"  . ("on ;" . +align-semicolon))
    (":"  . ("on :" . +align-colon))
    ("="  . ("on =" . +align-equal))
