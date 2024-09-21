@@ -12,8 +12,6 @@
 
 (use-package ace-window)
 
-(use-package unfill
-  :bind ([remap fill-paragraph] . unfill-toggle))
 
 ;;; Movement/jumping
 (defvar pdc-jump-map (make-sparse-keymap))

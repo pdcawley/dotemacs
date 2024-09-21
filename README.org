@@ -1146,6 +1146,14 @@ This probably needs a bit more work, but paredit mode makes me want at least aut
              ("m" . mc/edit-lines)))
 #+end_src
 
+*** Fill/unfill long lines
+The ~unfill~ package lets me toggle between filled and unfilled variants of a line/para.
+
+#+begin_src emacs-lisp
+  (use-package unfill
+    :bind ([remap fill-paragraph] . unfill-toggle))
+#+end_src
+
 *** Recent files
 An emacs builtin, we're just configuring it.
 
