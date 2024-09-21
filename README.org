@@ -1829,6 +1829,33 @@ It's almost reached the point where it's not really an Emacs configuration if it
 #+begin_src emacs-lisp
   (use-package org
     :bind
+    (:map org-mode-map
+          ("C-M-<return>"   . org-insert-subheading)
+          ("C-c M-<return>" . org-insert-subheading)
+          ("C-c M-RET"      . org-insert-subheading))
+
+    :init
+    (bind-keys :prefix "M-m o"
+               :prefix-map pdc-org-prefix
+               :prefix-docstring "org"
+               ("c" . org-capture)
+               ("A" . org-agenda))
+    :custom
+    (org-agenda-start-with-log-mode t)
+    (org-log-done 'time)
+    (org-log-into-drawer t)
+
+    (org-startup-indented t)
+    (org-pretty-entities t)
+    (org-use-sub-superscripts "{}")
+    (org-hide-emphasis-markers t)
+    (org-startup-with-inline-images (display-graphic-p))
+    (org-image-actual-width '(300))
+    :hook (org-mode . 'visual-line-mode)
+    :config
+    (for-gui
+      (add-hook 'org-mode-hook 'variable-pitch-mode)))
+
 #+end_src
 
 **** Org Configuration Module
@@ -1840,14 +1867,6 @@ It's almost reached the point where it's not really an Emacs configuration if it
   ;;; -*- lexical-binding: t; -*-
   ;;;
   ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
-
-  (use-package org
-    :general
-    (pdcmacs-leader-def
-      :infix "o"
-      "" '(nil :which-key "org")
-      "c" 'org-capture
-      "A" 'org-agenda))
 
   (use-package org-contrib)
   (use-package org-roam
