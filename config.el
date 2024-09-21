@@ -12,12 +12,6 @@
 
 (use-package ace-window)
 
-(use-package yaml-mode
-  :mode "\\.ya?ml\\'")
-
-(use-package yaml)
-
-
 (use-package unfill
   :bind ([remap fill-paragraph] . unfill-toggle))
 

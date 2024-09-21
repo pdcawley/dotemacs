@@ -1204,6 +1204,15 @@ Let emacs guess and set the separator for ~csv~ files.
     :mode ("\\.csv\\'" . csv-mode))
 #+end_src
 
+*** YAML
+YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load it up here.
+
+#+begin_src emacs-lisp
+  (use-feature yaml-mode
+    :mode "\\.ya?ml\\'")
+
+#+end_src
+
 *** Snippets
 
 #+begin_src emacs-lisp
