@@ -45,13 +45,6 @@
 
 (use-package yaml)
 
-(use-package visual-fill-column
-  :defer nil
-  :hook
-  ((text-mode org-mode) . visual-fill-column-mode)
-  :custom
-  (visual-fill-column-enable-sensible-window-split t)
-  (visual-fill-column-center-text t))
 
 
 (use-package powerline

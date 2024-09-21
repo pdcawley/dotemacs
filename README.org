@@ -1610,6 +1610,21 @@ This annotates completion targets rather nicely. Mostly, it just works.
 #+end_src
 
 ** Writing
+
+*** Visual fill column
+In writing modes, I like the way ~visual-fill-column-mode~ handles things, centring the text block in the window.
+
+#+begin_src emacs-lisp
+  (use-package visual-fill-column
+    :defer nil
+    :hook
+    ((text-mode org-mode) . visual-fill-column-mode)
+    :custom
+    (visual-fill-column-enable-sensible-window-split t)
+    (visual-fill-column-center-text t))
+
+#+end_src
+
 *** Org Mode
 It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~straight-use-package~ here rather than ~use-package~ to ensure we get the most recent version, not the one that comes with Emacs.
 
