@@ -65,6 +65,7 @@
   :straight (orgba :type git :host github :repo "Fuco1/orgba"))
 
 (use-package org-auto-tangle
-  :hook org-mode)
+  :hook org-mode
+  :diminish " 🧶")
 
 (provide 'pdcmacs-org)

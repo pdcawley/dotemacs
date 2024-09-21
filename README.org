@@ -1019,6 +1019,7 @@ Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
     :bind (("M-$" . jinx-correct)
            ("C-M-$" . jinx-languages))
     :custom (jinx-languages "en_GB")
+    :diminish " 🅙"
     :config
     (defun +jinx--add-to-abbrev (overlay word)
       "Add abbreviation to `global-abbrev-table`.
@@ -1087,6 +1088,7 @@ Like ~paredit~ but for more modes...
 
 #+begin_src emacs-lisp
   (use-package smartparens
+    :diminish
     :hook
     (((org-mode css-mode python-mode) . smartparens-mode)
      (minibuffer-setup . turn-on-smartparens-strict-mode)
@@ -1225,6 +1227,7 @@ The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix 
 
 #+begin_src emacs-lisp
   (use-package writegood-mode
+    :diminish
     :bind ("M-m W" . writegood-mode)
     :hook
     (text-mode . writegood-mode)
@@ -1327,7 +1330,6 @@ We use the in-built ~dabbrev~ package. It doesn't need much configuration, but i
   (use-package emacs
     :bind ( ("M-/" . 'hippie-expand))
     :custom
-    (abbrev-mode t)
     (hippie-expand-try-functions-list
      '(yas-hippie-try-expand
        try-expand-all-abbrevs
@@ -1342,8 +1344,12 @@ We use the in-built ~dabbrev~ package. It doesn't need much configuration, but i
        try-complete-lisp-symbol))
     :config
     (remove-hook 'save-some-buffers-functions 'abbrev--possibly-save))
-#+end_src
 
+  (use-feature abbrev
+    :diminish
+    :hook emacs-startup)
+
+#+end_src
 *** Minibuffer
 Let's set up the ~minibuffer~ to play nicely with the completion frameworks we're going to use.
 
@@ -1840,8 +1846,9 @@ Let's try using the built in ~tree-sitter~ for syntax and parsing.
 I like it when my editor keeps things indented according to rules. Saves thought. So as well as the per-language modes, I use ~aggressive-indent~.
 
 #+begin_src emacs-lisp
-    (use-package aggressive-indent
-      :hook (after-init . aggressive-indent-global-mode))
+  (use-package aggressive-indent
+    :diminish " ⇒"
+    :hook (after-init . aggressive-indent-global-mode))
 #+end_src
 
 *** Alignment helpers
@@ -1947,7 +1954,7 @@ Also, paredit and ~embark~ fight a little, so added a hook to add ~paredit-mode~
 
 #+begin_src emacs-lisp
   (use-package paredit
-    :diminish "Ⓟ "
+    :diminish " Ⓟ"
     :bind
     (:map paredit-mode-map
           ("DEL"   . pdc/paredit-backward-delete)

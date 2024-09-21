@@ -76,6 +76,7 @@
 (use-feature notifications)
 
 (use-package envrc
+  :diminish
   :hook (after-init . envrc-global-mode)
   :config
   (keymap-global-set "M-m d E" '("envrc" . envrc-command-map)))
