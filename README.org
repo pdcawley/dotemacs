@@ -1755,6 +1755,35 @@ This annotates completion targets rather nicely. Mostly, it just works.
     (marginalia-mode . nerd-icons-completion-marginalia-setup))
 #+end_src
 
+** Shells and such
+A few mods:
+
+- Paths for shell execution are fetched and stored
+- ~Eshell~ is customised to start from the top of the page
+- Shell commands can be executed using https://github.com/xenodium/dwim-shell-command
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :config
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize)))
+
+  (use-feature eshell
+    :custom
+    (eshell-where-to-jump 'begin)
+    (eshell-review-quick-commands nil)
+    (eshell-smart-space-goes-to-end t))
+
+  (use-package dwim-shell-command
+    :after dired
+    :bind (([remap shell-command] . dwim-shell-command)
+           :map dired-mode-map
+           ([remap dired-do-async-shell-command] . dwim-shell-command)
+           ([remap dired-do-shell-command]       . dwim-shell-command)
+           ([remap dired-smart-shell-command]    . dwim-shell-command))
+    :custom (dired-dwim-target t))
+#+end_src
+
 ** Writing
 
 *** Visual fill column
