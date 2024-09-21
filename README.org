@@ -434,6 +434,14 @@ And it's handy to retain the history of useful variables and recent files betwee
 #+end_src
 
 
+** Keybinding support functions                                  :deprecated:
+
+I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
+
+#+begin_src emacs-lisp
+  (require 'pdcmacs-global-bindings)
+#+end_src
+
 ** Set up the UI
 
 #+begin_src emacs-lisp
@@ -656,8 +664,6 @@ Loading ~transient~ before ~magit~ helps with a potential race condition
   (use-package transient)
 
   (use-package magit
-    :init
-    (require 'pdcmacs-global-bindings)
     :bind
     (:prefix "M-m g"
              :prefix-map leader/git-map
