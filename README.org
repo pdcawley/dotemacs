@@ -274,25 +274,6 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
 
 #+end_src
 
-We also want to plumb ~which-key~ into ~use-package~ and set up a couple of variables associated with our leader-key based keymaps.
-
-#+begin_src emacs-lisp
-  (defvar pdc-leader "M-m")
-  (defvar pdc-mode-leader "C-,")
-  (use-package which-key
-    :diminish
-    :config
-    ;; TODO: Replace this with something advice based.
-    (defun which-key--compute-binding (binding)
-    (copy-sequence (if-let ((docstring (get binding 'variable-documentation)))
-                       (format "+%s" docstring)
-                     (symbol-name
-                      (or (and which-key-compute-remaps
-                               (command-remapping binding))
-                          binding)))))
-  (which-key-mode 1))
-#+end_src
-
 ** Set Helper Functions and Macros
 
 *** use-feature for Emacs builtins
@@ -334,6 +315,28 @@ First, let's set up a ~use-feature~ macro that works like ~use-package~ for libr
     (when (eq "darwin" system-type) `(progn ,@body)))
 
 #+end_src
+
+*** which-key
+We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables associated with our leader-key based keymaps.
+
+#+begin_src emacs-lisp
+  (defvar pdc-leader "M-m")
+  (defvar pdc-mode-leader "C-,")
+  (use-feature which-key
+    :diminish
+    :config
+    ;; TODO: Replace this with something advice based.
+    (defun which-key--compute-binding (binding)
+    (copy-sequence (if-let ((docstring (get binding 'variable-documentation)))
+                       (format "+%s" docstring)
+                     (symbol-name
+                      (or (and which-key-compute-remaps
+                               (command-remapping binding))
+                          binding)))))
+  (which-key-mode 1))
+#+end_src
+
+
 
 ** Prevent Emacs dropping files hither and yon
 
