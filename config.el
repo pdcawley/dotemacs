@@ -53,25 +53,6 @@
    ("M-m j '" . avy-goto-char-2)
    ("M-m j w" . avy-goto-word-1)))
 
-(use-package imenu
-  :bind
-  (("M-m j i" . imenu))
-  :hook
-  (font-lock-mode .  pdc/try-to-add-imenu)
-  :custom
-  (imenu-sort-function 'imenu--sort-by-name)
-  :init
-  (defun pdc/try-to-add-imenu ()
-    "Add Imenu to modes that have font-lock-mode activated."
-    (condition-case nil (imenu-add-to-menubar "Imenu")
-      (error nil))))
-
-(use-package imenu-list
-  :custom
-  (imenu-list-focus-after-activation t)
-  (imenu-list-auto-resize t)
-  (imenu-list-position 'left)
-  (imenu-list-size 40))
 
 (use-package multiple-cursors
   :bind

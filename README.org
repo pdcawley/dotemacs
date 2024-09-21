@@ -542,6 +542,15 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
 
 #+end_src
 
+*** Info tweaks
+We use ~casual-info~
+
+#+begin_src emacs-lisp
+  (use-package casual-info
+    :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
+
+#+end_src
+
 ** Look and feel
 
 *** Theme
