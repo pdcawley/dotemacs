@@ -110,10 +110,5 @@
   (vundo-glyph-alist vundo-unicode-symbols))
 
 
-(require 'pdcmacs-feeds)
-(require 'pdcmacs-org)
-(require 'pdcmacs-hugo-support)
-(require 'pdcmacs-webservice)
-
 (provide 'config)
 ;;; config.el ends here

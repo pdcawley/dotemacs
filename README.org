@@ -2068,6 +2068,14 @@ The pre-literate version of this file separated initialization into ~init.el~ an
     (load custom-file))
 #+end_src
 
+And load our support modules. I'll be pulling these into here too and either tangling them into ~init.el~ or leaving into their own module files. Decision for later.
+
+#+begin_src emacs-lisp
+  (require 'pdcmacs-feeds)
+  (require 'pdcmacs-org)
+  (require 'pdcmacs-hugo-support)
+  (require 'pdcmacs-webservice)
+#+end_src
 
 # Local Variables:
 # truncate-lines: nil
