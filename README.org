@@ -1656,6 +1656,79 @@ I like it when my editor keeps things indented according to rules. Saves thought
     (use-package aggressive-indent
       :hook (after-init . aggressive-indent-global-mode))
 #+end_src
+
+*** Alignment helpers
+I do like a neatly formatted alist etc, so I wrote some alignment functions. Not sure how attached I am to them, but here they are anyway.
+
+#+begin_src emacs-lisp
+  (defun +align-repeat (start end regexp &optional justify-right after)
+    "Repeat alignment with respect to the given regular expression.
+  if JUSTIFY-RIGHT is non nil justify to the right instead of the left. If AFTER is non-nil, add whitespace to the left instead of the right."
+    (interactive "r\nsAlign regexp: ")
+    (let* ((ws-regexp (if (string-empty-p regexp)
+                          "\\(\\s-+\\)"
+                        "\\(\\s-*\\)"))
+           (complete-regexp (if after
+                                (concat regexp ws-regexp)
+                              (concat ws-regexp regexp)))
+           (group (if justify-right -1 1)))
+      (message "%S" complete-regexp)
+      (align-regexp start end complete-regexp group 1 t)))
+
+  (defmacro pdc|create-align-repeat-x (name regexp &optional justify-right default-after)
+    (let ((new-func (intern (concat "+align-repeat-" name))))
+      `(defun ,new-func (start end switch)
+         (interactive "r\nP")
+         (let ((after (not (eq (if switch t nil) ,(if default-after t nil)))))
+           (+align-repeat start end ,regexp ,justify-right after)))))
+
+  (defun +align-repeat-decimal (start end)
+    "Align a table of numbers on decimal points and dollar signs (both optional)"
+    (interactive "r")
+    (require 'align)
+    (align-regexp start end nil
+                  '((nil (regexp . "\\([\t ]*\\)\\$?\\([\t ]+[0-9]+\\)\\.?")
+                         (repeat . t)
+                         (group 1 2)
+                         (spacing 1 1)
+                         (justify nil t)))
+                  nil))
+
+  (pdc|create-align-repeat-x "comma"     "," nil t)
+  (pdc|create-align-repeat-x "semicolon" ";" nil t)
+  (pdc|create-align-repeat-x "colon"     ":" nil t)
+  (pdc|create-align-repeat-x "equal"     "=")
+  (pdc|create-align-repeat-x "math-oper" "[+\\-*/]")
+  (pdc|create-align-repeat-x "ampersand" "&")
+  (pdc|create-align-repeat-x "bar"       "|")
+  (pdc|create-align-repeat-x "left-paren" "(")
+  (pdc|create-align-repeat-x "right-paren" ")" t)
+  (pdc|create-align-repeat-x "backslash" "\\\\")
+  (pdc|create-align-repeat-x "quote" "['`]'")
+
+
+  (general-def
+    :prefix "M-m |"
+    ""   '(nil :which-key "align")
+    ","  '+align-repeat-comma
+    ";"  '+align-repeat-semicolon
+    ":"  '+align-repeat-colon
+    "="  '+align-repeat-equal
+    "+"  '+align-repeat-math-oper
+    "*"  '+align-repeat-math-oper
+    "/"  '+align-repeat-math-oper
+    "-"  '+align-repeat-math-oper
+    "|"  '+align-repeat-bar
+    "("  '+align-repeat-left-paren
+    ")"  '+align-repeat-right-paren
+    "\\" '+align-repeat-backslash
+    "'"  '+align-repeat-quote
+    "`"  '+align-repeat-quote)
+
+
+
+#+end_src
+
 *** Languages and Frameworks
 
 **** Lisps
