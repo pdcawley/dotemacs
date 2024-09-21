@@ -53,34 +53,10 @@ This only needs executing the first time you use this setup. It moves any prexis
   set -euo pipefail
   set -o noclobber
 
-  # Create ~/.config/emacs folder with chemacs2 in it
-  if [ -d ~/.config/emacs ]
-  then
-      # Is it already a chemacs directory?
-      if (cd ~/.config/emacs && git remote show origin | grep -q chemacs2)
-      then
-          echo "Chemacs2 installed!"
-      else
-          if [ -d ~/.config/emacs.legacy ]
-          then
-              echo "We already have emacs.legacy, exiting"
-              exit -1
-          else
-              mv ~/.config/emacs ~/.config/emacs.legacy
-          fi
-      fi
-  fi
-  git clone https://github.com/plexus/chemacs2.git ~/.config/emacs/
-  mkdir -p ~/.config/chemacs/
-  echo >~/.config/chemacs/profiles.el <<EOF
-  (("legacy" . ((user-emacs-directory . "~/.config/emacs.legacy") (server-name .  "emacs-legacy") (straight-p . t)))
-   ("default" . ((user-emacs-directory . "~/.config/pdcmacs") (server-name . "pdcmacs") (straight-p . t))))
-  EOF
-
   echo "Setting up pdcmacs folder in ~/.config"
-  mkdir -p ~/.config/pdcmacs/secrets
-  mkdir -p ~/.config/pdcmacs/snippets
-  mkdir -p ~/.config/pdcmacs/abbrevs
+  mkdir -p ~/.config/emacs/secrets
+  mkdir -p ~/.config/emacs/snippets
+  mkdir -p ~/.config/emacs/abbrevs
 
   if [ -L ~/.emacs.d ] && [ -d ~/.emacs.d ]
   then
