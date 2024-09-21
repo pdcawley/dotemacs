@@ -1130,6 +1130,22 @@ This probably needs a bit more work, but paredit mode makes me want at least aut
                            (?\~ . ?\~))))
 #+end_src
 
+*** Multi-cursors
+"Yeah, yeah," the purists will tell you, "Emacs isn't really set up to handle multiple cursors efficiently, you're better using keyboard macros!" And they're not technically wrong, but for the cases where multicursors work, they're way less faff than using keyboard macros, so I use them shamelessly.
+
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind
+    (:prefix "M-m m"
+             :prefix-map pdc-multi-map
+             :prefix-docstring "multi"
+             ("a" . mc/edit-beginnings-of-lines)
+             ("e" . mc/edit-ends-of-lines)
+             ("^" . mc/edit-beginnings-of-lines)
+             ("$" . mc/edit-ends-of-lines)
+             ("m" . mc/edit-lines)))
+#+end_src
+
 *** Recent files
 An emacs builtin, we're just configuring it.
 

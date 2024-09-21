@@ -32,18 +32,6 @@
    ("M-m j w" . avy-goto-word-1)))
 
 
-(use-package multiple-cursors
-  :bind
-  (:prefix "M-m m"
-           :prefix-map pdc-multi-map
-           :prefix-docstring "multi"
-           ("a" . mc/edit-beginnings-of-lines)
-           ("e" . mc/edit-ends-of-lines)
-           ("^" . mc/edit-beginnings-of-lines)
-           ("$" . mc/edit-ends-of-lines)
-           ("m" . mc/edit-lines))
-  :config)
-
 (use-feature outline)
 
 (use-feature ediff
