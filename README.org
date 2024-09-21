@@ -1279,6 +1279,15 @@ Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ 
 
 #+end_src
 
+**** Search and destroy^Wreplace
+Sometimes it's useful to have multiple interfaces to a thing because we have multiple states of mind. Sorry… I have multiple states of mind. We already have ~consult-ripgrep~ in place, but let's try deadgrep too
+
+#+begin_src emacs-lisp
+  (use-package deadgrep
+    :bind (("M-s R" . deadgrep)))
+
+#+end_src
+
 *** The amazing emacs calculator
 ~calc~ and ~casual-calc~ are rather fine.
 #+begin_src emacs-lisp
