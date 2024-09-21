@@ -821,14 +821,6 @@ I'm not sure what it does, but apparently it makes recognising names easier. So,
 
 *** Buffer management
 
-**** Better buffer management with bufler.el
-Another experiment, apparently https://github.com/alphapapa/buffer.el is the bee's knees
-
-#+begin_src emacs-lisp
-  (use-package bufler
-    :hook after-init)
-#+end_src
-
 **** Quick navigation in the mini-buffer
 #+begin_src emacs-lisp
   (use-package consult-dir
