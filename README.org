@@ -1165,7 +1165,9 @@ The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix 
 #+begin_src emacs-lisp
   (use-package writegood-mode
     :bind ("M-m W" . writegood-mode)
-    :hook text-mode
+    :hook
+    (text-mode . writegood-mode-turn-on)
+    ((view-mode emacs-news-view-mode) . writegood-turn-off)
     :config
     (writegood-weasels-turn-on)
     (writegood-passive-voice-turn-on)
