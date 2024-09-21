@@ -107,7 +107,7 @@ This only needs executing the first time you use this setup. It moves any prexis
 
 I use ~early-init.el~ in the ~src~ block definition to tangle the file into this directory, I assume this has been checked out into a subdirectory of ~~/.config/~ that matches a Chemacs2 profile name. This file is loaded before the package system or GUI of Emacs is loaded and is ideally code that does not depend on any packages or the size of the frame.
 
-** Turn on lexical binding and warn about editingW
+** Turn on lexical binding and warn about editing
 
 Your basic preamble comment
 
@@ -261,9 +261,26 @@ We don't make much use of the internal ~custom~ facility, but when we do, we don
 
 ** Package Management
 
+*** Get straight up and running
 We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
 
 #+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+  	"straight/repos/straight.el/bootstrap.el"
+  	(or (bound-and-true-p straight-base-dir)
+  	    user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+  	(url-retrieve-synchronously
+  	 "https://raw.githubuserconent.com/radian-software/straight.el/develop/install.el"
+  	 'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
   (setq straight-use-package-by-default t)
   (straight-use-package 'diminish)
   (straight-use-package 'general)
@@ -271,7 +288,6 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
   (require 'general-autoloads)
   (or (require 'use-package nil t)
       (straight-use-package use-package))
-
 #+end_src
 
 *** Tweak binding
@@ -1801,10 +1817,10 @@ In writing modes, I like the way ~visual-fill-column-mode~ handles things, centr
 #+end_src
 
 *** Org Mode
-It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~straight-use-package~ here rather than ~use-package~ to ensure we get the most recent version, not the one that comes with Emacs.
+It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-feature~ here rather than ~use-package~ to ensure we get the version packaged with emacs. This may be a mistake :)
 
 #+begin_src emacs-lisp
-  (straight-use-package 'org)
+  (use-feature org)
 #+end_src
 
 **** Org Configuration Module
