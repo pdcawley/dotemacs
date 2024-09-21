@@ -12,14 +12,6 @@
 
 (use-package ace-window)
 
-(use-package dash
-  :config
-  (dash-enable-font-lock))
-(use-package s)
-(use-package f)
-(use-package kv)
-(use-package ht)
-
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
 

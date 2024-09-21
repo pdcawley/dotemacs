@@ -395,6 +395,17 @@ We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables
 #+end_src
 
 
+*** Grab dash, s, f
+
+There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in functions, but I like the consistency of these packages interfaces, and I'm not writing modules for further redistribution, so I just convenience load them here.
+
+#+begin_src emacs-lisp
+  (use-package dash
+    :config
+    (dash-enable-font-lock))
+  (use-package s)
+  (use-package f)
+#+end_src
 
 ** Prevent Emacs dropping files hither and yon
 
