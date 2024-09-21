@@ -109,7 +109,6 @@
   :custom
   (vundo-glyph-alist vundo-unicode-symbols))
 
-(use-package haskell-mode)
 
 (require 'pdcmacs-feeds)
 (require 'pdcmacs-org)
