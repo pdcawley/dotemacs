@@ -3,16 +3,12 @@
 (defgroup pdcmacs nil
   "Pdcmacs customization.")
 
-(use-package aggressive-indent
-  :init (aggressive-indent-global-mode t))
 
 (use-package xref)
-
 
 (require 'rx)
 
 (use-package ace-window)
-(use-package 0x0)
 
 (use-package dash
   :config

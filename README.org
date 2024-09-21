@@ -1651,7 +1651,13 @@ Let's try using the built in ~tree-sitter~ for syntax and parsing.
 
 #+end_src
 
+*** Aggressive Indent
+I like it when my editor keeps things indented according to rules. Saves thought. So as well as the per-language modes, I use ~aggressive-indent~.
 
+#+begin_src emacs-lisp
+    (use-package aggressive-indent
+      :hook (after-init . aggressive-indent-global-mode))
+#+end_src
 *** Languages and Frameworks
 
 **** Lisps
