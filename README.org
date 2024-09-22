@@ -1889,6 +1889,36 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 
   (use-package org-contrib)
   #+end_src
+**** Update appearances
+In a gui environment, ~org-modern~ looks great.
+
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :after org
+    :if (display-graphic-p)
+    :straight
+    (:host github :repo "minad/org-modern")
+    :hook
+    (org-modern-mode . org-indent-mode)
+    (org-mode        . global-org-modern-mode)
+    :custom
+    (org-auto-align-tags nil)
+    (org-tags-column 0)
+    (org-catch-invisible-edits 'show-and-error)
+    (org-special-ctrl-a/e t)
+    (org-insert-heading-respect-content t)
+    (org-hide-emphasis-markers t)
+    (org-pretty-entities t)
+    (org-ellipsis "…")
+    (org-agenda-block-separator ?—)
+    (org-agenda-time-grid
+     '((daily today require-timed)
+       (800 1000 1200 1400 1600 1800 2000)
+       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+    (org-agenda-current-time-string
+     "←⭠ now ───────────────────────────────────────────────"))
+
+#+end_src
 **** Org babel
 The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
 
@@ -2010,32 +2040,7 @@ Add completion at point support to org with ~corg~
 
   ;;; Org-modern
 
-  (use-package org-modern
-    :after org
-    :if (display-graphic-p)
-    :straight
-    (:type git :host github :repo "minad/org-modern")
-    :hook
-    (org-modern-mode . org-indent-mode)
-    (org-mode . global-org-modern-mode)
-    :init
-    (setq org-auto-align-tags nil
-          org-tags-column 0
-          org-catch-invisible-edits 'show-and-error
-          org-special-ctrl-a/e t
-          org-insert-heading-respect-content t
 
-          org-hide-emphasis-markers t
-          org-pretty-entities t
-          org-ellipsis "…"
-
-          org-agenda-block-separator ?—
-          org-agenda-time-grid
-          '((daily today require-timed)
-            (800 1000 1200 1400 1600 1800 2000)
-            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-          org-agenda-current-time-string
-          "←⭠ now ───────────────────────────────────────────────"))
 
   (use-package org-bullets
     :hook
