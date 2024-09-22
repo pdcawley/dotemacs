@@ -1845,13 +1845,12 @@ It's almost reached the point where it's not really an Emacs configuration if it
     (org-log-done 'time)
     (org-log-into-drawer t)
 
-    (org-startup-indented t)
     (org-pretty-entities t)
     (org-use-sub-superscripts "{}")
     (org-hide-emphasis-markers t)
     (org-startup-with-inline-images (display-graphic-p))
     (org-image-actual-width '(300))
-    :hook (org-mode . 'visual-line-mode)
+    :hook (org-mode . visual-line-mode)
     :config
     (for-gui
       (add-hook 'org-mode-hook 'variable-pitch-mode)))
