@@ -28,6 +28,8 @@ And, in the "nice to have" department:
 2. The various support bits and bobs to allow exporting this to my hugo-based [[https://bofh.org.uk][blog]].
 
 
+** Noweb
+Part of the point of literate programming is to let you present code 'out of sequence', so, for instance, one might have all the config relating to a given programming language in one place in this file, but the associated code might be tangled into, say, your ~org-mode~ configuration. We do this with noweb. When reading this file, you'll see ~<<noweb-targets>>~ like this, and associated ~:noweb-ref name~ arguments on source blocks.
 
 ** TODO Porting from legacy to Literate [2/4]
 
@@ -1825,8 +1827,10 @@ In writing modes, I like the way ~visual-fill-column-mode~ handles things, centr
 
 *** Org Mode
 It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-feature~ here rather than ~use-package~ to ensure we get the version packaged with emacs. This may be a mistake :)
+**** Loading Org itself
+Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out with supporting packages.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb yes
   (use-package org
     :bind
     (:map org-mode-map
@@ -1840,21 +1844,141 @@ It's almost reached the point where it's not really an Emacs configuration if it
                :prefix-docstring "org"
                ("c" . org-capture)
                ("A" . org-agenda))
+
+    (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
+      (let ((list (if (not (listp list-or-symbol))
+                      (list list-or-symbol)
+                    list-or-symbol)))
+        (require 'cl-lib)
+        (cl-adjoin element list)))
+
     :custom
     (org-agenda-start-with-log-mode t)
     (org-log-done 'time)
     (org-log-into-drawer t)
-
     (org-pretty-entities t)
     (org-use-sub-superscripts "{}")
     (org-hide-emphasis-markers t)
     (org-startup-with-inline-images (display-graphic-p))
     (org-image-actual-width '(300))
+    (org-structure-template-alist
+     (append '(("c" . "center\n")
+               ("C" . "comment\n")
+               ("e" . "example\n")
+               ("q" . "quote\n")
+               ("E" . "export\n")
+               ("h" . "export html\n")
+               ("a" . "export ascii\n")
+               ("M" . "export markdown\n")
+               ("m" . "markdown\n")
+               ("s" . "src")
+               ("v" . "verse\n"))
+             '(
+               <<org-structure-templates>>)))
     :hook (org-mode . visual-line-mode)
     :config
     (for-gui
-      (add-hook 'org-mode-hook 'variable-pitch-mode)))
+      (add-hook 'org-mode-hook 'variable-pitch-mode))
 
+    (dolist (face '(org-code org-block))
+      (set-face-attribute
+       face nil
+       :inherit
+       (my-adjoin-to-list-or-symbol 'fixed-pitch
+                                    (face-attribute face :inherit)))))
+
+  (use-package org-contrib)
+  #+end_src
+**** Org babel
+The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
+
+This stanza
+
+- loads a bunch of language support modules, including external modules
+  - ~ob-http~
+  - ~ob-raku~
+  - ~ob-racket~
+- Sets up language based fontification
+- Lowercases the evaluation results block
+
+#+begin_src emacs-lisp :noweb yes
+  (use-feature ob
+    :after org
+    :custom
+    (org-src-fontify-natively t)
+    (org-babel-results-keyword "results")
+    :config
+    <<ob-config>>
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((css . t)
+       (dot . t)
+       (emacs-lisp . t)
+       (http . t)
+       (org . t)
+       (perl . t)
+       (haskell . t)
+       (shell . t)
+       (sql . t)
+       (raku . t)
+       (racket . t)
+       <<ob-languages>>
+       )))
+
+  (use-package ob-http :after org)
+  (use-package ob-raku :after org)
+  (use-package ob-racket :after org
+    :hook
+    (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
+    :straight (ob-racket :host github
+                         :repo "hasu/emacs-ob-racket"
+                         :files ("*.el" "*.rkt")))
+#+end_src
+
+***** Source structure templates
+Org structure templates are great, so let's add some more to make language specific ~#+begin_src~ blocks
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
+  ("el" . "src emacs-lisp\n")
+  ("ent" . "src emacs-lisp :tangle nil\n")
+  ("pl" . "src perl\n")
+  ("p6" . "src raku\n")
+  ("sh" . "src sh\n")
+  ("md" . "src markdown\n")
+  ("rk" . "src racket\n")
+  ("hs" . "src haskell\n")
+  ("sql" . "src sql\n")
+#+end_src
+**** Rich paste
+Make it easier to paste code blocks in org mode with ~org-rich-yank~
+
+#+begin_src emacs-lisp
+  (use-package org-rich-yank
+    :bind (:map org-mode-map
+                ("C-M-y" . org-rich-yank)
+                ("M-m M-y" . org-rich-yank))
+    :custom
+    (org-rich-yank-format-paste '+org-rich-yank-format-paste)
+    :init
+    (defun +org-rich-yank-format-paste (language contents link)
+      "Format LANGUAGE, CONTENTS and LINK as an `org-mode' source block.
+
+  Uses lower case block declaration."
+      (format "#+begin_src %s\n%s\n#+end_src\n%s"
+              language
+              (org-rich-yank--trim-nl contents)
+              (or link ""))))
+#+end_src
+
+
+
+**** Corg
+Add completion at point support to org with ~corg~
+
+#+begin_src emacs-lisp
+  (use-package corg
+    :hook (org-mode . corg-setup)
+    :straight (:host github :repo "isamert/corg.el"))
 #+end_src
 
 **** Org Configuration Module
@@ -1867,7 +1991,6 @@ It's almost reached the point where it's not really an Emacs configuration if it
   ;;;
   ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
 
-  (use-package org-contrib)
   (use-package org-roam
     :custom
     ((org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
