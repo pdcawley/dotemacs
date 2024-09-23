@@ -2091,9 +2091,6 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
 
 
 
-  (use-package orgba
-    :straight (orgba :type git :host github :repo "Fuco1/orgba"))
-
   (use-package org-auto-tangle
     :hook org-mode
     :diminish " 🧶")
