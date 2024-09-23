@@ -2051,6 +2051,15 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
 
 #+end_src
 
+**** Add auto tangle
+It's really handy to automatically tangle on save for some stuff. Especially this particular file :)
+
+#+begin_src emacs-lisp
+  (use-package org-auto-tangle
+    :hook org-mode
+    :diminish " 🧶")
+#+end_src
+
 **** Exporters
 Sometimes, your victim can't make use of ~org-mode~, so we make use of the ~ox~ system.
 ***** Export to markdown
@@ -2087,19 +2096,11 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
   ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
 
 
-  ;;; Org-modern
-
-
-
-  (use-package org-auto-tangle
-    :hook org-mode
-    :diminish " 🧶")
-
   (provide 'pdcmacs-org)
 
 #+end_src
 
-****
+
 
 ** Programming stuff
 
