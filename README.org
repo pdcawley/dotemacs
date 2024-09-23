@@ -2062,7 +2062,7 @@ It's really handy to automatically tangle on save for some stuff. Especially thi
 
 **** Exporters
 Sometimes, your victim can't make use of ~org-mode~, so we make use of the ~ox~ system.
-***** Export to markdown
+***** Export to Github flavoured markdown
 #+begin_src emacs-lisp
   (use-package ox-gfm
     :commands (org-gfm-export-as-markdown org-gfm-export-to-markdown)
@@ -2084,22 +2084,6 @@ See https://gitlab.com/oer/org-re-reveal for more details on this.
 #+end_src
 ****** TODO Eliminate reveal CDN?
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
-
-**** Org Configuration Module
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle modules/pdcmacs-org.el
-:END:
-
-#+begin_src emacs-lisp
-  ;;; -*- lexical-binding: t; -*-
-  ;;;
-  ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
-
-
-  (provide 'pdcmacs-org)
-
-#+end_src
-
 
 
 ** Programming stuff
@@ -2448,7 +2432,6 @@ And load our support modules. I'll be pulling these into here too and either tan
 
 #+begin_src emacs-lisp
   (require 'pdcmacs-feeds)
-  (require 'pdcmacs-org)
   (require 'pdcmacs-hugo-support)
   (require 'pdcmacs-webservice)
 #+end_src
