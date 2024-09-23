@@ -2016,7 +2016,6 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
 #+end_src
 
 
-
 **** Corg
 Add completion at point support to org with ~corg~
 
@@ -2025,6 +2024,31 @@ Add completion at point support to org with ~corg~
     :hook (org-mode . corg-setup)
     :straight (:host github :repo "isamert/corg.el"))
 #+end_src
+
+**** Exporters
+Sometimes, your victim can't make use of ~org-mode~, so we make use of the ~ox~ system.
+***** Export to markdown
+#+begin_src emacs-lisp
+  (use-package ox-gfm
+    :commands (org-gfm-export-as-markdown org-gfm-export-to-markdown)
+    :after org)
+#+end_src
+***** Presentation in HTML with org-re-reveal
+I'm entirely convinced I'll be doing much presenting in the future, and even less convinced I'll be doing it directly from org (I tend to make heavy use of Keynote's "magic move" capabilities when I'm presenting -- it's great for showing how code moves about during refactoring. Fiddly as fuck, but great).
+
+Anyway, for quick stuff, this is almost certainly useful.
+
+See https://gitlab.com/oer/org-re-reveal for more details on this.
+
+#+begin_src emacs-lisp
+  (use-package org-re-reveal
+    :after org
+    :custom
+    (org-re-reveal-root "https://cdd.jsdelivr.net/npm/reveal.js")
+    (org-re-reveal-revealjs-version "4"))
+#+end_src
+****** TODO Eliminate reveal CDN?
+CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
 
 **** Org Configuration Module
 :PROPERTIES:
