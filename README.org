@@ -1131,8 +1131,7 @@ This probably needs a bit more work, but paredit mode makes me want at least aut
     (electric-pair-pairs '((?\( . ?\))
                            (?\< . ?\>)
                            (?\[ . ?\])
-                           (?\{ . ?\})
-                           (?\~ . ?\~))))
+                           (?\{ . ?\}))))
 #+end_src
 
 *** Multi-cursors
