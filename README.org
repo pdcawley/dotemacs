@@ -2027,6 +2027,30 @@ Add completion at point support to org with ~corg~
     :straight (:host github :repo "isamert/corg.el"))
 #+end_src
 
+
+**** Org Roam
+I need to look more carefully at ~org-roam~ and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :custom
+    ((org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
+     (org-use-speed-commands t))
+    :init
+    (setq org-roam-v2-ack t)
+    :general
+    (:prefix "M-m n"
+             ""  '(nil :which-key "notes")
+             "l" 'org-roam-buffer-toggle
+             "f" 'org-roam-node-find
+             "g" 'org-roam-graph
+             "i" 'org-roam-node-insert
+             "c" 'org-roam-capture
+
+             "j" 'org-roam-dailies-capture-today))
+
+#+end_src
+
 **** Exporters
 Sometimes, your victim can't make use of ~org-mode~, so we make use of the ~ox~ system.
 ***** Export to markdown
@@ -2062,22 +2086,6 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
   ;;;
   ;;; pdcmacs-org.el -- Set up org stuff;;; Org-mode and friends
 
-  (use-package org-roam
-    :custom
-    ((org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
-     (org-use-speed-commands t))
-    :init
-    (setq org-roam-v2-ack t)
-    :general
-    (:prefix "M-m n"
-             ""  '(nil :which-key "notes")
-             "l" 'org-roam-buffer-toggle
-             "f" 'org-roam-node-find
-             "g" 'org-roam-graph
-             "i" 'org-roam-node-insert
-             "c" 'org-roam-capture
-
-             "j" 'org-roam-dailies-capture-today))
 
   ;;; Org-modern
 
@@ -2093,6 +2101,9 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
   (provide 'pdcmacs-org)
 
 #+end_src
+
+****
+
 ** Programming stuff
 
 *** Syntax checking
