@@ -2083,7 +2083,27 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
 
 
 ** Programming stuff
+*** Eglot
+The Language Server Protocol is probably the future, but I'm still experimenting with it. So let's see about configuring ~eglot~, which is the LSP support that made it into Emacs core. If I don't get on with it, I'll give ~lsp-mode~ a go.
+#+begin_src emacs-lisp
+  (use-feature eglot
+    :hook
+    ((sh-mode bash-ts-mode c-mode) . eglot-ensure)
+    :bind
+    (:map
+     eglot-mode-map
+     ("M-m , a" . eglot-code-actions)
+     ("M-m , o" . eglot-code-actions-organize-imports)
+     ("M-m , r" . eglot-rename)
+     ("M-m , f" . eglot-format)
+     ("M-m , d" . eldoc))
+    :custom
+    (eglot-stay-out-of '(flymake))
+    (eglot-workspace-configuration '((:gopls . ((staticcheck . t)
+                                                (matcher . "CaseSensitive"))))))
 
+  ;;  (use-feature jsonrpc)
+#+end_src
 *** Syntax checking
 I'm trying ~flymake~ for syntax checking.
 
