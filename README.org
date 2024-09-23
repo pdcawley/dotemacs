@@ -55,7 +55,7 @@ This only needs executing the first time you use this setup. It moves any prexis
   set -euo pipefail
   set -o noclobber
 
-  echo "Setting up pdcmacs folder in ~/.config"
+  echo "Setting up emacs folder in ~/.config"
   mkdir -p ~/.config/emacs/secrets
   mkdir -p ~/.config/emacs/snippets
   mkdir -p ~/.config/emacs/abbrevs
@@ -73,9 +73,9 @@ This only needs executing the first time you use this setup. It moves any prexis
       ln -s ~/.config/emacs ~/.emacs.d
   fi
 
-
-
-
+  echo "Tangling README.org"
+  cd ~/.config/emacs
+  emacs --batch -l org --eval '(org-babel-tangle-file "README.org")'
 #+end_src
 
 * Creating early-init.el
