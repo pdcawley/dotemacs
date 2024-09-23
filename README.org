@@ -2120,10 +2120,14 @@ I'm trying ~flymake~ for syntax checking.
         (remove-hook flymake-diagnostic-functions
                      'elisp-flymake-byte-compile t))))
 
+
+
 #+end_src
-
-
-
+**** Try doing prose checking too?
+#+begin_src emacs-lisp
+  (use-package flymake-vale
+    :straight (:host github :repo "/tpeacock19/flymake-vale"))
+#+end_src
 *** Add documentation
 #+begin_src emacs-lisp
   (use-package eldoc
