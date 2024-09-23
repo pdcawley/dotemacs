@@ -1853,6 +1853,21 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
         (cl-adjoin element list)))
 
     :custom
+    (org-auto-align-tags nil)
+    (org-tags-column 0)
+    (org-catch-invisible-edits 'show-and-error)
+    (org-special-ctrl-a/e t)
+    (org-insert-heading-respect-content t)
+    (org-hide-emphasis-markers t)
+    (org-pretty-entities t)
+    (org-ellipsis "…")
+    (org-agenda-block-separator ?—)
+    (org-agenda-time-grid
+     '((daily today require-timed)
+       (800 1000 1200 1400 1600 1800 2000)
+       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+    (org-agenda-current-time-string
+     "←⭠ now ───────────────────────────────────────────────")
     (org-agenda-start-with-log-mode t)
     (org-log-done 'time)
     (org-log-into-drawer t)
@@ -1896,30 +1911,17 @@ In a gui environment, ~org-modern~ looks great.
 #+begin_src emacs-lisp
   (use-package org-modern
     :after org
-    :if (display-graphic-p)
+    ;;    :if (display-graphic-p)
     :straight
     (:host github :repo "minad/org-modern")
     :hook
-    (org-modern-mode . org-indent-mode)
-    (org-mode        . global-org-modern-mode)
-    :custom
-    (org-auto-align-tags nil)
-    (org-tags-column 0)
-    (org-catch-invisible-edits 'show-and-error)
-    (org-special-ctrl-a/e t)
-    (org-insert-heading-respect-content t)
-    (org-hide-emphasis-markers t)
-    (org-pretty-entities t)
-    (org-ellipsis "…")
-    (org-agenda-block-separator ?—)
-    (org-agenda-time-grid
-     '((daily today require-timed)
-       (800 1000 1200 1400 1600 1800 2000)
-       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
-    (org-agenda-current-time-string
-     "←⭠ now ───────────────────────────────────────────────"))
+    (org-mode        . global-org-modern-mode))
 
 #+end_src
+
+#+results:
+| global-org-modern-mode | org-auto-tangle-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | org-bullets-mode | corg-setup | visual-line-mode | visual-fill-column-mode | smartparens-mode |
+
 ***** Better bullets
 Asterisks are boring.
 #+begin_src emacs-lisp
