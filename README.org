@@ -1890,6 +1890,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (use-package org-contrib)
   #+end_src
 **** Update appearances
+***** Modernise things a little
 In a gui environment, ~org-modern~ looks great.
 
 #+begin_src emacs-lisp
@@ -1918,6 +1919,20 @@ In a gui environment, ~org-modern~ looks great.
     (org-agenda-current-time-string
      "←⭠ now ───────────────────────────────────────────────"))
 
+#+end_src
+***** Better bullets
+Asterisks are boring.
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :hook
+    (org-mode . org-bullets-mode))
+#+end_src
+***** Improve table alignment
+Apparently ~valign~ is great. Let's give it a go.
+#+begin_src emacs-lisp
+  (use-package valign
+    :if (display-graphic-p)
+    :hook org-mode)
 #+end_src
 **** Org babel
 The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
@@ -2041,10 +2056,6 @@ Add completion at point support to org with ~corg~
   ;;; Org-modern
 
 
-
-  (use-package org-bullets
-    :hook
-    (org-mode . org-bullets-mode))
 
   (use-package orgba
     :straight (orgba :type git :host github :repo "Fuco1/orgba"))
