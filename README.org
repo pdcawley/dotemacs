@@ -1838,11 +1838,13 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 
 #+begin_src emacs-lisp :noweb yes
   (use-package org
+    :bind-keymap
     :bind
     (:map org-mode-map
           ("C-M-<return>"   . org-insert-subheading)
           ("C-c M-<return>" . org-insert-subheading)
-          ("C-c M-RET"      . org-insert-subheading))
+          ("C-c M-RET"      . org-insert-subheading)
+          ("C-M-i"          . completion-at-point))
 
     :init
     (bind-keys :prefix "M-m o"
