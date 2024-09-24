@@ -1898,6 +1898,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
                ("v" . "verse\n"))
              '(
                <<org-structure-templates>>)))
+    <<org-custom>>
     :hook (org-mode . visual-line-mode)
     :config
     (for-gui
@@ -1908,7 +1909,8 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
        face nil
        :inherit
        (my-adjoin-to-list-or-symbol 'fixed-pitch
-                                    (face-attribute face :inherit)))))
+                                    (face-attribute face :inherit))))
+    <<org-config>>)
 
   (use-package org-contrib)
   #+end_src
