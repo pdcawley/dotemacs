@@ -1522,21 +1522,27 @@ As well as corfu, ~cape~ does some good stuff with ~completion-at-point~.
 
 #+begin_src emacs-lisp
   (use-package cape
-    :bind (("C-c p p" . completion-at-point)
-           ("C-c p t" . complete-tag)
-           ("C-c p d" . cape-dabbrev)
-           ("C-c p h" . cape-history)
-           ("C-c p f" . cape-file)
-           ("C-c p k" . cape-keyword)
-           ("C-c p s" . cape-symbol)
-           ("C-c p a" . cape-abbrev)
-           ("C-c p l" . cape-line)
-           ("C-c p w" . cape-dict)
-           ("C-c p \\" . cape-tex)
-           ("C-c p _" . cape-tex)
-           ("C-c p ^" . cape-tex)
-           ("C-c p &" . cape-sgml)
-           ("C-c p r" . cape-rfc1345))
+    :preface
+    (bind-keys :prefix "M-m ."
+               :prefix-map pdc-completion-at-point-map
+               :prefix-docstring "completion…")
+    :bind (:map
+           pdc-completion-at-point-map
+           ("p"  . completion-at-point)
+           ("t"  . complete-tag)
+           ("d"  . cape-dabbrev)
+           ("h"  . cape-history)
+           ("f"  . cape-file)
+           ("k"  . cape-keyword)
+           ("s"  . cape-symbol)
+           ("a"  . cape-abbrev)
+           ("l"  . cape-line)
+           ("w"  . cape-dict)
+           ("\\" . cape-tex)
+           ("_"  . cape-tex)
+           ("^"  . cape-tex)
+           ("&"  . cape-sgml)
+           ("r"  . cape-rfc1345))
     :init
     (add-to-list 'completion-at-point-functions #'cape-dabbrev)
     (add-to-list 'completion-at-point-functions #'cape-abbrev)
