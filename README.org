@@ -2035,29 +2035,6 @@ Add completion at point support to org with ~corg~
 #+end_src
 
 
-**** Org Roam
-I need to look more carefully at ~org-roam~ and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
-
-#+begin_src emacs-lisp
-  (use-package org-roam
-    :custom
-    ((org-roam-directory (file-truename (expand-file-name "~/Documents/RoamNotes/")))
-     (org-use-speed-commands t))
-    :init
-    (setq org-roam-v2-ack t)
-    :general
-    (:prefix "M-m n"
-             ""  '(nil :which-key "notes")
-             "l" 'org-roam-buffer-toggle
-             "f" 'org-roam-node-find
-             "g" 'org-roam-graph
-             "i" 'org-roam-node-insert
-             "c" 'org-roam-capture
-
-             "j" 'org-roam-dailies-capture-today))
-
-#+end_src
-
 **** Add auto tangle
 It's really handy to automatically tangle on save for some stuff. Especially this particular file :)
 
@@ -2444,6 +2421,64 @@ I don't use Haskell much, but I do use it occasionally. I should work out how I 
 
 #+begin_src emacs-lisp
   (use-package haskell-mode)
+#+end_src
+
+** Personal Knowledge Management
+I'm not entirely convinced I'll use this, but it's probably worth at least trying to get better at note taking and such.
+
+*** Note taking
+**** Org Roam
+I need to look more carefully at ~org-roam~ and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
+
+#+begin_src emacs-lisp
+  (defvar org-roam-directory
+    (file-truename (expand-file-name "~/Documents/RoamNotes/")))
+  (defvar +org-roam-templates-dir
+    (expand-file-name "Templates/" org-roam-directory))
+  (defun +org-roam-template (filename)
+    (expand-file-name filename +org-roam-templates-dir))
+  (defvar +or-filename-template "%<%Y%m%d%H%M%S>-%{slug}.org")
+  (defvar +or-file-head-template "#+title: ${title}\n#+filetags: :${filetags}:\n\n")
+
+  (use-package org-roam
+    :custom
+    (org-use-speed-commands t)
+    (org-roam-completion-everywhere t)
+    (org-roam-database-connector 'sqlite)
+    (org-roam-capture-templates
+     `(("d" "Default" plain
+        "%?"
+        :if-new (file+head ,+or-filename-template ,+or-file-head-template)
+        :unnarrowed t)
+       ("b" "Book Notes" plain
+        (file ,(+org-roam-template "BookNotesTemplate.org"))
+        :if-new (file+head ,+or-filename-template ,+or-file-head-template)
+        :unnarrowed t)
+       ("p" "Podcast" plain
+        (file ,(+org-roam-template "PodcastTemplate.org"))
+        :if-new (file+head ,+or-filename-template ,+or-file-head-template)
+        :unnarrowed t)
+       ("f" "RSSFeed" plain
+        (file ,(+org-roam-template "RSSFeedTemplate.org"))
+        :if-new (file+head ,+or-filename-template ,+or-file-head-template)
+        :unnarrowed t)))
+    (org-roam-node-display-template
+     (concat "${title}:* "
+             (propertize "${tags:10}" 'face 'org-tag)))
+
+    :init
+    (setq org-roam-v2-ack t)
+    (defvar pdc-notes-map (make-sparse-keymap))
+    (keymap-global-set "M-m n" '("notes" . pdc-notes-map))
+    :bind
+    (:map
+     pdc-notes-map
+     ("l" . org-roam-buffer-toggle)
+     ("f" . org-roam-node-find)
+     ("g" . org-roam-graph)
+     ("i" . org-roam-node-insert)
+     ("c" . org-roam-capture)
+     ("j" . org-roam-dailies-capture-today)))
 #+end_src
 
 ** Load extra configuration and customizations
