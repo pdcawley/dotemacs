@@ -1463,6 +1463,7 @@ The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've
     (:map corfu-map
           ("M-SPC"      . corfu-insert-separator)
           ("RET"        . corfu-insert)
+          ("M-RET"      . newline-and-indent)
           ("S-<return>" . corfu-insert)
           ("M-m"        . +corfu-move-to-minibuffer)
           ("TAB"        . +pdc/corfu-complete-common-or-next)
