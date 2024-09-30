@@ -1956,6 +1956,15 @@ Apparently ~valign~ is great. Let's give it a go.
     :if (display-graphic-p)
     :hook org-mode)
 #+end_src
+***** Manage inline element markers
+When the point isn't actually inside a pair of inline markers, I don't want to see them, I just want to see the effect. But when I'm editing text that's within them, I definitely want to see the bounds. Enter ~org-appear~
+
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :after org
+    :hook org-mode)
+
+#+end_src
 **** Org babel
 The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
 
