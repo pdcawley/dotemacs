@@ -1911,16 +1911,13 @@ In a gui environment, ~org-modern~ looks great.
 #+begin_src emacs-lisp
   (use-package org-modern
     :after org
-    ;;    :if (display-graphic-p)
+    :if (display-graphic-p)
     :straight
     (:host github :repo "minad/org-modern")
     :hook
     (org-mode        . global-org-modern-mode))
 
 #+end_src
-
-#+results:
-| global-org-modern-mode | org-auto-tangle-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | org-bullets-mode | corg-setup | visual-line-mode | visual-fill-column-mode | smartparens-mode |
 
 ***** Better bullets
 Asterisks are boring.
