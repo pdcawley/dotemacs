@@ -31,7 +31,7 @@ And, in the "nice to have" department:
 ** Noweb
 Part of the point of literate programming is to let you present code 'out of sequence', so, for instance, one might have all the config relating to a given programming language in one place in this file, but the associated code might be tangled into, say, your ~org-mode~ configuration. We do this with noweb. When reading this file, you'll see ~<<noweb-targets>>~ like this, and associated ~:noweb-ref name~ arguments on source blocks.
 
-** TODO Porting from legacy to Literate [2/4]
+** TODO Porting from legacy to Literate [3/4]
 
 - [X] Move ~early-init.el~ to a src block
   - [X] Initial import
@@ -39,11 +39,17 @@ Part of the point of literate programming is to let you present code 'out of seq
 - [X] Move ~init.el~ to a src block
   - [X] Initial import
   - [X] Make more literate
-- [-] Move ~config.el~ to src block
+- [X] Move ~config.el~ to src block
   - [X] Initial import
-  - [ ] Break into sections
-  - [ ] Merge with init.el
-- [ ] Move ~modules/~ into src blocks and make literate
+  - [X] Break into sections
+  - [X] Merge with init.el
+- [-] Move ~modules/~ into src blocks and make literate
+  - [ ] ~pdcmacs-feeds.el~
+  - [X] ~pdcmacs-org.el~
+  - [ ] ~pdcmacs-global-bindings.el~
+  - [ ] ~pdcmacs-hugo-support.el~
+  - [ ] ~pdcmacs-webservice.el~
+
 
 * Initial Setup
 
@@ -825,6 +831,29 @@ I'm not sure what it does, but apparently it makes recognising names easier. So,
 #+end_src
 
 *** Buffer management
+
+**** Casual ibuffer mode
+The various ~casual-*~ modules are great, so let's try the ibuffer one.
+
+#+begin_src emacs-lisp
+  (use-feature ibuffer
+    :hook (ibuffer-mode . ibuffer-auto-mode))
+
+  (use-package casual-ibuffer
+    :bind (:map
+           ibuffer-mode-map
+           ("C-o" . casual-ibuffer-tmenu)
+           ("F" . casual-ibuffer-filter-tmenu)
+           ("s" . casual-ibuffer-sortby-tmenu)
+           ("<double-mouse-1>" . ibuffer-visit-buffer)
+           ("M-<double-mouse-1>" . ibuffer-visit-buffer-other-window)
+           ("{" . ibuffer-backwards-next-marked)
+           ("}" . ibuffer-forwards-next-marked)
+           ("[" . ibuffer-backward-filter-group)
+           ("]" . ibuffer-forward-filter-group)
+           ("$" . ibuffer-toggle-filter-group))
+    :after (ibuffer))
+#+end_src
 
 **** Quick navigation in the mini-buffer
 #+begin_src emacs-lisp
@@ -2046,7 +2075,7 @@ It's really handy to automatically tangle on save for some stuff. Especially thi
 
 **** Exporters
 Sometimes, your victim can't make use of ~org-mode~, so we make use of the ~ox~ system.
-***** Export to markdown
+***** Export to Github flavoured markdown
 #+begin_src emacs-lisp
   (use-package ox-gfm
     :commands (org-gfm-export-as-markdown org-gfm-export-to-markdown)
