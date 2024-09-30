@@ -832,6 +832,29 @@ I'm not sure what it does, but apparently it makes recognising names easier. So,
 
 *** Buffer management
 
+**** Casual ibuffer mode
+The various ~casual-*~ modules are great, so let's try the ibuffer one.
+
+#+begin_src emacs-lisp
+  (use-feature ibuffer
+    :hook (ibuffer-mode . ibuffer-auto-mode))
+
+  (use-package casual-ibuffer
+    :bind (:map
+           ibuffer-mode-map
+           ("C-o" . casual-ibuffer-tmenu)
+           ("F" . casual-ibuffer-filter-tmenu)
+           ("s" . casual-ibuffer-sortby-tmenu)
+           ("<double-mouse-1>" . ibuffer-visit-buffer)
+           ("M-<double-mouse-1>" . ibuffer-visit-buffer-other-window)
+           ("{" . ibuffer-backwards-next-marked)
+           ("}" . ibuffer-forwards-next-marked)
+           ("[" . ibuffer-backward-filter-group)
+           ("]" . ibuffer-forward-filter-group)
+           ("$" . ibuffer-toggle-filter-group))
+    :after (ibuffer))
+#+end_src
+
 **** Quick navigation in the mini-buffer
 #+begin_src emacs-lisp
   (use-package consult-dir
