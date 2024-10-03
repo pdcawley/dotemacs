@@ -911,29 +911,42 @@ Using the built in ~view-mode~ works like a char, it converts buffers to view on
     :preface
     (defun pdc/view-mode-hook ()
       (cond ((derived-mode-p 'org-mode)
-             (define-key view-mode-map (kbd "p") 'org-previous-visible-heading)
-             (define-key view-mode-map (kbd "n") 'org-next-visible-heading))
+             (bind-keys :map view-mode-map
+                        ("p" . org-previous-visible-heading)
+                        ("n" . org-next-visible-heading)))
             ((derived-mode-p 'markdown-mode)
-             (define-key view-mode-map (kbd "p") 'markdown-outline-previous)
-             (define-key view-mode-map (kbd "n") 'markdown-outline-next))
+             (bind-keys :map view-mode-map
+                        ("p" . markdown-outline-previous)
+                        ("n" . markdown-outline-next)))
             ((derived-mode-p 'html-mode)
-             (define-key view-mode-map (kbd "p") 'sgml-skip-tag-backward)
-             (define-key view-mode-map (kbd "n") 'sgml-skip-tag-forward))
+             (bind-keys :map view-mode-map
+                        ("p" . sgml-skip-tag-backward)
+                        ("n" . sgml-skip-tag-forward)))
             ((derived-mode-p 'python-mode)
-             (define-key view-mode-map (kbd "p") 'python-nav-backward-block)
-             (define-key view-mode-map (kbd "n") 'python-nav-forward-block))
+             (bind-keys :map view-mode-map
+                        ("p" . python-nav-backward-block)
+                        ("n" . python-nav-forward-block)))
             ((derived-mode-p 'emacs-lisp-mode)
-             (define-key view-mode-map (kbd "p") 'backward-sexp)
-             (define-key view-mode-map (kbd "n") 'forward-sexp))
+             (bind-keys :map view-mode-map
+                        ("p" . backward-sexp)
+                        ("n" . forward-sexp)))
             ((derived-mode-p 'makefile-mode)
-             (define-key view-mode-map (kbd "p") 'makefile-previous-dependency)
-             (define-key view-mode-map (kbd "n") 'makefile-next-dependency))
+             (bind-keys :map view-mode-map
+                        ("p" . makefile-previous-dependency)
+                        ("n" . makefile-next-dependency)))
             ((derived-mode-p 'c-mode)
-             (define-key view-mode-map (kbd "p") 'c-beginning-of-defun)
-             (define-key view-mode-map (kbd "n") 'c-end-of-defun))
+             (bind-keys :map view-mode-map
+                        ("p" . c-beginning-of-defun)
+                        ("n" . c-end-of-defun)))
+
+            ((derived-mode-p 'prog-mode)
+             (bind-keys :map view-mode-map
+                        ("p" . backward-sexp)
+                        ("n" . forward-sexp)))
             (t
-             (define-key view-mode-map (kbd "p") 'scroll-down-command)
-             (define-key view-mode-map (kbd "n") 'scroll-up-command)))))
+             (bind-keys :map view-mode-map
+                        ("p" . scroll-down-command)
+                        ("n" . scroll-up-comulmmand))))))
 
 #+end_src
 
