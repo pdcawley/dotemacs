@@ -1033,6 +1033,15 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
 
 #+end_src
 
+
+*** Jumping with avy
+
+#+begin_src emacs-lisp
+  (use-package casual-avy
+    :bind ("M-m j A" . casual-avy-tmenu))
+
+#+end_src
+
 ** File handling
 
 *** Autorevert
