@@ -1112,6 +1112,10 @@ Pulse the current line on demand, and after certain commands.
            (outline-on-heading-p))
       (outline-show-entry))))
 
+  (defun pdc-recenter ()
+    (recenter-top-bottom 2))
+
+
   (dolist (command '(scroll-up-command
                      scroll-down-command
                      recenter-top-bottom
@@ -1122,13 +1126,14 @@ Pulse the current line on demand, and after certain commands.
    ("C-c h p" . pulse-line-command))
 
   (add-hook 'minibuffer-setup-hook #'pulse-line)
-  (add-hook 'consult-after-jump-hook (lambda ()
-                                       (recenter-top-bottom 0)))
+  (add-hook 'consult-after-jump-hook #'pdc-recenter)
   (add-hook 'consult-after-jump-hook #'pdc-reveal-entry)
 
-  (add-hook 'imenu-after-jump-hook (lambda ()
-                                     (recenter-top-bottom 0)))
+  (add-hook 'imenu-after-jump-hook #'pdc-recenter)
   (add-hook 'imenu-after-jump-hook #'pdc-reveal-entry)
+
+  (add-hook 'occur-mode-find-occurrence-hook #'pdc-recenter)
+  (add-hook 'occur-mode-find-occurrence-hook #'pulse-line)
 #+end_src
 
 Some modes are less confusing if the current line is /always/ highlighted though.
