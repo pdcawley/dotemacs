@@ -2721,6 +2721,90 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
      ("l" . consult-org-roam-forward-links)
      ("r" . consult-org-roam-search)))
 #+end_src
+**** TODO Agenda, scheduling etc with org
+
+
+Yeah, I'm really going to get on top of this. Still, let's borrow some setup from https://forgemacs.bharathpalavalli.com/
+***** Set up todo sequences, common keywords, etc
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle nil :noweb-ref org-custom
+:END:
+
+****** Todo sequences
+The fun game of setting up a task status sequence that is simple and expressive enough.
+
+#+begin_src emacs-lisp
+  (org-todo-keywords
+   '((sequence "TODO(t)"
+               "STARTED(s!)"
+               "WAITING(w@/!)"
+               "SOMEDAY(.)" "BLOCKED(k@/!)" "|" "CANCELLED(c!)" "DONE(d!)")
+     (sequence "RESEARCH(r)" "|" "BLOGGED(q!)" "BOOKMARKED(b!)" "ZETTLED(z!)" "COMPLETE(x!)")
+     (sequence "TOLEARN(-)" "LEARNING(l!)" "|" "KNOWN(n)")))
+
+#+end_src
+
+****** Common org tags and hotkeys
+
+#+begin_src emacs-lisp
+  (org-tag-alist '(("games" . ?g)
+                   ("songs" . ?s)
+                   ("writing" . ?w)
+                   ("code" . ?c)))
+#+end_src
+
+****** Other agenda config stuff
+
+#+begin_src emacs-lisp
+  (org-log-done 'time)
+  (org-enforce-todo-dependencies t)
+  (org-track-ordered-property-with-tag t)
+
+  (org-agenda-dim-blocked-tasks t)
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-currennt-time-string "")
+  (org-agenda-time-grid '((daily) () "" ""))
+  (org-agenda-hide-tags-regexp ".*")
+  (org-agenda-block-separator nil)
+  (org-agenda-compact-blocks t)
+
+  (org-agenda-prefix-format
+   '((agenda . "  %?-2i %t ")
+     (todo   . " %i %-12:c")
+     (tags   . " %i %-12:c")
+     (search . " %i %-12:c")))
+
+#+end_src
+
+
+**** Org-ql and Super agenda
+Not sure if I actually need this, but again, I'm lifting code to get started.
+
+#+begin_src emacs-lisp
+  (use-package org-ql)
+
+  (use-package org-super-agenda
+    :hook emacs-startup
+    :custom
+    (org-super-agenda-groups
+     '((:name " TODAY"
+              :deadline today
+              :date today
+              :scheduled today
+              :order 1
+              :face 'warning)
+       (:name " Upcoming Deadlines"
+              :deadline future
+              :order 2))))
+
+  (use-package casual-agenda
+    :bind (:map
+           org-agenda-mode-map
+           ("C-o" . casual-agenda-tmenu))
+    :after org-agenda)
+
+
+#+end_src
 
 ** Load extra configuration and customizations
 
