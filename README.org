@@ -213,6 +213,9 @@ And setup some support variables relating to the structure of our config directo
   (defvar pdcmacs-config-file (expand-file-name "config.el"  user-emacs-directory)
     "Our post-init config file.")
 
+  (defvar pdc/org-config-file (expand-file-name "README.org" user-emacs-directory)
+    "Literate source of config truth")
+
   (defvar pdcmacs-init-file (expand-file-name "init.el" user-emacs-directory))
 
   (defvar pdcmacs-etc-directory (expand-file-name "etc/" user-emacs-directory)
@@ -1235,6 +1238,34 @@ I'm experimenting with ~mc/mark-more-like-this-extended~ and other ~mark-more~ s
              (fn (alist-get mode (alist-get direction +mc--marking-functions))))
         (funcall fn 1)))
 
+    (defun +mc/mark-more-quit-label ()
+      (if +mc/marking-direction "quit marking" "quit"))
+
+    (transient-define-suffix +mc/mark-more-quit ()
+      :transient nil
+      :key "C-g"
+      :description "quit"
+      (interactive)
+      (message "Quitting")
+      (deactivate-mark)
+      (mc/disable-multiple-cursors-mode)
+      (setq +mc/marking-direction nil)
+      (transient-quit-all))
+
+    (transient-define-suffix +mc/mark-more-finish ()
+      :transient nil
+      :key "RET"
+      :description "finish marking"
+
+      (interactive)
+      (setq +mc/marking-direction nil))
+
+
+    (defun +mc/mark-more-finish-fn ()
+      (interactive)
+      (setq +mc/marking-direction nil))
+
+
     (transient-define-prefix mc/mark-more-tmenu ()
       :incompatible '(("--mode=word" "--mode=symbol" "--mode=line" "--mode=region"))
       ["Incremental"
@@ -1246,21 +1277,30 @@ I'm experimenting with ~mc/mark-more-like-this-extended~ and other ~mark-more~ s
        ["Mark"
         ("n" "next" +mc/transient-marking--down :transient t)
         ("p" "prev" +mc/transient-marking--up :transient t)
+        (">" "next" +mc/transient-marking--down :transient t)
+        ("<" "prev" +mc/transient-marking--up :transient t)
         ("{" (lambda () (if (eq +mc/marking-direction 'up) "skip" "remove"))
          +mc/transient-marking--left :transient t)
         ("}" (lambda () (if (eq +mc/marking-direction 'up) "remove" "skip"))
          +mc/transient-marking--right :transient t)]]
 
       ["Done"
-       ("S" "show arguments" tsc-suffix-print-args :transient t)
-       ("RET" "finish" (lambda () (interactive)
-                         (setq +mc/marking-direction nil)))]
+       ("S" "show arguments" tsc-suffix-print-args :transient t)]
+
+      [:class transient-row
+              (+mc/mark-more-quit)
+              ;; ("RET" "finish" +mc/mark-more-finish-fn)
+              (+mc/mark-more-finish)
+              ;; ("RET" "finish" (lambda ()
+              ;;                   (interactive)
+              ;;                   (setq +mc/marking-direction nil)))
+              ]
+
 
       (interactive)
       (setq +mc/marking-direction nil)
       (transient-setup
        'mc/mark-more-tmenu nil nil
-
        :value (list (format "--mode=%s" (+mc--default-marking-mode)))))
 
     (defvar +mc/marking-direction nil)
@@ -1288,17 +1328,12 @@ I'm experimenting with ~mc/mark-more-like-this-extended~ and other ~mark-more~ s
           (mc/unmark-previous-like-this)
         (mc/skip-to-next-like-this)))
 
-
-
+    :config
     (dolist (cmd '(+mc/transient-marking--right
                    +mc/transient-marking--left
                    +mc/transient-marking--down
                    +mc/transient-marking--up))
-      (add-to-list 'mc/cmds-to-run-once cmd))
-
-    )
-
-
+      (add-to-list 'mc/cmds-to-run-once cmd)))
 #+end_src
 
 *** Fill/unfill long lines

@@ -80,7 +80,7 @@
 
 (defun pdc/find-emacs-config ()
   (interactive)
-  (find-file pdcmacs-config-file))
+  (find-file pdc/org-config-file))
 
 (defun pdc/dired-emacs-config-d ()
   (interactive)
@@ -95,8 +95,7 @@
   "s" 'save-buffer
   "w" 'write-file
   "e" '(:ignore t :which-key "emacs")
-  "e i" '(pdc/find-emacs-init :wk "find init.el")
-  "e c" '(pdc/find-emacs-config :wk "find config.el")
+  "e c" '(pdc/find-emacs-config :wk "find README.org")
   "e d" '(pdc/dired-emacs-config-d :wk "find .emacs.d"))
 
 (defun pdc/dired-sites ()
