@@ -540,6 +540,9 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
 
 #+begin_src emacs-lisp
   (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
     :bind (("C-c C-d" . helpful-at-point)
            ([remap describe-command]  . helpful-command)
            ([remap describe-function] . helpful-callable)
