@@ -500,7 +500,7 @@ We'd like to see compile warnings promptly.
 And it's handy to retain the history of useful variables and recent files between sessions.
 
 #+begin_src emacs-lisp
-  (use-feature savehist-mode
+  (use-feature savehist
     :custom
     (savehist-save-minibuffer-history t "Save minibuffer history")
     (savehist-additional-variables '(kill-ring
