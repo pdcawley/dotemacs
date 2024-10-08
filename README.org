@@ -2626,14 +2626,15 @@ I'm not entirely convinced I'll use this, but it's probably worth at least tryin
 I need to look more carefully at ~org-roam~ and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
 
 #+begin_src emacs-lisp
-  (defvar org-roam-directory
-    (file-truename (expand-file-name "~/Documents/RoamNotes/")))
-  (defvar +org-roam-templates-dir
-    (expand-file-name "Templates/" org-roam-directory))
-  (defun +org-roam-template (filename)
-    (expand-file-name filename +org-roam-templates-dir))
-  (defvar +or-filename-template "%<%Y%m%d%H%M%S>-%{slug}.org")
-  (defvar +or-file-head-template "#+title: ${title}\n#+filetags: :${filetags}:\n\n")
+  (use-package f)
+
+  (use-package emacsql)
+
+  (use-package magit-section)
+
+  ;; Keymap for capturing notes -- shared by multiple packages
+  (defvar pdc-notes-map (make-sparse-keymap))
+
 
   (use-package org-roam
     :custom
@@ -2660,20 +2661,65 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
     (org-roam-node-display-template
      (concat "${title}:* "
              (propertize "${tags:10}" 'face 'org-tag)))
+    (org-roam-display-template (concat "${title:*} "
+                                       (propertize "${tags:10}" 'face 'org-tag)))
 
+    :hook (emacs-startup . org-roam-db-autosync-mode)
     :init
+    (defvar org-roam-directory
+      (file-truename (expand-file-name "~/Documents/RoamNotes/")))
+    (defvar +org-roam-templates-dir
+      (expand-file-name "Templates/" org-roam-directory))
+    (defun +org-roam-template (filename)
+      (expand-file-name filename +org-roam-templates-dir))
+    (defvar +or-filename-template "%<%Y%m%d%H%M%S>-%{slug}.org")
+    (defvar +or-file-head-template "#+title: ${title}\n#+filetags: :${filetags}:\n\n")
+
     (setq org-roam-v2-ack t)
-    (defvar pdc-notes-map (make-sparse-keymap))
-    (keymap-global-set "M-m n" '("notes" . pdc-notes-map))
+    :bind
+    (:prefix "M-m n"
+             :prefix-map pdc-notes-map
+             :prefix-docstring "notes"
+             ("l" . org-roam-buffer-toggle)
+             ("f" . org-roam-node-find)
+             ("g" . org-roam-graph)
+             ("i" . org-roam-node-insert)
+             ("c" . org-roam-capture)
+             ("j" . org-roam-dailies-capture-today))
+    :config
+    (require 'org-roam-protocol)
+    (org-roam-setup))
+
+  (use-package bibtex-completion)
+  (use-package org-ref
+    :after org bibtex)
+
+  (use-package org-roam-ui
+    :after org-roam
+    :custom
+    (org-roam-ui-sync-theme t)
+    (org-roam-ui-follow t)
+    (org-roam-ui-update-on-save t)
+    (org-roam-ui-open-on-start nil))
+
+  (use-package consult-org-roam
+    :after org-roam
+    :hook emacs-startup
+    :custom
+    (consult-org-roam-grep-func #'consult-ripgrep)
+    (consult-org-roam-buffer-narrow-key ?r)
+    (consult-org-roam-buffer-after-buffers t)
+    :config
+    (consult-customize
+     consult-org-roam-forward-links
+     :preview-key "M-.")
     :bind
     (:map
      pdc-notes-map
-     ("l" . org-roam-buffer-toggle)
-     ("f" . org-roam-node-find)
-     ("g" . org-roam-graph)
-     ("i" . org-roam-node-insert)
-     ("c" . org-roam-capture)
-     ("j" . org-roam-dailies-capture-today)))
+     ("e" . consult-org-roam-file-find)
+     ("b" . consult-org-roam-backlinks)
+     ("l" . consult-org-roam-forward-links)
+     ("r" . consult-org-roam-search)))
 #+end_src
 
 ** Load extra configuration and customizations
