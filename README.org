@@ -2864,7 +2864,12 @@ The fun game of setting up a task status sequence that is simple and expressive 
   (org-tag-alist '(("games" . ?g)
                    ("songs" . ?s)
                    ("writing" . ?w)
-                   ("code" . ?c)))
+                   ("coding" . ?c)
+                   ("learning" . ?a)
+                   ("reading" . ?r)
+                   ("computer" . ?l)
+                   ("errands" . ?e)))
+
 #+end_src
 
 ****** Other agenda config stuff
