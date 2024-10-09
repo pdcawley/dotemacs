@@ -2138,7 +2138,36 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
                                     (face-attribute face :inherit))))
     <<org-config>>)
 
-  (use-package org-contrib)
+  (use-package org-contrib
+    :after org
+    :custom
+    (org-modules '(ol-bbdb
+                   ol-bookmark
+                   ol-checklist
+                   ol-elisp-symbol
+                   ol-eshell
+                   ol-id
+                   ol-info
+                   ol-man
+                   org-annotate-file
+                   org-choose
+                   org-collector
+                   org-eval
+                   org-expiry
+                   org-interactive-query
+                   org-mac-iCal
+                   org-mac-link
+                   org-mouse
+                   org-notify
+                   org-panel
+                   org-protocol
+                   org-registry
+                   org-screen
+                   org-tempo
+                   org-toc
+                   orgtbl-sqlinsert))
+    :config
+    (org-load-modules-maybe))
   #+end_src
 **** Update appearances
 ***** Modernise things a little
