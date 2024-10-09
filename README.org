@@ -2872,6 +2872,26 @@ The fun game of setting up a task status sequence that is simple and expressive 
 
 #+end_src
 
+
+****** Let's experiment with time tracking
+******* Settings
+#+begin_src emacs-lisp
+  (org-expiry-inactive-timestamps t)
+  (org-clock-idle-time nil)
+  (org-log-done 'time)
+  (org-clock-autoclock-resolution nil)
+  (org-clock-continuously nil)
+  (org-clock-persist t)
+  (org-clock-in-switch-to-state "STARTED")
+  (org-clock-in-resume nil)
+  (org-show-notification-handler 'message)
+  (org-clock-report-include-clocking-task t)
+  (org-clock-into-drawer 1)
+#+end_src
+******* ... and make use of them
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (org-clock-persistence-insinuate)
+#+end_src
 ****** Other agenda config stuff
 
 #+begin_src emacs-lisp
