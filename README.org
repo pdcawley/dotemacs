@@ -2641,6 +2641,34 @@ I don't use Haskell much, but I do use it occasionally. I should work out how I 
   (use-package haskell-mode)
 #+end_src
 
+**** JavaBloodyScript
+There's no avoiding it, I fear, but there you go.
+#+begin_src emacs-lisp
+  (use-package js2-mode
+    :mode "\\.jsx?\\'"
+    :magic
+    ("#!/usr/bin/env node" . js2-mode)
+    ("#!/usr/bin/env bun" . js2-mode)
+    :custom
+    (js2-mode-show-strict-warnings nil)
+    (js-indent-level 2))
+
+#+end_src
+
+
+**** Web Mode
+The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not sure if it really works well, but again, one has to start somewhere.
+
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :mode "\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
+    :custom
+    (web-mode-code-indent-offset 2)
+    (web-mode-markup-indent-offset 2)
+    (web-mode-attribute-indent-offset 2))
+
+#+end_src
+
 ** Personal Knowledge Management
 I'm not entirely convinced I'll use this, but it's probably worth at least trying to get better at note taking and such.
 
