@@ -2179,6 +2179,16 @@ This stanza
     :custom
     (org-src-fontify-natively t)
     (org-babel-results-keyword "results")
+    (org-babel-default-header-args
+     '((:session . "none")
+       (:results . "drawer replace")
+       (:comments . "both")
+       (:exports . "code")
+       (:cache . "no")
+       (:eval . "never-export")
+       (:hlines . "no")
+       (:tangle . "no")))
+    (org-edit-src-auto-save-idle-delay 5)
     :config
     <<ob-config>>
     (org-babel-do-load-languages
