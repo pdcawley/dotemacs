@@ -2124,17 +2124,17 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
     (org-startup-with-inline-images (display-graphic-p))
     (org-image-actual-width '(300))
     (org-structure-template-alist
-     (append '(("c" . "center\n")
-               ("C" . "comment\n")
-               ("e" . "example\n")
-               ("q" . "quote\n")
-               ("E" . "export\n")
-               ("h" . "export html\n")
-               ("a" . "export ascii\n")
-               ("M" . "export markdown\n")
-               ("m" . "markdown\n")
+     (append '(("c" . "center")
+               ("C" . "comment")
+               ("e" . "example")
+               ("q" . "quote")
+               ("E" . "export")
+               ("h" . "export html")
+               ("a" . "export ascii")
+               ("M" . "export markdown")
+               ("m" . "markdown")
                ("s" . "src")
-               ("v" . "verse\n"))
+               ("v" . "verse"))
              '(
                <<org-structure-templates>>)))
     <<org-custom>>
@@ -2280,16 +2280,16 @@ This stanza
 Org structure templates are great, so let's add some more to make language specific ~#+begin_src~ blocks
 
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
-  ("el" . "src emacs-lisp\n")
-  ("ent" . "src emacs-lisp :tangle nil\n")
-  ("en>" . "src emacs-lisp :tangle nil :noweb-ref ")
-  ("pl" . "src perl\n")
-  ("p6" . "src raku\n")
-  ("sh" . "src sh\n")
-  ("md" . "src markdown\n")
-  ("rk" . "src racket\n")
-  ("hs" . "src haskell\n")
-  ("sql" . "src sql\n")
+  ("el" . "src emacs-lisp")
+  ("ent" . "src emacs-lisp :tangle nil")
+  ("en>" . "src emacs-lisp :tangle nil :noweb-ref")
+  ("pl" . "src perl")
+  ("p6" . "src raku")
+  ("sh" . "src sh")
+  ("md" . "src markdown")
+  ("rk" . "src racket")
+  ("hs" . "src haskell")
+  ("sql" . "src sql")
 #+end_src
 **** Rich paste
 Make it easier to paste code blocks in org mode with ~org-rich-yank~
