@@ -2094,6 +2094,8 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
         (require 'cl-lib)
         (cl-adjoin element list)))
 
+
+    <<org-init>>
     :custom
     (org-auto-align-tags nil)
     (org-tags-column 0)
