@@ -2070,14 +2070,21 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
           ("C-M-<return>"   . org-insert-subheading)
           ("C-c M-<return>" . org-insert-subheading)
           ("C-c M-RET"      . org-insert-subheading)
-          ("C-M-i"          . completion-at-point))
+          ("C-M-i"          . completion-at-point)
+          ("C-M-w"          . append-next-kill)
+          ("M-m , v"        . org-show-todo-tree)
+          ("M-m , r"        . org-refile)
+          ("M-m , R"        . org-reveal))
 
     :init
     (bind-keys :prefix "M-m o"
                :prefix-map pdc-org-prefix
                :prefix-docstring "org"
                ("c" . org-capture)
-               ("A" . org-agenda))
+               ("A" . org-agenda)
+               ("l" . org-store-link)
+               ("L" . org-insert-link-global)
+               ("O" . org-open-at-point-global))
 
     (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
       (let ((list (if (not (listp list-or-symbol))
