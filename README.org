@@ -2931,6 +2931,36 @@ The fun game of setting up a task status sequence that is simple and expressive 
 #+end_src
 
 
+
+****** Make it easier to mark a task as done from the agenda
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+    (defun pdc/org-agenda-done (&optional arg)
+      "Mark current TODO as done.
+
+  With a prefix argument, cancel the task"
+      (interactive "P")
+      (if arg
+          (org-agenda-todo "CANCELLED")
+        (org-agenda-todo "DONE")))
+    (with-eval-after-load 'org-agenda
+      (bind-key "x" 'pdc/org-agenda-done org-agenda-mode-map))
+#+end_src
+
+****** Make it easy to mark a task as done and create a followup task
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (defun pdc/org-agenda-mark-done-and-add-followup ()
+    "Mark the current TODO as done and add another task to it.
+         Creates it at the same level as the previous task, so it's better to use
+         this with to-do items than with projects or headings."
+    (interactive)
+    (org-agenda-todo "DONE")
+    (org-agenda-switch-to)
+    (org-capture 0 "t"))
+  (with-eval-after-load 'org-agenda
+    (bind-key "F" 'pdc/org-agenda-mark-done-and-add-followup org-agenda-mode-map))
+#+end_src
+
 ****** Let's experiment with time tracking
 ******* Settings
 #+begin_src emacs-lisp
