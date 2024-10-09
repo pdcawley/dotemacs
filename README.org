@@ -2093,7 +2093,10 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
                     list-or-symbol)))
         (require 'cl-lib)
         (cl-adjoin element list)))
+    (defvar org-directory "~/Documents/org")
 
+    (defvar pdc/org-inbox-file
+      (expand-file-name "inbox.org" org-directory))
 
     <<org-init>>
     :custom
