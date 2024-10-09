@@ -3108,7 +3108,6 @@ We're poaching this from Sacha again
   (org-log-done 'time)
   (org-agenda-window-setup 'current-window)
   (org-agenda-current-time-string "")
-  (org-agenda-time-grid '((daily) () "" ""))
   (org-agenda-hide-tags-regexp ".*")
   (org-agenda-block-separator nil)
   (org-agenda-compact-blocks t)
@@ -3122,10 +3121,6 @@ We're poaching this from Sacha again
   (org-agenda-skip-scheduled-if-done t)
   (org-agenda-skip-deadline-if-done t)
   (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
-  (org-agenda-time-grid
-   '((daily today require-timed)
-     (800 1000 1200 1400 1600 1800 2000)
-     "......" "----------------"))
   (org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
 
   (org-agenda-prefix-format
