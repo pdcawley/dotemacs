@@ -2892,16 +2892,18 @@ The fun game of setting up a task status sequence that is simple and expressive 
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-config
   (org-clock-persistence-insinuate)
 #+end_src
+****** Task dependencies
+#+begin_src emacs-lisp
+  (org-enforce-todo-dependencies t)
+  (org-track-ordered-property-with-tag t)
+  (org-agenda-dim-blocked-tasks t)
+#+end_src
 ****** Other agenda config stuff
 
 #+begin_src emacs-lisp
   (org-log-done 'time)
-  (org-enforce-todo-dependencies t)
-  (org-track-ordered-property-with-tag t)
-
-  (org-agenda-dim-blocked-tasks t)
   (org-agenda-window-setup 'current-window)
-  (org-agenda-currennt-time-string "")
+  (org-agenda-current-time-string "")
   (org-agenda-time-grid '((daily) () "" ""))
   (org-agenda-hide-tags-regexp ".*")
   (org-agenda-block-separator nil)
