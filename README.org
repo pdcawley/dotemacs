@@ -2899,6 +2899,122 @@ The fun game of setting up a task status sequence that is simple and expressive 
   (org-track-ordered-property-with-tag t)
   (org-agenda-dim-blocked-tasks t)
 #+end_src
+****** Splitting blocks
+It's often helpful to split an Org Mode block to add more commentary between them. This code is based on https://scripter.co/splitting-an-org-block-in-two/ by way of Sacha Chua's config.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (defun modi/org-split-block ()
+    "Sensibly split the current Org block at point"
+    (interactive)
+    (if (modi/org-in-any-block-p)
+        (save-match-data
+          (save-restriction
+            (widen)
+            (let ((case-fold-search t)
+                  (at-bol (bolp))
+                  block-start
+                  block-end)
+              (save-excursion
+                (re-search-backward "^\\(?1:[[:blank:]]*#\\+begin_.+?\\)\\(?: .*\\)*$" nil nil 1)
+                (setq block-start (match-string-no-properties 0))
+                (setq block-end (replace-regexp-in-string
+                                 "begin_" "end_"
+                                 (match-string-no-properties 1))))
+              (unless at-bol
+                (end-of-line 1))
+              (insert (concat (if at-bol "" "\n")
+                              block-end
+                              "\n\n"
+                              block-start
+                              (if at-bol "\n" "")))
+              (beginning-of-line (if at-bol -1 0)))))
+      (message "Point is not in an Org block")))
+  (defalias 'pdc/org-demarcate-block #'modi/org-split-block)
+  (defalias 'pdc/org-split-block #'modi/org-split-block)
+
+  (defun modi/org-in-any-block-p ()
+    "Return non-nil if the point is in any Org block
+
+  The Org block can by *any*: src, example, verse, etc., even any
+  Org Special block.
+
+  This function is heavily adapted from `org-between-regexps-p'."
+    (save-match-data
+      (let ((pos (point))
+            (case-fold-search t)
+            (block-begin-re "^[[:blank:]]*#\\+begin_\\(?1:.+?\\)\\(?: .*\\)*$")
+            (limit-up (save-excursion (outline-previous-heading)))
+            (limit-down (save-excursion (outline-next-heading)))
+            beg end)
+        (save-excursion
+          ;; Point is on a block when on BLOCK-BEGIN-RE or if
+          ;; BLOCK-BEGIN-RE can be found before it...
+          (and (or (org-in-regexp block-begin-re)
+                   (re-search-backward block-begin-re limit-up :noerror))
+               (setq beg (match-beginning 0))
+               ;; ... and BLOCK-END-RE after it...
+               (let ((block-end-re (concat "^[[:blank:]]*#\\+end_"
+                                           (regexp-quote (match-string-no-properties 1))
+                                           "\\( .*\\)*$")))
+                 (goto-char (match-end 0))
+                 (re-search-forward block-end-re limit-down :noerror))
+               (> (setq end (match-end 0)) pos)
+               ;; ... without another BLOCK-BEGIN-RE in-between.
+               (goto-char (match-beginning 0))
+               (not (re-search-backward block-begin-re (1+ beg) :noerror))
+               ;; Return value.
+               (cons beg end))))))
+#+end_src
+****** Org+Transient = LOVE
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle nil :noweb-ref org-config
+:END:
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'transient
+    (transient-define-prefix pdct/base-org-mode ()
+      ["Org Mode"
+       ("n" "Next" org-forward-heading-same-level :transient t)
+       ("p" "Previous" org-backward-heading-same-level :transient t)
+       ("a" "Archive" org-archive-subtree-default :transient t)
+       ("k" "Kill" org-cut-subtree :transient t)])
+    (transient-define-prefix pdct/org-link ()
+      [:class transient-row "Org Link"
+              ("RET" "Open" org-open-at-point :transient t)
+              ("e" "Edit" org-insert-link :transient t)
+              ("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+    (transient-define-prefix pdct/org-src ()
+      [ "Org Src"
+        [("e" "Exec" org-babel-execute-src-block :transient t)
+         ("i" "edIt" org-edit-special :transient t)
+         ("d" "Demarcate" org-babel-demarcate-block :transient t)
+         ("g" "Goto" org-babel-goto-named-src-block :transient t)]
+        [("r" "Result" org-babel-open-src-block-result :transient t)
+         ("x" "eXpand" org-babel-expand-src-block :transient t)
+         ("t" "Tangle at point" (lambda ()
+                                  (interactive)
+                                  (org-babel-tangle '(4))) :transient t)
+         ("T" "Tangle target file" (lambda ()
+                                     (interactive)
+                                     (org-babel-tangle '(16))) :transient t)]]
+      [("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+
+    (defun pdc/org-dwim ()
+      (interactive)
+      (if (derived-mode-p 'org-mode)
+          (let ((context (org-element-context)))
+            (cond
+             ((and (bolp) (looking-at org-outline-regexp))
+              ;; We don't do anything in this 'speed commands' context. Yet.
+              (pdct/base-org-mode))
+             ((org-in-src-block-p) (pdct/org-src))
+             ((eq (org-element-type context) 'link) (pdct/org-link))
+             (t (pdct/base-org-mode))))))
+
+    (keymap-set org-mode-map "M-m , ," #'pdc/org-dwim))
+#+end_src
+
+We're poaching this from Sacha again
 ****** Other agenda config stuff
 
 #+begin_src emacs-lisp
