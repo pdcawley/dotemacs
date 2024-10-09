@@ -2064,6 +2064,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 
 #+begin_src emacs-lisp :noweb yes
   (use-package org
+    :mode ("\\.txt$" . org-mode)
     :bind-keymap
     :bind
     (:map org-mode-map
