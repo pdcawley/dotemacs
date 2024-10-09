@@ -1472,6 +1472,23 @@ The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix 
   (use-package writegood-mode
     :diminish
     :bind ("M-m W" . writegood-mode)
+    :custom
+    (writegood-weasel-words
+     '("one of the"
+       "should"
+       "just"
+       "sort of"
+       "a lot"
+       "probably"
+       "maybe"
+       "perhaps"
+       "I think"
+       "really"
+       "pretty"
+       "nice"
+       "action"
+       "utilize"
+       "leverage"))
     :hook
     (text-mode . writegood-mode)
     ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
