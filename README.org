@@ -113,18 +113,18 @@ We use straight and configure it a little later.
 Increasing the GC thresholds and turning off file name handlers during startup makes things a fair bit faster, so we do that. The 'proper' values will be restored by our ~after-init-hook~.
 
 #+begin_src emacs-lisp
-  (let ((initial-gc-cons-threshold gc-cons-threshold)
-        (initial-gc-cons-percentage gc-cons-percentage)
-        (initial-file-name-handler-alist file-name-handler-alist))
-    (setq gc-cons-threshold most-positive-fixnum
-          gc-cons-percentage 0.6)
+(defvar initial-gc-cons-threshold gc-cons-threshold)
+(defvar initial-gc-cons-percentage gc-cons-percentage)
+(defvar initial-file-name-handler-alist file-name-handler-alist)
 
-    (add-hook 'after-init-hook
-              (lambda ()
-                (setq gc-cons-threshold initial-gc-cons-threshold
-                      gc-cons-percentage initial-gc-cons-percentage
-                      file-name-handler-alist initial-file-name-handler-alist))))
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6)
 
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold initial-gc-cons-threshold
+                  gc-cons-percentage initial-gc-cons-percentage
+                  file-name-handler-alist initial-file-name-handler-alist)))
 #+end_src
 
 ** Set up native compilation as we like it.
