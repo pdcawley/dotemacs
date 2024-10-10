@@ -2522,8 +2522,8 @@ It's often helpful to split an Org Mode block to add more commentary between the
                               (if at-bol "\n" "")))
               (beginning-of-line (if at-bol -1 0)))))
       (message "Point is not in an Org block")))
-  (defalias 'pdc/org-demarcate-block #'modi/org-split-block)
-  (defalias 'pdc/org-split-block #'modi/org-split-block)
+  (defalias '+org-demarcate-block #'modi/org-split-block)
+  (defalias '+org-split-block #'modi/org-split-block)
 
   (defun modi/org-in-any-block-p ()
     "Return non-nil if the point is in any Org block
@@ -2581,7 +2581,8 @@ It's often helpful to split an Org Mode block to add more commentary between the
         [("e" "Exec" org-babel-execute-src-block :transient t)
          ("i" "edIt" org-edit-special :transient t)
          ("d" "Demarcate" org-babel-demarcate-block :transient t)
-         ("g" "Goto" org-babel-goto-named-src-block :transient t)]
+         ("g" "Goto" org-babel-goto-named-src-block :transient t)
+         ("/" "Split" +org-split-block :transient nil)]
         [("r" "Result" org-babel-open-src-block-result :transient t)
          ("x" "eXpand" org-babel-expand-src-block :transient t)
          ("t" "Tangle at point" (lambda ()
