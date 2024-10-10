@@ -2282,7 +2282,7 @@ Org structure templates are great, so let's add some more to make language speci
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
   ("el" . "src emacs-lisp")
   ("ent" . "src emacs-lisp :tangle nil")
-  ("en>" . "src emacs-lisp :tangle nil :noweb-ref")
+  ("ett" . "src emacs-lisp :tangle nil :noweb-ref")
   ("pl" . "src perl")
   ("p6" . "src raku")
   ("sh" . "src sh")
