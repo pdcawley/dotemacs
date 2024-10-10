@@ -2364,6 +2364,28 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
           :unnarrowed t))
        org-capture-templates))))
 #+end_src
+**** Refiling stuff
+~org-refile~ lets you organise notes by typing in the headline to file them under.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
+  (org-reverse-note-order t)
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-refile-use-cache nil)
+  (org-refile-blank-before-new-entry nil)
+  (org-refile-targets
+   `((,(+org-file-paths
+        "organiser.org"
+        "routines.org"
+        "reference.org"
+        "decisions.org"
+        "posts.org"
+        "easterley.org"
+        "inbox.org"
+        "songs.org")
+      . (:maxlevel . 5))))
+#+end_src
 **** Corg
 Add completion at point support to org with ~corg~
 
@@ -2373,6 +2395,303 @@ Add completion at point support to org with ~corg~
     :straight (:host github :repo "isamert/corg.el"))
 #+end_src
 
+**** TODO Agenda, scheduling etc with org
+
+
+Yeah, I'm really going to get on top of this. Still, let's borrow some setup from https://forgemacs.bharathpalavalli.com/
+***** Set up todo sequences, common keywords, etc
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle nil :noweb-ref org-custom
+:END:
+
+****** Todo sequences
+The fun game of setting up a task status sequence that is simple and expressive enough.
+
+#+begin_src emacs-lisp
+  (org-todo-keywords
+   '((sequence "TODO(t)"
+               "STARTED(s!)"
+               "WAITING(w@/!)"
+               "SOMEDAY(.)" "BLOCKED(k@/!)" "|" "CANCELLED(c!)" "DONE(d!)")
+     (sequence "RESEARCH(r)" "|" "BLOGGED(q!)" "BOOKMARKED(b!)" "ZETTLED(z!)" "COMPLETE(x!)")
+     (sequence "TOLEARN(-)" "LEARNING(l!)" "|" "KNOWN(n)")))
+
+#+end_src
+
+****** Common org tags and hotkeys
+
+#+begin_src emacs-lisp
+  (org-tag-alist '(("games" . ?g)
+                   ("songs" . ?s)
+                   ("writing" . ?w)
+                   ("coding" . ?c)
+                   ("learning" . ?a)
+                   ("reading" . ?r)
+                   ("computer" . ?l)
+                   ("errands" . ?e)))
+
+#+end_src
+
+
+
+****** Make it easier to mark a task as done from the agenda
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+    (defun pdc/org-agenda-done (&optional arg)
+      "Mark current TODO as done.
+
+  With a prefix argument, cancel the task"
+      (interactive "P")
+      (if arg
+          (org-agenda-todo "CANCELLED")
+        (org-agenda-todo "DONE")))
+    (with-eval-after-load 'org-agenda
+      (bind-key "x" 'pdc/org-agenda-done org-agenda-mode-map))
+#+end_src
+
+****** Make it easy to mark a task as done and create a followup task
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (defun pdc/org-agenda-mark-done-and-add-followup ()
+    "Mark the current TODO as done and add another task to it.
+         Creates it at the same level as the previous task, so it's better to use
+         this with to-do items than with projects or headings."
+    (interactive)
+    (org-agenda-todo "DONE")
+    (org-agenda-switch-to)
+    (org-capture 0 "t"))
+  (with-eval-after-load 'org-agenda
+    (bind-key "F" 'pdc/org-agenda-mark-done-and-add-followup org-agenda-mode-map))
+#+end_src
+
+****** Let's experiment with time tracking
+******* Settings
+#+begin_src emacs-lisp
+  (org-expiry-inactive-timestamps t)
+  (org-clock-idle-time nil)
+  (org-log-done 'time)
+  (org-clock-autoclock-resolution nil)
+  (org-clock-continuously nil)
+  (org-clock-persist t)
+  (org-clock-in-switch-to-state "STARTED")
+  (org-clock-in-resume nil)
+  (org-show-notification-handler 'message)
+  (org-clock-report-include-clocking-task t)
+  (org-clock-into-drawer 1)
+#+end_src
+******* ... and make use of them
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (org-clock-persistence-insinuate)
+#+end_src
+****** Task dependencies
+#+begin_src emacs-lisp
+  (org-enforce-todo-dependencies t)
+  (org-track-ordered-property-with-tag t)
+  (org-agenda-dim-blocked-tasks t)
+#+end_src
+****** Splitting blocks
+It's often helpful to split an Org Mode block to add more commentary between them. This code is based on https://scripter.co/splitting-an-org-block-in-two/ by way of Sacha Chua's config.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+  (defun modi/org-split-block ()
+    "Sensibly split the current Org block at point"
+    (interactive)
+    (if (modi/org-in-any-block-p)
+        (save-match-data
+          (save-restriction
+            (widen)
+            (let ((case-fold-search t)
+                  (at-bol (bolp))
+                  block-start
+                  block-end)
+              (save-excursion
+                (re-search-backward "^\\(?1:[[:blank:]]*#\\+begin_.+?\\)\\(?: .*\\)*$" nil nil 1)
+                (setq block-start (match-string-no-properties 0))
+                (setq block-end (replace-regexp-in-string
+                                 "begin_" "end_"
+                                 (match-string-no-properties 1))))
+              (unless at-bol
+                (end-of-line 1))
+              (insert (concat (if at-bol "" "\n")
+                              block-end
+                              "\n\n"
+                              block-start
+                              (if at-bol "\n" "")))
+              (beginning-of-line (if at-bol -1 0)))))
+      (message "Point is not in an Org block")))
+  (defalias 'pdc/org-demarcate-block #'modi/org-split-block)
+  (defalias 'pdc/org-split-block #'modi/org-split-block)
+
+  (defun modi/org-in-any-block-p ()
+    "Return non-nil if the point is in any Org block
+
+  The Org block can by *any*: src, example, verse, etc., even any
+  Org Special block.
+
+  This function is heavily adapted from `org-between-regexps-p'."
+    (save-match-data
+      (let ((pos (point))
+            (case-fold-search t)
+            (block-begin-re "^[[:blank:]]*#\\+begin_\\(?1:.+?\\)\\(?: .*\\)*$")
+            (limit-up (save-excursion (outline-previous-heading)))
+            (limit-down (save-excursion (outline-next-heading)))
+            beg end)
+        (save-excursion
+          ;; Point is on a block when on BLOCK-BEGIN-RE or if
+          ;; BLOCK-BEGIN-RE can be found before it...
+          (and (or (org-in-regexp block-begin-re)
+                   (re-search-backward block-begin-re limit-up :noerror))
+               (setq beg (match-beginning 0))
+               ;; ... and BLOCK-END-RE after it...
+               (let ((block-end-re (concat "^[[:blank:]]*#\\+end_"
+                                           (regexp-quote (match-string-no-properties 1))
+                                           "\\( .*\\)*$")))
+                 (goto-char (match-end 0))
+                 (re-search-forward block-end-re limit-down :noerror))
+               (> (setq end (match-end 0)) pos)
+               ;; ... without another BLOCK-BEGIN-RE in-between.
+               (goto-char (match-beginning 0))
+               (not (re-search-backward block-begin-re (1+ beg) :noerror))
+               ;; Return value.
+               (cons beg end))))))
+#+end_src
+****** Org+Transient = LOVE
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle nil :noweb-ref org-config
+:END:
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'transient
+    (transient-define-prefix pdct/base-org-mode ()
+      ["Org Mode"
+       ("n" "Next" org-forward-heading-same-level :transient t)
+       ("p" "Previous" org-backward-heading-same-level :transient t)
+       ("a" "Archive" org-archive-subtree-default :transient t)
+       ("k" "Kill" org-cut-subtree :transient t)])
+    (transient-define-prefix pdct/org-link ()
+      [:class transient-row "Org Link"
+              ("RET" "Open" org-open-at-point :transient t)
+              ("e" "Edit" org-insert-link :transient t)
+              ("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+    (transient-define-prefix pdct/org-src ()
+      [ "Org Src"
+        [("e" "Exec" org-babel-execute-src-block :transient t)
+         ("i" "edIt" org-edit-special :transient t)
+         ("d" "Demarcate" org-babel-demarcate-block :transient t)
+         ("g" "Goto" org-babel-goto-named-src-block :transient t)]
+        [("r" "Result" org-babel-open-src-block-result :transient t)
+         ("x" "eXpand" org-babel-expand-src-block :transient t)
+         ("t" "Tangle at point" (lambda ()
+                                  (interactive)
+                                  (org-babel-tangle '(4))) :transient t)
+         ("T" "Tangle target file" (lambda ()
+                                     (interactive)
+                                     (org-babel-tangle '(16))) :transient t)]]
+      [("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+
+    (defun pdc/org-dwim ()
+      (interactive)
+      (if (derived-mode-p 'org-mode)
+          (let ((context (org-element-context)))
+            (cond
+             ((and (bolp) (looking-at org-outline-regexp))
+              ;; We don't do anything in this 'speed commands' context. Yet.
+              (pdct/base-org-mode))
+             ((org-in-src-block-p) (pdct/org-src))
+             ((eq (org-element-type context) 'link) (pdct/org-link))
+             (t (pdct/base-org-mode))))))
+
+    (keymap-set org-mode-map "M-m , ," #'pdc/org-dwim))
+#+end_src
+
+We're poaching this from Sacha again
+****** Other agenda config stuff
+
+#+begin_src emacs-lisp
+  (org-log-done 'time)
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-current-time-string "")
+  (org-agenda-hide-tags-regexp ".*")
+  (org-agenda-block-separator nil)
+  (org-agenda-compact-blocks t)
+
+  (org-agenda-span 2)
+  (org-agenda-tags-column -100)
+  (org-agenda-sticky nil)
+  (org-agenda-inhibit-startup t)
+  (org-agenda-use-tag-inheritance t)
+  (org-agenda-show-log t)
+  (org-agenda-skip-scheduled-if-done t)
+  (org-agenda-skip-deadline-if-done t)
+  (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
+  (org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
+
+  (org-complete-tags-always-offer-all-agenda-tags t)
+  (org-use-fast-tag-selection nil)
+
+  (org-agenda-prefix-format
+   '((agenda . "  %?-2i %t ")
+     (todo   . " %i %-12:c")
+     (tags   . " %i %-12:c")
+     (search . " %i %-12:c")))
+
+#+end_src
+**** Helper functions
+***** Finding .org files
+We want to be able to find ~foo.org~ in any of the directories where org files live and to create in ~org-directory~ otherwise. So we'll set up ~+org-extra-directories~ and write ~+org-file-path~ which will do that.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-init
+  (defvar +org-extra-directories '("~/Dropbox/MobileOrg"
+                                   "~/Documents/MobileOrg"))
+
+  (defun  +org-file-path (file)
+    "Expand FILE in the correct directory of org files.
+  If it exists in any of `+org-extra-directories', return that path,
+  otherwise return a path within `org-directory', whether the file exists or not."
+    (require 'dash)
+    (or (-first #'file-exists-p
+                (mapcar (lambda (d)
+                          (expand-file-name file d))
+                        (if (member org-directory +org-extra-directories)
+                            +org-extra-directories
+                          (cons org-directory +org-extra-directories))))
+        (expand-file-name file org-directory)))
+
+  (defun +org-file-paths (l-or-f &rest files)
+    "Expand files with `+org-file-path'."
+    (let ((all-files (if (listp l-or-f)
+                         (concat l-or-f (flatten-list files))
+                       (cons l-or-f (flatten-list files)))))
+      (mapcar #'+org-file-path all-files)))
+#+end_src
+
+**** Org-ql and Super agenda
+Not sure if I actually need this, but again, I'm lifting code to get started.
+
+#+begin_src emacs-lisp
+  (use-package org-ql)
+
+  (use-package org-super-agenda
+    :hook emacs-startup
+    :custom
+    (org-super-agenda-groups
+     '((:name " TODAY"
+              :deadline today
+              :date today
+              :scheduled today
+              :order 1
+              :face 'warning)
+       (:name " Upcoming Deadlines"
+              :deadline future
+              :order 2))))
+
+  (use-package casual-agenda
+    :bind (:map
+           org-agenda-mode-map
+           ("C-o" . casual-agenda-tmenu))
+    :after org-agenda)
+
+
+#+end_src
 
 **** Add auto tangle
 It's really handy to automatically tangle on save for some stuff. Especially this particular file :)
@@ -2893,274 +3212,6 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
      ("l" . consult-org-roam-forward-links)
      ("r" . consult-org-roam-search)))
 #+end_src
-**** TODO Agenda, scheduling etc with org
-
-
-Yeah, I'm really going to get on top of this. Still, let's borrow some setup from https://forgemacs.bharathpalavalli.com/
-***** Set up todo sequences, common keywords, etc
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle nil :noweb-ref org-custom
-:END:
-
-****** Todo sequences
-The fun game of setting up a task status sequence that is simple and expressive enough.
-
-#+begin_src emacs-lisp
-  (org-todo-keywords
-   '((sequence "TODO(t)"
-               "STARTED(s!)"
-               "WAITING(w@/!)"
-               "SOMEDAY(.)" "BLOCKED(k@/!)" "|" "CANCELLED(c!)" "DONE(d!)")
-     (sequence "RESEARCH(r)" "|" "BLOGGED(q!)" "BOOKMARKED(b!)" "ZETTLED(z!)" "COMPLETE(x!)")
-     (sequence "TOLEARN(-)" "LEARNING(l!)" "|" "KNOWN(n)")))
-
-#+end_src
-
-****** Common org tags and hotkeys
-
-#+begin_src emacs-lisp
-  (org-tag-alist '(("games" . ?g)
-                   ("songs" . ?s)
-                   ("writing" . ?w)
-                   ("coding" . ?c)
-                   ("learning" . ?a)
-                   ("reading" . ?r)
-                   ("computer" . ?l)
-                   ("errands" . ?e)))
-
-#+end_src
-
-
-
-****** Make it easier to mark a task as done from the agenda
-
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
-    (defun pdc/org-agenda-done (&optional arg)
-      "Mark current TODO as done.
-
-  With a prefix argument, cancel the task"
-      (interactive "P")
-      (if arg
-          (org-agenda-todo "CANCELLED")
-        (org-agenda-todo "DONE")))
-    (with-eval-after-load 'org-agenda
-      (bind-key "x" 'pdc/org-agenda-done org-agenda-mode-map))
-#+end_src
-
-****** Make it easy to mark a task as done and create a followup task
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
-  (defun pdc/org-agenda-mark-done-and-add-followup ()
-    "Mark the current TODO as done and add another task to it.
-         Creates it at the same level as the previous task, so it's better to use
-         this with to-do items than with projects or headings."
-    (interactive)
-    (org-agenda-todo "DONE")
-    (org-agenda-switch-to)
-    (org-capture 0 "t"))
-  (with-eval-after-load 'org-agenda
-    (bind-key "F" 'pdc/org-agenda-mark-done-and-add-followup org-agenda-mode-map))
-#+end_src
-
-****** Let's experiment with time tracking
-******* Settings
-#+begin_src emacs-lisp
-  (org-expiry-inactive-timestamps t)
-  (org-clock-idle-time nil)
-  (org-log-done 'time)
-  (org-clock-autoclock-resolution nil)
-  (org-clock-continuously nil)
-  (org-clock-persist t)
-  (org-clock-in-switch-to-state "STARTED")
-  (org-clock-in-resume nil)
-  (org-show-notification-handler 'message)
-  (org-clock-report-include-clocking-task t)
-  (org-clock-into-drawer 1)
-#+end_src
-******* ... and make use of them
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
-  (org-clock-persistence-insinuate)
-#+end_src
-****** Task dependencies
-#+begin_src emacs-lisp
-  (org-enforce-todo-dependencies t)
-  (org-track-ordered-property-with-tag t)
-  (org-agenda-dim-blocked-tasks t)
-#+end_src
-****** Splitting blocks
-It's often helpful to split an Org Mode block to add more commentary between them. This code is based on https://scripter.co/splitting-an-org-block-in-two/ by way of Sacha Chua's config.
-
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
-  (defun modi/org-split-block ()
-    "Sensibly split the current Org block at point"
-    (interactive)
-    (if (modi/org-in-any-block-p)
-        (save-match-data
-          (save-restriction
-            (widen)
-            (let ((case-fold-search t)
-                  (at-bol (bolp))
-                  block-start
-                  block-end)
-              (save-excursion
-                (re-search-backward "^\\(?1:[[:blank:]]*#\\+begin_.+?\\)\\(?: .*\\)*$" nil nil 1)
-                (setq block-start (match-string-no-properties 0))
-                (setq block-end (replace-regexp-in-string
-                                 "begin_" "end_"
-                                 (match-string-no-properties 1))))
-              (unless at-bol
-                (end-of-line 1))
-              (insert (concat (if at-bol "" "\n")
-                              block-end
-                              "\n\n"
-                              block-start
-                              (if at-bol "\n" "")))
-              (beginning-of-line (if at-bol -1 0)))))
-      (message "Point is not in an Org block")))
-  (defalias 'pdc/org-demarcate-block #'modi/org-split-block)
-  (defalias 'pdc/org-split-block #'modi/org-split-block)
-
-  (defun modi/org-in-any-block-p ()
-    "Return non-nil if the point is in any Org block
-
-  The Org block can by *any*: src, example, verse, etc., even any
-  Org Special block.
-
-  This function is heavily adapted from `org-between-regexps-p'."
-    (save-match-data
-      (let ((pos (point))
-            (case-fold-search t)
-            (block-begin-re "^[[:blank:]]*#\\+begin_\\(?1:.+?\\)\\(?: .*\\)*$")
-            (limit-up (save-excursion (outline-previous-heading)))
-            (limit-down (save-excursion (outline-next-heading)))
-            beg end)
-        (save-excursion
-          ;; Point is on a block when on BLOCK-BEGIN-RE or if
-          ;; BLOCK-BEGIN-RE can be found before it...
-          (and (or (org-in-regexp block-begin-re)
-                   (re-search-backward block-begin-re limit-up :noerror))
-               (setq beg (match-beginning 0))
-               ;; ... and BLOCK-END-RE after it...
-               (let ((block-end-re (concat "^[[:blank:]]*#\\+end_"
-                                           (regexp-quote (match-string-no-properties 1))
-                                           "\\( .*\\)*$")))
-                 (goto-char (match-end 0))
-                 (re-search-forward block-end-re limit-down :noerror))
-               (> (setq end (match-end 0)) pos)
-               ;; ... without another BLOCK-BEGIN-RE in-between.
-               (goto-char (match-beginning 0))
-               (not (re-search-backward block-begin-re (1+ beg) :noerror))
-               ;; Return value.
-               (cons beg end))))))
-#+end_src
-****** Org+Transient = LOVE
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle nil :noweb-ref org-config
-:END:
-
-#+begin_src emacs-lisp
-  (with-eval-after-load 'transient
-    (transient-define-prefix pdct/base-org-mode ()
-      ["Org Mode"
-       ("n" "Next" org-forward-heading-same-level :transient t)
-       ("p" "Previous" org-backward-heading-same-level :transient t)
-       ("a" "Archive" org-archive-subtree-default :transient t)
-       ("k" "Kill" org-cut-subtree :transient t)])
-    (transient-define-prefix pdct/org-link ()
-      [:class transient-row "Org Link"
-              ("RET" "Open" org-open-at-point :transient t)
-              ("e" "Edit" org-insert-link :transient t)
-              ("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
-    (transient-define-prefix pdct/org-src ()
-      [ "Org Src"
-        [("e" "Exec" org-babel-execute-src-block :transient t)
-         ("i" "edIt" org-edit-special :transient t)
-         ("d" "Demarcate" org-babel-demarcate-block :transient t)
-         ("g" "Goto" org-babel-goto-named-src-block :transient t)]
-        [("r" "Result" org-babel-open-src-block-result :transient t)
-         ("x" "eXpand" org-babel-expand-src-block :transient t)
-         ("t" "Tangle at point" (lambda ()
-                                  (interactive)
-                                  (org-babel-tangle '(4))) :transient t)
-         ("T" "Tangle target file" (lambda ()
-                                     (interactive)
-                                     (org-babel-tangle '(16))) :transient t)]]
-      [("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
-
-    (defun pdc/org-dwim ()
-      (interactive)
-      (if (derived-mode-p 'org-mode)
-          (let ((context (org-element-context)))
-            (cond
-             ((and (bolp) (looking-at org-outline-regexp))
-              ;; We don't do anything in this 'speed commands' context. Yet.
-              (pdct/base-org-mode))
-             ((org-in-src-block-p) (pdct/org-src))
-             ((eq (org-element-type context) 'link) (pdct/org-link))
-             (t (pdct/base-org-mode))))))
-
-    (keymap-set org-mode-map "M-m , ," #'pdc/org-dwim))
-#+end_src
-
-We're poaching this from Sacha again
-****** Other agenda config stuff
-
-#+begin_src emacs-lisp
-  (org-log-done 'time)
-  (org-agenda-window-setup 'current-window)
-  (org-agenda-current-time-string "")
-  (org-agenda-hide-tags-regexp ".*")
-  (org-agenda-block-separator nil)
-  (org-agenda-compact-blocks t)
-
-  (org-agenda-span 2)
-  (org-agenda-tags-column -100)
-  (org-agenda-sticky nil)
-  (org-agenda-inhibit-startup t)
-  (org-agenda-use-tag-inheritance t)
-  (org-agenda-show-log t)
-  (org-agenda-skip-scheduled-if-done t)
-  (org-agenda-skip-deadline-if-done t)
-  (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
-  (org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
-
-  (org-agenda-prefix-format
-   '((agenda . "  %?-2i %t ")
-     (todo   . " %i %-12:c")
-     (tags   . " %i %-12:c")
-     (search . " %i %-12:c")))
-
-#+end_src
-
-
-**** Org-ql and Super agenda
-Not sure if I actually need this, but again, I'm lifting code to get started.
-
-#+begin_src emacs-lisp
-  (use-package org-ql)
-
-  (use-package org-super-agenda
-    :hook emacs-startup
-    :custom
-    (org-super-agenda-groups
-     '((:name " TODAY"
-              :deadline today
-              :date today
-              :scheduled today
-              :order 1
-              :face 'warning)
-       (:name " Upcoming Deadlines"
-              :deadline future
-              :order 2))))
-
-  (use-package casual-agenda
-    :bind (:map
-           org-agenda-mode-map
-           ("C-o" . casual-agenda-tmenu))
-    :after org-agenda)
-
-
-#+end_src
-
 ** Load extra configuration and customizations
 
 The pre-literate version of this file separated initialization into ~init.el~ and ~config.el~ file, so we need to load ~config.el~ and then any customizations. However, eventually, the plan is to eliminate ~config.el~ entirely.
