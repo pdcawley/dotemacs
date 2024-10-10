@@ -2365,7 +2365,9 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
          ("j" "Journal entry" plain
           (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
           "%K - %a\n%i\n%?\n"
-          :unnarrowed t))
+          :unnarrowed t)
+       <<org-capture-templates>>
+       )
        org-capture-templates))))
 #+end_src
 **** Refiling stuff
@@ -2781,11 +2783,31 @@ Sometimes I want to drop an existing defun into an org mode source block. So I'm
 
 #+end_src
 **** Contacts
+Use =org-contacts= to manage our contacts
 #+begin_src emacs-lisp
   (use-package org-contacts
     :custom
     (org-contacts-file (+org-file-path "people.org")))
 #+end_src
+
+And add a capture template to help acquire them
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-capture-templates
+`("C" "Contacts" entry (file ,(+org-file-path "contacts.org"))
+    "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:PHONE:
+:ALIAS:
+:NICKNAME:
+:IGNORE:
+:ICON:
+:NOTE:
+:ADDRESS:
+:BIRTHDAY:
+:END:")
+#+end_src
+
 **** Org-ql and Super agenda
 Not sure if I actually need this, but again, I'm lifting code to get started.
 
