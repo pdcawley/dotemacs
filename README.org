@@ -2137,6 +2137,9 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
                ("v" . "verse"))
              '(
                <<org-structure-templates>>)))
+    (org-indent-indentation-per-level 2)
+    (org-edit-src-content-indentation 0)
+    (org-src-preserve-indentation t)
     <<org-custom>>
     :hook (org-mode . visual-line-mode)
     :config
