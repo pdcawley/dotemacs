@@ -2329,6 +2329,14 @@ Org structure templates are great, so let's add some more to make language speci
                                '((jq . t))))
 #+end_src
 
+***** Literate Programming stuff
+
+****** Editing source code
+I don't want to get distracted by the same code in the other window, so have org-src use the current window.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
+(org-src-window-setup 'current-window)
+#+end_src
 
 ****** Copying and sharing code
 
