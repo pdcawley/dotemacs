@@ -2711,6 +2711,73 @@ We want to be able to find ~foo.org~ in any of the directories where org files l
         (org-clock-in))))
 
 #+end_src
+***** Moving lines around
+Nicked from sachac's config again.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-init
+  (defun +org-move-line-to-destionation ()
+    "Moves the current list item to DESTINATION in the current buffer.
+  If no DESTINATIon is found, move it to the end of the list
+  and indent it one level."
+    (interactive)
+    (require 's)
+    (save-window-excursion
+      (save-excursion
+        (let ((string
+               (buffer-substring-no-properties
+                (line-beginning-position) (line-end-position)))
+              (case-fold-search nil)
+              found)
+          (delete-region (line-beginning-position)
+                         (1+ (line-end-position)))
+          (save-excursion
+            (goto-char (point-min))
+            (when (re-search-forward "DESTINATION" nil t)
+              (insert "\n" (make-string (- (match-beginning 0) (line-beginning-position)) ?\ ) (s-trim string))
+              (setq found t)))
+          (unless found
+            (org-end-of-item-list)
+            (insert string "\n"))))))
+  (defun +org-move-line-to-end-of-list ()
+    "Move the current list item to the end of the list."
+    (interactive)
+    (save-excursion
+      (let ((string (buffer-substring-no-properties (line-beginning-position)
+                                                    (line-end-position))))
+        (delete-region (line-beginning-position) (1+ (line-end-position)))
+        (org-end-of-item-list)
+        (insert string))))
+#+end_src
+***** Inserting code
+Sometimes I want to drop an existing defun into an org mode source block. So I'm nicking this from sachac to automate it.
+
+#+begin_src emacs-lisp
+  (defun +org-insert-defun (function)
+    "Inserts and Org source block with the definition for FUNCTION."
+    (interactive (find-function-read))
+    (let* ((buffer-point (condition-case nil (find-definition-noselect function nil) (error nil)))
+           (new-buf (car buffer-point))
+           (new-point (cdr buffer-point))
+           definition)
+      (if (and buffer-point new-point)
+          (with-current-buffer new-buf
+            (save-excursion
+              (goto-char new-point)
+              (setq definition (buffer-substring-no-properties (point)
+                                                               (save-excursion (end-of-defun) (point))))))
+        (setq definition (concat (prin1-to-string (symbol-function function)) "\n")))
+      (if (org-in-src-block-p)
+          (insert-definition)
+        (insert "#+begin_src emacs-lisp\n"
+                definition
+                "#+end_src\n"))))
+
+  (defun +org-insert-function-and-key (keys)
+    (interactive (list (caar (help--read-key-sequence))))
+    (insert (format "=%s= (=%s=" (symbol-name (key-binding keys t))
+                    (key-description keys))))
+
+#+end_src
 **** Contacts
 #+begin_src emacs-lisp
   (use-package org-contacts
