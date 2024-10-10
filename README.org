@@ -2885,6 +2885,25 @@ Sometimes I want to drop an existing defun into an org mode source block. So I'm
                     (key-description keys))))
 
 #+end_src
+***** Save when emacs loses focus
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-config
+(defvar pdc/unfocusing nil "None-nil when I'm in the middle of unfocusing.")
+
+(defmacro +org-debounce-idle-timer (seconds var body &rest args)
+  `(progn
+     (defvar ,var nil "Timer.")
+     (when (timerp ,var) (cancel-timer ,var))
+     (setq ,var (run-with-idle-timer ,seconds nil ,body ,@args))))
+
+(defun +org-save-all-org-buffers ()
+  (unless pdc/unfocusing
+    (let ((pdc/unfocusing t))
+      (+org-debounce-idle-timer 10
+                                pdc/org-save-all-org-buffers-timer
+                                'org-save-all-org-buffers))))
+(add-function :after after-focus-change-function '+org-save-all-org-buffers)
+
+#+end_src
 **** Contacts
 Use =org-contacts= to manage our contacts
 #+begin_src emacs-lisp
