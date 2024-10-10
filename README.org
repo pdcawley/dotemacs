@@ -2643,18 +2643,20 @@ We want to be able to find ~foo.org~ in any of the directories where org files l
   (defvar +org-extra-directories '("~/Dropbox/MobileOrg"
                                    "~/Documents/MobileOrg"))
 
-  (defun  +org-file-path (file)
+  (defun +org-file-path (file)
     "Expand FILE in the correct directory of org files.
   If it exists in any of `+org-extra-directories', return that path,
   otherwise return a path within `org-directory', whether the file exists or not."
     (require 'dash)
-    (or (-first #'file-exists-p
-                (mapcar (lambda (d)
-                          (expand-file-name file d))
-                        (if (member org-directory +org-extra-directories)
-                            +org-extra-directories
-                          (cons org-directory +org-extra-directories))))
-        (expand-file-name file org-directory)))
+    (if (file-name-absolute-p file)
+        file
+      (or (-first #'file-exists-p
+                  (mapcar (lambda (d)
+                            (expand-file-name file d))
+                          (if (member org-directory +org-extra-directories)
+                              +org-extra-directories
+                            (cons org-directory +org-extra-directories))))
+          (expand-file-name file org-directory))))
 
   (defun +org-file-paths (l-or-f &rest files)
     "Expand files with `+org-file-path'."
