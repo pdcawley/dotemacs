@@ -2708,6 +2708,12 @@ We want to be able to find ~foo.org~ in any of the directories where org files l
         (org-clock-in))))
 
 #+end_src
+**** Contacts
+#+begin_src emacs-lisp
+  (use-package org-contacts
+    :custom
+    (org-contacts-file (+org-file-path "people.org")))
+#+end_src
 **** Org-ql and Super agenda
 Not sure if I actually need this, but again, I'm lifting code to get started.
 
