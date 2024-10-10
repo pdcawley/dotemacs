@@ -2895,11 +2895,17 @@ Anyway, for quick stuff, this is almost certainly useful.
 See https://gitlab.com/oer/org-re-reveal for more details on this.
 
 #+begin_src emacs-lisp
-  (use-package org-re-reveal
-    :after org
-    :custom
-    (org-re-reveal-root "https://cdd.jsdelivr.net/npm/reveal.js")
-    (org-re-reveal-revealjs-version "4"))
+(use-package org-re-reveal
+  :after org
+  :custom
+  (org-re-reveal-root "https://cdd.jsdelivr.net/npm/reveal.js")
+  (org-re-reveal-revealjs-version "4")
+  (org-re-reveal-history t))
+(use-package oer-reveal
+  :custom
+  (oer-reveal-plugin-4-config
+   "audioslideshow RevealAudioSlideShow plugin/audio-slideshow/plugin.js
+anything RevealAnything https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/anything/plugin.js"))
 #+end_src
 ****** TODO Eliminate reveal CDN?
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
