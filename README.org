@@ -2141,7 +2141,9 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
     (org-edit-src-content-indentation 0)
     (org-src-preserve-indentation t)
     <<org-custom>>
-    :hook (org-mode . visual-line-mode)
+    :hook
+    (org-mode . visual-line-mode)
+    <<org-hook>>
     :config
     (for-gui
       (add-hook 'org-mode-hook 'variable-pitch-mode))
@@ -2222,6 +2224,41 @@ When the point isn't actually inside a pair of inline markers, I don't want to s
     :after org
     :hook org-mode)
 
+#+end_src
+***** Allow dashes in tags
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-init
+(defun +org-add-dashes-to-tag-regexps ()
+  (setq org-complex-heading-regexp
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(\\[#.\\]\\)\\)?"
+                "\\(?: +\\(.*?\\)\\)??"
+                "\\(?:[ \t]+\\(:[-[:alnum:]_@#%:]+:\\)\\)?"
+                "[ \t]*$")
+        org-complex-heading-regexp-format
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(\\[#.\\]\\)\\)?"
+                "\\(?: +"
+                ;; Stats cookies can be stuck to body.
+                "\\(?:\\[[0-9%%/]+\\] *\\)*"
+                "\\(%s\\)"
+                "\\(?: *\\[[0-9%%/]+\\]\\)*"
+                "\\)"
+                "\\(?:[ \t]+\\(:[-[:alnum:]_@#%%:]+:\\)\\)?"
+                "[ \t]*$")
+        org-todo-line-tags-regexp
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(.*?\\)\\)??"
+                "\\(?:[ \t]+\\(:[-[:alnum:]:_@$%]+:\\)\\)?"
+                "[ \t]*$")))
+#+end_src
+
+And add a hook
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-hook
+(org-mode . +org-add-dashes-to-tag-regexps)
 #+end_src
 **** Org babel
 The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
