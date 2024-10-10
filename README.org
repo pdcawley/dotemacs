@@ -2329,6 +2329,30 @@ Org structure templates are great, so let's add some more to make language speci
                                '((jq . t))))
 #+end_src
 
+
+****** Copying and sharing code
+
+#+begin_src emacs-lisp
+(use-package gist
+  :after org
+  :init
+  (defun pdc/copy-code-as-org-block-and-gist (beg end)
+    (interactive "r")
+    (let ((filename (or (file-name-base) ""))
+          (mode (symbol-name major-mode))
+          (contents
+           (if (use-region-p)
+               (buffer-substring beg end) (buffer-string)))
+          (gist (if (use-region-p) (gist-region beg end) (gist-buffer))))
+      (kill-new
+       (format "\n%s\n#+begin_src %s\n%s\n#+end_src\n"
+               (org-link-make-string (oref (oref gist :data) :html-url) filename)
+               (replace-regexp-in-string "-mode%" mode)
+               contents)))))
+#+end_src
+
+
+
 **** Rich paste
 Make it easier to paste code blocks in org mode with ~org-rich-yank~
 
