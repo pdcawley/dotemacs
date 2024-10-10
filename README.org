@@ -2665,7 +2665,49 @@ We want to be able to find ~foo.org~ in any of the directories where org files l
                        (cons l-or-f (flatten-list files)))))
       (mapcar #'+org-file-path all-files)))
 #+end_src
+***** Jump to Org location by substring
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-init
+  (defun +org-refile-get-location-by-substring (regexp &optional file)
+    "Return the refile location identified by REGEXP."
+    (let ((org-refile-targets org-refile-targets) tbl)
+      (setq org-refile-target-table (org-refile-get-targets)))
+    (unless org-refile-target-table
+      (user-error "No refile targets"))
+    (cl-find regexp org-refile-target-table
+             :test
+             (lambda (a b)
+               (and
+                (string-match a (car b))
+                (or (null file)
+                    (string-match file (elt b 1)))))))
 
+  (defun +org-refile-subtree-to (name)
+    (org-refile nil nil (+org-refile-get-location-exact name)))
+
+  (defun +org-refile-get-location-exact (name &optional file)
+    "Return the refile location identified by NAME."
+    (let ((org-refile-targets org-refile-targets) tbl)
+      (setq org-refile-target-table (org-refile-get-targets)))
+    (unless org-refile-target-table
+      (user-error "No refile targets"))
+    (cl-find name org-refile-target-table
+             :test (lambda (a b)
+                     (and (string-equal a (car b))
+                          (or (null file)
+                              (string-match file (elt b 1)))))))
+
+  (defun +org-clock-in-refile (location &optional file)
+    "Clocks into LOCATION.
+  LOCATION and FILE can also be regular expressions for `+org-refile-get-location-by-substring'."
+    (interactive (list (+org-refile-get-location)))
+    (save-window-excursion
+      (save-excursion
+        (when (stringp location)
+          (setq location (+org-refile-get-location-by-substring location file)))
+        (org-refile 4 nil location)
+        (org-clock-in))))
+
+#+end_src
 **** Org-ql and Super agenda
 Not sure if I actually need this, but again, I'm lifting code to get started.
 
