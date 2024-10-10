@@ -3541,7 +3541,6 @@ There's no avoiding it, I fear, but there you go.
 
 #+end_src
 
-
 **** Web Mode
 The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not sure if it really works well, but again, one has to start somewhere.
 
@@ -3552,6 +3551,21 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
     (web-mode-code-indent-offset 2)
     (web-mode-markup-indent-offset 2)
     (web-mode-attribute-indent-offset 2))
+
+#+end_src
+
+**** SQLite
+#+begin_src emacs-lisp
+(use-package sqlite-mode
+  :commands sqlite-mode-open-file
+  :init
+  (defun +sqlite-view-file-magically ()
+    "Runs `sqlite-mode-open-file' on the file name visited by the current buffer, killing it."
+    (require 'sqlite-mode)
+    (let ((file-name buffer-file-name))
+      (kill-current-buffer)
+      (sqlite-mode-open-file file-name)))
+  :magic ("SQLite format 3\x00" . +sqlite-view-file-magically))
 
 #+end_src
 
