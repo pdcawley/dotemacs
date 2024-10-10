@@ -188,6 +188,12 @@ I plan to start voice coding again some time, and find it's easier to switch the
 
 #+end_src
 
+** Who are we?
+#+begin_src emacs-lisp
+(setq user-full-name "Piers Cawley"
+      user-email-address "piers@singingtogether.co.uk")
+#+end_src
+
 * Creating init.el
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle init.el
@@ -520,16 +526,16 @@ I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ 
   (require 'pdcmacs-global-bindings)
 #+end_src
 
-** Set up the UI
+** COMMENT Set up the UI
 
 #+begin_src emacs-lisp
-  (use-package display-line-numbers
-    :hook
-    ((conf-mode prog-mode text-mode) . 'display-line-numbers-mode)
-    :custom
-    (display-line-numbers-grow-only t)
-    (display-line-numbers-type t)
-    (display-line-numbers-width nil))
+(use-package display-line-numbers
+  :hook
+  ((conf-mode prog-mode text-mode) . 'display-line-numbers-mode)
+  :custom
+  (display-line-numbers-grow-only t)
+  (display-line-numbers-type t)
+  (display-line-numbers-width nil))
 #+end_src
 
 ** Configuration
@@ -3047,9 +3053,12 @@ I'm trying ~flymake~ for syntax checking.
 #+end_src
 *** Add documentation
 #+begin_src emacs-lisp
-  (use-package eldoc
-    :diminish
-    :hook (emacs-startup . global-eldoc-mode))
+(use-package eldoc
+  :diminish
+  :hook (emacs-startup . global-eldoc-mode)
+  :config
+  (eldoc-add-command-completions "paredit-")
+  (eldoc-add-command-completions "lispy-"))
 #+end_src
 
 *** Parsing programming languages
@@ -3314,8 +3323,8 @@ Especially in text mode emacs, modeline space is at a premium, so we shorten ~mo
 ****** Display evaluation results as overlays
 ~eros-mode~ displays elisp evaluation results as an overlay, which is a little neater than the default behaviour.
 #+begin_src emacs-lisp
-  (use-package eros
-    :hook (emacs-startup . eros-mode))
+(use-package eros
+  :hook emacs-lisp-mode)
 #+end_src
 
 ****** Macro expansion
@@ -3343,6 +3352,149 @@ Life is too short to remember to compile stuff on save.
     :custom
     (auto-compile-display-buffer nil)
     (auto-compile-mode-line-counter t))
+#+end_src
+
+****** Edit list
+Experiment with =M-x edit-list= which apparently makes it easier to edit an Emacs Lisp list
+#+begin_src emacs-lisp
+(use-package edit-list
+  :commands edit-list
+  :config
+  (with-eval-after-load 'embark
+    (define-key embark-variable-map "l" 'edit-list)))
+#+end_src
+
+
+****** More cargo culted setup from sachac
+
+#+begin_src emacs-lisp
+(use-feature elisp-mode
+  :bind
+  (:map
+   emacs-lisp-mode-map
+   ("C-c C-d C-d" . describe-function)
+   ("C-c C-d d" . describe-function)
+   ("M-m , d" . describe-function)))
+
+(use-package highlight-quoted
+  :hook emacs-lisp-mode)
+
+(use-package suggest :defer t)
+
+(use-package ipretty
+  :diminish
+  :config (ipretty-mode 1))
+
+;;; Bloody use-package's :bind-keymap doesn't play nicely with which-key
+;;; TODO: Fix this
+(use-package erefactor
+  :bind-keymap
+  ("M-m , r" . erefactor-map))
+
+(use-package redshank
+  :hook emacs-lisp-mode)
+#+end_src
+
+****** Edebug
+#+begin_src emacs-lisp
+(require 'eros)
+(defun adviced:edebug-previous-result (_ &rest r)
+  "Adviced `edebug-previous-result'."
+  (eros--make-result-overlay edebug-previous-result
+    :where (point)
+    :duration eros-eval-result-duration))
+
+(advice-add #'edebug-previous-result
+            :around
+            #'adviced:edebug-previous-result)
+
+(defun adviced:edebug-compute-previous-result (_ &rest r)
+  "Adviced `edebug-compte-previous-result."
+  (let ((previous-value (nth 0 r)))
+    (when edebug-unwrap-results
+      (setq previous-value
+            (edebug-unwrap* previous-value)))
+    (setq edebug-previous-result
+          (edebug-safe-prin1-to-string previous-value))))
+
+(advice-add #'edebug-compute-previous-result
+            :around
+            #'adviced:edebug-compute-previous-result)
+#+end_src
+
+****** Sorting
+Big old lists of custom settings, keybindings, etc are often best sorted as a way of spotting any duplicates, so let's have a handy function for that.
+
+#+begin_src emacs-lisp
+(defun pdc/sort-sexps-in-region (beg end)
+  "Can be handy for sorting out duplicates.
+Sorts the sexps from BEG to END. Leaves point at where it
+couldn't figure things out (eg: syntax errors)."
+  (interactive "r")
+  (let ((input (buffer-substring beg end))
+        list last-point form result)
+    (save-restriction
+      (save-excursion
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (setq last-point (point-min))
+        (setq form t)
+        (while (and form (not (eobp)))
+          (setq form (ignore-errors (read (current-buffer))))
+          (when form
+            (add-to-list
+             'list
+             (cons
+              (prin1-to-string form)
+              (buffer-substring last-point (point))))
+            (setq last-point (point))))
+        (setq list (sort list (lambda (a b) (string< (car a) (car b)))))
+        (delete-region (point-min) (point))
+        (insert (mapconcat
+                 (lambda (c)
+                   (replace-regexp-in-string "^\n\\|\n\\'" "" (cdr c)))
+                 list "\n"))))))
+
+(with-eval-after-load 'embark
+  (bind-key "s" #'pdc/sort-sexps-in-region embark-region-map))
+#+end_src
+
+****** Auto insert
+Emacs expects a certain amount of boilerplate in a ~.el~ file, so let's auto generate it.
+
+#+begin_src emacs-lisp
+(use-feature autoinsert
+  :hook (emacs-startup . auto-insert-mode)
+  :config
+  (add-to-list 'auto-insert-alist
+               '(("\\.el\\'" . "Emacs Lisp header")
+                 "Short description: "
+                 ";;; " (file-name-nondirectory (buffer-file-name)) " --- " str
+                 (make-string (max 2 (- 80 (current-column) 27)) ?\s)
+                 "-*- lexical-binding: t; -*-" '(setq lexical-binding t)
+                 "
+
+;; Copyright (C) " (format-time-string "%Y") "  "
+                 (getenv "ORGANIZATION") | (progn user-full-name) "
+
+
+;; Author: " (user-full-name)
+                 '(when (search-backward "&" (line-beginning-position) t)
+                    (replace-match (capitalize (user-login-name)) t t))
+                 '(end-of-line 1) " <" (progn user-mail-address) ">
+"
+                 "
+
+\;;; Commentary:
+
+\;; " _ "
+
+\;;; Code:
+
+
+
+\(provide '" (file-name-base (buffer-file-name)) ")
+\;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
 #+end_src
 
 **** Haskell
