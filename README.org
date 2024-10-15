@@ -158,40 +158,47 @@ I plan to start voice coding again some time, and find it's easier to switch the
 ** Inhibit a bunch of startup cruft
 
 #+begin_src emacs-lisp
-  (setq frame-resize-pixelwise t
-        frame-inhibit-implied-resize t
-        ring-bell-function 'ignore
-        use-dialog-box t
-        use-file-dialog nil
-        use-short-answers t
-        inhibit-splash-screen t
-        inhibit-startup-screen t
-        inhibit-x-resources t
-        inhibit-startup-echo-area-message user-login-name
-        inhibit-startup-buffer-menu t
-        inhibit-startup-message t
-        confirm-kill-processes nil)
+(setq frame-resize-pixelwise t
+      frame-inhibit-implied-resize t
+      ring-bell-function 'ignore
+      use-dialog-box t
+      use-file-dialog nil
+      inhibit-splash-screen t
+      inhibit-startup-screen t
+      inhibit-x-resources t
+      inhibit-startup-echo-area-message user-login-name
+      inhibit-startup-buffer-menu t
+      inhibit-startup-message t
+      confirm-kill-processes nil)
 
-  (setq default-frame-alist
-        (append default-frame-alist
-                '((fullscreen . maximized)
-                  (tool-bar-lines . 0)
-                  (menu-bar-lines . 0)
-                  (vertical-scroll-bars . nil)
-                  (internal-border-width . 2)
-                  (undecorated-round . t)
-                  (scroll-bar-mode . -1))))
+(setq default-frame-alist
+      (append default-frame-alist
+              '((fullscreen . maximized)
+                (tool-bar-lines . 0)
+                (menu-bar-lines . 0)
+                (vertical-scroll-bars . nil)
+                (internal-border-width . 2)
+                (undecorated-round . t)
+                (scroll-bar-mode . -1))))
 
-  (menu-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
-  (setq scroll-margin 0
-        scroll-conservatively 100000
-        scroll-preserve-screen-position 1)
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
 
-  (setopt large-file-warning-threshold (* 100 1000 1000))
+(setopt large-file-warning-threshold (* 100 1000 1000))
 
+#+end_src
+** Life's to short to type "no" when Emacs asks.
+Newish Emacs versions have =use-short-answers= so we use that when it's available. Otherwise we fall back to making =yes-or-no-p= and alias of =y-or-n-p=. It's great that Emacs does this out of the box now, but it will most likely be another ten years before I remove the obsolete hack from this bit of my config.
+
+#+begin_src emacs-lisp
+(if (boundp 'use-short-answers)
+    (setq use-short-answers t)
+  (defalias 'yes-or-no-p 'y-or-no-p))
 #+end_src
 
 ** Who are we?
