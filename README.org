@@ -207,6 +207,14 @@ Newish Emacs versions have =use-short-answers= so we use that when it's availabl
       user-email-address "piers@singingtogether.co.uk")
 #+end_src
 
+** The Emacs Server
+
+We'll emulate the =--daemon= switch here, and start the server after we've finished initializing everything. (Hence the third argument to =add-hook=).
+
+#+begin_src emacs-lisp
+(add-hook 'emacs-startup-hook #'server-start 100)
+#+end_src
+
 * Creating init.el
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle init.el
@@ -427,9 +435,7 @@ There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in
   :config
   (setq auto-save-file-name-transforms
         `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
-          (".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-
-  (setq server-socket-dir (no-littering-expand-var-file-name "server/")))
+          (".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
 *** Save preferences in =./etc/preferences.el=
