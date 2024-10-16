@@ -2204,6 +2204,17 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-edit-src-content-indentation 0)
   (org-src-preserve-indentation t)
   (org-footnote-auto-adjust t)
+  (org-adapt-indentation 'headline-data)
+  (org-return-follows-link t)
+  (org-special-ctrl-k t)
+  (org-use-speed-commands
+   (lambda ()
+     (and (looking-at org-outline-regexp-bol)
+          (not (org-in-src-block-p)))))
+  (org-loop-over-headlines-in-active-region t)
+  (org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
+  (org-cycle-include-plain-lists nil)
+  (org-support-shift-select t)
   <<org-custom>>
   :hook
   (org-mode . visual-line-mode)
