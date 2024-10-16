@@ -973,8 +973,7 @@ Using the built in ~view-mode~ works like a char, it converts buffers to view on
             (t
              (bind-keys :map view-mode-map
                         ("p" . scroll-down-command)
-                        ("n" . scroll-up-comulmmand))))))
-
+                        ("n" . scroll-up-command))))))
 #+end_src
 
 *** Moving within the line
