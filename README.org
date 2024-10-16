@@ -935,6 +935,8 @@ Using the built in ~view-mode~ works like a char, it converts buffers to view on
 #+begin_src emacs-lisp
   (use-feature view
     :hook (view-mode . pdc/view-mode-hook)
+    :custom
+    (view-read-only t)
     :preface
     (defun pdc/view-mode-hook ()
       (cond ((derived-mode-p 'org-mode)
