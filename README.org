@@ -785,22 +785,29 @@ Well, of course I'm using [[https://magit.vc/][Magit]] to manage git. I'm not an
 Loading ~transient~ before ~magit~ helps with a potential race condition
 
 #+begin_src emacs-lisp
-  (use-package transient)
+(use-package transient)
 
-  (use-package magit
-    :bind
-    (:prefix "M-m g"
-             :prefix-map leader/git-map
-             :prefix-docstring "git"
-             ("s" . magit-status)
-             ("l" . magit-log))
-    :custom
-    (magit-define-global-key-bindings nil)
-    (magit-section-invisibility-indicator '(" ▼"))
-    (git-commit-summary-max-length 50)
-    (git-commit-style-convention-checks '(non-empty-second-line))
-    (magit-diff-refine-hunk t))
-
+(use-package magit
+  :bind
+  (:prefix "M-m g"
+           :prefix-map leader/git-map
+           :prefix-docstring "git"
+           ("s" . magit-status)
+           ("l" . magit-log))
+  :config
+  (define-advice magit-status (:around (oldfun &rest args) magit-fullscreen)
+    (window-configuration-to-register :magit-fullscreen)
+    (apply oldfun args)
+    (delete-other-windows))
+  (define-advice magit-mode-quit-window (:around (oldfun &rest args) magit-restore-screen)
+    (apply oldfun args)
+    (jump-to-register :magit-fullscreen))
+  :custom
+  (magit-define-global-key-bindings nil)
+  (magit-section-invisibility-indicator '(" ▼"))
+  (git-commit-summary-max-length 50)
+  (git-commit-style-convention-checks '(non-empty-second-line))
+  (magit-diff-refine-hunk t))
 #+end_src
 
 *** Diff-hl
