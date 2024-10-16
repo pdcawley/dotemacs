@@ -211,6 +211,8 @@ Newish Emacs versions have =use-short-answers= so we use that when it's availabl
 
 We'll emulate the =--daemon= switch here, and start the server after we've finished initializing everything. (Hence the third argument to =add-hook=).
 
+If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configuration of [[exec-path-from-shell][exec-path-from-shell]].
+
 #+begin_src emacs-lisp
 (add-hook 'emacs-startup-hook #'server-start 100)
 #+end_src
@@ -2075,12 +2077,15 @@ A few mods:
 - ~Eshell~ is customised to start from the top of the page
 - Shell commands can be executed using https://github.com/xenodium/dwim-shell-command
 
+#+name: exec-path-from-shell
 #+begin_src emacs-lisp
   (use-package exec-path-from-shell
     :config
     (when (memq window-system '(mac ns x))
       (exec-path-from-shell-initialize)))
+#+end_src
 
+#+begin_src emacs-lisp
   (use-feature eshell
     :custom
     (eshell-where-to-jump 'begin)
