@@ -2126,99 +2126,99 @@ It's almost reached the point where it's not really an Emacs configuration if it
 Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out with supporting packages.
 
 #+begin_src emacs-lisp :noweb yes
-  (use-package org
-    :mode ("\\.txt$" . org-mode)
-    :bind-keymap
-    :bind
-    (:map org-mode-map
-          ("C-M-<return>"   . org-insert-subheading)
-          ("C-c M-<return>" . org-insert-subheading)
-          ("C-c M-RET"      . org-insert-subheading)
-          ("C-M-i"          . completion-at-point)
-          ("C-M-w"          . append-next-kill)
-          ("M-m , v"        . org-show-todo-tree)
-          ("M-m , r"        . org-refile)
-          ("M-m , R"        . org-reveal))
+(use-package org
+  :mode ("\\.txt$" . org-mode)
+  :bind-keymap
+  :bind
+  (:map org-mode-map
+        ("C-M-<return>"   . org-insert-subheading)
+        ("C-c M-<return>" . org-insert-subheading)
+        ("C-c M-RET"      . org-insert-subheading)
+        ("C-M-i"          . completion-at-point)
+        ("C-M-w"          . append-next-kill)
+        ("M-m , v"        . org-show-todo-tree)
+        ("M-m , r"        . org-refile)
+        ("M-m , R"        . org-reveal))
 
-    :init
-    (bind-keys :prefix "M-m o"
-               :prefix-map pdc-org-prefix
-               :prefix-docstring "org"
-               ("c" . org-capture)
-               ("A" . org-agenda)
-               ("l" . org-store-link)
-               ("L" . org-insert-link-global)
-               ("O" . org-open-at-point-global))
+  :init
+  (bind-keys :prefix "M-m o"
+             :prefix-map pdc-org-prefix
+             :prefix-docstring "org"
+             ("c" . org-capture)
+             ("A" . org-agenda)
+             ("l" . org-store-link)
+             ("L" . org-insert-link-global)
+             ("O" . org-open-at-point-global))
 
-    (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
-      (let ((list (if (not (listp list-or-symbol))
-                      (list list-or-symbol)
-                    list-or-symbol)))
-        (require 'cl-lib)
-        (cl-adjoin element list)))
-    (defvar org-directory "~/Documents/org")
+  (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
+    (let ((list (if (not (listp list-or-symbol))
+                    (list list-or-symbol)
+                  list-or-symbol)))
+      (require 'cl-lib)
+      (cl-adjoin element list)))
+  (defvar org-directory "~/Documents/org")
 
-    (defvar pdc/org-inbox-file
-      (expand-file-name "inbox.org" org-directory))
+  (defvar pdc/org-inbox-file
+    (expand-file-name "inbox.org" org-directory))
 
-    <<org-init>>
-    :custom
-    (org-auto-align-tags nil)
-    (org-tags-column 0)
-    (org-catch-invisible-edits 'show-and-error)
-    (org-special-ctrl-a/e t)
-    (org-insert-heading-respect-content t)
-    (org-hide-emphasis-markers t)
-    (org-pretty-entities t)
-    (org-ellipsis "…")
-    (org-agenda-block-separator ?—)
-    (org-agenda-time-grid
-     '((daily today require-timed)
-       (800 1000 1200 1400 1600 1800 2000)
-       " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
-    (org-agenda-current-time-string
-     "←⭠ now ───────────────────────────────────────────────")
-    (org-agenda-start-with-log-mode t)
-    (org-log-done 'time)
-    (org-log-into-drawer t)
-    (org-pretty-entities t)
-    (org-use-sub-superscripts "{}")
-    (org-hide-emphasis-markers t)
-    (org-startup-with-inline-images (display-graphic-p))
-    (org-image-actual-width '(300))
-    (org-structure-template-alist
-     (append '(("c" . "center")
-               ("C" . "comment")
-               ("e" . "example")
-               ("q" . "quote")
-               ("E" . "export")
-               ("h" . "export html")
-               ("a" . "export ascii")
-               ("M" . "export markdown")
-               ("m" . "markdown")
-               ("s" . "src")
-               ("v" . "verse"))
-             '(
-               <<org-structure-templates>>)))
-    (org-indent-indentation-per-level 2)
-    (org-edit-src-content-indentation 0)
-    (org-src-preserve-indentation t)
-    (org-footnote-auto-adjust t)
-    <<org-custom>>
-    :hook
-    (org-mode . visual-line-mode)
-    <<org-hook>>
-    :config
-    (for-gui
-      (add-hook 'org-mode-hook 'variable-pitch-mode))
+  <<org-init>>
+  :custom
+  (org-auto-align-tags nil)
+  (org-tags-column 0)
+  (org-catch-invisible-edits 'show-and-error)
+  (org-special-ctrl-a/e t)
+  (org-insert-heading-respect-content t)
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
+  (org-ellipsis "…")
+  (org-agenda-block-separator ?—)
+  (org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+  (org-agenda-current-time-string
+   "←⭠ now ───────────────────────────────────────────────")
+  (org-agenda-start-with-log-mode t)
+  (org-log-done 'time)
+  (org-log-into-drawer t)
+  (org-pretty-entities t)
+  (org-use-sub-superscripts "{}")
+  (org-hide-emphasis-markers t)
+  (org-startup-with-inline-images (display-graphic-p))
+  (org-image-actual-width '(300))
+  (org-structure-template-alist
+   (append '(("c" . "center")
+             ("C" . "comment")
+             ("e" . "example")
+             ("q" . "quote")
+             ("E" . "export")
+             ("h" . "export html")
+             ("a" . "export ascii")
+             ("M" . "export markdown")
+             ("m" . "markdown")
+             ("s" . "src")
+             ("v" . "verse"))
+           '(
+             <<org-structure-templates>>)))
+  (org-indent-indentation-per-level 2)
+  (org-edit-src-content-indentation 0)
+  (org-src-preserve-indentation t)
+  (org-footnote-auto-adjust t)
+  <<org-custom>>
+  :hook
+  (org-mode . visual-line-mode)
+  <<org-hook>>
+  :config
+  (for-gui
+    (add-hook 'org-mode-hook 'variable-pitch-mode))
 
-    ;; (dolist (face '(org-code org-block))
-    ;;   (set-face-attribute
-    ;;    face nil
-    ;;    :inherit
-    ;;    (my-adjoin-to-list-or-symbol 'fixed-pitch
-    ;;                                 (face-attribute face :inherit))))
-    <<org-config>>)
+  ;; (dolist (face '(org-code org-block))
+  ;;   (set-face-attribute
+  ;;    face nil
+  ;;    :inherit
+  ;;    (my-adjoin-to-list-or-symbol 'fixed-pitch
+  ;;                                 (face-attribute face :inherit))))
+  <<org-config>>)
 
   (use-package org-contrib
     :after org
@@ -3421,7 +3421,6 @@ Experiment with =M-x edit-list= which apparently makes it easier to edit an Emac
   (with-eval-after-load 'embark
     (define-key embark-variable-map "l" 'edit-list)))
 #+end_src
-
 
 ****** More cargo culted setup from sachac
 
