@@ -455,51 +455,53 @@ We don't make much use of the internal ~custom~ facility, but when we do, we don
 There's a bunch of weird defaults in Emacs, so lets set them to be slightly less insane.
 
 #+begin_src emacs-lisp
-  (setopt sentence-end-double-space nil
-          compilation-scroll-output 'first-error
-          use-short-answers t
-          truncate-string-ellipsis "…"
-          create-lockfiles nil
+(setopt sentence-end-double-space nil
+        compilation-scroll-output 'first-error
+        use-short-answers t
+        truncate-string-ellipsis "…"
+        create-lockfiles nil
 
-          truncate-lines nil
-          bidi-paragraph-direction 'left-to-right
-          bidi-inhibit-bpa t
+        truncate-lines nil
+        bidi-paragraph-direction 'left-to-right
+        bidi-inhibit-bpa t
 
-          warning-suppress-types '((comp))
-          fill-column 79
-          gnutls-verify-error t
-          gnutls-min-prime-bits 2048
-          password-cache-expiry nil
-          track-eol t
-          mouse-yank-at-point t
-          save-interprogram-paste-before-kill t
+        warning-suppress-types '((comp))
+        fill-column 79
+        gnutls-verify-error t
+        gnutls-min-prime-bits 2048
+        password-cache-expiry nil
+        track-eol t
+        mouse-yank-at-point t
+        save-interprogram-paste-before-kill t
 
-          apropos-do-all t
-          require-final-newline t
-          tramp-default-method "ssh"
-          tramp-copy-size-limit nil
-          tramp-use-ssh-controlmaster-options nil
-          vc-follow-symlinks t
-          grep-use-headings t
-          completions-detailed t
-          read-minibuffer-restore-windows nil
-          mode-line-compact 'long
-          kill-do-not-save-duplicates t
-          auto-window-vscroll nil
-          fast-but-imprecise-scrolling t
-          custom-safe-themes t
+        apropos-do-all t
+        require-final-newline t
+        tramp-default-method "ssh"
+        tramp-copy-size-limit nil
+        tramp-use-ssh-controlmaster-options nil
+        vc-follow-symlinks t
+        grep-use-headings t
+        completions-detailed t
+        read-minibuffer-restore-windows nil
+        mode-line-compact 'long
+        kill-do-not-save-duplicates t
+        auto-window-vscroll nil
+        fast-but-imprecise-scrolling t
+        custom-safe-themes t
 
-          delete-old-versions 0
-          vc-make-backup-files t
+        delete-old-versions 0
+        vc-make-backup-files t
 
-          history-length t
-          history-delete-duplicates t
-          bookmark-save-flag 1
+        history-length t
+        history-delete-duplicates t
+        bookmark-save-flag 1
 
-          ad-redefinition-action 'accept
+        ad-redefinition-action 'accept
 
-          tab-width 4
-          indent-tabs-mode nil)
+        line-move-visual nil
+
+        tab-width 4
+        indent-tabs-mode nil)
 #+end_src
 
 Let's try these slightly altered scrolling defaults and see how they feel.
