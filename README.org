@@ -661,6 +661,20 @@ So many modeline packages. I ended up settling on the ~doom-modeline~ package.
     :hook after-init)
 #+end_src
 
+**** 'Diminish' major mode names
+There's a /lot/ going on in some modelines, and long major mode names can take up a sizeable chunk of the 80 columns available in terminal mode. So let's pinch an idea from http://whattheemacsd.com/appearance.el-01.html and shorten a few:
+
+#+begin_src emacs-lisp
+(defmacro rename-modeline (mode new-name &optional feature)
+  "After loading FEATURE, rename MODE to NEW-NAME on the modeline."
+  (let ((f (or feature `(quote ,mode))))
+    `(with-eval-after-load ,f
+       (define-advice ,mode (:after (&optional args) rename-modeline)
+         (setq mode-name ,new-name)))))
+
+(rename-modeline emacs-lisp-mode "λ(e)" 'elisp-mode)
+#+end_src
+
 *** Fonts
 
 **** Extend font-lock
@@ -3387,16 +3401,6 @@ Also, paredit and ~embark~ fight a little, so added a hook to add ~paredit-mode~
 #+end_src
 
 ***** Emacs Lisp
-Especially in text mode emacs, modeline space is at a premium, so we shorten ~mode-name~.
-#+begin_src emacs-lisp
-  (use-feature elisp-mode
-    :init
-    (defun pdc/elisp-mode-hook ()
-      (setq mode-name "λ(e)"))
-    :hook
-    (emacs-lisp-mode . pdc/elisp-mode-hook))
-#+end_src
-
 ****** Display evaluation results as overlays
 ~eros-mode~ displays elisp evaluation results as an overlay, which is a little neater than the default behaviour.
 #+begin_src emacs-lisp
@@ -3577,7 +3581,9 @@ Emacs expects a certain amount of boilerplate in a ~.el~ file, so let's auto gen
 I don't use Haskell much, but I do use it occasionally. I should work out how I /really/ like it configured, but for now I just use it.
 
 #+begin_src emacs-lisp
-  (use-package haskell-mode)
+  (use-package haskell-mode
+    :init
+    (rename-modeline haskell-mode "λ(>>=)"))
 #+end_src
 
 **** JavaBloodyScript
@@ -3585,6 +3591,8 @@ There's no avoiding it, I fear, but there you go.
 #+begin_src emacs-lisp
   (use-package js2-mode
     :mode "\\.jsx?\\'"
+    :init
+    (rename-modeline js2-mode "JS2")
     :magic
     ("#!/usr/bin/env node" . js2-mode)
     ("#!/usr/bin/env bun" . js2-mode)
