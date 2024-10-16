@@ -236,14 +236,6 @@ And setup some support variables relating to the structure of our config directo
     "Literate source of config truth")
 
   (defvar pdcmacs-init-file (expand-file-name "init.el" user-emacs-directory))
-
-  (defvar pdcmacs-etc-directory (expand-file-name "etc/" user-emacs-directory)
-    "Our etc/ directory.")
-  (defvar pdcmacs-var-directory (expand-file-name "var/" user-emacs-directory)
-    "Our var/ directory.")
-
-  (mkdir pdcmacs-etc-directory t)
-  (mkdir pdcmacs-var-directory t)
 #+end_src
 
 Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
@@ -257,12 +249,6 @@ Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 (set-clipboard-coding-system 'utf-8)
 (setopt x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-#+end_src
-
-We don't make much use of the internal ~custom~ facility, but when we do, we don't want it stomping all over ~init.el~, so we move it away:
-
-#+begin_src emacs-lisp
-  (setopt custom-file (expand-file-name "preferences.el" pdcmacs-etc-directory))
 #+end_src
 
 ** Package Management
@@ -437,7 +423,7 @@ There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in
 ~no-littering~ is a handy tool to stop Emacs dropping temporary files all over the shop.
 
 #+begin_src emacs-lisp
-  (use-package no-littering
+(use-package no-littering
   :config
   (setq auto-save-file-name-transforms
         `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
@@ -445,6 +431,16 @@ There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in
 
   (setq server-socket-dir (no-littering-expand-var-file-name "server/")))
 #+end_src
+
+*** Save preferences in =./etc/preferences.el=
+
+We don't make much use of the internal ~custom~ facility, but when we do, we don't want it stomping all over ~init.el~, so we move it away:
+
+#+begin_src emacs-lisp
+  (setopt custom-file (no-littering-expand-etc-file-name "preferences.el"))
+#+end_src
+
+
 
 ** Miscellaneous niggly things
 
