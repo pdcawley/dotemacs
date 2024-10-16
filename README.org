@@ -821,7 +821,10 @@ Loading ~transient~ before ~magit~ helps with a potential race condition
   (magit-section-invisibility-indicator '(" ▼"))
   (git-commit-summary-max-length 50)
   (git-commit-style-convention-checks '(non-empty-second-line))
-  (magit-diff-refine-hunk t))
+  (magit-diff-refine-hunk t)
+  (magit-no-confirm '(stage-all-changes
+                      unstage-all-changes
+                      set-and-push)))
 #+end_src
 
 *** Diff-hl
