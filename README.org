@@ -769,7 +769,6 @@ A customized startup screen. This is experimental, but why not?
   (dashboard-path-style 'truncate-middle)
   (dashboard-path-max-length 50)
   (dashboard-bookmarks-item-format "%s")
-  (initial-buffer-choice 'dashboard-open)
   :hook
   (after-init . dashboard-insert-startupify-lists)
   (after-init . dashboard-initialize)
