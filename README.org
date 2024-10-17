@@ -225,7 +225,7 @@ If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configur
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle init.el
 :END:
-
+** Info block
 Again, we're tangling into a ~init.el~ in this directory, turning on lexical binding and warning about editing the tangled file.
 
 #+begin_src emacs-lisp
@@ -234,6 +234,7 @@ Again, we're tangling into a ~init.el~ in this directory, turning on lexical bin
 
 <<copyright-block>>
 #+end_src
+** Finding our modules
 Next we set up our modules directory
 
 #+begin_src emacs-lisp
@@ -251,7 +252,7 @@ And setup some support variables relating to the structure of our config directo
 
   (defvar pdcmacs-init-file (expand-file-name "init.el" user-emacs-directory))
 #+end_src
-
+** Prefer UTF-8
 Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 
 #+begin_src emacs-lisp
