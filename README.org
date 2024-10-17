@@ -420,7 +420,6 @@ We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables
   (which-key-mode 1))
 #+end_src
 
-
 *** Grab dash, s, f
 
 There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in functions, but I like the consistency of these packages interfaces, and I'm not writing modules for further redistribution, so I just convenience load them here.
@@ -618,7 +617,6 @@ We use ~casual-info~
 #+end_src
 
 ** Look and feel
-
 *** Theme
 I've used Zenburn or variants on it since forever and I'm not about to start now. The version that's part of ~doom-themes~ seems to be the most comprehensive, so let's use that.
 
@@ -1190,7 +1188,6 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
 #+end_src
 
 ** Editing
-
 *** Spell checking
 Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
 
