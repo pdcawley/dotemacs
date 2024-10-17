@@ -44,7 +44,7 @@ Part of the point of literate programming is to let you present code 'out of seq
   - [X] Break into sections
   - [X] Merge with init.el
 - [-] Move ~modules/~ into src blocks and make literate
-  - [ ] ~pdcmacs-feeds.el~
+  - [X] ~pdcmacs-feeds.el~
   - [X] ~pdcmacs-org.el~
   - [ ] ~pdcmacs-global-bindings.el~
   - [ ] ~pdcmacs-hugo-support.el~
@@ -3771,6 +3771,41 @@ Looks like ~mastodon.el~ got some love from a terminal user or two, so it's work
               :before-until #'(lambda () (fboundp 'image-transforms-p)))
   (mastodon-discover))
 #+end_src
+
+*** NewsFeeds
+I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :custom
+  (elfeed-feeds
+   '(("http://nullprogram.com/feed/" emacs)
+     ("https://sachachua.com/blog/feed/" emacs)
+     ("https://macowners.club/posts/index.xml" emacs)
+     ("https://justinbarclay.ca/index.xml" emacs)
+     ("https://xeiaso.net/blog.rss" tech nix)
+     ("https://byorgey.github.io/blog/rss.xml" functional-programming)
+     ("https://mjg59.dreamwidth.org/" tech)
+     ("https://pluralistic.net/feed" tech rabble-rousing)
+     ("https://irreal.org/blog/?feed=rss2" emacs)
+     <<feeds>>)))
+
+;; (use-package elfeed-goodies
+;;   :after elfeed
+;;   :custom
+;;   (elfeed-goodies/entry-pane-size 0.5)
+;;   :init
+;;   (elfeed-goodies/setup))
+
+#+end_src
+
+**** Feeds from reddit
+#+begin_src emacs-lisp :tangle nil :noweb-ref feeds
+("https://reddit.com/r/emacs.rss" reddit emacs)
+("https://reddit.com/r/dwarffortress.rss" reddit emacs)
+#+end_src
+
+
 
 ** Load extra configuration and customizations
 
