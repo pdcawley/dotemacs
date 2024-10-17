@@ -453,7 +453,14 @@ We don't make much use of the internal ~custom~ facility, but when we do, we don
   (setopt custom-file (no-littering-expand-etc-file-name "preferences.el"))
 #+end_src
 
+** Browsing links
+*** Use EWW in text mode
 
+#+begin_src emacs-lisp
+(use-feature eww
+  :unless (display-graphic-p)
+  :custom (browse-url-browser-function #'eww-browse-url))
+#+end_src
 
 ** Miscellaneous niggly things
 
