@@ -215,7 +215,10 @@ We'll emulate the =--daemon= switch here, and start the server after we've finis
 If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configuration of [[exec-path-from-shell][exec-path-from-shell]].
 
 #+begin_src emacs-lisp
-(add-hook 'emacs-startup-hook #'server-start 100)
+(defun server-start-idempotently ()
+  (or (server-running-p)
+      (server-start)))
+(add-hook 'emacs-startup-hook #'server-start-idempotently 100)
 #+end_src
 
 * Creating init.el
