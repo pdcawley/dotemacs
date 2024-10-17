@@ -746,38 +746,34 @@ There's a /lot/ going on in some modelines, and long major mode names can take u
 A customized startup screen. This is experimental, but why not?
 
 #+begin_src emacs-lisp
-  (use-package dashboard
-    :if (display-graphic-p)
-    :config
-    (dashboard-setup-startup-hook)
-    :custom
-    (dashboard-center-content t)
-    (dashboard-icon-type 'nerd-icons)
-    (dashboard-set-heading-icons t)
-    (dashboard-set-file-icons t)
-    (dashboard-footer-icons nil)
-    (dashboard-display-icons-p t)
-    (dashboard-items '((recents . 5)
-                       (agenda . 5)
-                       (projects . 5)
-                       (bookmarks . 5)))
-    (dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
-    (dashboard-match-agenda-entry "TODO=\"TODO\"|TODO=\"STARTED\"")
-    (dashboard-agenda-tags-format 'ignore)
-    (dashboard-path-style 'truncate-middle)
-    (dashboard-path-max-length 50)
-    (dashboard-bookmarks-item-format "%s")
-    :hook
-    (after-init . dashboard-insert-startupify-lists)
-    (after-init . dashboard-initialize)
-    (window-setup-hook . dashboard-resize-on-hook)
-    :config
-    (add-hook 'window-size-change-functions 'dashboard-resize-on-hook 100)
-    :preface
-    ;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-    )
-
-
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  :custom
+  (dashboard-center-content t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-banner-logo-title "Crack on!")
+  (dashboard-footer-icons nil)
+  (dashboard-display-icons-p t)
+  (dashboard-items '((recents . 5)
+                     (agenda . 5)
+                     (projects . 5)
+                     (bookmarks . 5)))
+  (dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+  (dashboard-match-agenda-entry "TODO=\"TODO\"|TODO=\"STARTED\"")
+  (dashboard-agenda-tags-format 'ignore)
+  (dashboard-path-style 'truncate-middle)
+  (dashboard-path-max-length 50)
+  (dashboard-bookmarks-item-format "%s")
+  (initial-buffer-choice 'dashboard-open)
+  :hook
+  (after-init . dashboard-insert-startupify-lists)
+  (after-init . dashboard-initialize)
+  (window-setup-hook . dashboard-resize-on-hook)
+  :config
+  (add-hook 'window-size-change-functions 'dashboard-resize-on-hook 100))
 #+end_src
 
 ** Coping with running in a terminal
