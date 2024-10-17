@@ -2429,48 +2429,48 @@ This stanza
 - Lowercases the evaluation results block
 
 #+begin_src emacs-lisp
-  (use-feature ob
-    :after org
-    :custom
-    (org-src-fontify-natively t)
-    (org-babel-results-keyword "results")
-    (org-babel-default-header-args
-     '((:session . "none")
-       (:results . "drawer replace")
-       (:comments . "both")
-       (:exports . "code")
-       (:cache . "no")
-       (:eval . "never-export")
-       (:hlines . "no")
-       (:tangle . "no")
-       (:noweb . "yes")))
-    (org-edit-src-auto-save-idle-delay 5)
-    :config
-    <<ob-config>>
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((css . t)
-       (dot . t)
-       (emacs-lisp . t)
-       (http . t)
-       (org . t)
-       (perl . t)
-       (haskell . t)
-       (shell . t)
-       (sql . t)
-       (raku . t)
-       (racket . t)
-       <<ob-languages>>
-       )))
+(use-package ob-http :after org)
+(use-package ob-raku :after org)
+(use-package ob-racket :after org
+  :hook
+  (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
+  :straight (ob-racket :host github
+                       :repo "hasu/emacs-ob-racket"
+                       :files ("*.el" "*.rkt")))
 
-  (use-package ob-http :after org)
-  (use-package ob-raku :after org)
-  (use-package ob-racket :after org
-    :hook
-    (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-    :straight (ob-racket :host github
-                         :repo "hasu/emacs-ob-racket"
-                         :files ("*.el" "*.rkt")))
+(use-feature ob
+  :after org
+  :custom
+  (org-src-fontify-natively t)
+  (org-babel-results-keyword "results")
+  (org-babel-default-header-args
+   '((:session . "none")
+     (:results . "drawer replace")
+     (:comments . "both")
+     (:exports . "code")
+     (:cache . "no")
+     (:eval . "never-export")
+     (:hlines . "no")
+     (:tangle . "no")
+     (:noweb . "yes")))
+  (org-edit-src-auto-save-idle-delay 5)
+  :config
+  <<ob-config>>
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((css . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (http . t)
+     (org . t)
+     (perl . t)
+     (haskell . t)
+     (shell . t)
+     (sql . t)
+     (raku . t)
+     (racket . t)
+     <<ob-languages>>
+     )))
 #+end_src
 
 ***** Source structure templates
