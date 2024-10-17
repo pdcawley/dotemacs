@@ -1982,24 +1982,27 @@ The ~consult~ package provides a way to search, filter, preview and select entri
 The ~embark~ package is analogous to the right click menu, but rather more… more.
 
 #+begin_src emacs-lisp
-  (use-package embark :after xref
-    :bind
-    (("C-." . embark-act)
-     ("M-." . embark-act)
-     ("M-," . embark-dwim)
-     ("C-;" . embark-dwim)
-     (([remap describe-bindings] . embark-bindings))
-     ("C-h B" . embark-bindings))
-    :custom
-    (embark-cycle-key "M-.")
-    (prefix-help-command #'embark-prefix-help-command)
-    (embark-confirm-act-all nil)
-    (embark-mixed-indicator-both nil)
-    (embark-mixed-indicator-delay nil)
-    (embark-indicators '(embark-mixed-indicator embark-highlight-indicator))
-    (embark-verbose-indicator-nested nil)
-    (embark-verbose-indicator-buffer-sections '(bindings))
-    (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert)))
+(use-package embark
+  :preface
+  ;; Make sure embark-act wins the binding race with xref
+  (require 'xref nil t)
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-act)
+   ("M-," . embark-dwim)
+   ("C-;" . embark-dwim)
+   (([remap describe-bindings] . embark-bindings))
+   ("C-h B" . embark-bindings))
+  :custom
+  (embark-cycle-key "M-.")
+  (prefix-help-command #'embark-prefix-help-command)
+  (embark-confirm-act-all nil)
+  (embark-mixed-indicator-both nil)
+  (embark-mixed-indicator-delay nil)
+  (embark-indicators '(embark-mixed-indicator embark-highlight-indicator))
+  (embark-verbose-indicator-nested nil)
+  (embark-verbose-indicator-buffer-sections '(bindings))
+  (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert)))
 
 
   (use-package embark-consult
