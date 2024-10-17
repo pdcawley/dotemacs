@@ -558,7 +558,6 @@ And it's handy to retain the history of useful variables and recent files betwee
     :hook emacs-startup)
 #+end_src
 
-
 ** Keybinding support functions                                  :deprecated:
 
 I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
@@ -944,39 +943,64 @@ The various ~casual-*~ modules are great, so let's try the ibuffer one.
 #+end_src
 
 *** Dired
-Nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-basics/
+Basic configuration nicked from Prot: https://protesilaos.com/codelog/2023-06-26-emacs-file-dired-basics/
 
 #+begin_src emacs-lisp
-  (use-feature dired
-    :after vertico pdcmacs-global-bindings
-    :bind (("M-m a d" . dired)
-           ("M-m j d" . dired-jump)
-           ("M-m j D" . dired-jump-other-window)
-           :map dired-mode-map
-           (", w"      . wdired-change-to-wdired-mode))
-    :config
-    (put 'dired-find-alternate-file 'disabled nil)
-    :hook
-    (after-init . file-name-shadow-mode)
-    (rfn-eshadow-update-overlay . vertico-directory-tidy)
-    (dired-mode . dired-hide-details-mode)
-    :custom
-    (dired-dwim-target t)
-    (dired-guest-shell-alist-user
-     '(("\\.\\(png\\|jpe?g\\|tiff?\\)" "feh" "xdg-open")
-       ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open")
-       (".*" "xdg-open")))
-    (dired-recursive-copies 'always)
-    (dired-recursive-deletes 'always)
-    (dired-use-ls-dired nil)
-    (dired-omit-file-p t)
-    (dired-omit-files "^\\.?#"))
+(use-feature dired
+  :after vertico pdcmacs-global-bindings
+  :bind (("M-m a d" . dired)
+         ("M-m j d" . dired-jump)
+         ("M-m j D" . dired-jump-other-window)
+         :map dired-mode-map
+         (", w"     . wdired-change-to-wdired-mode))
+  :config
+  (put 'dired-find-alternate-file 'disabled nil)
+  <<dired-config>>
+  :hook
+  (after-init . file-name-shadow-mode)
+  (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  (dired-mode . dired-hide-details-mode)
+  :custom
+  (dired-dwim-target t)
+  (dired-guest-shell-alist-user
+   '(("\\.\\(png\\|jpe?g\\|tiff?\\)" "feh" "xdg-open")
+     ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open")
+     (".*" "xdg-open")))
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
+  (dired-use-ls-dired nil)
+  (dired-omit-file-p t)
+  (dired-omit-files "^\\.?#"))
 
   (use-feature dired-x
     :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
   (use-package casual-dired
     :bind (:map dired-mode-map ("C-o" . casual-dired-tmenu)))
+#+end_src
+
+**** Avoid autocompletion when prompting for new directories and files
+Taken from [[https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs ][James Dyer]]
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref dired-config
+(defun pdc/dired-create-directory ()
+  "Wrapper to dired-create-directory to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+         (read-from-minibuffer "Dir : ")))
+    (dired-create-directory search-term)))
+
+(defun pdc/dired-create-empty-file ()
+  "Wrapper to `dired-create-empty-file' to avoid minibuffer expansion"
+  (interactive)
+  (let ((search-term
+         (read-from-minibuffer "File : ")))
+    (dired-create-empty-file search-term)))
+
+(bind-keys :map dired-mode-map
+           ("_"       . pdc/dired-create-empty-file)
+           ("+"       . pdc/dired-create-directory))
+)
 #+end_src
 
 *** Navigate with some buffers in read only mode
@@ -1110,7 +1134,6 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
     (imenu-list-size 40))
 
 #+end_src
-
 
 *** Jumping with avy
 
