@@ -997,7 +997,6 @@ Taken from [[https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--effic
 (bind-keys :map dired-mode-map
            ("_"       . pdc/dired-create-empty-file)
            ("+"       . pdc/dired-create-directory))
-)
 #+end_src
 
 *** Navigate with some buffers in read only mode
