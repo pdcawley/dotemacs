@@ -52,6 +52,9 @@ Part of the point of literate programming is to let you present code 'out of seq
 ** TODO Things to investigate [0/1]
 *** RESEARCH Org-transclusion
 The ~org-transclusion~ package is, apparently a way to link to a document in a way that includes its content in the linking file and which is updated when the linked document is. Not sure if it's useful for my purposes.
+*** RESEARCH Dogears
+Looks useful, a tool for remembering where you've been and jumping back there without having to set explicit bookmarks
+
 * Initial Setup
 
 This only needs executing the first time you use this setup. It moves any prexisting ~~/.emacs.d/~ directory to ~~/.emacs.d.bak/~, ~~.emacs~ goes to ~~/.emacs.bak/~ and any non-chemacs2 version of ~~/.config/emacs/~ goes to ~~/.config/emacs.default/~. Execute the block using =C-c C-c=
