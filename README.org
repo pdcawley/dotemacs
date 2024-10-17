@@ -519,8 +519,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
 Let's try these slightly altered scrolling defaults and see how they feel.
 #+begin_src emacs-lisp
 (setopt scroll-error-top-bottom t
-        recenter-positions '(top bottom middle)
-        next-screen-context-lines 0)
+        recenter-positions '(top bottom middle))
 #+end_src
 
 And, by default, emacs disables a few useful commands, so we re-enable them:
