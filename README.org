@@ -1672,6 +1672,16 @@ Sometimes it's useful to have multiple interfaces to a thing because we have mul
     :after (calc))
 #+end_src
 
+*** Dragging stuff
+Let's try the ~drag-stuff~ minor mode. =M-up=, =M-down=, =M-right= and =M-left= will drag the things.
+
+#+begin_src emacs-lisp
+(use-package drag-stuff
+  :hook (emacs-startup . drag-stuff-global-mode)
+  :config
+  (drag-stuff-define-keys))
+#+end_src
+
 ** Completion stuff
 Live everyone else and their sibling, I use ~orderless~, ~corfu~, ~consult~, ~embark~, ~marginalia~ and ~vertico~ as the current fleet of completion related packages that work, when I configure them right.
 
