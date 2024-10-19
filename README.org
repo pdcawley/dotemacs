@@ -278,7 +278,12 @@ Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
 
 #+begin_src emacs-lisp
-  (defvar bootstrap-version)
+(require 'use-package)
+(setq use-package-verbose nil
+      use-package-always-defer t
+      use-package-enable-imenu-support t)
+
+(defvar bootstrap-version)
   (let ((bootstrap-file
          (expand-file-name
   	"straight/repos/straight.el/bootstrap.el"
