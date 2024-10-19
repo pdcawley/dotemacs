@@ -560,20 +560,6 @@ We'd like to see compile warnings promptly.
   (advice-add 'display-warning :around #'dont-delay-compile-warnings)
 #+end_src
 
-And it's handy to retain the history of useful variables and recent files between sessions.
-
-#+begin_src emacs-lisp
-  (use-feature savehist
-    :custom
-    (savehist-save-minibuffer-history t "Save minibuffer history")
-    (savehist-additional-variables '(kill-ring
-                                     search-ring
-                                     regexp-search-ring
-                                     register-alist)
-                                   "Save more histories")
-    :hook emacs-startup)
-#+end_src
-
 ** Keybinding support functions                                  :deprecated:
 
 I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
@@ -1717,15 +1703,20 @@ Live everyone else and their sibling, I use ~orderless~, ~corfu~, ~consult~, ~em
 I like to save the history of the ~mini-buffer~
 
 #+begin_src emacs-lisp
-  (use-package savehist
-    :hook (emacs-startup . savehist-mode)
-    :custom
-    (savehist-file (no-littering-expand-var-file-name "savehist"))
-    (history-length 100)
-    (history-delete-duplicates t)
-    (savehist-save-minibuffer-history t)
-    :config
-    (add-to-list 'savehist-additional-variables 'kill-ring))
+(use-package savehist
+  :hook (emacs-startup . savehist-mode)
+  :custom
+  (savehist-file (no-littering-expand-var-file-name "savehist"))
+  (history-length 100)
+  (history-delete-duplicates t)
+  (savehist-save-minibuffer-history t)
+  (savehist-save-minibuffer-history t "Save minibuffer history")
+  (savehist-additional-variables '(kill-ring
+                                   search-ring
+                                   regexp-search-ring
+                                   register-alist)
+                                 "Save more histories"))
+
 #+end_src
 
 *** Dynamic abbreviation
