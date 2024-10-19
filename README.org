@@ -2895,32 +2895,43 @@ We're poaching this from Sacha again
 ****** Other agenda config stuff
 
 #+begin_src emacs-lisp
-  (org-log-done 'time)
-  (org-agenda-window-setup 'current-window)
-  (org-agenda-current-time-string "")
-  (org-agenda-hide-tags-regexp ".*")
-  (org-agenda-block-separator nil)
-  (org-agenda-compact-blocks t)
+(org-log-done 'time)
+(org-agenda-window-setup 'current-window)
+(org-agenda-current-time-string "")
+(org-agenda-hide-tags-regexp ".*")
+(org-agenda-block-separator nil)
+(org-agenda-compact-blocks t)
+(org-agenda-files  (+org-file-paths "inbox.org"
+                                    "DwarfFortress.org"
+                                    "blog.org"
+                                    "coding.org"
+                                    "codex.org"
+                                    "isolation-sessions.org"
+                                    "lyrics.org"
+                                    "scratch.org"
+                                    "todo.org"
+                                    "house.org"
+                                    "~/Sites/bofh.org.uk/org-content/"
+                                    "~/Documents/RoamNotes/"))
+(org-agenda-span 2)
+(org-agenda-tags-column -100)
+(org-agenda-sticky nil)
+(org-agenda-inhibit-startup t)
+(org-agenda-use-tag-inheritance t)
+(org-agenda-show-log t)
+(org-agenda-skip-scheduled-if-done t)
+(org-agenda-skip-deadline-if-done t)
+(org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
+(org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
 
-  (org-agenda-span 2)
-  (org-agenda-tags-column -100)
-  (org-agenda-sticky nil)
-  (org-agenda-inhibit-startup t)
-  (org-agenda-use-tag-inheritance t)
-  (org-agenda-show-log t)
-  (org-agenda-skip-scheduled-if-done t)
-  (org-agenda-skip-deadline-if-done t)
-  (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
-  (org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
+(org-complete-tags-always-offer-all-agenda-tags t)
+(org-use-fast-tag-selection nil)
 
-  (org-complete-tags-always-offer-all-agenda-tags t)
-  (org-use-fast-tag-selection nil)
-
-  (org-agenda-prefix-format
-   '((agenda . "  %?-2i %t ")
-     (todo   . " %i %-12:c")
-     (tags   . " %i %-12:c")
-     (search . " %i %-12:c")))
+(org-agenda-prefix-format
+ '((agenda . "  %?-2i %t ")
+   (todo   . " %i %-12:c")
+   (tags   . " %i %-12:c")
+   (search . " %i %-12:c")))
 
 #+end_src
 **** Helper functions
