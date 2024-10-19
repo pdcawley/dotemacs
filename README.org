@@ -1676,6 +1676,7 @@ Let's try the ~drag-stuff~ minor mode. =M-up=, =M-down=, =M-right= and =M-left= 
 
 #+begin_src emacs-lisp
 (use-package drag-stuff
+  :diminish
   :hook (emacs-startup . drag-stuff-global-mode)
   :config
   (drag-stuff-define-keys))
