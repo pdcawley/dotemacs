@@ -282,6 +282,12 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
 (setq use-package-verbose nil
       use-package-always-defer t
       use-package-enable-imenu-support t)
+;; For some reason, I'm getting loads of warnings about use-package parse
+;; errors while I'm editing stuff and *of course* I am. While I go searching
+;; for whatever's so eagerly running these checks while I'm halfway through
+;; typing stuff, I'm just suppressing the warnings from popping up a warnings
+;; buffer. They're still logged.
+(add-to-list 'warning-suppress-types '(use-package))
 
 (defvar bootstrap-version)
   (let ((bootstrap-file
