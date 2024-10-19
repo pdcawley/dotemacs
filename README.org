@@ -3200,29 +3200,30 @@ The Language Server Protocol is probably the future, but I'm still experimenting
   ;;  (use-feature jsonrpc)
 #+end_src
 *** Syntax checking
+**** Flymake :disabled:
 I'm trying ~flymake~ for syntax checking.
 
 #+begin_src emacs-lisp
-  (use-feature flymake
-    :hook prog-mode
-    :bind (:map flymake-mode-map
-                ("M-m c n" . flymake-goto-next-error)
-                ("M-m c p" . flymake-goto-prev-error)
-                ("M-m c l" . flymake-show-buffer-diagnostics))
-    :init
-    (defun maybe-turn-off-byte-compile-check ()
-      (when (bound-and-true-p no-byte-compile)
-        (remove-hook flymake-diagnostic-functions
-                     'elisp-flymake-byte-compile t))))
-
-
-
+(use-feature flymake
+  :disabled
+  :hook prog-mode
+  :bind (:map flymake-mode-map
+              ("m-m c n" . flymake-goto-next-error)
+              ("M-m c p" . flymake-goto-prev-error)
+              ("M-m c l" . flymake-show-buffer-diagnostics))
+  :init
+  (defun maybe-turn-off-byte-compile-check ()
+    (when (bound-and-true-p no-byte-compile)
+      (remove-hook flymake-diagnostic-functions
+                   'elisp-flymake-byte-compile t))))
 #+end_src
-**** Try doing prose checking too?
+***** Try doing prose checking too?
 #+begin_src emacs-lisp
-  (use-package flymake-vale
-    :straight (:host github :repo "/tpeacock19/flymake-vale"))
+(use-package flymake-vale
+  :disabled
+  :straight (:host github :repo "/tpeacock19/flymake-vale"))
 #+end_src
+**** Flycheck
 *** Add documentation
 #+begin_src emacs-lisp
 (use-package eldoc
