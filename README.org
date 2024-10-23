@@ -2316,7 +2316,6 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-log-into-drawer t)
   (org-pretty-entities t)
   (org-use-sub-superscripts "{}")
-  (org-hide-emphasis-markers t)
   (org-startup-with-inline-images (display-graphic-p))
   (org-image-actual-width '(300))
   (org-structure-template-alist
