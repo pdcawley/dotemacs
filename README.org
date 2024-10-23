@@ -2237,6 +2237,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 #+begin_src emacs-lisp :noweb yes
 (use-package org
   :mode ("\\.txt$" . org-mode)
+  :diminish org-src-mode
   :bind-keymap
   :bind
   (:map org-mode-map
@@ -3268,9 +3269,9 @@ Let's try using the built in ~tree-sitter~ for syntax and parsing.
 I like it when my editor keeps things indented according to rules. Saves thought. So as well as the per-language modes, I use ~aggressive-indent~.
 
 #+begin_src emacs-lisp
-  (use-package aggressive-indent
-    :diminish " ⇒"
-    :hook (emacs-startup . aggressive-indent-global-mode))
+(use-package aggressive-indent
+  :diminish ""
+  :hook (emacs-startup . aggressive-indent-global-mode))
 #+end_src
 
 *** Alignment helpers
@@ -3560,16 +3561,18 @@ Experiment with =M-x edit-list= which apparently makes it easier to edit an Emac
 (use-package suggest :defer t)
 
 (use-package ipretty
-  :diminish
+  :diminish ""
   :config (ipretty-mode 1))
 
 ;;; Bloody use-package's :bind-keymap doesn't play nicely with which-key
 ;;; TODO: Fix this
 (use-package erefactor
+  :diminish ""
   :bind-keymap
   ("M-m , r" . erefactor-map))
 
 (use-package redshank
+  :diminish redshank-mode
   :hook emacs-lisp-mode)
 #+end_src
 
