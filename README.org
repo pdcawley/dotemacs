@@ -2396,14 +2396,44 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 In a gui environment, ~org-modern~ looks great.
 
 #+begin_src emacs-lisp
-  (use-package org-modern
-    :after org
-    :if (display-graphic-p)
-    :straight
-    (:host github :repo "minad/org-modern")
-    :hook
-    (org-mode        . global-org-modern-mode))
-
+(use-package org-modern
+  :after org
+  :if (display-graphic-p)
+  :straight
+  (:host github :repo "minad/org-modern")
+  :hook
+  (org-mode        . global-org-modern-mode)
+  :config
+  (setq org-modern-keyword
+   '((t . t)
+     ("bibliography" . " ")
+     ("cite_export" . "  ")
+     ("include" . "⇤")
+     ("setupfile" . "⇚")
+     ("html_head" . "🅷")
+     ("html" . "🅗")
+     ("latex_class" . "🄻")
+     ("latex_header" . "🅻")
+     ("latex" . "🅛")
+     ("beamer_theme" . "🄱")
+     ("beamer_header" . "🅱")
+     ("beamer" . "🅑")
+     ("attr_latex" . "🄛")
+     ("attr_html" . "🄗")
+     ("attr_org" . "⒪")
+     ("header" . "›")
+     ("caption" . "≌")
+     ("name" . "⋮")
+     ("results" . "∴")))
+  (setq org-modern-block-name
+   '((t . t)
+     ("src" "»" "∥")
+     ("example" "»-" "∥")
+     ("quote" "“" "”")))
+  (setq org-modern-fold-stars
+   '(;; ("⮚" . "⮛") ;; Check if this shows up on Linux/Mac gui
+     ;; ("⮞" . "⮟") ;; Check if this shows up on Linux/Mac gui
+     ("▷" . "▽") ("▶" . "▼") ("→" . "↓") ("↠" . "↡"))))
 #+end_src
 
 ***** Better bullets
