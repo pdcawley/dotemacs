@@ -568,8 +568,8 @@ I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ 
   (require 'pdcmacs-global-bindings)
 #+end_src
 
-** COMMENT Set up the UI
-
+** Set up the UI
+*** Line numbers in programming modes ftw
 #+begin_src emacs-lisp
 (use-package display-line-numbers
   :hook
@@ -578,6 +578,12 @@ I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ 
   (display-line-numbers-grow-only t)
   (display-line-numbers-type t)
   (display-line-numbers-width nil))
+#+end_src
+
+*** I like to see the time
+
+#+begin_src emacs-lisp
+(display-time-mode 1)
 #+end_src
 
 ** Configuration
