@@ -3242,6 +3242,46 @@ I'm trying ~flymake~ for syntax checking.
   :straight (:host github :repo "/tpeacock19/flymake-vale"))
 #+end_src
 **** Flycheck
+#+begin_src emacs-lisp
+(use-package flycheck-posframe
+  :if (display-graphic-p)
+  :hook (flycheck-mode
+         (lsp-mode . (lambda () (flycheck-posframe-mode 0)))
+         (post-command . flycheck-posframe-monitor-post-command))
+  :custom
+  (flycheck-posframe-warning-prefix "⚠ ")
+  (flycheck-posframe-error-prefix "❌ ")
+  (flycheck-posframe-info-prefix "ⓘ ")
+  :config
+  (defun flycheck-posframe-monitor-post-command ()
+    (when (not (flycheck-posframe-check-position))
+      (posframe-hide flycheck-posframe-buffer)))
+  (set-face-attribute 'flycheck-posframe-info-face nil :inherit 'font-lock-variable-name-face)
+  (set-face-attribute 'flycheck-posframe-warning-face nil :inherit 'warning)
+  (set-face-attribute 'flycheck-posframe-error-face nil :inherit 'error))
+
+(use-package flycheck
+  :diminish
+  :hook
+  (prog-mode . flycheck-mode)
+  ;;(flycheck-mode . flycheck-set-indication-mode)
+  :bind (:map
+         flycheck-mode-map
+         ("M-m c n" . flycheck-next-error)
+         ("M-m c p" . flycheck-previous-error)
+         ("M-m c l" . flycheck-list-errors))
+  :config
+  (with-eval-after-load 'org
+    (defun disable-checkdoc-in-org-src-block ()
+      (add-to-list 'flycheck-disabled-checkers 'emacs-lisp-checkdoc))
+    (add-hook 'org-src-mode-hook #'disable-checkdoc-in-org-src-block))
+  :custom
+  (checkdoc-force-docstrings-flag nil)
+  (flycheck-check-syntax-automatically '(save idle-buffer-switch mode-enabled))
+  (flycheck-standard-error-navigation nil)
+  (flycheck-indication-mode (if (display-graphic-p) 'left-fringe 'left-margin))
+  (flycheck-stylelintrc ".stylelintrc.json"))
+#+end_src
 *** Add documentation
 #+begin_src emacs-lisp
 (use-package eldoc
