@@ -493,7 +493,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
         bidi-paragraph-direction 'left-to-right
         bidi-inhibit-bpa t
 
-        warning-suppress-types '((comp))
+        warning-suppress-types '((comp) (use-package))
         fill-column 79
         gnutls-verify-error t
         gnutls-min-prime-bits 2048
