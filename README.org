@@ -49,10 +49,13 @@ Part of the point of literate programming is to let you present code 'out of seq
   - [ ] ~pdcmacs-global-bindings.el~
   - [ ] ~pdcmacs-hugo-support.el~
   - [ ] ~pdcmacs-webservice.el~
-** TODO Things to investigate [0/1]
+** TODO Things to investigate [0/2]
 *** RESEARCH Org-transclusion
 The ~org-transclusion~ package is, apparently a way to link to a document in a way that includes its content in the linking file and which is updated when the linked document is. Not sure if it's useful for my purposes.
-*** RESEARCH Dogears
+*** STARTED Dogears
+    :LOGBOOK:
+    - State "STARTED"    from "RESEARCH"   [2024-10-23 Wed 09:43]
+    :END:
 Looks useful, a tool for remembering where you've been and jumping back there without having to set explicit bookmarks
 
 * Initial Setup
@@ -1178,6 +1181,17 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
   ([other-window] . ace-window)
   ("M-m w o" . ace-window)
   ("M-m w s" . ace-swap-window))
+#+end_src
+
+*** Dogears
+#+begin_src emacs-lisp
+(use-package dogears
+  :hook emacs-startup
+  :bind (("M-m g d" . dogears-go)
+         ("M-m g M-b" . dogears-back)
+         ("M-m g M-f" . dogears-forward)
+         ("M-m g M-d" . dogears-list)
+         ("M-m g M-D" . dogears-sidebar)))
 #+end_src
 
 ** File handling
