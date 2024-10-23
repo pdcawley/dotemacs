@@ -3130,27 +3130,27 @@ And add a capture template to help acquire them
 Not sure if I actually need this, but again, I'm lifting code to get started.
 
 #+begin_src emacs-lisp
-  (use-package org-ql)
+(use-package org-ql)
 
-  (use-package org-super-agenda
-    :hook emacs-startup
-    :custom
-    (org-super-agenda-groups
-     '((:name " TODAY"
-              :deadline today
-              :date today
-              :scheduled today
-              :order 1
-              :face 'warning)
-       (:name " Upcoming Deadlines"
-              :deadline future
-              :order 2))))
+;; (use-package org-super-agenda
+;;   :hook emacs-startup
+;;   :custom
+;;   (org-super-agenda-groups
+;;    '((:name " TODAY"
+;;             :deadline today
+;;             :date today
+;;             :scheduled today
+;;             :order 1
+;;             :face 'warning)
+;;      (:name " Upcoming Deadlines"
+;;             :deadline future
+;;             :order 2))))
 
-  (use-package casual-agenda
-    :bind (:map
-           org-agenda-mode-map
-           ("C-o" . casual-agenda-tmenu))
-    :after org-agenda)
+(use-package casual-agenda
+  :bind (:map
+         org-agenda-mode-map
+         ("C-o" . casual-agenda-tmenu))
+  :after org-agenda)
 
 
 #+end_src
