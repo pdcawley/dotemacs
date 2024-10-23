@@ -1175,6 +1175,7 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
 #+begin_src emacs-lisp
 (use-package ace-window
   :bind
+  ([other-window] . ace-window)
   ("M-m w o" . ace-window)
   ("M-m w s" . ace-swap-window))
 #+end_src
