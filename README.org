@@ -2250,6 +2250,8 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
         ("M-m , r"        . org-refile)
         ("M-m , R"        . org-reveal))
 
+  :preface
+  <<org-preface>>
   :init
   (bind-keys :prefix "M-m o"
              :prefix-map pdc-org-prefix
@@ -2269,7 +2271,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (defvar org-directory "~/Documents/org")
 
   (defvar pdc/org-inbox-file
-    (expand-file-name "inbox.org" org-directory))
+    (+org-file-path "inbox.org"))
 
   <<org-init>>
   :custom
@@ -2944,9 +2946,8 @@ We're poaching this from Sacha again
 ***** Finding .org files
 We want to be able to find ~foo.org~ in any of the directories where org files live and to create in ~org-directory~ otherwise. So we'll set up ~+org-extra-directories~ and write ~+org-file-path~ which will do that.
 
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-init
-  (defvar +org-extra-directories '("~/Dropbox/MobileOrg"
-                                   "~/Documents/MobileOrg"))
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-preface
+  (defvar +org-extra-directories '("~/Dropbox/MobileOrg"))
 
   (defun +org-file-path (file)
     "Expand FILE in the correct directory of org files.
