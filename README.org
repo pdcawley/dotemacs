@@ -763,7 +763,7 @@ There's a /lot/ going on in some modelines, and long major mode names can take u
 
 #+end_src
 
-*** Dashboard
+*** COMMENT Dashboard
 A customized startup screen. This is experimental, but why not?
 
 #+begin_src emacs-lisp
