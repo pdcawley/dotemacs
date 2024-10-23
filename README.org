@@ -1726,6 +1726,13 @@ I like to save the history of the ~mini-buffer~
 
 #+end_src
 
+And remembering the state of the ~*scratch*~ buffer is handy too.
+#+begin_src emacs-lisp
+(use-package persistent-scratch
+  :hook emacs-startup)
+
+#+end_src
+
 *** Dynamic abbreviation
 We use the in-built ~dabbrev~ package. It doesn't need much configuration, but it doesn't hurt to do some.
 
