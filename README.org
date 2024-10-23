@@ -426,7 +426,7 @@ We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables
 #+begin_src emacs-lisp
   (defvar pdc-leader "M-m")
   (defvar pdc-mode-leader "C-,")
-  (use-feature which-key
+  (use-package which-key
     :diminish
     :config
     ;; TODO: Replace this with something advice based.
@@ -634,18 +634,21 @@ We use ~casual-info~
 I've used Zenburn or variants on it since forever and I'm not about to start now. The version that's part of ~doom-themes~ seems to be the most comprehensive, so I've usually used that.
 
 #+begin_src emacs-lisp :tangle nil
-  (use-package doom-themes
-    :config
-    (load-theme 'doom-zenburn t))
+(use-package doom-themes
+  :custom
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
+  :config
+  (load-theme 'doom-zenburn t))
 #+end_src
 **** Trying out Modus Vivendi
 
-     #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package modus-themes
   :init
   (load-theme 'modus-vivendi))
 
-     #+end_src
+#+end_src
 
 *** Display background colour for strings with the colour value
 
@@ -3243,6 +3246,13 @@ anything RevealAnything https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/an
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
 
 
+** Viewing Stuff
+
+*** PDF Tools
+#+begin_src emacs-lisp
+(use-package pdf-tools)
+#+end_src
+
 ** Programming stuff
 *** Eglot
 The Language Server Protocol is probably the future, but I'm still experimenting with it. So let's see about configuring ~eglot~, which is the LSP support that made it into Emacs core. If I don't get on with it, I'll give ~lsp-mode~ a go.
@@ -3806,7 +3816,7 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
 #+end_src
 
 **** SQLite
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle nil
 (use-package sqlite-mode
   :commands sqlite-mode-open-file
   :init
