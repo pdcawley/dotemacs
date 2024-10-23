@@ -2044,8 +2044,12 @@ The ~embark~ package is analogous to the right click menu, but rather more… mo
    ("M-." . embark-act)
    ("M-," . embark-dwim)
    ("C-;" . embark-dwim)
+   ("M-m ." . embark-act)
+   ("M-m ;" . embark-dwim)
    (([remap describe-bindings] . embark-bindings))
-   ("C-h B" . embark-bindings))
+   ("C-h B" . embark-bindings)
+   :map embark-file-map
+   ("V" . view-file))
   :custom
   (embark-cycle-key "M-.")
   (prefix-help-command #'embark-prefix-help-command)
@@ -2058,10 +2062,10 @@ The ~embark~ package is analogous to the right click menu, but rather more… mo
   (embark-verbose-indicator-excluded-actions '(embark-cycle embark-act-all embark-collect embark-export embark-insert)))
 
 
-  (use-package embark-consult
-    :after consult
-    :hook
-    (embark-collect-mode . consult-preview-at-point-mode))
+(use-package embark-consult
+  :after consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
 *** Vertico
