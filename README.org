@@ -2347,6 +2347,13 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
   (org-cycle-include-plain-lists nil)
   (org-support-shift-select t)
+  ;; From Sacha Chua
+  (org-todo-keyword-faces
+   (when (fboundp 'modus-themes-get-color-value)
+     `(("TODO" . (:foreground ,(modus-themes-get-color-value 'blue-warmer) :weight bold))
+       ("DONE" . (:foreground ,(modus-themes-get-color-value 'green-warmer) :weight bold))
+       ("WAITING" . (:foreground ,(modus-themes-get-color-value 'red-warmer) :weight bold))
+       ("SOMEDAY" . (:foreground ,(modus-themes-get-color-value 'fg-dim) :weight bold)))))
   <<org-custom>>
   :hook
   (org-mode . visual-line-mode)
