@@ -647,7 +647,6 @@ I've used Zenburn or variants on it since forever and I'm not about to start now
 (use-package modus-themes
   :init
   (load-theme 'modus-vivendi))
-
 #+end_src
 
 *** Display background colour for strings with the colour value
@@ -1845,7 +1844,6 @@ Sometimes, it's nice to edit the contents of the mini-buffer in a full buffer. S
     :init (miniedit-install))
 #+end_src
 
-
 *** Corfu
 The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've yet to find it. ~corfu~ in conjunction with ~vertico~ etc is about as good as I've found.
 
@@ -2250,7 +2248,6 @@ A few mods:
 #+end_src
 
 ** Writing
-
 *** Visual fill column
 In writing modes, I like the way ~visual-fill-column-mode~ handles things, centring the text block in the window.
 
@@ -2418,7 +2415,6 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 **** Update appearances
 ***** Modernise things a little
 In a gui environment, ~org-modern~ looks great.
-
 #+begin_src emacs-lisp
 (use-package org-modern
   :after org
@@ -2471,9 +2467,6 @@ In a gui environment, ~org-modern~ looks great.
                 ("⮞" . "⮟")))
           ("▷" . "▽") ("▶" . "▼") ("→" . "↓") ("↠" . "↡"))))
 #+end_src
-
-*****
-
 ***** Better bullets
 Asterisks are boring.
 #+begin_src emacs-lisp
@@ -3281,9 +3274,7 @@ anything RevealAnything https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/an
 ****** TODO Eliminate reveal CDN?
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
 
-
 ** Viewing Stuff
-
 *** PDF Tools
 #+begin_src emacs-lisp
 (use-package pdf-tools)
@@ -4037,7 +4028,6 @@ I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
 ("https://reddit.com/r/emacs.rss" reddit emacs)
 ("https://reddit.com/r/dwarffortress.rss" reddit emacs)
 #+end_src
-
 
 
 ** Load extra configuration and customizations
