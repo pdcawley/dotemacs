@@ -687,6 +687,7 @@ So many modeline packages. I ended up settling on the ~doom-modeline~ package.
     (doom-modeline-height 15)
     (doom-modeline-bar-width 6)
     (doom-modeline-minor-modes t)
+    (doom-modeline-buffer-encoding 1)
     (doom-modeline-buffer-file-name-style 'truncate-except-project)
     :hook after-init)
 #+end_src
