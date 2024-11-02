@@ -706,6 +706,12 @@ There's a /lot/ going on in some modelines, and long major mode names can take u
 (rename-modeline emacs-lisp-mode "λ(e)" 'elisp-mode)
 #+end_src
 
+**** Diminish a few minor modes too
+#+begin_src emacs-lisp
+(with-eval-after-load 'diminish
+  (diminish 'visual-line-mode " ⮐"))
+#+end_src
+
 *** Fonts
 
 **** Extend font-lock
