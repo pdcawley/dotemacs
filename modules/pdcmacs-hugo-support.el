@@ -376,17 +376,6 @@ See `org-capture-templates' for more information"
      :jump-to-captured 1)))
 
 
-(use-package web-mode
-  :mode
-  "\\.\\(html?\\|json\\|s?css\\)\\'"
-  :init
-  (setq web-mode-engines-alist
-        '(("go" . "/layouts/.*\\.\\(thml?\\|json\\|xml\\|jfw\\)\\'")))
-
-  (setq-default web-mode-markup-indent-offset 2
-                web-mode-css-indent-offset 2
-                web-mode-code-indent-offset 2))
-
 (use-package toml-mode
   :mode
   "\\.toml\\'")

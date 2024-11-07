@@ -3841,13 +3841,21 @@ There's no avoiding it, I fear, but there you go.
 The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not sure if it really works well, but again, one has to start somewhere.
 
 #+begin_src emacs-lisp
-  (use-package web-mode
-    :mode "\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
-    :custom
-    (web-mode-code-indent-offset 2)
-    (web-mode-markup-indent-offset 2)
-    (web-mode-attribute-indent-offset 2))
-
+(use-package web-mode
+  :mode
+  "\\.\\(html?\\|ejs\\|tsx\\|jsx\\|s?css\\|go\\(html\\|tmpl\\)\\)\\'"
+  :preface
+  (require 'regexp-opt)
+  :custom
+  (web-mode-engines-alist
+   `(("go" . "\\(/layouts/.*\\.\\(html?\\|json\\|xml\\|jfw\\)\\|\\.go\\(html?\\|tmpl\\)\\)\\'")
+     ("template-toolkit" . "\\.tt3?\\'")
+     ("erb" . ,(concat
+                (regexp-opt '(".erb" ".rhtml" ".ejs"))
+                "\\'"))))
+  (web-mode-code-indent-offset 2)
+  (web-mode-markup-indent-offset 2)
+  (web-mode-attribute-indent-offset 2))
 #+end_src
 
 **** SQLite
