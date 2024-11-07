@@ -3502,7 +3502,6 @@ Setup some common lisp mode stuff
 #+end_src
 
 ***** Paredit
-
 Paredit is an excellent mode for working in Lisps. At its simplest it 'just' keeps parens balanced and ensures your lisp is always well formed, but it comes into its own once you start needing to fiddle with the structure of code.
 
 I've also added a bit of extra cleverness around what happens after closing a sexp. An early version of paredit used to insert a newline after closing parens, but roll that back if the next character you typed was a space. I liked that behaviour, so when paredit removed the behaviour (presumably because it was too surprising), I added it back in.
@@ -3810,6 +3809,16 @@ Emacs expects a certain amount of boilerplate in a ~.el~ file, so let's auto gen
 
 \(provide '" (file-name-base (buffer-file-name)) ")
 \;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
+#+end_src
+
+***** Easy Escape
+Let's try ~easy-escape~ to make regular expressions and such look nicer in lisp modes.
+
+#+begin_src emacs-lisp
+(use-package easy-escape
+  :defer nil
+  :diminish easy-escape-minor-mode
+  :hook ((lisp-mode emacs-lisp-mode) . 'easy-escape-minor-mode))
 #+end_src
 
 **** Haskell
