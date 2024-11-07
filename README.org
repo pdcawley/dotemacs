@@ -896,6 +896,12 @@ Smerge is what handles merging and we'd like to plum it into our leader key base
 
 #+end_src
 
+*** git-modes
+Various minor and major modes for different git-related files.
+#+begin_src emacs-lisp
+(use-package git-modes)
+#+end_src
+
 ** Navigation
 Moving around within Emacs (buffers, frames, windows, etc.)
 
