@@ -196,6 +196,7 @@
 
 (use-package ox-hugo
   :after ox
+  :autoload (org-hugo-slug)
   :config
 
   (defun +org-hugo-set-shortcode-props (code &rest props)
