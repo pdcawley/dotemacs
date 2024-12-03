@@ -149,11 +149,15 @@ Increasing the GC thresholds and turning off file name handlers during startup m
 - Drop the compiled files in ~eln-cache/~
 
 #+begin_src emacs-lisp
-  (setq-default load-prefer-newer noninteractive)
-  (when (featurep 'native-compile)
-    (setq native-comp-async-report-warnings-errors nil
-          native-comp-deferred-compilation t)
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
+(when (featurep 'native-compile)
+  (setq native-comp-async-report-warnings-errors nil
+        native-comp-deferred-compilation t)
+  (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
+
+(add-to-list 'display-buffer-alist
+             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+               (display-buffer-no-window)
+               (allow-no-window . t)))
 #+end_src
 
 ** Add the mode to the frame title format

@@ -1,0 +1,431 @@
+(use-package doom-themes
+  :custom
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
+  :config
+  (load-theme 'doom-zenburn t))
+
+(defun pdc/dired-create-directory ()
+  "Wrapper to dired-create-directory to avoid minibuffer completion"
+  (interactive)
+  (let ((search-term
+         (read-from-minibuffer "Dir : ")))
+    (dired-create-directory search-term)))
+
+(defun pdc/dired-create-empty-file ()
+  "Wrapper to `dired-create-empty-file' to avoid minibuffer expansion"
+  (interactive)
+  (let ((search-term
+         (read-from-minibuffer "File : ")))
+    (dired-create-empty-file search-term)))
+
+(bind-keys :map dired-mode-map
+           ("_"       . pdc/dired-create-empty-file)
+           ("+"       . pdc/dired-create-directory))
+
+(defun +org-add-dashes-to-tag-regexps ()
+  (setq org-complex-heading-regexp
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(\\[#.\\]\\)\\)?"
+                "\\(?: +\\(.*?\\)\\)??"
+                "\\(?:[ \t]+\\(:[-[:alnum:]_@#%:]+:\\)\\)?"
+                "[ \t]*$")
+        org-complex-heading-regexp-format
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(\\[#.\\]\\)\\)?"
+                "\\(?: +"
+                ;; Stats cookies can be stuck to body.
+                "\\(?:\\[[0-9%%/]+\\] *\\)*"
+                "\\(%s\\)"
+                "\\(?: *\\[[0-9%%/]+\\]\\)*"
+                "\\)"
+                "\\(?:[ \t]+\\(:[-[:alnum:]_@#%%:]+:\\)\\)?"
+                "[ \t]*$")
+        org-todo-line-tags-regexp
+        (concat "^\\(\\*+\\)"
+                "\\(?: +" org-todo-regexp "\\)?"
+                "\\(?: +\\(.*?\\)\\)??"
+                "\\(?:[ \t]+\\(:[-[:alnum:]:_@$%]+:\\)\\)?"
+                "[ \t]*$")))
+
+(org-mode . +org-add-dashes-to-tag-regexps)
+
+  ("el" . "src emacs-lisp")
+  ("ent" . "src emacs-lisp :tangle nil")
+  ("ett" . "src emacs-lisp :tangle nil :noweb-ref")
+  ("pl" . "src perl")
+  ("p6" . "src raku")
+  ("sh" . "src sh")
+  ("md" . "src markdown")
+  ("rk" . "src racket")
+  ("hs" . "src haskell")
+  ("sql" . "src sql")
+
+(org-src-window-setup 'current-window)
+
+  (org-reverse-note-order t)
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-refile-use-cache nil)
+  (org-refile-blank-before-new-entry nil)
+  (org-refile-targets
+   `((,(+org-file-paths
+        "organiser.org"
+        "routines.org"
+        "reference.org"
+        "decisions.org"
+        "posts.org"
+        "easterley.org"
+        "inbox.org"
+        "songs.org")
+      . (:maxlevel . 5))))
+
+  (org-todo-keywords
+   '((sequence "TODO(t)"
+               "STARTED(s!)"
+               "WAITING(w@/!)"
+               "SOMEDAY(.)" "BLOCKED(k@/!)" "|" "CANCELLED(c!)" "DONE(d!)")
+     (sequence "RESEARCH(r)" "|" "BLOGGED(q!)" "BOOKMARKED(b!)" "ZETTLED(z!)" "COMPLETE(x!)")
+     (sequence "TOLEARN(-)" "LEARNING(l!)" "|" "KNOWN(n)")))
+
+  (org-tag-alist '(("games" . ?g)
+                   ("songs" . ?s)
+                   ("writing" . ?w)
+                   ("coding" . ?c)
+                   ("learning" . ?a)
+                   ("reading" . ?r)
+                   ("computer" . ?l)
+                   ("errands" . ?e)))
+
+    (defun pdc/org-agenda-done (&optional arg)
+      "Mark current TODO as done.
+
+  With a prefix argument, cancel the task"
+      (interactive "P")
+      (if arg
+          (org-agenda-todo "CANCELLED")
+        (org-agenda-todo "DONE")))
+    (with-eval-after-load 'org-agenda
+      (bind-key "x" 'pdc/org-agenda-done org-agenda-mode-map))
+
+  (defun pdc/org-agenda-mark-done-and-add-followup ()
+    "Mark the current TODO as done and add another task to it.
+         Creates it at the same level as the previous task, so it's better to use
+         this with to-do items than with projects or headings."
+    (interactive)
+    (org-agenda-todo "DONE")
+    (org-agenda-switch-to)
+    (org-capture 0 "t"))
+  (with-eval-after-load 'org-agenda
+    (bind-key "F" 'pdc/org-agenda-mark-done-and-add-followup org-agenda-mode-map))
+
+  (org-expiry-inactive-timestamps t)
+  (org-clock-idle-time nil)
+  (org-log-done 'time)
+  (org-clock-autoclock-resolution nil)
+  (org-clock-continuously nil)
+  (org-clock-persist t)
+  (org-clock-in-switch-to-state "STARTED")
+  (org-clock-in-resume nil)
+  (org-show-notification-handler 'message)
+  (org-clock-report-include-clocking-task t)
+  (org-clock-into-drawer 1)
+
+  (org-clock-persistence-insinuate)
+
+  (org-enforce-todo-dependencies t)
+  (org-track-ordered-property-with-tag t)
+  (org-agenda-dim-blocked-tasks t)
+
+  (defun modi/org-split-block ()
+    "Sensibly split the current Org block at point"
+    (interactive)
+    (if (modi/org-in-any-block-p)
+        (save-match-data
+          (save-restriction
+            (widen)
+            (let ((case-fold-search t)
+                  (at-bol (bolp))
+                  block-start
+                  block-end)
+              (save-excursion
+                (re-search-backward "^\\(?1:[[:blank:]]*#\\+begin_.+?\\)\\(?: .*\\)*$" nil nil 1)
+                (setq block-start (match-string-no-properties 0))
+                (setq block-end (replace-regexp-in-string
+                                 "begin_" "end_"
+                                 (match-string-no-properties 1))))
+              (unless at-bol
+                (end-of-line 1))
+              (insert (concat (if at-bol "" "\n")
+                              block-end
+                              "\n\n"
+                              block-start
+                              (if at-bol "\n" "")))
+              (beginning-of-line (if at-bol -1 0)))))
+      (message "Point is not in an Org block")))
+  (defalias '+org-demarcate-block #'modi/org-split-block)
+  (defalias '+org-split-block #'modi/org-split-block)
+
+  (defun modi/org-in-any-block-p ()
+    "Return non-nil if the point is in any Org block
+
+  The Org block can by *any*: src, example, verse, etc., even any
+  Org Special block.
+
+  This function is heavily adapted from `org-between-regexps-p'."
+    (save-match-data
+      (let ((pos (point))
+            (case-fold-search t)
+            (block-begin-re "^[[:blank:]]*#\\+begin_\\(?1:.+?\\)\\(?: .*\\)*$")
+            (limit-up (save-excursion (outline-previous-heading)))
+            (limit-down (save-excursion (outline-next-heading)))
+            beg end)
+        (save-excursion
+          ;; Point is on a block when on BLOCK-BEGIN-RE or if
+          ;; BLOCK-BEGIN-RE can be found before it...
+          (and (or (org-in-regexp block-begin-re)
+                   (re-search-backward block-begin-re limit-up :noerror))
+               (setq beg (match-beginning 0))
+               ;; ... and BLOCK-END-RE after it...
+               (let ((block-end-re (concat "^[[:blank:]]*#\\+end_"
+                                           (regexp-quote (match-string-no-properties 1))
+                                           "\\( .*\\)*$")))
+                 (goto-char (match-end 0))
+                 (re-search-forward block-end-re limit-down :noerror))
+               (> (setq end (match-end 0)) pos)
+               ;; ... without another BLOCK-BEGIN-RE in-between.
+               (goto-char (match-beginning 0))
+               (not (re-search-backward block-begin-re (1+ beg) :noerror))
+               ;; Return value.
+               (cons beg end))))))
+
+  (with-eval-after-load 'transient
+    (transient-define-prefix pdct/base-org-mode ()
+      ["Org Mode"
+       ("n" "Next" org-forward-heading-same-level :transient t)
+       ("p" "Previous" org-backward-heading-same-level :transient t)
+       ("a" "Archive" org-archive-subtree-default :transient t)
+       ("k" "Kill" org-cut-subtree :transient t)])
+    (transient-define-prefix pdct/org-link ()
+      [:class transient-row "Org Link"
+              ("RET" "Open" org-open-at-point :transient t)
+              ("e" "Edit" org-insert-link :transient t)
+              ("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+    (transient-define-prefix pdct/org-src ()
+      [ "Org Src"
+        [("e" "Exec" org-babel-execute-src-block :transient t)
+         ("i" "edIt" org-edit-special :transient t)
+         ("d" "Demarcate" org-babel-demarcate-block :transient t)
+         ("g" "Goto" org-babel-goto-named-src-block :transient t)
+         ("/" "Split" +org-split-block :transient nil)]
+        [("r" "Result" org-babel-open-src-block-result :transient t)
+         ("x" "eXpand" org-babel-expand-src-block :transient t)
+         ("t" "Tangle at point" (lambda ()
+                                  (interactive)
+                                  (org-babel-tangle '(4))) :transient t)
+         ("T" "Tangle target file" (lambda ()
+                                     (interactive)
+                                     (org-babel-tangle '(16))) :transient t)]]
+      [("u" "< General" pdct/base-org-mode :transient transient--do-replace)])
+
+    (defun pdc/org-dwim ()
+      (interactive)
+      (if (derived-mode-p 'org-mode)
+          (let ((context (org-element-context)))
+            (cond
+             ((and (bolp) (looking-at org-outline-regexp))
+              ;; We don't do anything in this 'speed commands' context. Yet.
+              (pdct/base-org-mode))
+             ((org-in-src-block-p) (pdct/org-src))
+             ((eq (org-element-type context) 'link) (pdct/org-link))
+             (t (pdct/base-org-mode))))))
+
+    (keymap-set org-mode-map "M-m , ," #'pdc/org-dwim))
+
+(org-log-done 'time)
+(org-agenda-window-setup 'current-window)
+(org-agenda-current-time-string "")
+(org-agenda-hide-tags-regexp ".*")
+(org-agenda-block-separator nil)
+(org-agenda-compact-blocks t)
+(org-agenda-files  (+org-file-paths "inbox.org"
+                                    "DwarfFortress.org"
+                                    "blog.org"
+                                    "coding.org"
+                                    "codex.org"
+                                    "isolation-sessions.org"
+                                    "lyrics.org"
+                                    "scratch.org"
+                                    "todo.org"
+                                    "house.org"
+                                    "~/Sites/bofh.org.uk/org-content/"
+                                    "~/Documents/RoamNotes/"))
+(org-agenda-span 2)
+(org-agenda-tags-column -100)
+(org-agenda-sticky nil)
+(org-agenda-inhibit-startup t)
+(org-agenda-use-tag-inheritance t)
+(org-agenda-show-log t)
+(org-agenda-skip-scheduled-if-done t)
+(org-agenda-skip-deadline-if-done t)
+(org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
+(org-columns-default-format "%14SCHEDULED %Effort:(:) %1PRIORITY %TODO %50ITEM %TAGS")
+
+(org-complete-tags-always-offer-all-agenda-tags t)
+(org-use-fast-tag-selection nil)
+
+(org-agenda-prefix-format
+ '((agenda . "  %?-2i %t ")
+   (todo   . " %i %-12:c")
+   (tags   . " %i %-12:c")
+   (search . " %i %-12:c")))
+
+  (defvar +org-extra-directories '("~/Dropbox/MobileOrg"))
+
+  (defun +org-file-path (file)
+    "Expand FILE in the correct directory of org files.
+  If it exists in any of `+org-extra-directories', return that path,
+  otherwise return a path within `org-directory', whether the file exists or not."
+    (require 'dash)
+    (if (file-name-absolute-p file)
+        file
+      (or (-first #'file-exists-p
+                  (mapcar (lambda (d)
+                            (expand-file-name file d))
+                          (if (member org-directory +org-extra-directories)
+                              +org-extra-directories
+                            (cons org-directory +org-extra-directories))))
+          (expand-file-name file org-directory))))
+
+  (defun +org-file-paths (l-or-f &rest files)
+    "Expand files with `+org-file-path'."
+    (let ((all-files (if (listp l-or-f)
+                         (concat l-or-f (flatten-list files))
+                       (cons l-or-f (flatten-list files)))))
+      (mapcar #'+org-file-path all-files)))
+
+  (defun +org-refile-get-location-by-substring (regexp &optional file)
+    "Return the refile location identified by REGEXP."
+    (let ((org-refile-targets org-refile-targets) tbl)
+      (setq org-refile-target-table (org-refile-get-targets)))
+    (unless org-refile-target-table
+      (user-error "No refile targets"))
+    (cl-find regexp org-refile-target-table
+             :test
+             (lambda (a b)
+               (and
+                (string-match a (car b))
+                (or (null file)
+                    (string-match file (elt b 1)))))))
+
+  (defun +org-refile-subtree-to (name)
+    (org-refile nil nil (+org-refile-get-location-exact name)))
+
+  (defun +org-refile-get-location-exact (name &optional file)
+    "Return the refile location identified by NAME."
+    (let ((org-refile-targets org-refile-targets) tbl)
+      (setq org-refile-target-table (org-refile-get-targets)))
+    (unless org-refile-target-table
+      (user-error "No refile targets"))
+    (cl-find name org-refile-target-table
+             :test (lambda (a b)
+                     (and (string-equal a (car b))
+                          (or (null file)
+                              (string-match file (elt b 1)))))))
+
+  (defun +org-clock-in-refile (location &optional file)
+    "Clocks into LOCATION.
+  LOCATION and FILE can also be regular expressions for `+org-refile-get-location-by-substring'."
+    (interactive (list (+org-refile-get-location)))
+    (save-window-excursion
+      (save-excursion
+        (when (stringp location)
+          (setq location (+org-refile-get-location-by-substring location file)))
+        (org-refile 4 nil location)
+        (org-clock-in))))
+
+  (defun +org-move-line-to-destionation ()
+    "Moves the current list item to DESTINATION in the current buffer.
+  If no DESTINATIon is found, move it to the end of the list
+  and indent it one level."
+    (interactive)
+    (require 's)
+    (save-window-excursion
+      (save-excursion
+        (let ((string
+               (buffer-substring-no-properties
+                (line-beginning-position) (line-end-position)))
+              (case-fold-search nil)
+              found)
+          (delete-region (line-beginning-position)
+                         (1+ (line-end-position)))
+          (save-excursion
+            (goto-char (point-min))
+            (when (re-search-forward "DESTINATION" nil t)
+              (insert "\n" (make-string (- (match-beginning 0) (line-beginning-position)) ?\ ) (s-trim string))
+              (setq found t)))
+          (unless found
+            (org-end-of-item-list)
+            (insert string "\n"))))))
+  (defun +org-move-line-to-end-of-list ()
+    "Move the current list item to the end of the list."
+    (interactive)
+    (save-excursion
+      (let ((string (buffer-substring-no-properties (line-beginning-position)
+                                                    (line-end-position))))
+        (delete-region (line-beginning-position) (1+ (line-end-position)))
+        (org-end-of-item-list)
+        (insert string))))
+
+(defvar pdc/unfocusing nil "None-nil when I'm in the middle of unfocusing.")
+
+(defmacro +org-debounce-idle-timer (seconds var body &rest args)
+  `(progn
+     (defvar ,var nil "Timer.")
+     (when (timerp ,var) (cancel-timer ,var))
+     (setq ,var (run-with-idle-timer ,seconds nil ,body ,@args))))
+
+(defun +org-save-all-org-buffers ()
+  (unless pdc/unfocusing
+    (let ((pdc/unfocusing t))
+      (+org-debounce-idle-timer 10
+                                pdc/org-save-all-org-buffers-timer
+                                'org-save-all-org-buffers))))
+(add-function :after after-focus-change-function '+org-save-all-org-buffers)
+
+("C" "Contacts" entry (file ,(+org-file-path "contacts.org"))
+    "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:PHONE:
+:ALIAS:
+:NICKNAME:
+:IGNORE:
+:ICON:
+:NOTE:
+:ADDRESS:
+:BIRTHDAY:
+:END:")
+
+(use-package compile-angel
+  :straight (compile-angel
+             :type git
+             :host github
+             :repo "jamescherti/compile-angel.el")
+  :config
+  (compile-angel-on-save-mode t)
+  (compile-angel-on-load-mode t))
+
+(use-package sqlite-mode
+  :commands sqlite-mode-open-file
+  :init
+  (defun +sqlite-view-file-magically ()
+    "Runs `sqlite-mode-open-file' on the file name visited by the current buffer, killing it."
+    (require 'sqlite-mode)
+    (let ((file-name buffer-file-name))
+      (kill-current-buffer)
+      (sqlite-mode-open-file file-name)))
+  :magic ("SQLite format 3\x00" . +sqlite-view-file-magically))

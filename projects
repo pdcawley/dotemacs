@@ -1,0 +1,4 @@
+;;; -*- lisp-data -*-
+(("~/Sites/bofh.org.uk/")
+ ("~/Projects/emacs/")
+ ("~/.config/emacs-legacy/"))
