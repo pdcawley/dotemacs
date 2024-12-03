@@ -285,17 +285,6 @@ Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
 
 #+begin_src emacs-lisp
-(require 'use-package)
-(setq use-package-verbose nil
-      use-package-always-defer t
-      use-package-enable-imenu-support t)
-;; For some reason, I'm getting loads of warnings about use-package parse
-;; errors while I'm editing stuff and *of course* I am. While I go searching
-;; for whatever's so eagerly running these checks while I'm halfway through
-;; typing stuff, I'm just suppressing the warnings from popping up a warnings
-;; buffer. They're still logged.
-(add-to-list 'warning-suppress-types '(use-package))
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name
@@ -311,6 +300,19 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+(if (< emacs-major-version 29)
+    (straight-use-package 'use-package)
+  (require 'use-package))
+(setq use-package-verbose nil
+      use-package-always-defer t
+      use-package-enable-imenu-support t)
+;; For some reason, I'm getting loads of warnings about use-package parse
+;; errors while I'm editing stuff and *of course* I am. While I go searching
+;; for whatever's so eagerly running these checks while I'm halfway through
+;; typing stuff, I'm just suppressing the warnings from popping up a warnings
+;; buffer. They're still logged.
+(add-to-list 'warning-suppress-types '(use-package))
 
 (setq straight-use-package-by-default t)
 (straight-use-package 'diminish)
@@ -4106,11 +4108,8 @@ The pre-literate version of this file separated initialization into ~init.el~ an
 
 
 #+begin_src emacs-lisp
-  (when (file-exists-p pdcmacs-config-file)
-    (load pdcmacs-config-file))
-
-  (when (file-exists-p custom-file)
-    (load custom-file))
+(load pdcmacs-config-file :no-error-if-file-is-missing)
+(load custom-file :no-error-if-file-is-missing)
 #+end_src
 
 And load our support modules. I'll be pulling these into here too and either tangling them into ~init.el~ or leaving into their own module files. Decision for later.
