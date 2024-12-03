@@ -828,6 +828,38 @@ Of course there are multiple clipboards in play. ~clipetty~ fixes at least some 
       :hook (emacs-startup . global-clipetty-mode)))
 #+end_src
 
+** Quality of Life stuff
+*** Make C-g a little more helpful
+Another one lifted from [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/][Prot]]'s config.
+
+#+begin_src emacs-lisp
+(defun prot/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focussing on it.
+
+Our DWIM behaviour is as follows:
+
+- When the region is active, disabled it.
+- When a minibuffer is open, but not focussed, close it.
+- When the Completions buffer is selected, close it.
+- Otherwise, just do `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+(bind-keys :map global-map
+           ("C-g" . prot/keyboard-quit-dwim))
+#+end_src
+
 ** Versioning
 
 Well, of course I'm using [[https://magit.vc/][Magit]] to manage git. I'm not an idiot!
@@ -1006,11 +1038,22 @@ Basic configuration nicked from Prot: https://protesilaos.com/codelog/2023-06-26
   (dired-omit-file-p t)
   (dired-omit-files "^\\.?#"))
 
-  (use-feature dired-x
-    :commands (dired-jump dired-jump-other-window dired-omit-mode))
+(use-package dired-subtree
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB"   . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB"     . dired-subtree-remove))
+  :custom
+  (dired-subtree-use-backgrounds nil))
 
-  (use-package casual-dired
-    :bind (:map dired-mode-map ("C-o" . casual-dired-tmenu)))
+(use-feature dired-x
+  :commands (dired-jump dired-jump-other-window dired-omit-mode))
+
+(use-package casual-dired
+  :bind (:map dired-mode-map ("C-o" . casual-dired-tmenu)))
 #+end_src
 
 **** Avoid autocompletion when prompting for new directories and files
@@ -1746,6 +1789,14 @@ Let's try the ~drag-stuff~ minor mode. =M-up=, =M-down=, =M-right= and =M-left= 
   (drag-stuff-define-keys))
 #+end_src
 
+*** Delete selected text on text insertion
+Lifted from [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/][Prot]]'s snippets.
+
+#+begin_src emacs-lisp
+(use-feature delsel
+  :hook (after-init . delete-selection-mode))
+#+end_src
+
 *** Sudo Edit
 Yeah, sometimes I want to edit ~/etc/whatever~ and I don't want to have to leave Emacs to do so. So let's try ~sudo-edit~
 
@@ -1889,7 +1940,7 @@ The perfect in-buffer pop-up completion system doesn't exist. Or, at least, I've
 
     ;; quarantine
     (corfu-history-mode 1)
-    (corfu-popupinfo-delay (cons nil 1.0))
+    (corfu-popupinfo-delay '(1.25 . 0.5))
     :config
     (add-to-list 'savehist-additional-variables 'corfu-history)
 
