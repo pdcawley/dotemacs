@@ -320,6 +320,8 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
 (or (require 'use-package nil t)
     (straight-use-package use-package))
 
+;; Get autocompilation or whatever sorted nice and early.
+<<early-compile-tweaks>>
 ;; get org loaded early
 (straight-use-package 'org)
 #+end_src
@@ -3665,16 +3667,17 @@ We use ~macrostep~ to examine macro expansion in Emacs Lisp buffers.
 #+end_src
 
 ****** Auto compilation
-Life is too short to remember to compile stuff on save.
+Let's try =compile-angel=, which claims to be lighter and more comprehensive than =auto-compile=.
 
-#+begin_src emacs-lisp
-  (use-package auto-compile
-    :hook
-    (after-init . auto-compile-on-load-mode)
-    (after-init . auto-compile-on-save-mode)
-    :custom
-    (auto-compile-display-buffer nil)
-    (auto-compile-mode-line-counter t))
+#+begin_src emacs-lisp :noweb-ref early-compile-tweaks :tangle nil
+(use-package compile-angel
+  :straight (compile-angel
+             :type git
+             :host github
+             :repo "jamescherti/compile-angel.el")
+  :config
+  (compile-angel-on-save-mode t)
+  (compile-angel-on-load-mode t))
 #+end_src
 
 ****** Edit list
