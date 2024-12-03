@@ -4038,19 +4038,7 @@ Looks like ~mastodon.el~ got some love from a terminal user or two, so it's work
 I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
 
 #+begin_src emacs-lisp
-(use-package elfeed
-  :custom
-  (elfeed-feeds
-   '(("http://nullprogram.com/feed/" emacs)
-     ("https://sachachua.com/blog/feed/" emacs)
-     ("https://macowners.club/posts/index.xml" emacs)
-     ("https://justinbarclay.ca/index.xml" emacs)
-     ("https://xeiaso.net/blog.rss" tech nix)
-     ("https://byorgey.github.io/blog/rss.xml" functional-programming)
-     ("https://mjg59.dreamwidth.org/" tech)
-     ("https://pluralistic.net/feed" tech rabble-rousing)
-     ("https://irreal.org/blog/?feed=rss2" emacs)
-     <<feeds>>)))
+(use-package elfeed)
 
 ;; (use-package elfeed-goodies
 ;;   :after elfeed
@@ -4060,13 +4048,6 @@ I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
 ;;   (elfeed-goodies/setup))
 
 #+end_src
-
-**** Feeds from reddit
-#+begin_src emacs-lisp :tangle nil :noweb-ref feeds
-("https://reddit.com/r/emacs.rss" reddit emacs)
-("https://reddit.com/r/dwarffortress.rss" reddit emacs)
-#+end_src
-
 
 ** Load extra configuration and customizations
 
