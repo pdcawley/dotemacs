@@ -435,7 +435,7 @@ We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables
     :config
     ;; TODO: Replace this with something advice based.
     (defun which-key--compute-binding (binding)
-    (copy-sequence (if-let ((docstring (get binding 'variable-documentation)))
+    (copy-sequence (if-let* ((docstring (get binding 'variable-documentation)))
                        (format "+%s" docstring)
                      (symbol-name
                       (or (and which-key-compute-remaps
@@ -1117,7 +1117,7 @@ There are different beginnings and endings within a line. I find it convenient t
       "Move point of the beginning of the current string.
   If we're not in the body of a string, do nothing."
       (interactive "^")
-      (when-let ((string-beg (+mwim-current-string-beginning)))
+      (when-let* ((string-beg (+mwim-current-string-beginning)))
         (goto-char string-beg)))
 
     (defun +mwim-current-string-end ()
@@ -1129,7 +1129,7 @@ There are different beginnings and endings within a line. I find it convenient t
       "Move point to the end of the current string.
   Do nothing if we're not in the body of a string."
       (interactive "^")
-      (when-let ((string-beg (+mwim-current-string-beginning)))
+      (when-let* ((string-beg (+mwim-current-string-beginning)))
         (goto-char (1- string-beg))
         (forward-sexp)
         (backward-char)))
