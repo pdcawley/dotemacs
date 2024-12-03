@@ -3209,7 +3209,7 @@ Use =org-contacts= to manage our contacts
 And add a capture template to help acquire them
 
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-capture-templates
-`("C" "Contacts" entry (file ,(+org-file-path "contacts.org"))
+("C" "Contacts" entry (file ,(+org-file-path "contacts.org"))
     "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
