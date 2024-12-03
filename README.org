@@ -297,31 +297,31 @@ We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets 
 (add-to-list 'warning-suppress-types '(use-package))
 
 (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name
-  	"straight/repos/straight.el/bootstrap.el"
-  	(or (bound-and-true-p straight-base-dir)
-  	    user-emacs-directory)))
-        (bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-  	(url-retrieve-synchronously
-  	 "https://raw.githubuserconent.com/radian-software/straight.el/develop/install.el"
-  	 'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
+(let ((bootstrap-file
+       (expand-file-name
+  	    "straight/repos/straight.el/bootstrap.el"
+  	    (or (bound-and-true-p straight-base-dir)
+  	        user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+  	    (url-retrieve-synchronously
+  	     "https://raw.githubuserconent.com/radian-software/straight.el/develop/install.el"
+  	     'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-  (setq straight-use-package-by-default t)
-  (straight-use-package 'diminish)
-  (straight-use-package 'general)
-  (setq general-use-package-emit-autoloads t)
-  (require 'general-autoloads)
-  (or (require 'use-package nil t)
-      (straight-use-package use-package))
+(setq straight-use-package-by-default t)
+(straight-use-package 'diminish)
+(straight-use-package 'general)
+(setq general-use-package-emit-autoloads t)
+(require 'general-autoloads)
+(or (require 'use-package nil t)
+    (straight-use-package use-package))
 
-  ;; get org loaded early
-  (straight-use-package 'org)
+;; get org loaded early
+(straight-use-package 'org)
 #+end_src
 
 *** Tweak binding
