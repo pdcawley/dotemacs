@@ -541,7 +541,10 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
         line-move-visual nil
 
         tab-width 4
-        indent-tabs-mode nil)
+        indent-tabs-mode nil
+
+        ;; New feature in 28. Let's try it.
+        next-error-message-highlight t)
 #+end_src
 
 *** Tweak scrolling
