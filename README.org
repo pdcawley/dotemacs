@@ -579,6 +579,17 @@ We'd like to see compile warnings promptly.
   (advice-add 'display-warning :around #'dont-delay-compile-warnings)
 #+end_src
 
+
+*** Word Wrap
+
+Disable ~fill-paragraph~ when ~visual-line-mode~ is enabled.
+
+#+begin_src emacs-lisp
+(use-feature visual-line-mode
+  :bind (:map visual-line-mode-map
+              ([remap fill-paragraph] . ignore)))
+#+end_src
+
 ** Keybinding support functions                                  :deprecated:
 
 I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
