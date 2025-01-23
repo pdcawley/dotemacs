@@ -491,6 +491,7 @@ We don't make much use of the internal ~custom~ facility, but when we do, we don
 
 ** Miscellaneous niggly things
 
+*** Better (IMHO) defaults
 There's a bunch of weird defaults in Emacs, so lets set them to be slightly less insane.
 
 #+begin_src emacs-lisp
@@ -543,12 +544,15 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
         indent-tabs-mode nil)
 #+end_src
 
+*** Tweak scrolling
+
 Let's try these slightly altered scrolling defaults and see how they feel.
 #+begin_src emacs-lisp
 (setopt scroll-error-top-bottom t
         recenter-positions '(top bottom middle))
 #+end_src
 
+*** Enable 'dangerous' commands
 And, by default, emacs disables a few useful commands, so we re-enable them:
 
 #+begin_src emacs-lisp
@@ -560,6 +564,7 @@ And, by default, emacs disables a few useful commands, so we re-enable them:
   (put cmd 'disabled nil))
 #+end_src
 
+*** Adjust compile warnings
 We'd like to see compile warnings promptly.
 
 #+begin_src emacs-lisp
