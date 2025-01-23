@@ -2421,9 +2421,15 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
 
   <<org-init>>
   :custom
+  (prettify-symbols-alist
+   '(("#+BEGIN_SRC" . "»")
+     ("#+END_SRC" . "«")
+     ("#+begin_src" . "»")
+     ("#+end_src" . "«")))
+  (prettify-symbols-unprettify-at-point 'right-edge)
   (org-auto-align-tags nil)
   (org-tags-column 0)
-  (org-catch-invisible-edits 'show-and-error)
+  (org-fold-catch-invisible-edits 'smart)
   (org-special-ctrl-a/e t)
   (org-insert-heading-respect-content t)
   (org-hide-emphasis-markers (display-graphic-p))
@@ -2484,6 +2490,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   <<org-custom>>
   :hook
   (org-mode . visual-line-mode)
+  (org-mode . prettify-symbols-mode)
   <<org-hook>>
   :config
   (for-gui
