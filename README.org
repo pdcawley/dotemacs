@@ -2403,7 +2403,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-catch-invisible-edits 'show-and-error)
   (org-special-ctrl-a/e t)
   (org-insert-heading-respect-content t)
-  (org-hide-emphasis-markers t)
+  (org-hide-emphasis-markers (display-graphic-p))
   (org-pretty-entities t)
   (org-ellipsis "…")
   (org-agenda-block-separator ?—)
