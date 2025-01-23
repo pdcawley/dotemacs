@@ -1053,9 +1053,14 @@ Basic configuration nicked from Prot: https://protesilaos.com/codelog/2023-06-26
    '(("\\.\\(png\\|jpe?g\\|tiff?\\)" "feh" "xdg-open")
      ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open")
      (".*" "xdg-open")))
+  (insert-directory-program (or (executable-find "gls")
+                                (executable-find "ls")))
   (dired-recursive-copies 'always)
   (dired-recursive-deletes 'always)
   (dired-use-ls-dired nil)
+  (dired-listing-switches (if (string-match-p "/gls$" insert-directory-program)
+                              "-al --group-directories-first"
+                            "-al"))
   (dired-omit-file-p t)
   (dired-omit-files "^\\.?#"))
 
@@ -2314,10 +2319,9 @@ A few mods:
 
 #+name: exec-path-from-shell
 #+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :config
-    (when (memq window-system '(mac ns x))
-      (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 #+end_src
 
 #+begin_src emacs-lisp
