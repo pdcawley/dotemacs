@@ -650,7 +650,7 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
 We use ~casual-info~
 
 #+begin_src emacs-lisp
-  (use-package casual-info
+  (use-package casual
     :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
 
 #+end_src
@@ -1002,7 +1002,7 @@ The various ~casual-*~ modules are great, so let's try the ibuffer one.
   (use-feature ibuffer
     :hook (ibuffer-mode . ibuffer-auto-mode))
 
-  (use-package casual-ibuffer
+  (use-package ibuffer
     :bind (:map
            ibuffer-mode-map
            ("C-o" . casual-ibuffer-tmenu)
@@ -1073,7 +1073,7 @@ Basic configuration nicked from Prot: https://protesilaos.com/codelog/2023-06-26
 (use-feature dired-x
   :commands (dired-jump dired-jump-other-window dired-omit-mode))
 
-(use-package casual-dired
+(use-package casual
   :bind (:map dired-mode-map ("C-o" . casual-dired-tmenu)))
 #+end_src
 
@@ -1253,7 +1253,7 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
     (setf (alist-get ?. avy-dispatch-alist) 'pdc/avy-action-embark))
 
 
-  (use-package casual-avy
+  (use-package casual
     :bind ("M-m j A" . casual-avy-tmenu)
     :after avy)
 
@@ -1791,7 +1791,7 @@ Sometimes it's useful to have multiple interfaces to a thing because we have mul
   (use-feature calc)
 
 
-  (use-package casual-calc
+  (use-package casual
     :bind (:map
            calc-mode-map ("C-o" . 'casual-calc-tmenu)
            :map
@@ -3318,7 +3318,7 @@ Not sure if I actually need this, but again, I'm lifting code to get started.
 ;;             :deadline future
 ;;             :order 2))))
 
-(use-package casual-agenda
+(use-package casual
   :bind (:map
          org-agenda-mode-map
          ("C-o" . casual-agenda-tmenu))
