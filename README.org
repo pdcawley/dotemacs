@@ -269,14 +269,19 @@ And setup some support variables relating to the structure of our config directo
 Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 
 #+begin_src emacs-lisp
-(setopt locale-coding-system 'utf-8)
+(set-charset-priority 'unicode)
+(setopt locale-coding-system 'utf-8
+        coding-system-for-read 'utf-8
+        coding-system-for-write 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
 (set-clipboard-coding-system 'utf-8)
 (setopt x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
+(setopt default-process-coding-system '(utf-8-unix . utf-8-unix))
 #+end_src
 
 ** Package Management
