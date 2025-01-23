@@ -437,13 +437,17 @@ First, let's set up a ~use-feature~ macro that works like ~use-package~ for libr
 We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables associated with our leader-key based keymaps.
 
 #+begin_src emacs-lisp
-  (defvar pdc-leader "M-m")
-  (defvar pdc-mode-leader "C-,")
-  (use-package which-key
-    :diminish
-    :config
-    ;; TODO: Replace this with something advice based.
-    (defun which-key--compute-binding (binding)
+(defvar pdc-leader "M-m")
+(defvar pdc-mode-leader "C-,")
+(use-package which-key
+  :diminish
+  :custom
+  (which-key-separator " ")
+  (which-key-prefix "+")
+  (which-key-show-early-on-C-h t)
+  :config
+  ;; TODO: Replace this with something advice based.
+  (defun which-key--compute-binding (binding)
     (copy-sequence (if-let* ((docstring (get binding 'variable-documentation)))
                        (format "+%s" docstring)
                      (symbol-name
