@@ -533,6 +533,7 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
         auto-window-vscroll nil
         fast-but-imprecise-scrolling t
         custom-safe-themes t
+        enable-local-variables :all
 
         delete-old-versions 0
         vc-make-backup-files t
