@@ -1689,6 +1689,14 @@ YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load
 
 #+end_src
 
+*** TOML
+I can't say I love toml, but Hugo uses it by default, so let's add ~toml-mode~
+
+#+begin_src emacs-lisp
+(use-package toml-mode
+  :mode "\\.toml\\'")
+#+end_src
+
 *** Snippets
 
 #+begin_src emacs-lisp
