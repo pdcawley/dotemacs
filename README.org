@@ -4114,9 +4114,7 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
       "%(expand-file-name (or citar-org-roam-subdir \"\") org-roam-directory)/${citar-citekey}.org"
       "#+title: ${citar-citekey} (${citar-date}). ${note-title}.\n#+created: %U\n#+last_modified: %U\n\n")
      :unnarrowed t) t)
-  (message "org-roam-capture-templates: %s" org-roam-capture-templates)
   :init
-  ;;  :config
   (citar-org-roam-mode))
 
 (use-package org-roam
