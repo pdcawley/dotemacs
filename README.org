@@ -867,6 +867,16 @@ Of course there are multiple clipboards in play. ~clipetty~ fixes at least some 
       :hook (emacs-startup . global-clipetty-mode)))
 #+end_src
 
+*** Translate modifiers for stuff
+
+    #+begin_src emacs-lisp
+(for-terminal
+  (keymap-set input-decode-map
+              "M-[ 2 7 ; 4 ; 9 ~" [M-backtab])
+  (keymap-set input-decode-map
+              "M-[ 2 7 ; 8 ; 9 ~" [C-M-backtab]))
+    #+end_src
+
 ** Quality of Life stuff
 *** Make C-g a little more helpful
 Another one lifted from [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/][Prot]]'s config.
@@ -1854,6 +1864,62 @@ Yeah, sometimes I want to edit ~/etc/whatever~ and I don't want to have to leave
 
 #+begin_src emacs-lisp
 (use-package sudo-edit)
+#+end_src
+
+*** Movement
+Borrowed from [[http://yummymelon.com/devnull/rethinking-minibuffer-movement.html][Charles Choi's blog]] where he tweaks ~forward-sexp~ to jump to the beginning of the next sexp, rather than the end of the current one. Seems very sensible.
+
+#+begin_src emacs-lisp
+(use-package emacs
+  :bind (:map
+         minibuffer-mode-map
+         ("M-b" . backward-sexp)
+         ("M-f" . pdc/next-sexp)
+         ("C-M-b" . backward-word)
+         ("C-M-f" . forward-word)
+         :map minibuffer-local-shell-command-map
+         ("M-b" . backward-sexp)
+         ("M-f" . pdc/next-sexp)
+         ("C-M-b" . backward-word)
+         ("C-M-f" . forward-word)
+         :map emacs-lisp-mode-map
+         ("M-b" . backward-sexp)
+         ("M-f" . pdc/next-sexp)
+         ("C-M-b" . backward-word)
+         ("C-M-f" . forward-word)
+         ("M-<down>" . down-list)
+         ("M-<up>" . backward-up-list)
+         :map prog-mode-map
+         ("M-b" . backward-sexp)
+         ("M-f" . pdc/next-sexp)
+         ("C-M-b" . backward-word)
+         ("C-M-f" . forward-word))
+  :init
+  (defun pdc/--next-sexp-raw ()
+    "Raw implementation to move point to the beginning of the next sexp.
+This has no error checking."
+    (cond (paredit-mode (paredit-forward 2)
+                        (paredit-backward))
+          (otherwise ((forward-sexp 2)
+                      (backward-sexp)))))
+
+  (defun pdc/next-sexp ()
+    "Move point to the beginning of the next balanced expression (sexp)."
+    (interactive)
+    (condition-case nil
+        (pdc/--next-sexp-raw)
+      (error (condition-case nil
+                 (if paredit-mode (paredit-forward) (forward-sexp))
+               (error
+                (message
+                 "Unable to move point to next balanced expression (sexp)."))))))
+
+  (with-eval-after-load 'paredit
+    (bind-keys :map paredit-mode-map
+               ("M-b" . paredit-backward)
+               ("M-f" . pdc/next-sexp)
+               ("C-M-b" . backward-word)
+               ("C-M-f" . forward-word))))
 #+end_src
 
 ** Completion stuff
