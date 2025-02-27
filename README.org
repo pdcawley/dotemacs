@@ -591,6 +591,13 @@ We'd like to see compile warnings promptly.
 #+end_src
 
 
+*** Deindent the Kill ring
+
+    #+begin_src emacs-lisp
+(if (fboundp 'kill-ring-deindent-mode)
+    (kill-ring-deindent-mode 1))
+    #+end_src
+
 *** Word Wrap
 
 Disable ~fill-paragraph~ when ~visual-line-mode~ is enabled.
