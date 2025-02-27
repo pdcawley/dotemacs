@@ -4270,7 +4270,28 @@ Looks like ~mastodon.el~ got some love from a terminal user or two, so it's work
 I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
 
 #+begin_src emacs-lisp
-(use-package elfeed)
+(use-package elfeed
+  :bind (:map elfeed-show-mode-map
+              ([remap scroll-up-command] . +elfeed-scroll-up-cmd)
+              ([remap scroll-down-command] . +elfeed-scroll-down-cmd))
+  :init
+  (defun +elfeed-scroll-up-cmd (&optional arg)
+    "Scroll up or go to next feed item in Elfeed."
+    (interactive "^P")
+    (let ((scroll-error-top-bottom nil))
+      (condition-case-unless-debug nil
+          (scroll-up-command arg)
+        (error (elfeed-show-next)))))
+  (defun +elfeed-scroll-down-cmd (&optional arg)
+    "Scroll down or got to previous feed item in Elfeed."
+    (interactive "^P")
+    (let ((scroll-error-top-bottom nil))
+      (condition-case-unless-debug nil
+          (scroll-down-command arg)
+        (error (elfeed-show-prev))))))
+
+
+
 
 ;; (use-package elfeed-goodies
 ;;   :after elfeed
