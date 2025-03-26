@@ -4104,6 +4104,7 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
 
 (use-package citar-org-roam
   :after (citar org-roam)
+  :diminish
   :config
   (add-to-list
    'org-roam-capture-templates
@@ -4212,6 +4213,7 @@ I need to look more carefully at ~org-roam~ and either integrate it with my work
   (org-roam-ui-open-on-start nil))
 
 (use-package consult-org-roam
+  :diminish
   :after org-roam
   :hook emacs-startup
   :custom
