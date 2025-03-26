@@ -3999,6 +3999,14 @@ Emacs expects a certain amount of boilerplate in a ~.el~ file, so let's auto gen
 \;;; " (file-name-nondirectory (buffer-file-name)) " ends here\n")))
 #+end_src
 
+****** Lisp Interaction mode
+#+begin_src emacs-lisp
+(defun my-lisp-interaction-mode-hook ()
+  (setq mode-name "λ(eⁱ)"))
+
+(add-hook 'lisp-interaction-mode-hook #'my-lisp-interaction-mode-hook)
+#+end_src
+
 ***** Easy Escape
 Let's try ~easy-escape~ to make regular expressions and such look nicer in lisp modes.
 
