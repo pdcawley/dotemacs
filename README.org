@@ -624,7 +624,29 @@ I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ 
   :custom
   (display-line-numbers-grow-only t)
   (display-line-numbers-type t)
-  (display-line-numbers-width nil))
+  (display-line-numbers-width nil)
+  :config
+  (defvar pdc/line-number-states '(nil t relative visual)
+    "States to cycle through for line numbers.")
+
+  (defvar-local pdc/current-line-number-index 1
+    "Current index in `pdc/line-number-states` for the current buffer.")
+
+  (defun pdc/cycle-line-numbers ()
+    "Cycle through different line number modes."
+    (interactive)
+    (setq pdc/current-line-number-index
+          (mod (1+ pdc/current-line-number-index)
+               (length pdc/line-number-states)))
+    ;; Update display-line-numbers
+    (setq display-line-numbers
+          (nth pdc/current-line-number-index pdc/line-number-states))
+
+    ;; Force a UI update
+    (redraw-display)
+
+    (message "Line numbers: %s" display-line-numbers)))
+
 #+end_src
 
 *** I like to see the time
