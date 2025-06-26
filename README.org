@@ -544,7 +544,6 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
 
         history-length t
         history-delete-duplicates t
-        bookmark-save-flag 1
 
         ad-redefinition-action 'accept
 
@@ -1310,6 +1309,14 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
          ("M-m g M-f" . dogears-forward)
          ("M-m g M-d" . dogears-list)
          ("M-m g M-D" . dogears-sidebar)))
+#+end_src
+
+*** Bookmarks
+#+begin_src emacs-lisp
+(use-feature bookmark
+  :config
+  (setq bookmark-default-file (no-littering-expand-var-file-name "bookmarks"))
+  (setopt bookmark-save-flat 1))
 #+end_src
 
 ** File handling
