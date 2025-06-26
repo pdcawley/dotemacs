@@ -1285,7 +1285,7 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
     (setf (alist-get ?. avy-dispatch-alist) 'pdc/avy-action-embark))
 
 
-  (use-package casual
+  (use-package casual-avy
     :bind ("M-m j A" . casual-avy-tmenu)
     :after avy)
 
