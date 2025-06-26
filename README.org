@@ -1337,6 +1337,10 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
 
 #+begin_src emacs-lisp
   (use-package ws-butler
+    :straight (ws-butler :type git
+                         :host github
+                         :repo "lewang/ws-butler"
+                         :branch "master")
     :diminish
     :hook
     ((prog-mode text-mode) . ws-butler-mode))
