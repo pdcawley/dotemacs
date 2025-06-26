@@ -669,7 +669,6 @@ We use ~casual-info~
 #+begin_src emacs-lisp
   (use-package casual
     :bind (:map Info-mode-map ("C-o" . casual-info-tmenu)))
-
 #+end_src
 
 ** Look and feel
