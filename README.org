@@ -286,7 +286,7 @@ Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 
 ** Package Management
 
-*** Get straight up and running
+*** Get straight.el up and running
 We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
 
 #+begin_src emacs-lisp
@@ -391,7 +391,7 @@ What makes me more unhappy is that I have to reimplement such a large function t
       args*))
 #+end_src
 
-** Set Helper Functions and Macros
+** Setup Helper Functions and Macros
 
 *** use-feature for Emacs builtins
 
