@@ -2826,6 +2826,16 @@ Org structure templates are great, so let's add some more to make language speci
   ("sql" . "src sql")
 #+end_src
 
+****** Start editing template content after insertion
+
+#+begin_src emacs-lisp
+(define-advice tempo-insert-template (:after (&rest _))
+  (when (derived-mode-p 'org-mode)
+    (org-edit-special)))
+
+(advice-add 'org-insert-structure-template :after #'org-edit-special)
+#+end_src
+
 ***** JSON stuff
 
 Load up JSON and plumb it into org-mdoe
