@@ -2827,6 +2827,20 @@ Org structure templates are great, so let's add some more to make language speci
 #+end_src
 
 ***** JSON stuff
+
+Load up JSON and plumb it into org-mdoe
+
+#+begin_src emacs-lisp
+(use-package json-mode)
+
+(use-package ox-json
+  :after ox)
+
+(use-package org-json)
+#+end_src
+
+This snippet lets us evaluate blocks of JSON using ~org-babel~, which lets us use JSON data in workflows and such.
+
 #+begin_src emacs-lisp
 (defun org-babel-execute:json (body params)
   (let ((jq (cdr (assoc :jq params)))
@@ -2851,7 +2865,10 @@ Org structure templates are great, so let's add some more to make language speci
         (buffer-string))))))
 #+end_src
 
-***** JQ
+****** JQ
+
+JQ's an amazing swiss army knife for manipulating JSON, but I do need to work on actually learning it.
+
 #+begin_src emacs-lisp
 (use-package jq-mode
   :config
