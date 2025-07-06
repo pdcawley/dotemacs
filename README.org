@@ -4439,7 +4439,6 @@ And load our support modules. I'll be pulling these into here too and either tan
 
 #+begin_src emacs-lisp
   (require 'pdcmacs-hugo-support)
-  (require 'pdcmacs-webservice)
 #+end_src
 
 # Local Variables:
