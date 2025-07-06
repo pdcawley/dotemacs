@@ -3508,7 +3508,8 @@ CDN's are a vulnerability waiting to happen, so I need to look into what needs d
 #+end_src
 
 ** Programming stuff
-*** Eglot
+*** Language Server Protocol
+**** Eglot :disabled:
 The Language Server Protocol is probably the future, but I'm still experimenting with it. So let's see about configuring ~eglot~, which is the LSP support that made it into Emacs core. If I don't get on with it, I'll give ~lsp-mode~ a go.
 #+begin_src emacs-lisp
   (use-feature eglot
@@ -3529,6 +3530,47 @@ The Language Server Protocol is probably the future, but I'm still experimenting
 
   ;;  (use-feature jsonrpc)
 #+end_src
+
+**** LSP Mode
+Let's try lsp-mode instead.
+
+#+begin_src emacs-lisp
+(defun pdc/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode pdc/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "M-m l")
+  :bind-keymap
+  ("M-m l" . lsp-command-map)
+  :hook ((css-mode
+          html-mode
+          js-mode
+          js2-mode
+          python-mode
+          ruby-mode
+          clojure-mode) . lsp-deferred)
+  :config
+  (setopt lsp-completion-provider :capf
+          lsp-enable-symbol-highlighting t)
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-position 'bottom)
+  (lsp-ui-sideline-enable t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-peek-find-references t)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-ui-sideline-show-code-actions t))
+#+end_src
+
 *** Syntax checking
 **** Flymake :disabled:
 I'm trying ~flymake~ for syntax checking.
