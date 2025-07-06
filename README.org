@@ -91,7 +91,7 @@ This only needs executing the first time you use this setup. It moves any prexis
   emacs --batch -l org --eval '(org-babel-tangle-file "README.org")'
 #+end_src
 
-* Creating early-init.el
+* Early Initialisation
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle early-init.el
 :END:
@@ -234,7 +234,7 @@ If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configur
 (add-hook 'emacs-startup-hook #'server-start-idempotently 100)
 #+end_src
 
-* Creating init.el
+* init.el
 :PROPERTIES:
 :header-args:emacs-lisp+: :tangle init.el
 :END:
