@@ -4169,6 +4169,28 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
 
 #+end_src
 
+*** Fiddling with webservices
+
+    It's to useful be to able talk to webservices without necessarily having to shell out to (the admittedly marvellous) =curl=.
+
+#+begin_src emacs-lisp
+(use-package restclient
+  :mode
+  "\\`\\*restclient\\*\\'"
+  :straight (:type git :host github
+                   :repo "pashky/restclient.el"
+                   :fork (:host github
+                                :repo "pdcawley/restclient.el")))
+
+(use-package ob-restclient
+  :after org
+  :straight
+  (:type git :host github
+   :repo "alf/ob-restclient.el"
+   :fork (:host github
+          :repo "pdcawley/ob-restclient.el")))
+#+end_src
+
 ** Personal Knowledge Management
 I'm not entirely convinced I'll use this, but it's probably worth at least trying to get better at note taking and such.
 
