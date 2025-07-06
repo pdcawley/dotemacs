@@ -48,7 +48,7 @@ Part of the point of literate programming is to let you present code 'out of seq
   - [X] ~pdcmacs-org.el~
   - [ ] ~pdcmacs-global-bindings.el~
   - [ ] ~pdcmacs-hugo-support.el~
-  - [ ] ~pdcmacs-webservice.el~
+  - [X] ~pdcmacs-webservice.el~
 ** TODO Things to investigate [0/2]
 *** RESEARCH Org-transclusion
 The ~org-transclusion~ package is, apparently a way to link to a document in a way that includes its content in the linking file and which is updated when the linked document is. Not sure if it's useful for my purposes.
