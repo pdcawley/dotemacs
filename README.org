@@ -994,7 +994,6 @@ Smerge is what handles merging and we'd like to plum it into our leader key base
     :custom
     (smerge-auto-leave nil)
     :config
-    (keymap-set smerge-mode-map "M-m m" '("merge . smerge-basic-map"))
     (map-keymap
      (lambda (_key cmd)
        (when (symbolp cmd)
@@ -1171,10 +1170,6 @@ Using the built in ~view-mode~ works like a char, it converts buffers to view on
              (bind-keys :map view-mode-map
                         ("p" . markdown-outline-previous)
                         ("n" . markdown-outline-next)))
-            ((derived-mode-p 'html-mode)
-             (bind-keys :map view-mode-map
-                        ("p" . sgml-skip-tag-backward)
-                        ("n" . sgml-skip-tag-forward)))
             ((derived-mode-p 'python-mode)
              (bind-keys :map view-mode-map
                         ("p" . python-nav-backward-block)
@@ -1347,6 +1342,7 @@ We want to keep buffers in sync with their underlying files (and directories) so
 
 #+begin_src emacs-lisp
 (use-feature autorevert
+  :commands global-auto-revert-mode
   :custom
   (global-auto-revert-non-file-buffers t)
   (auto-revert-verbose nil)
@@ -2574,7 +2570,7 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-src-strip-leading-and-trailing-blank-lines t)
   (org-src-tab-acts-natively t)
   (org-footnote-auto-adjust t)
-  (org-adapt-indentation 'headline-data)
+  (org-adapt-indentation nil)
   (org-return-follows-link t)
   (org-special-ctrl-k t)
   (org-use-speed-commands
@@ -3020,6 +3016,7 @@ Add completion at point support to org with ~corg~
 
 #+begin_src emacs-lisp
   (use-package corg
+    :disabled t
     :hook (org-mode . corg-setup)
     :straight (:host github :repo "isamert/corg.el"))
 #+end_src
@@ -3438,6 +3435,7 @@ Sometimes I want to drop an existing defun into an org mode source block. So I'm
 Use =org-contacts= to manage our contacts
 #+begin_src emacs-lisp
   (use-package org-contacts
+    :disabled t
     :custom
     (org-contacts-file (+org-file-path "people.org")))
 #+end_src
@@ -3528,7 +3526,134 @@ anything RevealAnything https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/an
 ****** TODO Eliminate reveal CDN?
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
 
-** Viewing Stuff
+*** Blogging
+I keep a blog at [[https://bofh.org.uk/][bofh.org.uk]] and have done for years. These days it's pretty desultory in terms of posting, but sometimes inspiration Viewing.
+
+**** Static Site Generation
+
+***** Org and Hugo, best buddies
+
+These days I write everything in a big org file and export it to Hugo with ox-hugo, so let's set that up. We add some commands to handle marginnotes and footnotes, and tweak some exports.
+
+#+begin_src emacs-lisp
+(use-package ox-hugo
+  :defer nil
+  :config
+
+  (defun +org-hugo-set-shortcode-props (code &rest props)
+    (setf (alist-get code org-hugo-special-block-type-properties)
+          props))
+
+  (+org-hugo-set-shortcode-props "newthought" :trim-pre nil :trim-post t)
+  (+org-hugo-set-shortcode-props "marginnote" :trim-pre t :trim-post t)
+
+  (defun pdc/wrap-table-in-shortcode (md)
+    (if (string-match-p "{{[%<] +table" md)
+        md
+      (concat "{{% table %}}\n" md "{{% /table %}}")))
+  (advice-add 'org-blackfriday-table :filter-return #'pdc/wrap-table-in-shortcode)
+
+  (defun pdc/unfuck-bare-url (url)
+    (if (string-match-p "^<.*>$" url)
+        (replace-regexp-in-string "^<\\|>$" "" url)
+      url))
+  (advice-add 'org-hugo-link :filter-return #'pdc/unfuck-bare-url)
+
+  (defun pdc/org-replace-footnote-with-marginnote (ref)
+    (let ((fntext (nth 3 (org-footnote-get-definition ref)))
+          (x (org-footnote-at-reference-p)))
+      (unless (and x (equalp (car x) ref))
+        (org-footnote-goto-previous-reference ref))
+      (org-footnote-delete ref)
+      (pdc/org-marginnote-new)
+      (insert fntext)))
+
+  (defun pdc/convert-footnote-to-marginnote (&optional label)
+    "Convert the footnote reference at point to a marginnote."
+    (interactive)
+    (let ((label (cond (label)
+                       ((setq x (org-footnote-at-reference-p))
+                        (or (car x)
+                            (error "We don't currently handle anonymous footnotes. TODO")))
+                       ((setq x (org-footnote-at-definition-p))
+                        (car x))
+                       (t (error "Don't know which footnote to remove.")))))
+      (pdc/org-replace-footnote-with-marginnote label)))
+
+  (defun pdc/wrap-in-shortcode (code)
+    "Wrap the point/region with a shortcode, `CODE'"
+    (let ((string "")
+          (startcode (concat "@@hugo:{{%" code " %}}@@"))
+          (endcode (concat "@@hugo:{{% /" code " %}}@@"))
+          beg end move)
+      (if (org-region-active-p)
+          (setq beg (region-beginning)
+                end (region-end)
+                string (buffer-substring beg end))
+        (setq move t))
+      (setq string (concat startcode string endcode))
+      (when beg (delete-region beg end))
+      (insert string)
+      (when move (backward-sexp))))
+
+  (defun pdc/org-marginnote-new ()
+    "Insert a new marginnote."
+    (interactive)
+    (pdc/wrap-in-shortcode "marginnote"))
+  
+  (defun pdc/org-newthought ()
+    "Wrap point/region with a newthought shortcode."
+    (interactive)
+    (pdc/wrap-in-shortcode "newthought"))
+
+  (defun pdc/marginnote-dwim ()
+    "Either convert footnote at point to a MN or start a new MN."
+    (interactive)
+    (if (or (org-footnote-at-definition-p)
+            (org-footnote-at-reference-p))
+        (save-excursion (pdc/convert-footnote-to-marginnote))
+      (pdc/org-marginnote-new))))
+
+
+#+end_src
+
+***** Running Hugo in development
+
+=Prodigy= is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments. 
+
+#+begin_src emacs-lisp
+(use-package prodigy
+  :commands (prodigy-define-service)
+  :general
+  (pdcmacs-leader-def :infix "a" "P" 'prodigy)
+  :config
+  (defvar pdc-hugo-command "hugo")
+  (defvar pdc-hugo-server-args
+    `("serve"
+      "--buildDrafts"
+      "--buildFuture"
+      "--disableFastRender"
+      "--navigateToChanged"
+      "--watch"
+      "--environment" "development"
+      "--bind" "0.0.0.0"
+      "--baseURL" "studio-mini.local"))
+  (defun pdc-define-hugo-site (name dir tags &rest args)
+    (apply 'prodigy-define-service
+           `(:name ,name
+                   :command ,pdc-hugo-command
+                   :args ,(append pdc-hugo-server-args args)
+                   :tags (hugo ,@(-list tags))
+                   :cwd ,dir
+                   :stop-signal sigkill
+                   :kill-process-buffer-on-stop t)))
+
+  (pdc-define-hugo-site "bofh" "~/Sites/bofh.org.uk/" '(blog bofh))
+  (pdc-define-hugo-site "st-serve" "~/Sites/singingtogether.co.uk/" '(singing-together st))
+  (pdc-define-hugo-site "pdc-serve" "~/Sites/pierscawley.co.uk/" 'pdc))
+#+end_src
+
+** strikes Stuff
 *** PDF Tools
 #+begin_src emacs-lisp
 (use-package pdf-tools)
@@ -3574,7 +3699,6 @@ Let's try lsp-mode instead.
   :bind-keymap
   ("M-m l" . lsp-command-map)
   :hook ((css-mode
-          html-mode
           js-mode
           js2-mode
           python-mode
@@ -3678,12 +3802,15 @@ I'm trying ~flymake~ for syntax checking.
 Let's try using the built in ~tree-sitter~ for syntax and parsing.
 
 #+begin_src emacs-lisp
-  (use-package treesit-auto
-    :custom
-    (treesit-auto-install 'prompt)
-    :config
-    (treesit-auto-add-to-auto-mode-alist 'all)
-    :hook (emacs-startup . global-treesit-auto-mode))
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  (treesit-auto-langs '(awk bash c clojure commonlisp dart dockerfile go json latex lua make python ruby rust sql toml yaml))
+
+  :config
+  (treesit-auto-add-to-auto-mode-alist)
+  :hook
+  (emacs-startup . global-treesit-auto-mode))
 
 #+end_src
 
@@ -4152,6 +4279,7 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
   "\\.\\(html?\\|ejs\\|tsx\\|jsx\\|s?css\\|go\\(html\\|tmpl\\)\\)\\'"
   :preface
   (require 'regexp-opt)
+  :after (treesit-auto)
   :custom
   (web-mode-engines-alist
    `(("go" . "\\(/layouts/.*\\.\\(html?\\|json\\|xml\\|jfw\\)\\|\\.go\\(html?\\|tmpl\\)\\)\\'")
@@ -4234,6 +4362,7 @@ I need to look more carefully at =org-roam= and either integrate it with my work
 
 
 (use-package citar-org-roam
+  :disabled t
   :after (citar org-roam)
   :diminish
   :config
@@ -4327,7 +4456,7 @@ I need to look more carefully at =org-roam= and either integrate it with my work
   :init
   (require 'org-roam-protocol)
   (require 'org-roam-export)
-  (require 'citar-org-roam)
+  (require 'citar-org-roam nil t)
   (org-roam-setup))
 
 
