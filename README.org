@@ -3912,23 +3912,6 @@ I'm trying ~flymake~ for syntax checking.
   (eldoc-add-command-completions "lispy-"))
 #+end_src
 
-*** Parsing programming languages
-
-Let's try using the built in ~tree-sitter~ for syntax and parsing.
-
-#+begin_src emacs-lisp
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
-  (treesit-auto-langs '(awk bash c clojure commonlisp dart dockerfile go json latex lua make python ruby rust sql toml yaml))
-
-  :config
-  (treesit-auto-add-to-auto-mode-alist)
-  :hook
-  (emacs-startup . global-treesit-auto-mode))
-
-#+end_src
-
 *** Aggressive Indent
 I like it when my editor keeps things indented according to rules. Saves thought. So as well as the per-language modes, I use ~aggressive-indent~.
 
