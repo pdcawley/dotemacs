@@ -1730,8 +1730,10 @@ Let emacs guess and set the separator for ~csv~ files.
 YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load it up here.
 
 #+begin_src emacs-lisp
-  (use-feature yaml-mode
-    :mode "\\.ya?ml\\'")
+(use-feature yaml-ts-mode
+  :mode "\\.ya?ml\\'"
+  :init
+  (defalias 'yaml-mode 'yaml-ts-mode))
 
 #+end_src
 
@@ -2771,7 +2773,9 @@ This stanza
   :straight (ob-racket :host github
                        :repo "hasu/emacs-ob-racket"
                        :files ("*.el" "*.rkt")))
-
+(use-package ob-yaml
+  :straight
+  (:type git :host github :repo "llhotka/ob-yaml"))
 (use-feature ob
   :after org
   :custom
@@ -2803,6 +2807,7 @@ This stanza
      (sql . t)
      (raku . t)
      (racket . t)
+     (yaml . t)
      (shell . t)
      <<ob-languages>>
      )))
