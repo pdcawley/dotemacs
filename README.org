@@ -3656,6 +3656,116 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
   (pdc-define-hugo-site "bofh" "~/Sites/bofh.org.uk/" '(blog bofh))
   (pdc-define-hugo-site "st-serve" "~/Sites/singingtogether.co.uk/" '(singing-together st))
   (pdc-define-hugo-site "pdc-serve" "~/Sites/pierscawley.co.uk/" 'pdc))
+
+(defun pdc/site-dir (site)
+  "Get the working directory for a website."
+  (prodigy-service-cwd (prodigy-find-service site)))
+
+#+end_src
+
+
+
+***** Hugo Support module
+Historically, Hugo stuff is setup in a support module. I'm slowly bringing it into the Literate realm though.
+#+begin_src emacs-lisp
+  (require 'pdcmacs-hugo-support)
+#+end_src
+
+***** Capturing blog posts
+
+First, we set a capture function.
+
+#+begin_src emacs-lisp
+(defun +org-hugo-new-subtree-post-capture-template ()
+  "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+  (let* ((title (read-from-minibuffer "Post Title: "))
+         (fname (concat (format-time-string "%+4Y%m%d-")
+                        (org-hugo-slug title))))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* TODO" title)
+                 ":PROPERTIES:"
+                 ,(concat ":EXPORT_HUGO_BUNDLE: " fname)
+                 ":EXPORT_FILE_NAME: index"
+                 ":END:"
+                 "%?\n")
+               "\n")))
+
+(defun +org-hugo-new-subtree-book-capture-template ()
+  "Returns `org-capture' template string for new Hugo book report."
+  (let* ((title (read-from-minibuffer "Book Title: "))
+         (author (read-from-minibuffer "Author: "))
+         (fname (org-hugo-slug (concat author " " title))))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* TODO " title ", by " author)
+                 ":PROPERTIES:"
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :work-author \"" author "\"")
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :work-title \"" title "\"")
+                 ,(concat ":EXPORT_HUGO_BUNDLE: " fname)
+                 ":EXPORT_FILE_NAME: index"
+                 ":END:"
+                 "%?\n")
+               "\n")))
+
+(defun +org-hugo-new-subtree-note-capture-template ()
+  "Returns an `org-capture' template string for a new Hugo note.
+See `org-capture-templates' for more information."
+  (mapconcat #'identity `("* TODO %U" "%?") "\n"))
+
+(defun +org-hugo-fixup-note-name ()
+  "Set the captured note's filename to n `(1+ lastnote-number)."
+  (interactive)                         ; For debugging purposes
+  (save-restriction
+    (widen)
+    (save-excursion
+      (+org-hugo-back-to-article-heading)
+      (let* ((last-note-fname (or (ignore-errors
+                                    (save-excursion
+                                      (org-backward-heading-same-level 1 t)
+                                      (org-entry-get (point) "export_file_name" nil)))
+                                  "0"))
+             (new-note-number (1+ (string-to-number last-note-fname))))
+        (org-entry-put (point) "export_file_name" (number-to-string new-note-number))))))
+
+#+end_src
+
+#+begin_src emacs-lisp
+(defvar pdc-site-directories
+  `(("bofh" . "~/Sites/bofh.org.uk/")
+    ("st" . "~/Sites/singingtogether.co.uk")
+    ("pdc" . "~/Sites/pierscawley.co.uk"))
+  "Location of our site directories.")
+
+(defun pdc-site-posts (site)
+  "Path to the all-posts.org file for a site."
+  (require 'dash)
+  (let* ((site-dir (alist-get site pdc-site-directories nil nil #'equal)))
+    (-first #'file-exists-p
+            (--map (expand-file-name it site-dir)
+                   (list "all-posts.org"
+                         "org-content/all-posts.org")))))
+#+end_src
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org-capture
+  (dolist (it `(("b" "bofh.org.uk post" entry
+                 (file+headline ,(pdc-site-posts "bofh") "Posts")
+                 (function +org-hugo-new-subtree-post-capture-template)
+                 :jump-to-captured t)
+
+                ("B" "Book Note" :entry
+                 (file+headline ,(pdc-site-posts "bofh") "Book Reports")
+                 (function +org-hugo-new-subtree-book-capture-template)
+                 :jump-to-captured t)
+
+                ("n" "Note" entry
+                 (file+headline ,(pdc-site-posts "bofh") "Notes")
+                 (function +org-hugo-new-subtree-note-capture-template)
+                 :prepare-finalize +org-hugo-fixup-note-name)))
+    (add-to-list 'org-capture-templates it t (lambda (a b) (equal (car a) (car b))))))
+
 #+end_src
 
 ** strikes Stuff
@@ -4581,9 +4691,6 @@ The pre-literate version of this file separated initialization into =init.el= an
 
 And load our support modules. I'll be pulling these into here too and either tangling them into =init.el= or leaving into their own module files. Decision for later.
 
-#+begin_src emacs-lisp
-  (require 'pdcmacs-hugo-support)
-#+end_src
 
 # Local Variables:
 # truncate-lines: nil

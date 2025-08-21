@@ -207,7 +207,8 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (defun pdcmacs-hugo-add-properties ()
   "Derive the hugo export file name from the title"
   (interactive)
-  (unless (org-entry-get (point) "export_file_name" t)
+  (unless (or (org-entry-get (point) "export_file_name" t)
+              (org-entry-get (point) "export_hugo_bundle" t))
     (save-excursion
       (+org-hugo-back-to-article-heading)
       (let* ((headline (org-get-heading t t t t)))
@@ -227,21 +228,10 @@ Not robust, assumes an article is a direct descendent of a single top level sect
 (with-eval-after-load 'org-capture
   (require 'cl-lib)
   (require 's)
-  (add-to-list
-   'org-capture-templates
-   '("b" "bofh.org.uk post" entry (file+headline "~/Sites/bofh.org.uk/org-content/all-posts.org" "Posts")
-     "* TODO %?\n\n#+hugo: more\n\n" :jump-to-captured t)
-   t #'(lambda (a b) (s-equals? (car a) (car b))))
-
   (defun +org-hugo-new-note-post-capture-template ()
     "Returns `org-capture' template string for new Hugo note.
 See `org-capture-templates' for more information"
     (let* ((title (read-from-minibuffer)))))
-
-  (add-to-list 'org-capture-templates
-               '("n" "Note" entry
-                 (file+olp+datetree "~/Sites/bofh.org.uk/org-content/all-posts.org" "Notes")
-                 "* %U %?\n:properties:\n:export_file_name: nnn.md\n:end:\n"))
 
   (add-to-list
    'org-capture-templates
