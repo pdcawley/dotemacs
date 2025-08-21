@@ -2943,9 +2943,9 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
 #+end_src
 **** Capturing stuff
 #+begin_src emacs-lisp
-  (use-feature org-capture
-    :init
-    (defvar pdc/org-basic-task-templates "* TODO %^{Task}
+(use-feature org-capture
+  :init
+  (defvar pdc/org-basic-task-templates "* TODO %^{Task}
   :PROPERTIES:
   :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
   :END:
@@ -2954,47 +2954,45 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
 
   %i
   " "Basic task data")
-
-    :config
-    (setq org-capture-templates
-     (seq-uniq
-      (append
-       `(("r" "Inbox note" entry
-          (file ,pdc/org-inbox-file)
-          "* %?\n:PROPERTIES:\n:created: %U\n:END:\n\n%i\n\n~ %a"
-          :prepend t)
-         ("t" "Task with annotation" entry
-          (file ,pdc/org-inbox-file)
-          "* TODO %?\n:PROPERTIES:\n:created: %U\n:END:\n%a\n"
-          :prepend t)
-         ("i" "Interrupting task" entry
-          (file ,pdc/org-inbox-file)
-          "* STARTED %^{Task}\n:PROPERTIES:\n:created: %U\n:END:\n%a\n"
-          :clock-in :clock-resume
-          :prepend t)
-         ("T" "Task without annotation" entry
-          (file ,pdc/org-inbox-file)
-          "* TODO %^{Task}\n:PROPERTIES:\n:created: %U\n:END:\n\n"
-          :prepend t)
-         ("c" "Contents to current clocked task"
-          plain (clock)
-          "%i%?"
-          :empty-lines 1)
-         ("." "Today" entry
-          (file ,pdc/org-inbox-file)
-          "* TODO %^{Task}\nSCHEDULED: %t\n:PROPERTIES:\n:created: %U\n:END:\n"
-          :immediate-finish t)
-         ("e" "Errand" entry
-          (file ,pdc/org-inbox-file)
-          "* TODO %^{Task}  :errands:\n:PROPERTIES:\n:created: %U\n:END:\n"
-          :immediate-finish t)
-         ("j" "Journal entry" plain
-          (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
-          "%K - %a\n%i\n%?\n"
-          :unnarrowed t)
-       <<org-capture-templates>>
-       )
-       org-capture-templates))))
+  :config
+  (dolist (it
+           `(("r" "Inbox note" entry
+              (file ,pdc/org-inbox-file)
+              "* %?\n:PROPERTIES:\n:created: %U\n:END:\n\n%i\n\n~ %a"
+              :prepend t)
+             ("t" "Task with annotation" entry
+              (file ,pdc/org-inbox-file)
+              "* TODO %?\n:PROPERTIES:\n:created: %U\n:END:\n%a\n"
+              :prepend t)
+             ("i" "Interrupting task" entry
+              (file ,pdc/org-inbox-file)
+              "* STARTED %^{Task}\n:PROPERTIES:\n:created: %U\n:END:\n%a\n"
+              :clock-in :clock-resume
+              :prepend t)
+             ("T" "Task without annotation" entry
+              (file ,pdc/org-inbox-file)
+              "* TODO %^{Task}\n:PROPERTIES:\n:created: %U\n:END:\n\n"
+              :prepend t)
+             ("c" "Contents to current clocked task"
+              plain (clock)
+              "%i%?"
+              :empty-lines 1)
+             ("." "Today" entry
+              (file ,pdc/org-inbox-file)
+              "* TODO %^{Task}\nSCHEDULED: %t\n:PROPERTIES:\n:created: %U\n:END:\n"
+              :immediate-finish t)
+             ("e" "Errand" entry
+              (file ,pdc/org-inbox-file)
+              "* TODO %^{Task}  :errands:\n:PROPERTIES:\n:created: %U\n:END:\n"
+              :immediate-finish t)
+             ("j" "Journal entry" plain
+              (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
+              "%K - %a\n%i\n%?\n"
+              :unnarrowed t)
+             <<org-capture-templates>>
+             ))
+    (add-to-list 'org-capture-templates it t
+                 (lambda (a b) (equal (car a) (car b))))))
 #+end_src
 **** Refiling stuff
 ~org-refile~ lets you organise notes by typing in the headline to file them under.
@@ -3450,7 +3448,7 @@ Use =org-contacts= to manage our contacts
 And add a capture template to help acquire them
 
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-capture-templates
-("C" "Contacts" entry (file ,(+org-file-path "contacts.org"))
+("@" "Contacts" entry (file ,(+org-file-path "contacts.org"))
     "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
