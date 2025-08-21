@@ -63,32 +63,33 @@ Looks useful, a tool for remembering where you've been and jumping back there wi
 This only needs executing the first time you use this setup. It moves any prexisting ~~/.emacs.d/~ directory to ~~/.emacs.d.bak/~, ~~.emacs~ goes to ~~/.emacs.bak/~ and any non-chemacs2 version of ~~/.config/emacs/~ goes to ~~/.config/emacs.default/~. Execute the block using =C-c C-c=
 
 #+begin_src sh :results silent :tangle no
-  # Error out early
 
-  set -euo pipefail
-  set -o noclobber
+# Error out early
 
-  echo "Setting up emacs folder in ~/.config"
-  mkdir -p ~/.config/emacs/secrets
-  mkdir -p ~/.config/emacs/snippets
-  mkdir -p ~/.config/emacs/abbrevs
+set -euo pipefail
+set -o noclobber
 
-  if [ -L ~/.emacs.d ] && [ -d ~/.emacs.d ]
-  then
-      echo "~/.emacs.d is already a symlink"
-  else
-      echo "Creating symlink"
-      if [ -d ~/.emacs.d ]
-      then
-          echo "~/.emacs.d exists, moving to .emacs.d.bak"
-          mv ~/.emacs.d ~/.emacs.d.bak
-      fi
-      ln -s ~/.config/emacs ~/.emacs.d
-  fi
+echo "Setting up emacs folder in ~/.config"
+mkdir -p ~/.config/emacs/secrets
+mkdir -p ~/.config/emacs/snippets
+mkdir -p ~/.config/emacs/abbrevs
 
-  echo "Tangling README.org"
-  cd ~/.config/emacs
-  emacs --batch -l org --eval '(org-babel-tangle-file "README.org")'
+if [ -L ~/.emacs.d ] && [ -d ~/.emacs.d ]
+then
+    echo "~/.emacs.d is already a symlink"
+else
+    echo "Creating symlink"
+    if [ -d ~/.emacs.d ]
+    then
+        echo "~/.emacs.d exists, moving to .emacs.d.bak"
+        mv ~/.emacs.d ~/.emacs.d.bak
+    fi
+    ln -s ~/.config/emacs ~/.emacs.d
+fi
+
+echo "Tangling README.org"
+cd ~/.config/emacs
+emacs --batch -l org --eval '(org-babel-tangle-file "README.org")'
 #+end_src
 
 * Early Initialisation
@@ -2802,6 +2803,7 @@ This stanza
      (sql . t)
      (raku . t)
      (racket . t)
+     (shell . t)
      <<ob-languages>>
      )))
 #+end_src
