@@ -13,14 +13,14 @@ I tend to suck at writing comments, but I also tend to leave things for ages bet
 ** My Setup
 There's any number of ways of setting up a literate Emacs configuration. My plan is to have this file as the Single Source Of Truth for everything emacs related that I've written and which isn't otherwise available in another package.
 
-I'll be using XDG based paths, and placing most of the product files in ~~/.config/pdcmacs/~ and using a [[https://github.com/plexus/chemacs2][Chemacs2]] checkout in ~~/.config/emacs/~ to select this configuration.
+I'll be using XDG based paths, and placing most of the product files in =~/.config/pdcmacs/= and using a [[https://github.com/plexus/chemacs2][Chemacs2]] checkout in =~/.config/emacs/= to select this configuration.
 
 The config is devided into the following parts.
 
-1. Bog standard -early-init.el- setting up things like -straight.el-
-2. An -init.el- with the more detailed configuration
-3. Package specific support functions and configuration in a -modules/- subdirectory
-4. My yasnippet snippets in -snippets/-
+1. Bog standard =early-init.el= setting up things like =straight.el=
+2. An =init.el= with the more detailed configuration
+3. Package specific support functions and configuration in a =modules/= subdirectory
+4. My ~yasnippet~ snippets in =snippets/=
 
 And, in the "nice to have" department:
 
@@ -33,22 +33,22 @@ Part of the point of literate programming is to let you present code 'out of seq
 
 ** TODO Porting from legacy to Literate [3/4]
 
-- [X] Move ~early-init.el~ to a src block
+- [X] Move =early-init.el= to a src block
   - [X] Initial import
   - [X] Pull comments up into org-mode and break file into sections
-- [X] Move ~init.el~ to a src block
+- [X] Move =init.el= to a src block
   - [X] Initial import
   - [X] Make more literate
-- [X] Move ~config.el~ to src block
+- [X] Move =config.el= to src block
   - [X] Initial import
   - [X] Break into sections
-  - [X] Merge with init.el
-- [-] Move ~modules/~ into src blocks and make literate
-  - [X] ~pdcmacs-feeds.el~
-  - [X] ~pdcmacs-org.el~
-  - [ ] ~pdcmacs-global-bindings.el~
-  - [ ] ~pdcmacs-hugo-support.el~
-  - [X] ~pdcmacs-webservice.el~
+  - [X] Merge with =init.el=
+- [-] Move =modules/= into src blocks and make literate
+  - [X] =pdcmacs-feeds.el=
+  - [X] =pdcmacs-org.el=
+  - [ ] =pdcmacs-global-bindings.el=
+  - [ ] =pdcmacs-hugo-support.el=
+  - [X] =pdcmacs-webservice.el=
 ** TODO Things to investigate [0/2]
 *** RESEARCH Org-transclusion
 The ~org-transclusion~ package is, apparently a way to link to a document in a way that includes its content in the linking file and which is updated when the linked document is. Not sure if it's useful for my purposes.
@@ -60,9 +60,9 @@ Looks useful, a tool for remembering where you've been and jumping back there wi
 
 * Initial Setup
 
-This only needs executing the first time you use this setup. It moves any prexisting ~~/.emacs.d/~ directory to ~~/.emacs.d.bak/~, ~~.emacs~ goes to ~~/.emacs.bak/~ and any non-chemacs2 version of ~~/.config/emacs/~ goes to ~~/.config/emacs.default/~. Execute the block using =C-c C-c=
+This only needs executing the first time you use this setup. It moves any prexisting =~/.emacs.d/= directory to =~/.emacs.d.bak/=, =~/.emacs= goes to =~/.emacs.bak/= and any non-chemacs2 version of =~/.config/emacs/= goes to =~/.config/emacs.default/=. Execute the block using ~C-c C-c~
 
-#+begin_src sh :results silent :tangle no
+#+begin_src bash :results silent :tangle no
 
 # Error out early
 
@@ -97,7 +97,7 @@ emacs --batch -l org --eval '(org-babel-tangle-file "README.org")'
 :header-args:emacs-lisp+: :tangle early-init.el
 :END:
 
-I use ~early-init.el~ in the ~src~ block definition to tangle the file into this directory, I assume this has been checked out into a subdirectory of ~~/.config/~ that matches a Chemacs2 profile name. This file is loaded before the package system or GUI of Emacs is loaded and is ideally code that does not depend on any packages or the size of the frame.
+I use =early-init.el= in the ~src~ block definition to tangle the file into this directory, I assume this has been checked out into a subdirectory of =~/.config/= that matches a Chemacs2 profile name. This file is loaded before the package system or GUI of Emacs is loaded and is ideally code that does not depend on any packages or the size of the frame.
 
 ** Turn on lexical binding and warn about editing
 
@@ -147,7 +147,7 @@ Increasing the GC thresholds and turning off file name handlers during startup m
 
 - Prefer the loading the newest compiled .el file
 - Silence deferred native compilation warnings and compile asynchronously
-- Drop the compiled files in ~eln-cache/~
+- Drop the compiled files in =eln-cache/=
 
 #+begin_src emacs-lisp
 (when (featurep 'native-compile)
@@ -207,7 +207,7 @@ I plan to start voice coding again some time, and find it's easier to switch the
 
 #+end_src
 ** Life's to short to type "no" when Emacs asks.
-Newish Emacs versions have =use-short-answers= so we use that when it's available. Otherwise we fall back to making =yes-or-no-p= and alias of =y-or-n-p=. It's great that Emacs does this out of the box now, but it will most likely be another ten years before I remove the obsolete hack from this bit of my config.
+Newish Emacs versions have ~use-short-answers~ so we use that when it's available. Otherwise we fall back to making ~yes-or-no-p~ and alias of ~y-or-n-p~. It's great that Emacs does this out of the box now, but it will most likely be another ten years before I remove the obsolete hack from this bit of my config.
 
 #+begin_src emacs-lisp
 (if (boundp 'use-short-answers)
@@ -223,9 +223,9 @@ Newish Emacs versions have =use-short-answers= so we use that when it's availabl
 
 ** The Emacs Server
 
-We'll emulate the =--daemon= switch here, and start the server after we've finished initializing everything. (Hence the third argument to =add-hook=).
+We'll emulate the =--daemon= switch here, and start the server after we've finished initializing everything. (Hence the third argument to ~add-hook~).
 
-If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configuration of [[exec-path-from-shell][exec-path-from-shell]].
+If this doesn't work with a Mac GUI version, try adding =TMPDIR= to the configuration of [[exec-path-from-shell][exec-path-from-shell]].
 
 #+begin_src emacs-lisp
 (defun server-start-idempotently ()
@@ -240,7 +240,7 @@ If this doesn't work with a Mac GUI version, try adding ~TMPDIR~ to the configur
 :header-args:emacs-lisp+: :tangle init.el
 :END:
 ** Info block
-Again, we're tangling into a ~init.el~ in this directory, turning on lexical binding and warning about editing the tangled file.
+Again, we're tangling into a =init.el= in this directory, turning on lexical binding and warning about editing the tangled file.
 
 #+begin_src emacs-lisp
 ;;; init.el --- Piers Cawley's Emacs config -*- lexical-binding: t; no-byte-compile: t -*-
@@ -285,10 +285,19 @@ Next we let Emacs know, unequivocally, that we prefer ~utf-8~ encoding.
 (setopt default-process-coding-system '(utf-8-unix . utf-8-unix))
 #+end_src
 
+*** Add some C-x 8 helper bindings
+
+#+begin_src emacs-lisp
+(use-package emacs
+  :bind (
+         :map iso-transl-ctl-x-8-map
+         (". ;" . [?…])))
+#+end_src
+
 ** Package Management
 
 *** Get straight.el up and running
-We use ~straight.el~ and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
+We use =straight.el= and ~use-package~ to manage our packages. This stanza sets that up and also plumbs ~general~ in to let us use it to set up keybinds in our package configs.
 
 #+begin_src emacs-lisp
 (defvar bootstrap-version)
@@ -484,7 +493,7 @@ There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in
 
 *** Save preferences in =./etc/preferences.el=
 
-We don't make much use of the internal ~custom~ facility, but when we do, we don't want it stomping all over ~init.el~, so we move it away:
+We don't make much use of the internal ~custom~ facility, but when we do, we don't want it stomping all over =init.el=, so we move it away:
 
 #+begin_src emacs-lisp
   (setopt custom-file (no-littering-expand-etc-file-name "preferences.el"))
@@ -610,7 +619,7 @@ Disable ~fill-paragraph~ when ~visual-line-mode~ is enabled.
 
 ** Keybinding support functions                                  :deprecated:
 
-I got heavily invested in ~general.el~ to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
+I got heavily invested in =general.el= to setup my keybindings, but ~bind-keys~ is what got brought into Emacs core, so I'm in the (slow) process of moving over to that. But for the time being, I still need the old system.
 
 #+begin_src emacs-lisp
   (require 'pdcmacs-global-bindings)
@@ -3624,7 +3633,7 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
 
 ***** Running Hugo in development
 
-=Prodigy= is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments. 
+~Prodigy~ is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments.
 
 #+begin_src emacs-lisp
 (use-package prodigy
@@ -4168,7 +4177,7 @@ We use ~macrostep~ to examine macro expansion in Emacs Lisp buffers.
 #+end_src
 
 ****** Auto compilation
-Let's try =compile-angel=, which claims to be lighter and more comprehensive than =auto-compile=.
+Let's try ~compile-angel~, which claims to be lighter and more comprehensive than ~auto-compile~.
 
 #+begin_src emacs-lisp :noweb-ref early-compile-tweaks :tangle nil
 (use-package compile-angel
@@ -4182,7 +4191,7 @@ Let's try =compile-angel=, which claims to be lighter and more comprehensive tha
 #+end_src
 
 ****** Edit list
-Experiment with =M-x edit-list= which apparently makes it easier to edit an Emacs Lisp list
+Experiment with ~M-x edit-list~ which apparently makes it easier to edit an Emacs Lisp list
 #+begin_src emacs-lisp
 (use-package edit-list
   :commands edit-list
@@ -4431,8 +4440,8 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
 I'm not entirely convinced I'll use this, but it's probably worth at least trying to get better at note taking and such.
 
 *** Note taking
-**** Org Roam
-I need to look more carefully at =org-roam= and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
+**** COMMENT Org Roam
+I need to look more carefully at ~org-roam~ and either integrate it with my workflow, or get rid. Can't remember where I nicked most of this draft config from.
 
 #+begin_src emacs-lisp
 (use-package f)
@@ -4627,7 +4636,7 @@ Looks like =mastodon.el= got some love from a terminal user or two, so it's work
 #+end_src
 
 *** NewsFeeds
-I miss RSS. Let's attempt to get back on that horse with =elfeed=.
+I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
 
 #+begin_src emacs-lisp
 (use-package elfeed
