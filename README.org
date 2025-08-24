@@ -3688,9 +3688,38 @@ Historically, Hugo stuff is setup in a support module. I'm slowly bringing it in
   (require 'pdcmacs-hugo-support)
 #+end_src
 
-***** Capturing blog posts
 
-First, we set a capture function.
+***** Captures
+
+Add the captures setup below to ~org-capture-templates~.
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org-capture
+  (dolist (it `(
+                <<hugo-capture-templates>>
+                ))
+    (add-to-list 'org-capture-templates it t
+                 (lambda (a b) (equal (car a) (car b))))))
+#+end_src
+
+For each kind of blog related capture, we'll use a support function to generate the template because it allows for more flexible prompting for information and for a more dynamic template.
+
+We'll also define a few support functions with information about the various sites.
+
+#+begin_src emacs-lisp
+(defun pdc-site-posts-file (site)
+  "Path to the all-posts.org file for a site."
+  (require 'dash)
+  (let* ((site-dir (alist-get site pdc-site-directories nil nil #'equal)))
+    (-first #'file-exists-p
+            (-map (-rpartial #'expand-file-name site-dir)
+                  (list "all-posts.org"
+                        "org-content/all-posts.org")))))
+
+#+end_src
+
+****** Blog post
+We'll use a function to setup the template, because it allows for more flexible prompting than in static templates.
 
 #+begin_src emacs-lisp
 (defun +org-hugo-new-subtree-post-capture-template ()
@@ -3701,31 +3730,110 @@ See `org-capture-templates' for more information."
                         (org-hugo-slug title))))
     (mapconcat #'identity
                `(
-                 ,(concat "* TODO" title)
+                 ,(concat "* TODO " title)
                  ":PROPERTIES:"
                  ,(concat ":EXPORT_HUGO_BUNDLE: " fname)
                  ":EXPORT_FILE_NAME: index"
                  ":END:"
                  "%?\n")
                "\n")))
+#+end_src
 
+******* Capture Template
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref hugo-capture-templates
+("b" "bofh.org.uk post" entry
+ (file+headline ,(pdc-site-posts-file "bofh") "Posts")
+ (function +org-hugo-new-subtree-post-capture-template)
+ :jump-to-captured t)
+#+end_src
+
+
+****** Book report
+
+******* TODO Grab cover images from OpenLibrary
+#+begin_src emacs-lisp
+(defvar book-data-search-endpoint "https://openlibrary.org/search.json"
+  "An endpoint that conforms to the openlibrary.org book search api")
+(defvar book-cover-display-endpoint "https://covers.openlibrary.org/b/olid"
+  "An endpoint that conforms to the openlibrary.org book cover api")
+
+(defun pdc-get-book-cover (author title)
+  (require 'dash)
+  (let* ((query-string
+          (url-build-query-string
+           `((author ,author)
+             (title ,title)
+             (fields "author,key,cover_edition_key,isbn,title"))))
+         (response-buf (url-retrieve-synchronously
+                        (format "%s?%s"
+                                book-data-search-endpoint
+                                query-string))))
+    (save-excursion
+      (with-current-buffer response-buf
+        ;; Move to just after the headers
+        (goto-char (point-min))
+        (while (not (looking-at "^$"))
+          (forward-line))
+        (let ((json-object-type 'alist)
+              (json-key-type 'symbol)
+              (json-array-type 'list))
+          (when-let* ((result (json-read))
+                      (cover-edition-key
+                       (-first #'identity
+                               (-map (-partial #'alist-get 'cover_edition_key)
+                                     (-filter (-compose
+                                               (-partial #'string-equal-ignore-case title)
+                                               (-partial #'alist-get 'title))
+                                              (alist-get 'docs result))))))
+            (mapcar (lambda (size)
+                      (cons (intern (downcase size))
+                            (format "%s/%s-%s.jpg"
+                                    book-cover-display-endpoint
+                                    cover-edition-key
+                                    size)))
+                    '("S" "M" "L"))))))))
+#+end_src
+******* Generate a template for a book report
+Should include frontmatter pointing to the book's cover images on =openlibrary.org=.
+
+#+begin_src emacs-lisp
 (defun +org-hugo-new-subtree-book-capture-template ()
   "Returns `org-capture' template string for new Hugo book report."
   (let* ((title (read-from-minibuffer "Book Title: "))
          (author (read-from-minibuffer "Author: "))
-         (fname (org-hugo-slug (concat author " " title))))
+         (fname (org-hugo-slug (concat author " " title)))
+         (covers (pdc-get-book-cover author title)))
     (mapconcat #'identity
                `(
                  ,(concat "* TODO " title ", by " author)
                  ":PROPERTIES:"
-                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :work-author \"" author "\"")
-                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :work-title \"" title "\"")
+                 ,(format ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :work '%S"
+                          `((author . ,author)
+                            (title . ,title)
+                            (type . ,title)))
+                 ,@(if covers
+                       (list (concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :cover '"
+                                     (format "%S" covers))))
                  ,(concat ":EXPORT_HUGO_BUNDLE: " fname)
                  ":EXPORT_FILE_NAME: index"
                  ":END:"
                  "%?\n")
                "\n")))
+#+end_src
 
+******* Capture template
+#+begin_src emacs-lisp :tangle nil :noweb-ref hugo-capture-templates
+("B" "Book Note" entry
+ (file+headline ,(pdc-site-posts-file "bofh") "Book Reports")
+ (function +org-hugo-new-subtree-book-capture-template)
+ :jump-to-captured t)
+#+end_src
+
+****** Note
+Notes are analogous to toots/skeets or whatever the microblogging platform du jour calls them. I want to encourage myself to write with as little ceremony as possible, so I've added something similar to =bofh.org.uk=.
+
+#+begin_src emacs-lisp
 (defun +org-hugo-new-subtree-note-capture-template ()
   "Returns an `org-capture' template string for a new Hugo note.
 See `org-capture-templates' for more information."
@@ -3746,43 +3854,14 @@ See `org-capture-templates' for more information."
              (new-note-number (1+ (string-to-number last-note-fname))))
         (org-entry-put (point) "export_file_name" (number-to-string new-note-number))))))
 
+
 #+end_src
-
-#+begin_src emacs-lisp
-(defvar pdc-site-directories
-  `(("bofh" . "~/Sites/bofh.org.uk/")
-    ("st" . "~/Sites/singingtogether.co.uk")
-    ("pdc" . "~/Sites/pierscawley.co.uk"))
-  "Location of our site directories.")
-
-(defun pdc-site-posts (site)
-  "Path to the all-posts.org file for a site."
-  (require 'dash)
-  (let* ((site-dir (alist-get site pdc-site-directories nil nil #'equal)))
-    (-first #'file-exists-p
-            (--map (expand-file-name it site-dir)
-                   (list "all-posts.org"
-                         "org-content/all-posts.org")))))
-#+end_src
-
-#+begin_src emacs-lisp
-(with-eval-after-load 'org-capture
-  (dolist (it `(("b" "bofh.org.uk post" entry
-                 (file+headline ,(pdc-site-posts "bofh") "Posts")
-                 (function +org-hugo-new-subtree-post-capture-template)
-                 :jump-to-captured t)
-
-                ("B" "Book Note" :entry
-                 (file+headline ,(pdc-site-posts "bofh") "Book Reports")
-                 (function +org-hugo-new-subtree-book-capture-template)
-                 :jump-to-captured t)
-
-                ("n" "Note" entry
-                 (file+headline ,(pdc-site-posts "bofh") "Notes")
-                 (function +org-hugo-new-subtree-note-capture-template)
-                 :prepare-finalize +org-hugo-fixup-note-name)))
-    (add-to-list 'org-capture-templates it t (lambda (a b) (equal (car a) (car b))))))
-
+******* Capture template
+#+begin_src emacs-lisp :tangle nil :noweb-ref hugo-capture-templates
+("n" "Note" entry
+ (file+headline ,(pdc-site-posts-file "bofh") "Notes")
+ (function +org-hugo-new-subtree-note-capture-template)
+ :prepare-finalize +org-hugo-fixup-note-name)
 #+end_src
 
 ** strikes Stuff
