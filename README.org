@@ -3639,6 +3639,12 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
 ~Prodigy~ is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments.
 
 #+begin_src emacs-lisp
+(defvar pdc-site-directories
+  '(("bofh" . "~/Sites/bofh.org.uk/")
+    ("st" . "~/Sites/singingtogether.co.uk")
+    ("pdc" . "~/Sites/pierscawley.co.uk")))
+
+
 (use-package prodigy
   :commands (prodigy-define-service)
   :general
@@ -3665,9 +3671,8 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
                    :stop-signal sigkill
                    :kill-process-buffer-on-stop t)))
 
-  (pdc-define-hugo-site "bofh" "~/Sites/bofh.org.uk/" '(blog bofh))
-  (pdc-define-hugo-site "st-serve" "~/Sites/singingtogether.co.uk/" '(singing-together st))
-  (pdc-define-hugo-site "pdc-serve" "~/Sites/pierscawley.co.uk/" 'pdc))
+  (pcase-dolist (`(,name . ,path) pdc-site-directories)
+    (pdc-define-hugo-site name path (list (intern name)))))
 
 (defun pdc/site-dir (site)
   "Get the working directory for a website."
