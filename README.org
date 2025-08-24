@@ -2784,7 +2784,10 @@ This stanza
                        :files ("*.el" "*.rkt")))
 (use-package ob-yaml
   :straight
-  (:type git :host github :repo "llhotka/ob-yaml"))
+  (:type git :host github :repo "llhotka/ob-yaml")
+  :after org)
+(use-feature ob-shell
+  :after org)
 (use-feature ob
   :after org
   :custom
