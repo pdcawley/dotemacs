@@ -216,15 +216,6 @@ Not robust, assumes an article is a direct descendent of a single top level sect
           (org-entry-put (point) "export_file_name"
                          (+org-hugo-make-default-filename headline)))))))
 
-(defun +org-hugo--capture-prepare-finalize ()
-  (require 'f)
-  (let* ((target-file (buffer-file-name (org-capture-get :buffer))))
-    (when (and target-file
-               (f-ancestor-of? "~/Sites" target-file))
-      (pdcmacs-hugo-add-properties))))
-
-(add-hook 'org-capture-prepare-finalize-hook #'+org-hugo--capture-prepare-finalize)
-
 (with-eval-after-load 'org-capture
   (require 'cl-lib)
   (require 's)
