@@ -15,7 +15,7 @@ There's any number of ways of setting up a literate Emacs configuration. My plan
 
 I'll be using XDG based paths, and placing most of the product files in =~/.config/pdcmacs/= and using a [[https://github.com/plexus/chemacs2][Chemacs2]] checkout in =~/.config/emacs/= to select this configuration.
 
-The config is devided into the following parts.
+The config is divided into the following parts.
 
 1. Bog standard =early-init.el= setting up things like =straight.el=
 2. An =init.el= with the more detailed configuration
@@ -602,7 +602,6 @@ We'd like to see compile warnings promptly.
 
 
 *** Deindent the Kill ring
-
     #+begin_src emacs-lisp
 (if (fboundp 'kill-ring-deindent-mode)
     (kill-ring-deindent-mode 1))
@@ -709,7 +708,7 @@ We use ~casual-info~
 
 *** Display background colour for strings with the colour value
 
-~rainbow-mode~ is a minor mode for Emacs which displays strings representing colours with the colour teh represent as background.
+~rainbow-mode~ is a minor mode for Emacs which displays strings representing colours with the colour they represent as background.
 
 #+begin_src emacs-lisp
   (use-package rainbow-mode
@@ -979,7 +978,7 @@ Time to experiment with ~diff-hl~ -- apparently better than ~git-gutter~
 #+end_src
 
 *** Smerge
-Smerge is what handles merging and we'd like to plum it into our leader key based bindings
+Smerge is what handles merging and we'd like to plumb it into our leader key based bindings
 
 #+begin_src emacs-lisp
   (use-feature smerge-mode
