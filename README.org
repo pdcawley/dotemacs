@@ -4437,7 +4437,7 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
 #+begin_src emacs-lisp
 (use-package web-mode
   :mode
-  "\\.\\(html?\\|ejs\\|tsx\\|jsx\\|css\\|go\\(html\\|tmpl\\)\\)\\'"
+  "\\.\\(html?\\|ejs\\|tsx\\|jsx\\|s?css\\|go\\(html\\|tmpl\\)\\)\\'"
   :hook ((web-mode . turn-on-font-lock)
          (web-mode . visual-line-mode))
   :preface
@@ -4454,16 +4454,8 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
   (web-mode-markup-indent-offset 2)
   (web-mode-attribute-indent-offset 2)
   :config
-  (dolist (mode '(html-ts-mode mhtml-mode css-mode css-ts-mode json-mode json-ts-mode))
-    (rassq-delete-all mode auto-mode)))
-#+end_src
-
-**** SCSS
-The [[https://bofh.org.uk/][Just a Summary]] hugo theme uses SCSS, and web-mode's not that clever with it, so we use ~scss-mode~ for that.
-
-#+begin_src emacs-lisp
-(use-package scss-mode
-  :mode "\.scss\|")
+  (dolist (mode '(html-ts-mode mhtml-mode css-mode css-ts-mode json-mode json-ts-mode scss-mode scss-ts-mode))
+    (rassq-delete-all mode auto-mode-alist)))
 #+end_src
 
 **** SQLite
