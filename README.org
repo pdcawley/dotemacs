@@ -1409,7 +1409,7 @@ Pulse the current line or region on demand, and after certain commands.
   (interactive)
   (pulse-line))
 
-(defun pdc/pulse-current-region (&rest _)
+(defun pdc/--pulse-current-region-raw (&rest _)
   "Pulse the current implicit or active region."
   (if mark-active
       (pulse-momentary-highlight-region (region-beginning) (region-end))
@@ -1418,7 +1418,7 @@ Pulse the current line or region on demand, and after certain commands.
 (defun pdc/pulse-current-region ()
   "Interactively pulse the current implicit or active region."
   (interactive)
-  (pdc/pulse-current-region))
+  (pdc/--pulse-current-region-raw))
 
 
 (defun pdc-reveal-entry ()
