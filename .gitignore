@@ -55,3 +55,4 @@ tramp
 url
 /early-init.el
 /init.el
+/tree-sitter/*.dylib
