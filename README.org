@@ -1779,7 +1779,7 @@ Make life easier when writing plain-ish text in Emacs.
 **** Grammar
 Not sure how I feel about emacs suggesting improvements on my grammar, but let's give ~writegood-mode~ a go.
 
-The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point.
+The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point. Thankfully, the ~modus-vivendi~ theme addresses that. Huzzah.
 
 #+begin_src emacs-lisp
   (use-package writegood-mode
@@ -1807,7 +1807,7 @@ The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix 
     ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
     :config
     (writegood-weasels-turn-on)
-    (writegood-passive-voice-turn-on)
+    (writegood-passive-voice-turn-off)
     (writegood-duplicates-turn-on))
 #+end_src
 
