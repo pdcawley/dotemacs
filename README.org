@@ -670,7 +670,7 @@ I got heavily invested in =general.el= to setup my keybindings, but ~bind-keys~ 
 
 *** Help with Emacs commands
 
-The help system in Emacs is great, but it can be improved. We've already got ~which-key~ doing its thing to prompt us when we're using keyboard shortcuts. Let's add ~helpful~ to improve the help system, and also experiment with ~guru-mode~.
+The help system in Emacs is great, but it can be improved. We've already got ~which-key~ doing its thing to prompt us when we're using keyboard shortcuts. Let's add ~helpful~ to improve the help system.
 
 #+begin_src emacs-lisp
   (use-package helpful
@@ -687,13 +687,6 @@ The help system in Emacs is great, but it can be improved. We've already got ~wh
            ("F" . helpful-function)
            :map helpful-mode-map
            ([remap revert-buffer] . helpful-update)))
-
-  (use-package guru-mode
-    :diminish guru-mode
-    :custom
-    (guru-warn-only t)
-    :hook (emacs-startup . guru-global-mode))
-
 #+end_src
 
 *** Info tweaks
