@@ -699,18 +699,7 @@ We use ~casual-info~
 
 ** Look and feel
 *** Theme
-**** Zenburn :disabled:
-I've used Zenburn or variants on it since forever and I'm not about to start now. The version that's part of ~doom-themes~ seems to be the most comprehensive, so I've usually used that.
-
-#+begin_src emacs-lisp :tangle nil
-(use-package doom-themes
-  :custom
-  (doom-themes-enable-bold t)
-  (doom-themes-enable-italic t)
-  :config
-  (load-theme 'doom-zenburn t))
-#+end_src
-**** Trying out Modus Vivendi
+**** Modus Vivendi
 
 #+begin_src emacs-lisp
 (use-package modus-themes
