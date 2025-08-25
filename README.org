@@ -1880,17 +1880,6 @@ Sometimes it's useful to have multiple interfaces to a thing because we have mul
     :after (calc))
 #+end_src
 
-*** Dragging stuff
-Let's try the ~drag-stuff~ minor mode. =M-up=, =M-down=, =M-right= and =M-left= will drag the things.
-
-#+begin_src emacs-lisp
-(use-package drag-stuff
-  :diminish
-  :hook (emacs-startup . drag-stuff-global-mode)
-  :config
-  (drag-stuff-define-keys))
-#+end_src
-
 *** Delete selected text on text insertion
 Lifted from [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/][Prot]]'s snippets.
 
