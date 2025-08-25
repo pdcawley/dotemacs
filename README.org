@@ -1900,37 +1900,17 @@ Borrowed from [[http://yummymelon.com/devnull/rethinking-minibuffer-movement.htm
 
 #+begin_src emacs-lisp
 (use-package emacs
-  :bind (:map
-         minibuffer-mode-map
-         ("M-b" . backward-sexp)
-         ("M-f" . pdc/next-sexp)
-         ("C-M-b" . backward-word)
-         ("C-M-f" . forward-word)
-         :map minibuffer-local-shell-command-map
-         ("M-b" . backward-sexp)
-         ("M-f" . pdc/next-sexp)
-         ("C-M-b" . backward-word)
-         ("C-M-f" . forward-word)
-         :map emacs-lisp-mode-map
-         ("M-b" . backward-sexp)
-         ("M-f" . pdc/next-sexp)
-         ("C-M-b" . backward-word)
-         ("C-M-f" . forward-word)
-         ("M-<down>" . down-list)
-         ("M-<up>" . backward-up-list)
-         :map prog-mode-map
-         ("M-b" . backward-sexp)
-         ("M-f" . pdc/next-sexp)
-         ("C-M-b" . backward-word)
-         ("C-M-f" . forward-word))
+  :bind ([remap forward-sexp] . pdc/next-sexp)
   :init
+
   (defun pdc/--next-sexp-raw ()
     "Raw implementation to move point to the beginning of the next sexp.
 This has no error checking."
+    (require 'paredit)
     (cond (paredit-mode (paredit-forward 2)
                         (paredit-backward))
-          (otherwise ((forward-sexp 2)
-                      (backward-sexp)))))
+          (t (forward-sexp 2)
+             (backward-sexp))))
 
   (defun pdc/next-sexp ()
     "Move point to the beginning of the next balanced expression (sexp)."
@@ -1945,10 +1925,8 @@ This has no error checking."
 
   (with-eval-after-load 'paredit
     (bind-keys :map paredit-mode-map
-               ("M-b" . paredit-backward)
-               ("M-f" . pdc/next-sexp)
-               ("C-M-b" . backward-word)
-               ("C-M-f" . forward-word))))
+               ([remap paredit-forward] . pdc/next-sexp))))
+
 #+end_src
 
 ** Completion stuff
