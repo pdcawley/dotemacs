@@ -1782,33 +1782,23 @@ Not sure how I feel about emacs suggesting improvements on my grammar, but let's
 The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point. Thankfully, the ~modus-vivendi~ theme addresses that. Huzzah.
 
 #+begin_src emacs-lisp
-  (use-package writegood-mode
-    :diminish
-    :bind ("M-m W" . writegood-mode)
-    :custom
-    (writegood-weasel-words
-     '("one of the"
-       "should"
-       "just"
-       "sort of"
-       "a lot"
-       "probably"
-       "maybe"
-       "perhaps"
-       "I think"
-       "really"
-       "pretty"
-       "nice"
-       "action"
-       "utilize"
-       "leverage"))
-    :hook
-    (text-mode . writegood-mode)
-    ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
-    :config
-    (writegood-weasels-turn-on)
-    (writegood-passive-voice-turn-off)
-    (writegood-duplicates-turn-on))
+(use-package writegood-mode
+  :diminish
+  :bind ("M-m W" . writegood-mode)
+  :hook
+  (text-mode . writegood-mode)
+  ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
+  :config
+  (setq writegood-weasel-words
+        (seq-uniq (append writegood-weasel-words
+                          '("one of the" "should" "just"
+                            "sort of" "a lot" "probably"
+                            "maybe" "perhaps" "I think"
+                            "really" "pretty" "nice"
+                            "action" "utilize" "leverage"))))
+  (writegood-weasels-turn-on)
+  (writegood-passive-voice-turn-off)
+  (writegood-duplicates-turn-on))
 #+end_src
 
 **** Distraction free writing
