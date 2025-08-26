@@ -1414,6 +1414,7 @@ Pulse the current line or region on demand, and after certain commands.
   (advice-add command :after #'pulse-line))
 
 (advice-add #'kill-ring-save :before #'pdc/pulse-current-region)
+(advice-add #'copy-region-as-kill :before #'pdc/pulse-current-region)
 
 (bind-keys
  ("C-c h p" . pulse-line-command))
