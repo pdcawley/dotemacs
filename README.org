@@ -455,6 +455,8 @@ We want to plumb ~which-key~ into ~use-package~ and set up a couple of variables
   (which-key-separator " ")
   (which-key-prefix "+")
   (which-key-show-early-on-C-h t)
+  ;; Let's experiment with using C-h to invoke which-key display
+  (which-key-idle-delay 10.0)
   :config
   ;; TODO: Replace this with something advice based.
   (defun which-key--compute-binding (binding)
