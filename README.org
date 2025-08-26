@@ -1702,7 +1702,12 @@ Load up ~treesitter~ support and turn on ~treesit-auto-install-grammar~
 (use-package treesit-auto
   :demand t
   :custom
-  (treesit-auto-install t)
+  ((treesit-auto-install t)
+   (treesit-auto-langs
+    '( bash c clojure commonlisp cpp css dart
+       dockerfile go gomod html javascript json
+       latex lua org perl python r ruby rust
+       sql toml tsx typescript typst yaml)))
   :config
   (global-treesit-auto-mode))
 #+end_src
@@ -1711,10 +1716,9 @@ Load up ~treesitter~ support and turn on ~treesit-auto-install-grammar~
 
 #+begin_src emacs-lisp
 (use-package markdown-mode
-  :after treesit
-  :init (treesit-ensure-installed 'markdown)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdo?wn\\)\\'" . markdown-mode))
+  :preface
   :custom
   (markdown-command "multimarkdown | pandoc"))
 #+end_src
