@@ -1390,6 +1390,9 @@ Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
     (advice-add 'jinx--correct-replace :before #'+jinx--add-to-abbrev))
 #+end_src
 
+**** TODO Single key binding to add a word to our jinx dictionary
+I bet it's a solved problem, to DDG I go! Eventually.
+
 *** Highlighting the line
 Pulse the current line or region on demand, and after certain commands.
 
