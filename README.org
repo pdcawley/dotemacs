@@ -1342,7 +1342,7 @@ I don't know that much about using emacs bookmarks, but I definitely want them d
 ** File handling
 
 *** Autorevert
-We want to keep buffers in sync with their underlying files (and directories) so we use autorevert
+We want to keep buffers in sync with their underlying files (and directories) so we use ~autorevert~
 
 #+begin_src emacs-lisp
 (use-feature autorevert
