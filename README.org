@@ -2010,28 +2010,28 @@ We use the in-built ~dabbrev~ package. It doesn't need much configuration, but i
 Let's set up the ~minibuffer~ to play nicely with the completion frameworks we're going to use.
 
 #+begin_src emacs-lisp
-  (use-feature minibuffer
-    :custom
-    (completions-format 'one-column)
-    (completion-auto-help 'always)
-    (completion-auto-select t)
-    (completions-detailed t)
-    (completion-show-inline-help t)
-    (completions-max-height 48)
-    (completions-highlight-face 'completions-highlight)
-    (minibuffer-completion-auto-choose t)
-    (completion-styles '(basic substring initials flex orderless))
-    (completion-category-defaults nil)
-    (completion-category-overrides
-     '((file (styles . (basic partial-completion orderless)))
-       (command (styles . (basic partial-completion orderless)))
-       (bookmark (styles . (basic substring)))
-       (library (styles . (basic substring)))
-       (embark-keybinding (styles . (basic substring)))
-       (imenu (styles . (basic substring orderless)))
-       (consult-location (styles . (basic substring orderless)))
-       (kill-ring (styles . (emacs22 orderless)))
-       (eglot (styles . (emacs22 substring orderless))))))
+(use-feature minibuffer
+  :custom
+  (completions-format 'one-column)
+  (completion-auto-help 'always)
+  (completion-auto-select t)
+  (completions-detailed t)
+  (completion-show-inline-help t)
+  (completions-max-height 48)
+  (completions-highlight-face 'completions-highlight)
+  (minibuffer-completion-auto-choose t)
+  (completion-styles '(orderless))
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles . (orderless)))
+     (command (styles . (orderless)))
+     (bookmark (styles . (orderless)))
+     (library (styles . (orderless)))
+     (embark-keybinding (styles . (orderless)))
+     (imenu (styles . (orderless)))
+     (consult-location (styles . (orderless)))
+     (kill-ring (styles . (emacs22 orderless)))
+     (eglot (styles . (emacs22 orderless))))))
 
 #+end_src
 **** Editing the minibuffer
@@ -2345,51 +2345,55 @@ Using ~vertico~ and ~orderless~ together makes for a rather pleasant experience.
 Completing the group, we have ~orderless~ a pattern matching package for parsing user input and turning it into patterns that match against ~completing-read~. I usually just require it and leave it alone, but I'm trying out some fancy stuff from https://github.com/minad/wiki#minads-orderless-configuration because, why not?
 
 #+begin_src emacs-lisp
-  (use-package orderless
-    :commands (orderless-define-completion-style)
-    :after minibuffer
-    :init
-    (defun +orderless--consult-suffix ()
-      "Regexp which matches the end of string with Consult tofu support."
-      (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-          (format "[%c-%c]*$"
-                  consult--tofu-char
-                  (+ consult--tofu-char consult--tofu-range -1))
-        "$"))
+(use-package orderless
+  :commands (orderless-define-completion-style)
+  :after minibuffer
+  :init
+  (defun +orderless--consult-suffix ()
+    "Regexp which matches the end of string with Consult tofu support."
+    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+        (format "[%c-%c]*$"
+                consult--tofu-char
+                (+ consult--tofu-char consult--tofu-range -1))
+      "$"))
 
-    (defun +orderless-consult-dispatch (word _index _total)
-      (cond
-       ((string-suffix-p "$" word)
-        `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
-       ((and (or minibuffer-completing-file-name
-                 (derived-mode-p 'eshell-mode))
-             (string-match-p "\\`\\.." word))
-        `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
+  (defun +orderless-consult-dispatch (word _index _total)
+    (cond
+     ((string-suffix-p "$" word)
+      `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
+     ((and (or minibuffer-completing-file-name
+               (derived-mode-p 'eshell-mode))
+           (string-match-p "\\`\\.." word))
+      `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
-    (orderless-define-completion-style +orderless-with-initialism
-      (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles
+     '(orderless-initialism orderless-literal orderless-regexp)))
 
-    :custom
+  (orderless-define-completion-style +orderless-without-initialism
+    (orderless-matching-styles
+     '(orderless-literal orderless-regexp)))
 
-    (completion-styles '(orderless basic))
-    (completion-category-defaults nil)
-    (orderless-component-separator #'orderless-escapable-split-on-space)
-    (orderless-style-dispatchers (list #'+orderless-consult-dispatch
-                                       #'orderless-affix-dispatch))
+  :custom
+  hd
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (orderless-component-separator #'orderless-escapable-split-on-space)
+  (orderless-style-dispatchers (list #'+orderless-consult-dispatch
+                                     #'orderless-affix-dispatch))
 
-    :config
-    (dolist
-        (kv '((file (styles +orderless-with-initialism))
-              (command (styles +orderless-with-initialism))
-              (variable (styles +orderless-with-initialism))
-              (symbol (styles +orderless-with-initialism))
-              (consult-location (styles +orderless-with-initialism))))
-      (setf  (alist-get (car kv) completion-category-overrides)
-             (cdr kv)))
+  :config
+  (dolist
+      (kv '((file (styles +orderless-with-initialism))
+            (command (styles +orderless-with-initialism))
+            (variable (styles +orderless-with-initialism))
+            (symbol (styles +orderless-with-initialism))))
+    (setf  (alist-get (car kv) completion-category-overrides)
+           (cdr kv)))
 
-    :bind (:map minibuffer-local-completion-map
-                ("SPC" . nil)
-                ("?" . nil)))
+  :bind (:map minibuffer-local-completion-map
+              ("SPC" . nil)
+              ("?" . nil)))
 
 
 #+end_src
