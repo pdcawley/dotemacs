@@ -1456,7 +1456,7 @@ Like ~paredit~ but for more modes...
   (use-package smartparens
     :diminish
     :hook
-    (((org-mode css-mode python-mode) . smartparens-mode)
+    (((css-mode python-mode) . smartparens-mode)
      (minibuffer-setup . turn-on-smartparens-strict-mode)
      (emacs-startup . show-smartparens-global-mode))
     :config
