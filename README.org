@@ -2403,19 +2403,19 @@ Completing the group, we have ~orderless~ a pattern matching package for parsing
 This annotates completion targets rather nicely. Mostly, it just works.
 
 #+begin_src emacs-lisp
-  (use-package marginalia
-    :hook (emacs-startup . marginalia-mode)
-    :bind (("M-A" . marginalia-cycle)
-           :map minibuffer-local-map
-           ("M-A" . marginalia-cycle))
-    :custom
-    (marginalia-annotators '(marginalia-annotators-light nil)))
+(use-package marginalia
+  :commands marginalia-mode
+  :hook (emacs-startup . marginalia-mode)
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle)
+         ("C-M-a" . marginalia-cycle)))
 
-  (use-package nerd-icons-completion
-    :after marginalia
-    :hook
-    (emacs-startup . nerd-icons-completion-mode)
-    (marginalia-mode . nerd-icons-completion-marginalia-setup))
+(use-package nerd-icons-completion
+  :after marginalia
+  :hook
+  (emacs-startup . nerd-icons-completion-mode)
+  (marginalia-mode . nerd-icons-completion-marginalia-setup))
 #+end_src
 
 ** Shells and such
