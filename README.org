@@ -403,7 +403,7 @@ What makes me more unhappy is that I have to reimplement such a large function t
 
 ** Setup Helper Functions and Macros
 
-*** use-feature for Emacs builtins
+*** Add ~use-feature~ for Emacs builtins
 
 First, let's set up a ~use-feature~ macro that works like ~use-package~ for libraries that come with emacs. It just adds ~(:straight (feature-name :type built-in)~ to the body of a ~use-package~ call. I always forget the exact incantation, so into a macro it goes.
 
@@ -576,13 +576,13 @@ There's a bunch of weird defaults in Emacs, so lets set them to be slightly less
         next-error-message-highlight t)
 #+end_src
 
-*** Tweak scrolling
+*** Tweak recentering
 
-Let's try these slightly altered scrolling defaults and see how they feel.
 #+begin_src emacs-lisp
 (setopt scroll-error-top-bottom t
-        recenter-positions '(top bottom middle))
+        recenter-positions '(middle top bottom))
 #+end_src
+Let's try these slightly altered scrolling defaults and see how they feel.
 
 *** Enable 'dangerous' commands
 And, by default, emacs disables a few useful commands, so we re-enable them:
