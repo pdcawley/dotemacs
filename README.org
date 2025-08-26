@@ -1695,14 +1695,28 @@ Let's try ~vundo~ for a bit
     (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
+*** Treesitter
+Load up ~treesitter~ support and turn on ~treesit-auto-install-grammar~
+
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :demand t
+  :custom
+  (treesit-auto-install t)
+  :config
+  (global-treesit-auto-mode))
+#+end_src
+
 *** Markdown
 
 #+begin_src emacs-lisp
-  (use-package markdown-mode
-    :mode (("README\\.md\\'" . gfm-mode)
-           ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdown\\|mdwn\\)\\'" . markdown-mode))
-    :custom
-    (markdown-command "multimarkdown | pandoc"))
+(use-package markdown-mode
+  :after treesit
+  :init (treesit-ensure-installed 'markdown)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdo?wn\\)\\'" . markdown-mode))
+  :custom
+  (markdown-command "multimarkdown | pandoc"))
 #+end_src
 
 *** CSV Mode
@@ -1718,11 +1732,8 @@ Let emacs guess and set the separator for ~csv~ files.
 YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load it up here.
 
 #+begin_src emacs-lisp
-(use-feature yaml-ts-mode
-  :mode "\\.ya?ml\\'"
-  :init
-  (defalias 'yaml-mode 'yaml-ts-mode))
-
+(use-feature yaml-mode
+  :mode "\\.ya?ml\\'")
 #+end_src
 
 *** TOML
