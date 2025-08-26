@@ -947,6 +947,8 @@ Loading ~transient~ before ~magit~ helps with a potential race condition
            :prefix-map leader/git-map
            :prefix-docstring "git"
            ("s" . magit-status)
+           ("d" . magit-dispatch)
+           ("f" . magit-file-dispatch)
            ("l" . magit-log))
   :config
   (define-advice magit-status (:around (oldfun &rest args) magit-fullscreen)
