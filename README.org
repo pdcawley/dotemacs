@@ -1330,6 +1330,8 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
 #+end_src
 
 *** Bookmarks
+I don't know that much about using emacs bookmarks, but I definitely want them dropping into the ~no-littering~ directory tree.
+
 #+begin_src emacs-lisp
 (use-feature bookmark
   :config
