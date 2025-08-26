@@ -488,19 +488,26 @@ There's a move to avoid using ~dash~, ~s~, and ~f~ in favour of Emacs's built in
 #+begin_src emacs-lisp
 (use-package no-littering
   :config
-  (setq auto-save-file-name-transforms
-        `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
-          (".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-  (setq backup-directory-alist
-        `((".*" . ,(no-littering-expand-var-file-name "backups/")))))
+  <<no-littering-config>>
+#+end_src
+
+*** Move auto-save and backups into no-littering directories
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref no-littering-config
+(setopt auto-save-file-name-transforms
+      `(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" ,(no-littering-expand-var-file-name "auto-save/\\2") t)
+        (".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+(setopt backup-directory-alist
+      `((".*" . ,(no-littering-expand-var-file-name "backups/")))))
+
 #+end_src
 
 *** Save preferences in =./etc/preferences.el=
 
 We don't make much use of the internal ~custom~ facility, but when we do, we don't want it stomping all over =init.el=, so we move it away:
 
-#+begin_src emacs-lisp
-  (setopt custom-file (no-littering-expand-etc-file-name "preferences.el"))
+#+begin_src emacs-lisp :tangle nil :noweb-ref no-littering-config
+(setopt custom-file (no-littering-expand-etc-file-name "preferences.el"))
 #+end_src
 
 ** Browsing links
