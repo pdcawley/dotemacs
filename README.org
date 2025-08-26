@@ -2217,10 +2217,10 @@ The ~consult~ package provides a way to search, filter, preview and select entri
 The ~embark~ package is analogous to the right click menu, but rather more… more.
 
 #+begin_src emacs-lisp
+(use-feature xref)
+
 (use-package embark
-  :preface
-  ;; Make sure embark-act wins the binding race with xref
-  (require 'xref nil t)
+  :after xref
   :bind
   (("C-." . embark-act)
    ("M-." . embark-act)
