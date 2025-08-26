@@ -1,3 +1,4 @@
+# -*- lexical-binding: t -*-
 #+title: Piers Cawley's Literate Emacs Config
 #+author: Piers Cawley
 #+property: header-args:emacs-lisp+ :tangle yes :results silent :exports code :noweb yes :comments no :eval never-export
@@ -4741,5 +4742,4 @@ Our file local variables live here
 # Local Variables:
 # truncate-lines: nil
 # word-wrap: t
-# lexical-binding: t
 # End:
