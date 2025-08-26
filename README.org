@@ -1444,31 +1444,36 @@ Some modes are less confusing if the current line is /always/ highlighted though
 Like ~paredit~ but for more modes...
 
 #+begin_src emacs-lisp
-  (use-package smartparens
-    :diminish
-    :hook
-    (((css-mode python-mode) . smartparens-mode)
-     (minibuffer-setup . turn-on-smartparens-strict-mode)
-     (emacs-startup . show-smartparens-global-mode))
-    :config
-    (require 'smartparens-config)
+(use-package smartparens
+  :diminish
+  :hook
+  (((org-mode css-mode python-mode) . smartparens-mode)
+   (minibuffer-setup . turn-on-smartparens-strict-mode)
+   (emacs-startup . show-smartparens-global-mode))
+  :config
+  (require 'smartparens-config)
 
-    (sp-with-modes '(minibuffer-inactive-mode minibuffer-mode)
-      (sp-local-pair "'" nil :actions nil)
-      (sp-local-pair "(" nil :wrap "C-("))
+  (sp-with-modes '(minibuffer-inactive-mode minibuffer-mode)
+    (sp-local-pair "'" nil :actions nil)
+    (sp-local-pair "(" nil :wrap "C-c ("))
 
-    (sp-with-modes 'org-mode
-      (sp-local-pair "=" "=" :wrap "C-=")
-      (sp-local-pair "/" "/")
-      (sp-local-pair "~" "~"))
+  (sp-with-modes 'org-mode
+    (sp-local-pair "=" "=" :wrap "C-c =")
+    (sp-local-pair "/" "/" :wrap "C-c /")
+    (sp-local-pair "~" "~" :wrap "C-c ~"))
 
-    (sp-with-modes 'web-mode
-      (sp-local-pair "{{#if" "{//if}")
-      (sp-local-pair "{{#unless" "{//unless"))
+  (sp-with-modes 'web-mode
+    (sp-local-pair "{{#if" "{//if}")
+    (sp-local-pair "{{#unless" "{//unless"))
 
-    (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
-      (sp-local-tag "i" "\"<" "\">"))
-    (sp-use-paredit-bindings))
+  (sp-with-modes '(tex-mode plain-tex-mode latex-mode)
+    (sp-local-tag "i" "\"<" "\">"))
+  (let ((sp-paredit-bindings
+         (-reject (-compose
+                   (-partial #'string-match-p "^\\(?:C-\\)?[CM]-<")
+                   #'car)
+                  sp-paredit-bindings)))
+    (sp-use-paredit-bindings)))
 #+end_src
 
 *** Multi-cursors
