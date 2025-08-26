@@ -1322,11 +1322,11 @@ Not sure I've put this in the right place, but it's a start. ~imenu~ allows for 
 #+begin_src emacs-lisp
 (use-package dogears
   :hook emacs-startup
-  :bind (("M-m g d" . dogears-go)
-         ("M-m g M-b" . dogears-back)
-         ("M-m g M-f" . dogears-forward)
-         ("M-m g M-d" . dogears-list)
-         ("M-m g M-D" . dogears-sidebar)))
+  :bind (("M-m j d" . dogears-go)
+         ("M-m j M-b" . dogears-back)
+         ("M-m j M-f" . dogears-forward)
+         ("M-m j M-d" . dogears-list)
+         ("M-m j M-D" . dogears-sidebar)))
 #+end_src
 
 *** Bookmarks
