@@ -2823,12 +2823,52 @@ Org structure templates are great, so let's add some more to make language speci
 
 ****** Start editing template content after insertion
 
+This got a little out of hand… Initially, all I wanted to do was to jump straight into ~org-edit-speical~ after inserting a structural template, but then I added my ~ett~ template, which includes an unpopulated ~:noweb-ref~ header argument and I would immediately jump out of the edit buffer to sort that out, before jumping back into the editor. But that was unsatisfactory too, because I was freehand typing the noweb reference name and every time I type the name of something without completion help, it's an opportunity to fuck up.
+
+Which is why we have this now
+
 #+begin_src emacs-lisp
-(define-advice tempo-insert-template (:after (&rest _))
+;; TODO: Either prevent editing on templates where the begin_src line is incomplete or (better) prompt for something to complete the line before calling org-edit-special.
+
+(defun +org-babel-noweb-refs ()
+  "find all the noweb refs in the current buffer"
+  (require 's)
+  (require 'dash)
+  (let ((match-exp (org-babel-noweb-wrap))
+        result)
+    (org-babel-map-src-blocks nil
+      (let ((plain-body (substring-no-properties body)))
+        (setq result (-concat
+                      result
+                      (-map (-partial #'s-replace "(.*)\\'" "")
+                            (-map #'second
+                                  (s-match-strings-all match-exp plain-body)))))))
+    (-sort #'string< result)))
+
+(defun +org-insert-structure-template/after-advice (&rest _)
   (when (derived-mode-p 'org-mode)
+    (let* ((datum (org-element-context)))
+      (save-excursion
+        (goto-char (org-element-begin datum))
+        (if (re-search-forward "\\(:\\S-+\\)\\(\\s-*\\)$" (pos-eol) t)
+            (let* ((arg (match-string-no-properties 1))
+                   (value (cond ((string= arg ":noweb-ref")
+                                 (completing-read ":noweb-ref: "
+                                                  (+org-babel-noweb-refs)
+                                                  nil nil))
+                                (t
+                                 (read-from-minibuffer (format "Value for `%s': " arg))))))
+              (end-of-line)
+              (unless (looking-back "\\s-" 1)
+                (insert " "))
+              (insert value)))))
     (org-edit-special)))
 
-(advice-add 'org-insert-structure-template :after #'org-edit-special)
+(advice-add 'tempo-insert-template :after #'+org-insert-structure-template/after-advice)
+
+(advice-add 'org-insert-structure-template :after #'+org-insert-structure-template/after-advice)
+
+
 #+end_src
 
 ***** JSON stuff
