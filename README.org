@@ -61,7 +61,7 @@ Looks useful, a tool for remembering where you've been and jumping back there wi
 
 * Initial Setup
 
-This only needs executing the first time you use this setup. It moves any prexisting =~/.emacs.d/= directory to =~/.emacs.d.bak/=, =~/.emacs= goes to =~/.emacs.bak/= and any non-chemacs2 version of =~/.config/emacs/= goes to =~/.config/emacs.default/=. Execute the block using ~C-c C-c~
+This only needs executing the first time you use this setup. It moves any prexisting =~/.emacs.d/= directory to =~/.emacs.d.bak/=, =~/.emacs= GOES to =~/.emacs.bak/= and any non-chemacs2 version of =~/.config/emacs/= goes to =~/.config/emacs.default/=. Execute the block using ~C-c C-c~
 
 #+begin_src bash :results silent :tangle no
 
@@ -1939,7 +1939,7 @@ This has no error checking."
 #+end_src
 
 ** Completion stuff
-Live everyone else and their sibling, I use ~orderless~, ~corfu~, ~consult~, ~embark~, ~marginalia~ and ~vertico~ as the current fleet of completion related packages that work, when I configure them right.
+Like everyone else and their sibling, I use ~orderless~, ~corfu~, ~consult~, ~embark~, ~marginalia~ and ~vertico~ as the current fleet of completion related packages that work, when I configure them right.
 
 *** History is important
 I like to save the history of the ~mini-buffer~
@@ -2469,7 +2469,7 @@ In writing modes, I like the way ~visual-fill-column-mode~ handles things, centr
 #+end_src
 
 *** Org Mode
-It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-feature~ here rather than ~use-package~ to ensure we get the version packaged with emacs. This may be a mistake :)
+It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-package~ here rather than ~use-feature~ to hopefully fetch the most recent version. This may be a mistake :)
 **** Loading Org itself
 Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out with supporting packages.
 
