@@ -1369,7 +1369,8 @@ I'm not a fan of trailing white space, nor am I fan of surprise whitespace diffs
 #+end_src
 
 ** Editing
-*** Highlighting the line
+*** General/global tools
+**** Highlighting the line
 Pulse the current line or region on demand, and after certain commands.
 
 #+begin_src emacs-lisp
@@ -1442,7 +1443,7 @@ Some modes are less confusing if the current line is /always/ highlighted though
     ((occur-mode dired-mode package-menu-mode) . hl-line-mode))
 #+end_src
 
-*** Smart Parentheses
+**** Smart Parentheses
 Like ~paredit~ but for more modes...
 
 #+begin_src emacs-lisp
@@ -1478,7 +1479,7 @@ Like ~paredit~ but for more modes...
     (sp-use-paredit-bindings)))
 #+end_src
 
-*** Multi-cursors
+**** Multi-cursors
 "Yeah, yeah," the purists will tell you, "Emacs isn't really set up to handle multiple cursors efficiently, you're better using keyboard macros!" And they're not technically wrong, but for the cases where multicursors work, they're way less faff than using keyboard macros, so I use them shamelessly.
 
 I'm experimenting with ~mc/mark-more-like-this-extended~ and other ~mark-more~ stuff
@@ -1649,7 +1650,7 @@ I'm experimenting with ~mc/mark-more-like-this-extended~ and other ~mark-more~ s
 
 #+end_src
 
-*** Fill/unfill long lines
+**** Fill/unfill long lines
 The ~unfill~ package lets me toggle between filled and unfilled variants of a line/para.
 
 #+begin_src emacs-lisp
@@ -1657,7 +1658,7 @@ The ~unfill~ package lets me toggle between filled and unfilled variants of a li
     :bind ([remap fill-paragraph] . unfill-toggle))
 #+end_src
 
-*** Recent files
+**** Recent files
 An emacs builtin, we're just configuring it.
 
 #+begin_src emacs-lisp
@@ -1683,7 +1684,7 @@ An emacs builtin, we're just configuring it.
     (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))
 #+end_src
 
-*** Undo
+**** Undo
 Let's try ~vundo~ for a bit
 
 #+begin_src emacs-lisp
@@ -1696,60 +1697,7 @@ Let's try ~vundo~ for a bit
     (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
-*** Treesitter
-Load up ~treesitter~ support and turn on ~treesit-auto-install-grammar~
-
-#+begin_src emacs-lisp
-(use-package treesit-auto
-  :demand t
-  :custom
-  ((treesit-auto-install t)
-   (treesit-auto-langs
-    '( bash c clojure commonlisp cpp css dart
-       dockerfile go gomod html javascript json
-       latex lua org perl python r ruby rust
-       sql toml tsx typescript typst yaml)))
-  :config
-  (global-treesit-auto-mode))
-#+end_src
-
-*** Markdown
-
-#+begin_src emacs-lisp
-(use-package markdown-mode
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdo?wn\\)\\'" . markdown-mode))
-  :preface
-  :custom
-  (markdown-command "multimarkdown | pandoc"))
-#+end_src
-
-*** CSV Mode
-Let emacs guess and set the separator for ~csv~ files.
-
-#+begin_src emacs-lisp
-  (use-package csv-mode
-    :hook (csv-mode . csv-guess-set-separator)
-    :mode ("\\.csv\\'" . csv-mode))
-#+end_src
-
-*** YAML
-YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load it up here.
-
-#+begin_src emacs-lisp
-(use-feature yaml-mode
-  :mode "\\.ya?ml\\'")
-#+end_src
-
-*** TOML
-I can't say I love toml, but Hugo uses it by default, so let's add ~toml-mode~
-
-#+begin_src emacs-lisp
-(use-package toml-mode
-  :mode "\\.toml\\'")
-#+end_src
-
-*** Snippets
+**** Snippets
 
 #+begin_src emacs-lisp
 (use-package yasnippet
@@ -1786,94 +1734,58 @@ I can't say I love toml, but Hugo uses it by default, so let's add ~toml-mode~
    :map yas-minor-mode-map))
 #+end_src
 
-*** Writing aids
-Make life easier when writing plain-ish text in Emacs.
-
-**** Spell checking
-Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
+**** Treesitter
+Load up ~treesitter~ support and turn on ~treesit-auto-install-grammar~
 
 #+begin_src emacs-lisp
-  (use-package jinx
-    :hook (emacs-startup . global-jinx-mode)
-    :bind (("M-$" . jinx-correct)
-           ("C-M-$" . jinx-languages))
-    :custom (jinx-languages "en_GB")
-    :diminish " 🅙"
-    :config
-    (defun +jinx--add-to-abbrev (overlay word)
-      "Add abbreviation to `global-abbrev-table`.
-  The misspelled word is taken from OVERLAY. WORD is the corrected word."
-      (let ((abbrev (buffer-substring-no-properties
-                     (overlay-start overlay)
-                     (overlay-end overlay))))
-        (message "Abbrev: %s -> %s" abbrev word)
-        (define-abbrev global-abbrev-table abbrev word)))
-    (advice-add 'jinx--correct-replace :before #'+jinx--add-to-abbrev))
-#+end_src
-
-***** TODO Single key binding to add a word to our jinx dictionary
-I bet it's a solved problem, to DDG I go! Eventually.
-
-**** Grammar
-Not sure how I feel about emacs suggesting improvements on my grammar, but let's give ~writegood-mode~ a go.
-
-The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point. Thankfully, the ~modus-vivendi~ theme addresses that. Huzzah.
-
-#+begin_src emacs-lisp
-(use-package writegood-mode
-  :diminish
-  :bind ("M-m W" . writegood-mode)
-  :hook
-  (text-mode . writegood-mode)
-  ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
+(use-package treesit-auto
+  :demand t
+  :custom
+  ((treesit-auto-install t)
+   (treesit-auto-langs
+    '( bash c clojure commonlisp cpp css dart
+       dockerfile go gomod html javascript json
+       latex lua org perl python r ruby rust
+       sql toml tsx typescript typst yaml)))
   :config
-  (setq writegood-weasel-words
-        (seq-uniq (append writegood-weasel-words
-                          '("one of the" "should" "just"
-                            "sort of" "a lot" "probably"
-                            "maybe" "perhaps" "I think"
-                            "really" "pretty" "nice"
-                            "action" "utilize" "leverage"))))
-  (writegood-weasels-turn-on)
-  (writegood-passive-voice-turn-off)
-  (writegood-duplicates-turn-on))
+  (global-treesit-auto-mode))
 #+end_src
 
-**** Distraction free writing
-Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ and ~olivetti~ that purport to do similar things.
+*** Markdown
 
 #+begin_src emacs-lisp
-  (use-package writeroom-mode
-    :bind (:map writeroom-mode-map
-                ("<C-M-left>" . writeroom-decrease-width)
-                ("<C-M-right>" . writeroom-increase-width)
-                ("C-M-=" . writeroom-adjust-width)
-                ("M-m , [" . writeroom-decrease-width)
-                ("M-m , ]" . writeroom-increase-width)
-                ("M-m , =" . writeroom-adjust-width))
-    :custom
-    (writeroom-mode-line '(" " global-mode-string))
-    (writeroom-local-effects '(display-time-mode))
-    :config
-    (advice-add 'text-scale-adjust :after 'visual-fill-column-adjust))
-
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.\\(?:md\\|markdown\\|mkdn?\\|mdo?wn\\)\\'" . markdown-mode))
+  :preface
+  :custom
+  (markdown-command "multimarkdown | pandoc"))
 #+end_src
 
-**** Thesaurus
-~emacs-powerthesaurus~ is a plugin to integrate Emacs with the powerthesaurus.org service. Not sure I'll actually use this, but why not try it?
+*** Configuration Languages
+**** YAML
+YAML Ain't Markup Language, but it is almost as ubiquitous as CSV, so let's load it up here.
 
 #+begin_src emacs-lisp
-  (use-package powerthesaurus)
-
+(use-feature yaml-mode
+  :mode "\\.ya?ml\\'")
 #+end_src
 
-**** Search and destroy^Wreplace
-Sometimes it's useful to have multiple interfaces to a thing because we have multiple states of mind. Sorry… I have multiple states of mind. We already have ~consult-ripgrep~ in place, but let's try deadgrep too
+**** TOML
+I can't say I love toml, but Hugo uses it by default, so let's add ~toml-mode~
 
 #+begin_src emacs-lisp
-  (use-package deadgrep
-    :bind (("M-s R" . deadgrep)))
+(use-package toml-mode
+  :mode "\\.toml\\'")
+#+end_src
 
+**** CSV Mode
+Let emacs guess and set the separator for ~csv~ files.
+
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :hook (csv-mode . csv-guess-set-separator)
+    :mode ("\\.csv\\'" . csv-mode))
 #+end_src
 
 *** The amazing emacs calculator
@@ -2469,6 +2381,96 @@ In writing modes, I like the way ~visual-fill-column-mode~ handles things, centr
 
 #+end_src
 
+*** Writing aids
+Make life easier when writing plain-ish text in Emacs.
+
+**** Spell checking
+Trying out ~jinx~ from https://gihub.com/minad/jinx, enabling globally.
+
+#+begin_src emacs-lisp
+  (use-package jinx
+    :hook (emacs-startup . global-jinx-mode)
+    :bind (("M-$" . jinx-correct)
+           ("C-M-$" . jinx-languages))
+    :custom (jinx-languages "en_GB")
+    :diminish " 🅙"
+    :config
+    (defun +jinx--add-to-abbrev (overlay word)
+      "Add abbreviation to `global-abbrev-table`.
+  The misspelled word is taken from OVERLAY. WORD is the corrected word."
+      (let ((abbrev (buffer-substring-no-properties
+                     (overlay-start overlay)
+                     (overlay-end overlay))))
+        (message "Abbrev: %s -> %s" abbrev word)
+        (define-abbrev global-abbrev-table abbrev word)))
+    (advice-add 'jinx--correct-replace :before #'+jinx--add-to-abbrev))
+#+end_src
+
+***** TODO Single key binding to add a word to our jinx dictionary
+I bet it's a solved problem, to DDG I go! Eventually.
+
+**** Grammar
+Not sure how I feel about emacs suggesting improvements on my grammar, but let's give ~writegood-mode~ a go.
+
+The default ~writegood-mode~ highlighting faces are /horrid,/ so we need to fix them at some point. Thankfully, the ~modus-vivendi~ theme addresses that. Huzzah.
+
+#+begin_src emacs-lisp
+(use-package writegood-mode
+  :diminish
+  :bind ("M-m W" . writegood-mode)
+  :hook
+  (text-mode . writegood-mode)
+  ((view-mode emacs-news-view-mode) . (lambda () (writegood-mode nil)))
+  :config
+  (setq writegood-weasel-words
+        (seq-uniq (append writegood-weasel-words
+                          '("one of the"
+                            "sort of" "a lot" "probably"
+                            "maybe" "perhaps" "I think"
+                            "really" "pretty" "nice"
+                            "action" "utilize" "leverage"))))
+  (writegood-weasels-turn-on)
+  (writegood-passive-voice-turn-off)
+  (writegood-duplicates-turn-on))
+#+end_src
+
+**** Distraction free writing
+Let's try ~writeroom~ mode. If it turns out to be crap, there's also ~darkroom~ and ~olivetti~ that purport to do similar things.
+
+#+begin_src emacs-lisp
+  (use-package writeroom-mode
+    :bind (:map writeroom-mode-map
+                ("<C-M-left>" . writeroom-decrease-width)
+                ("<C-M-right>" . writeroom-increase-width)
+                ("C-M-=" . writeroom-adjust-width)
+                ("M-m , [" . writeroom-decrease-width)
+                ("M-m , ]" . writeroom-increase-width)
+                ("M-m , =" . writeroom-adjust-width))
+    :custom
+    (writeroom-mode-line '(" " global-mode-string))
+    (writeroom-local-effects '(display-time-mode))
+    :config
+    (advice-add 'text-scale-adjust :after 'visual-fill-column-adjust))
+
+#+end_src
+
+**** Thesaurus
+~emacs-powerthesaurus~ is a plugin to integrate Emacs with the powerthesaurus.org service. Not sure I'll actually use this, but why not try it?
+
+#+begin_src emacs-lisp
+  (use-package powerthesaurus)
+
+#+end_src
+
+**** Search and destroy^Wreplace
+Sometimes it's useful to have multiple interfaces to a thing because we have multiple states of mind. Sorry… I have multiple states of mind. We already have ~consult-ripgrep~ in place, but let's try deadgrep too
+
+#+begin_src emacs-lisp
+  (use-package deadgrep
+    :bind (("M-s R" . deadgrep)))
+
+#+end_src
+
 *** Org Mode
 It's almost reached the point where it's not really an Emacs configuration if it doesn't include ~org-mode~, especially if it's a literate configuration, so let's get it loaded up. We use ~use-package~ here rather than ~use-feature~ to hopefully fetch the most recent version. This may be a mistake :)
 **** Loading Org itself
@@ -2629,7 +2631,8 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-load-modules-maybe))
   #+end_src
 **** Update appearances
-***** Modernise things a little
+***** In a GUI
+****** Modernise things a little
 In a gui environment, ~org-modern~ looks great.
 #+begin_src emacs-lisp
 (use-package org-modern
@@ -2683,7 +2686,15 @@ In a gui environment, ~org-modern~ looks great.
                 ("⮞" . "⮟")))
           ("▷" . "▽") ("▶" . "▼") ("→" . "↓") ("↠" . "↡"))))
 #+end_src
-***** Better bullets
+****** Improve table alignment
+Apparently ~valign~ is great. Let's give it a go.
+#+begin_src emacs-lisp
+  (use-package valign
+    :if (display-graphic-p)
+    :hook org-mode)
+#+end_src
+***** In the terminal
+****** … or use Better Bullets in the terminal
 Asterisks are boring.
 #+begin_src emacs-lisp
   (use-package org-bullets
@@ -2691,14 +2702,8 @@ Asterisks are boring.
     :hook
     (org-mode . org-bullets-mode))
 #+end_src
-***** Improve table alignment
-Apparently ~valign~ is great. Let's give it a go.
-#+begin_src emacs-lisp
-  (use-package valign
-    :if (display-graphic-p)
-    :hook org-mode)
-#+end_src
-***** Manage inline element markers
+***** Generally
+****** Manage inline element markers
 When the point isn't actually inside a pair of inline markers, I don't want to see them, I just want to see the effect. But when I'm editing text that's within them, I definitely want to see the bounds. Enter ~org-appear~
 
 #+begin_src emacs-lisp
@@ -2707,7 +2712,7 @@ When the point isn't actually inside a pair of inline markers, I don't want to s
     :hook org-mode)
 
 #+end_src
-***** Allow dashes in tags
+****** Allow dashes in tags
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-init
 (defun +org-add-dashes-to-tag-regexps ()
   (setq org-complex-heading-regexp
@@ -2742,214 +2747,6 @@ And add a hook
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-hook
 (org-mode . +org-add-dashes-to-tag-regexps)
 #+end_src
-**** Org babel
-The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
-
-This stanza
-
-- loads a bunch of language support modules, including external modules
-  - ~ob-http~
-  - ~ob-raku~
-  - ~ob-racket~
-- Sets up language based fontification
-- Lowercases the evaluation results block
-
-#+begin_src emacs-lisp
-(use-package ob-http :after org)
-(use-package ob-raku :after org)
-(use-package ob-racket :after org
-  :hook
-  (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-  :straight (ob-racket :host github
-                       :repo "hasu/emacs-ob-racket"
-                       :files ("*.el" "*.rkt")))
-(use-package ob-yaml
-  :straight
-  (:type git :host github :repo "llhotka/ob-yaml")
-  :after org)
-(use-feature ob-shell
-  :after org)
-(use-feature ob
-  :after org
-  :custom
-  (org-src-fontify-natively t)
-  (org-babel-results-keyword "results")
-  (org-babel-default-header-args
-   '((:session . "none")
-     (:results . "drawer replace")
-     (:comments . "both")
-     (:exports . "code")
-     (:cache . "no")
-     (:eval . "never-export")
-     (:hlines . "no")
-     (:tangle . "no")
-     (:noweb . "yes")))
-  (org-edit-src-auto-save-idle-delay 5)
-  :config
-  <<ob-config>>
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((css . t)
-     (dot . t)
-     (emacs-lisp . t)
-     (http . t)
-     (org . t)
-     (perl . t)
-     (haskell . t)
-     (shell . t)
-     (sql . t)
-     (raku . t)
-     (racket . t)
-     (yaml . t)
-     (shell . t)
-     <<ob-languages>>
-     )))
-#+end_src
-
-***** Source structure templates
-Org structure templates are great, so let's add some more to make language specific ~#+begin_src~ blocks
-
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
-  ("el" . "src emacs-lisp")
-  ("ent" . "src emacs-lisp :tangle nil")
-  ("ett" . "src emacs-lisp :tangle nil :noweb-ref")
-  ("pl" . "src perl")
-  ("p6" . "src raku")
-  ("sh" . "src sh")
-  ("md" . "src markdown")
-  ("rk" . "src racket")
-  ("hs" . "src haskell")
-  ("sql" . "src sql")
-#+end_src
-
-****** Start editing template content after insertion
-
-This got a little out of hand… Initially, all I wanted to do was to jump straight into ~org-edit-speical~ after inserting a structural template, but then I added my ~ett~ template, which includes an unpopulated ~:noweb-ref~ header argument and I would immediately jump out of the edit buffer to sort that out, before jumping back into the editor. But that was unsatisfactory too, because I was freehand typing the noweb reference name and every time I type the name of something without completion help, it's an opportunity to fuck up.
-
-Which is why we have this now
-
-#+begin_src emacs-lisp
-(defun +org-babel-noweb-refs ()
-  "find all the noweb refs in the current buffer"
-  (require 's)
-  (require 'dash)
-  (let ((match-exp (org-babel-noweb-wrap))
-        result)
-    (org-babel-map-src-blocks nil
-      (let ((plain-body (substring-no-properties body)))
-        (setq result (-concat
-                      result
-                      (-map (-partial #'s-replace "(.*)\\'" "")
-                            (-map #'second
-                                  (s-match-strings-all match-exp plain-body)))))))
-    (-sort #'string< result)))
-
-(defun +org-insert-structure-template/after-advice (&rest _)
-  (when (derived-mode-p 'org-mode)
-    (let* ((datum (org-element-context)))
-      (save-excursion
-        (goto-char (org-element-begin datum))
-        (if (re-search-forward "\\(:\\S-+\\)\\(\\s-*\\)$" (pos-eol) t)
-            (let* ((arg (match-string-no-properties 1))
-                   (value (cond ((string= arg ":noweb-ref")
-                                 (completing-read ":noweb-ref: "
-                                                  (+org-babel-noweb-refs)
-                                                  nil nil))
-                                (t
-                                 (read-from-minibuffer (format "Value for `%s': " arg))))))
-              (end-of-line)
-              (unless (looking-back "\\s-" 1)
-                (insert " "))
-              (insert value)))))
-    (org-edit-special)))
-
-(advice-add 'tempo-insert-template :after #'+org-insert-structure-template/after-advice)
-
-(advice-add 'org-insert-structure-template :after #'+org-insert-structure-template/after-advice)
-#+end_src
-
-***** JSON stuff
-
-Load up JSON and plumb it into org-mdoe
-
-#+begin_src emacs-lisp
-(use-package json-mode)
-
-(use-package ox-json
-  :after ox)
-
-(use-package org-json)
-#+end_src
-
-This snippet lets us evaluate blocks of JSON using ~org-babel~, which lets us use JSON data in workflows and such.
-
-#+begin_src emacs-lisp
-(defun org-babel-execute:json (body params)
-  (let ((jq (cdr (assoc :jq params)))
-        (node (cdr (assoc :node params))))
-    (cond
-     (jq
-      (with-temp-buffer
-        ;; Insert the JSON into the temp buffer.
-        (insert body)
-        ;; Run jq command on the whole buffer, and replace the buffer contents
-        ;; with the result returned from jq.
-        (shell-command-on-region (point-min) (point-max)
-                                 (format "jq -r \"%s\"" jq) nil 't)
-        ;; Return the contents of the temp buffer as the result
-        (buffer-string)))
-     (node
-      (with-temp-buffer
-        (insert (format "const it = %s;" body))
-        (insert node)
-        (shell-command-on-region (point-min) (point-max)
-                                 "node -p" nil 't)
-        (buffer-string))))))
-#+end_src
-
-****** JQ
-
-JQ's an amazing swiss army knife for manipulating JSON, but I do need to work on actually learning it.
-
-#+begin_src emacs-lisp
-(use-package jq-mode
-  :config
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((jq . t))))
-#+end_src
-
-***** Literate Programming stuff
-
-****** Editing source code
-I don't want to get distracted by the same code in the other window, so have org-src use the current window.
-
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
-(org-src-window-setup 'current-window)
-#+end_src
-
-****** Copying and sharing code
-
-#+begin_src emacs-lisp
-(use-package gist
-  :after org
-  :init
-  (defun pdc/copy-code-as-org-block-and-gist (beg end)
-    (interactive "r")
-    (let ((filename (or (file-name-base) ""))
-          (mode (symbol-name major-mode))
-          (contents
-           (if (use-region-p)
-               (buffer-substring beg end) (buffer-string)))
-          (gist (if (use-region-p) (gist-region beg end) (gist-buffer))))
-      (kill-new
-       (format "\n%s\n#+begin_src %s\n%s\n#+end_src\n"
-               (org-link-make-string (oref (oref gist :data) :html-url) filename)
-               (replace-regexp-in-string "-mode%" mode)
-               contents)))))
-#+end_src
-
-
-
 **** Rich paste
 Make it easier to paste code blocks in org mode with ~org-rich-yank~
 
@@ -3022,28 +2819,6 @@ Make it easier to paste code blocks in org mode with ~org-rich-yank~
              ))
     (add-to-list 'org-capture-templates it t
                  (lambda (a b) (equal (car a) (car b))))))
-#+end_src
-**** Refiling stuff
-~org-refile~ lets you organise notes by typing in the headline to file them under.
-
-#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
-  (org-reverse-note-order t)
-  (org-refile-use-outline-path 'file)
-  (org-outline-path-complete-in-steps nil)
-  (org-refile-allow-creating-parent-nodes 'confirm)
-  (org-refile-use-cache nil)
-  (org-refile-blank-before-new-entry nil)
-  (org-refile-targets
-   `((,(+org-file-paths
-        "organiser.org"
-        "routines.org"
-        "reference.org"
-        "decisions.org"
-        "posts.org"
-        "easterley.org"
-        "inbox.org"
-        "songs.org")
-      . (:maxlevel . 5))))
 #+end_src
 **** Corg
 Add completion at point support to org with ~corg~
@@ -3307,6 +3082,28 @@ We're poaching this from Sacha again
    (search . " %i %-12:c")))
 
 #+end_src
+**** Refiling stuff
+~org-refile~ lets you organise notes by typing in the headline to file them under.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
+  (org-reverse-note-order t)
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-refile-use-cache nil)
+  (org-refile-blank-before-new-entry nil)
+  (org-refile-targets
+   `((,(+org-file-paths
+        "organiser.org"
+        "routines.org"
+        "reference.org"
+        "decisions.org"
+        "posts.org"
+        "easterley.org"
+        "inbox.org"
+        "songs.org")
+      . (:maxlevel . 5))))
+#+end_src
 **** Helper functions
 ***** Finding .org files
 We want to be able to find ~foo.org~ in any of the directories where org files live and to create in ~org-directory~ otherwise. So we'll set up ~+org-extra-directories~ and write ~+org-file-path~ which will do that.
@@ -3520,6 +3317,214 @@ Not sure if I actually need this, but again, I'm lifting code to get started.
 
 
 #+end_src
+**** Org babel
+The literate programming and language support that comes with ~org-babel~ are why /this/ file exists, so of course I'm going to make use of it. There's no real need to explicitly use the ~ob~ package, but I like to keep my configs wrapped in ~use-package~ calls where possible. Call me weird.
+
+This stanza
+
+- loads a bunch of language support modules, including external modules
+  - ~ob-http~
+  - ~ob-raku~
+  - ~ob-racket~
+- Sets up language based fontification
+- Lowercases the evaluation results block
+
+#+begin_src emacs-lisp
+(use-package ob-http :after org)
+(use-package ob-raku :after org)
+(use-package ob-racket :after org
+  :hook
+  (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
+  :straight (ob-racket :host github
+                       :repo "hasu/emacs-ob-racket"
+                       :files ("*.el" "*.rkt")))
+(use-package ob-yaml
+  :straight
+  (:type git :host github :repo "llhotka/ob-yaml")
+  :after org)
+(use-feature ob-shell
+  :after org)
+(use-feature ob
+  :after org
+  :custom
+  (org-src-fontify-natively t)
+  (org-babel-results-keyword "results")
+  (org-babel-default-header-args
+   '((:session . "none")
+     (:results . "drawer replace")
+     (:comments . "both")
+     (:exports . "code")
+     (:cache . "no")
+     (:eval . "never-export")
+     (:hlines . "no")
+     (:tangle . "no")
+     (:noweb . "yes")))
+  (org-edit-src-auto-save-idle-delay 5)
+  :config
+  <<ob-config>>
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((css . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (http . t)
+     (org . t)
+     (perl . t)
+     (haskell . t)
+     (shell . t)
+     (sql . t)
+     (raku . t)
+     (racket . t)
+     (yaml . t)
+     (shell . t)
+     <<ob-languages>>
+     )))
+#+end_src
+
+***** Source structure templates
+Org structure templates are great, so let's add some more to make language specific ~#+begin_src~ blocks
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
+  ("el" . "src emacs-lisp")
+  ("ent" . "src emacs-lisp :tangle nil")
+  ("ett" . "src emacs-lisp :tangle nil :noweb-ref")
+  ("pl" . "src perl")
+  ("p6" . "src raku")
+  ("sh" . "src sh")
+  ("md" . "src markdown")
+  ("rk" . "src racket")
+  ("hs" . "src haskell")
+  ("sql" . "src sql")
+#+end_src
+
+****** Start editing template content after insertion
+
+This got a little out of hand… Initially, all I wanted to do was to jump straight into ~org-edit-special~ after inserting a structural template, but then I added my ~ett~ template, which includes an unpopulated ~:noweb-ref~ header argument and I would immediately jump out of the edit buffer to sort that out, before jumping back into the editor. But that was unsatisfactory too, because I was freehand typing the noweb reference name and every time I type the name of something without completion help, it's an opportunity to fuck up.
+
+Which is why we have this now
+
+#+begin_src emacs-lisp
+(defun +org-babel-noweb-refs ()
+  "find all the noweb refs in the current buffer"
+  (require 's)
+  (require 'dash)
+  (let ((match-exp (org-babel-noweb-wrap))
+        result)
+    (org-babel-map-src-blocks nil
+      (let ((plain-body (substring-no-properties body)))
+        (setq result (-concat
+                      result
+                      (-map (-partial #'s-replace "(.*)\\'" "")
+                            (-map #'second
+                                  (s-match-strings-all match-exp plain-body)))))))
+    (-sort #'string< result)))
+
+(defun +org-insert-structure-template/after-advice (&rest _)
+  (when (derived-mode-p 'org-mode)
+    (let* ((datum (org-element-context)))
+      (save-excursion
+        (goto-char (org-element-begin datum))
+        (if (re-search-forward "\\(:\\S-+\\)\\(\\s-*\\)$" (pos-eol) t)
+            (let* ((arg (match-string-no-properties 1))
+                   (value (cond ((string= arg ":noweb-ref")
+                                 (completing-read ":noweb-ref: "
+                                                  (+org-babel-noweb-refs)
+                                                  nil nil))
+                                (t
+                                 (read-from-minibuffer (format "Value for `%s': " arg))))))
+              (end-of-line)
+              (unless (looking-back "\\s-" 1)
+                (insert " "))
+              (insert value)))))
+    (org-edit-special)))
+
+(advice-add 'tempo-insert-template :after #'+org-insert-structure-template/after-advice)
+
+(advice-add 'org-insert-structure-template :after #'+org-insert-structure-template/after-advice)
+#+end_src
+
+***** JSON stuff
+
+Load up JSON and plumb it into org-mdoe
+
+#+begin_src emacs-lisp
+(use-package json-mode)
+
+(use-package ox-json
+  :after ox)
+
+(use-package org-json)
+#+end_src
+
+This snippet lets us evaluate blocks of JSON using ~org-babel~, which lets us use JSON data in workflows and such.
+
+#+begin_src emacs-lisp
+(defun org-babel-execute:json (body params)
+  (let ((jq (cdr (assoc :jq params)))
+        (node (cdr (assoc :node params))))
+    (cond
+     (jq
+      (with-temp-buffer
+        ;; Insert the JSON into the temp buffer.
+        (insert body)
+        ;; Run jq command on the whole buffer, and replace the buffer contents
+        ;; with the result returned from jq.
+        (shell-command-on-region (point-min) (point-max)
+                                 (format "jq -r \"%s\"" jq) nil 't)
+        ;; Return the contents of the temp buffer as the result
+        (buffer-string)))
+     (node
+      (with-temp-buffer
+        (insert (format "const it = %s;" body))
+        (insert node)
+        (shell-command-on-region (point-min) (point-max)
+                                 "node -p" nil 't)
+        (buffer-string))))))
+#+end_src
+
+****** JQ
+
+JQ's an amazing swiss army knife for manipulating JSON, but I do need to work on actually learning it.
+
+#+begin_src emacs-lisp
+(use-package jq-mode
+  :config
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((jq . t))))
+#+end_src
+
+***** Literate Programming stuff
+
+****** Editing source code
+I don't want to get distracted by the same code in the other window, so have org-src use the current window.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
+(org-src-window-setup 'current-window)
+#+end_src
+
+****** Copying and sharing code
+
+#+begin_src emacs-lisp
+(use-package gist
+  :after org
+  :init
+  (defun pdc/copy-code-as-org-block-and-gist (beg end)
+    (interactive "r")
+    (let ((filename (or (file-name-base) ""))
+          (mode (symbol-name major-mode))
+          (contents
+           (if (use-region-p)
+               (buffer-substring beg end) (buffer-string)))
+          (gist (if (use-region-p) (gist-region beg end) (gist-buffer))))
+      (kill-new
+       (format "\n%s\n#+begin_src %s\n%s\n#+end_src\n"
+               (org-link-make-string (oref (oref gist :data) :html-url) filename)
+               (replace-regexp-in-string "-mode%" mode)
+               contents)))))
+#+end_src
+
+
+
 **** Add auto tangle
 It's really handy to automatically tangle on save for some stuff. Especially this particular file :)
 
