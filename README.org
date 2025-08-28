@@ -4131,7 +4131,6 @@ I do like a neatly formatted alist etc, so I wrote some alignment functions. Not
 #+end_src
 
 *** Languages and Frameworks
-
 **** Lisps
 Setup some common lisp mode stuff
 #+begin_src emacs-lisp
@@ -4816,6 +4815,7 @@ The pre-literate version of this file separated initialization into =init.el= an
 And load our support modules. I'll be pulling these into here too and either tangling them into =init.el= or leaving into their own module files. Decision for later.
 
 * COMMENT Local Variables
+
 Our file local variables live here
 
 # Local Variables:
