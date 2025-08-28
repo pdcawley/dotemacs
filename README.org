@@ -3653,10 +3653,11 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
 ~Prodigy~ is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments.
 
 #+begin_src emacs-lisp
-(defvar pdc-site-directories
+(defvar pdc-site-directories-alist
   '(("bofh" . "~/Sites/bofh.org.uk/")
     ("st" . "~/Sites/singingtogether.co.uk")
-    ("pdc" . "~/Sites/pierscawley.co.uk")))
+    ("pdc" . "~/Sites/pierscawley.co.uk"))
+  "The locations of our hugo managed websites.")
 
 
 (use-package prodigy
@@ -3685,7 +3686,7 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
                    :stop-signal sigkill
                    :kill-process-buffer-on-stop t)))
 
-  (pcase-dolist (`(,name . ,path) pdc-site-directories)
+  (pcase-dolist (`(,name . ,path) pdc-site-directories-alist)
     (pdc-define-hugo-site name path (list (intern name)))))
 
 (defun pdc/site-dir (site)
@@ -3724,7 +3725,7 @@ We'll also define a few support functions with information about the various sit
 (defun pdc-site-posts-file (site)
   "Path to the all-posts.org file for a site."
   (require 'dash)
-  (let* ((site-dir (alist-get site pdc-site-directories nil nil #'equal)))
+  (let* ((site-dir (alist-get site pdc-site-directories-alist nil nil #'equal)))
     (-first #'file-exists-p
             (-map (-rpartial #'expand-file-name site-dir)
                   (list "all-posts.org"
