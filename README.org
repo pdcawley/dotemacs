@@ -1388,7 +1388,7 @@ Pulse the current line or region on demand, and after certain commands.
       (pulse-momentary-highlight-region (region-beginning) (region-end))
     (pulse-momentary-highlight-region (point) (mark))))
 
-(defun pdc/pulse-current-region ()
+(defun pdc/pulse-current-region (&rest _)
   "Interactively pulse the current implicit or active region."
   (interactive)
   (pdc/--pulse-current-region-raw))
@@ -1414,8 +1414,9 @@ Pulse the current line or region on demand, and after certain commands.
                    other-window))
   (advice-add command :after #'pulse-line))
 
-(advice-add #'kill-ring-save :before #'pdc/pulse-current-region)
-(advice-add #'copy-region-as-kill :before #'pdc/pulse-current-region)
+(advice-add #'copy-region-as-kill :after #'pdc/--pulse-current-region-raw)
+
+;; (advice-add #'copy-region-as-kill :before #'pdc/pulse-current-region)
 
 (bind-keys
  ("C-c h p" . pulse-line-command))
