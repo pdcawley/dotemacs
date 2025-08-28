@@ -3867,7 +3867,12 @@ See `org-capture-templates' for more information."
                                       (org-entry-get (point) "export_file_name" nil)))
                                   "0"))
              (new-note-number (1+ (string-to-number last-note-fname))))
-        (org-entry-put (point) "export_file_name" (number-to-string new-note-number))))))
+        (org-entry-put (point) "export_file_name" (number-to-string new-note-number)))))
+  ;; Notes are always done as soon as they're captured. I could just put DONE
+  ;; in the template, but then I'd have also add the time tracking stuff we
+  ;; want for other bits of front matter. So we'll just use the org API to do
+  ;; that here instead.
+  (org-todo 'done))
 
 
 #+end_src
@@ -3876,7 +3881,8 @@ See `org-capture-templates' for more information."
 ("n" "Note" entry
  (file+headline ,(pdc-site-posts-file "bofh") "Notes")
  (function +org-hugo-new-subtree-note-capture-template)
- :prepare-finalize +org-hugo-fixup-note-name)
+ :prepare-finalize +org-hugo-fixup-note-name
+ :before-finalize org-hugo-export-wim-to-md)
 #+end_src
 
 ** strikes Stuff
