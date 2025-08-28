@@ -3696,14 +3696,13 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
 
 #+end_src
 
-
-
 ***** Hugo Support module
 Historically, Hugo stuff is setup in a support module. I'm slowly bringing it into the Literate realm though.
 #+begin_src emacs-lisp
-  (require 'pdcmacs-hugo-support)
+(with-eval-after-load 'ox
+  (require 'ox-hugo))
+(require 'pdcmacs-hugo-support)
 #+end_src
-
 
 ***** Captures
 
