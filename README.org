@@ -3572,7 +3572,7 @@ I keep a blog at [[https://bofh.org.uk/][bofh.org.uk]] and have done for years. 
 
 ***** Org and Hugo, best buddies
 
-These days I write everything in a big org file and export it to Hugo with ox-hugo, so let's set that up. We add some commands to handle marginnotes and footnotes, and tweak some exports.
+These days I write everything in a big org file and export it to Hugo with ~ox-hugo~, so let's set that up. We add some commands to handle marginnotes and footnotes, and tweak some exports.
 
 #+begin_src emacs-lisp
 (use-package ox-hugo
@@ -3712,12 +3712,8 @@ Then set up prodigy from the data.
 
   (pcase-dolist (`(,name . ,path) pdc-site-directories-alist)
     (pdc-define-hugo-site name path (list (intern name)))))
-
-(defun pdc/site-dir (site)
-  "Get the working directory for a website."
-  (prodigy-service-cwd (prodigy-find-service site)))
-
 #+end_src
+
 
 ***** Hugo Support module
 Historically, Hugo stuff is setup in a support module. I'm slowly bringing it into the Literate realm though.
@@ -3748,14 +3744,13 @@ We'll also define a few support functions with information about the various sit
 (defun pdc-site-posts-file (site)
   "Path to the all-posts.org file for a site."
   (require 'dash)
-  (let* ((site-dir (alist-get site pdc-site-directories-alist nil nil #'equal)))
+  (let* ((site-dir (cdr (assoc site pdc-site-directories-alist))))
     (-first #'file-exists-p
             (-map (-rpartial #'expand-file-name site-dir)
                   (list "all-posts.org"
                         "org-content/all-posts.org")))))
 
 #+end_src
-
 ****** Blog post
 We'll use a function to setup the template, because it allows for more flexible prompting than in static templates.
 
@@ -3785,11 +3780,12 @@ See `org-capture-templates' for more information."
  (function +org-hugo-new-subtree-post-capture-template)
  :jump-to-captured t)
 #+end_src
-
-
 ****** Book report
-
-******* TODO Grab cover images from OpenLibrary
+******* DONE Grab cover images from OpenLibrary
+CLOSED: [2025-08-28 Thu 23:07]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2025-08-28 Thu 23:07]
+:END:
 #+begin_src emacs-lisp
 (defvar book-data-search-endpoint "https://openlibrary.org/search.json"
   "An endpoint that conforms to the openlibrary.org book search api")
