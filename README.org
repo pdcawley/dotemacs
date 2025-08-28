@@ -3904,7 +3904,7 @@ See `org-capture-templates' for more information."
  :before-finalize org-hugo-export-wim-to-md)
 #+end_src
 
-** strikes Stuff
+** Reading Stuff
 *** PDF Tools
 #+begin_src emacs-lisp
 (use-package pdf-tools)
