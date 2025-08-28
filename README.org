@@ -2828,8 +2828,6 @@ This got a little out of hand… Initially, all I wanted to do was to jump strai
 Which is why we have this now
 
 #+begin_src emacs-lisp
-;; TODO: Either prevent editing on templates where the begin_src line is incomplete or (better) prompt for something to complete the line before calling org-edit-special.
-
 (defun +org-babel-noweb-refs ()
   "find all the noweb refs in the current buffer"
   (require 's)
@@ -2867,8 +2865,6 @@ Which is why we have this now
 (advice-add 'tempo-insert-template :after #'+org-insert-structure-template/after-advice)
 
 (advice-add 'org-insert-structure-template :after #'+org-insert-structure-template/after-advice)
-
-
 #+end_src
 
 ***** JSON stuff
