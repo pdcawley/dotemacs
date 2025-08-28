@@ -3646,8 +3646,6 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
             (org-footnote-at-reference-p))
         (save-excursion (pdc/convert-footnote-to-marginnote))
       (pdc/org-marginnote-new))))
-
-
 #+end_src
 
 ***** Running Hugo in development
