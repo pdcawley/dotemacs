@@ -3654,18 +3654,36 @@ These days I write everything in a big org file and export it to Hugo with ox-hu
       (pdc/org-marginnote-new))))
 #+end_src
 
+Set up some structure templates for blogging
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
+("d" . "description")
+("md" . "marginnote")
+#+end_src
+
 ***** Running Hugo in development
 
 ~Prodigy~ is a great package for running services without leaving Emacs. We set up a helper function to define hugo services for the different sites we manage. By default, the =hugo serve= binds to localhost, which is crap when we're using an iPad to check the site, so we add =--bind 0.0.0.0= to our arguments.
 
+First we define a ~pdc-site-directories-alist~ which maps between short site names and the directories they live in.
 #+begin_src emacs-lisp
 (defvar pdc-site-directories-alist
   '(("bofh" . "~/Sites/bofh.org.uk/")
     ("st" . "~/Sites/singingtogether.co.uk")
     ("pdc" . "~/Sites/pierscawley.co.uk"))
   "The locations of our hugo managed websites.")
+#+end_src
 
+And a helper function to access it
+#+begin_src emacs-lisp
 
+(defun pdc/site-dir (site)
+  "Get the working directory for a website."
+  (cdr (assoc site pdc-site-directories-alist)))
+#+end_src
+
+Then set up prodigy from the data.
+#+begin_src emacs-lisp
 (use-package prodigy
   :commands (prodigy-define-service)
   :general
