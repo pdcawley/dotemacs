@@ -4631,16 +4631,12 @@ I miss RSS. Let's attempt to get back on that horse with ~elfeed~.
           (scroll-down-command arg)
         (error (elfeed-show-prev))))))
 
-
-
-
 ;; (use-package elfeed-goodies
 ;;   :after elfeed
 ;;   :custom
 ;;   (elfeed-goodies/entry-pane-size 0.5)
 ;;   :init
 ;;   (elfeed-goodies/setup))
-
 #+end_src
 
 ** Load extra configuration and customizations
