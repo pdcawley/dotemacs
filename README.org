@@ -836,13 +836,14 @@ There's a /lot/ going on in some modelines, and long major mode names can take u
 
 #+end_src
 
-*** COMMENT Dashboard
+*** Dashboard
 A customized startup screen. This is experimental, but why not?
 
 #+begin_src emacs-lisp
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
   :custom
   (dashboard-center-content t)
   (dashboard-icon-type 'nerd-icons)
