@@ -3783,6 +3783,25 @@ See `org-capture-templates' for more information."
                  ":END:"
                  "%?\n")
                "\n")))
+
+(defun +org-hugo-new-subtree-reply-capture-template ()
+  "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+  (let* ((title (read-from-minibuffer "Reply Title: "))
+         (url (read-from-minibuffer "URL: "))
+         (fname (concat (format-time-string "%+4Y%m%d-")
+                        (org-hugo-slug title))))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* TODO " title)
+                 ":PROPERTIES:"
+                 ,(concat ":EXPORT_HUGO_BUNDLE: " fname)
+                 ":EXPORT_FILE_NAME: index"
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :mentions "
+                          (format "'(((url . %S) (type . in-reply-to)))" url))
+                 ":END:"
+                 "%?\n")
+               "\n")))
 #+end_src
 
 ******* Capture Template
@@ -3791,6 +3810,10 @@ See `org-capture-templates' for more information."
 ("b" "bofh.org.uk post" entry
  (file+headline ,(pdc-site-posts-file "bofh") "Posts")
  (function +org-hugo-new-subtree-post-capture-template)
+ :jump-to-captured t)
+("R" "bofh.org.uk reply" entry
+ (file+headline ,(pdc-site-posts-file "bofh") "Posts")
+ (function +org-hugo-new-subtree-reply-capture-template)
  :jump-to-captured t)
 #+end_src
 ****** Book report
