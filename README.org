@@ -2337,6 +2337,7 @@ This annotates completion targets rather nicely. Mostly, it just works.
 #+end_src
 
 ** Shells and such
+*** Setup our environment based on the shell
 A few mods:
 
 - Paths for shell execution are fetched and stored
@@ -2350,6 +2351,17 @@ A few mods:
   (exec-path-from-shell-initialize))
 #+end_src
 
+
+*** Use direnv for per directory environment modules
+
+#+begin_src emacs-lisp
+(use-package envrc
+  :commands envrc-global-mode
+  :init
+  (envrc-global-mode))
+#+end_src
+
+*** Configure =eshell=
 #+begin_src emacs-lisp
   (use-feature eshell
     :custom
@@ -3640,7 +3652,7 @@ These days I write everything in a big org file and export it to Hugo with ~ox-h
     "Insert a new marginnote."
     (interactive)
     (pdc/wrap-in-shortcode "marginnote"))
-  
+
   (defun pdc/org-newthought ()
     "Wrap point/region with a newthought shortcode."
     (interactive)
