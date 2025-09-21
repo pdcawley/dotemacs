@@ -3856,7 +3856,7 @@ We'll also define a few support functions with information about the various sit
   (let* ((site-dir (cdr (assoc site pdc-site-directories-alist))))
     (-first #'file-exists-p
             (-map (-rpartial #'expand-file-name site-dir)
-                  (list "all-posts.org"
+                  (list "Content.org"
                         "org-content/all-posts.org")))))
 
 #+end_src
