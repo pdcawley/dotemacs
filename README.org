@@ -3582,6 +3582,18 @@ anything RevealAnything https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/an
 ****** TODO Eliminate reveal CDN?
 CDN's are a vulnerability waiting to happen, so I need to look into what needs doing to set up a local reveal installation.
 
+
+**** Transclusion
+#+begin_src emacs-lisp
+(use-package org-transclusion
+  :straight (:host github :repo "nobiot/org-transclusion")
+  :after org
+  :bind
+  (:map org-mode-map
+        ("M-m , t" . org-transclusion-add)
+        ("M-m , T" . org-transclusion-mode)))
+#+end_src
+
 *** Blogging
 I keep a blog at [[https://bofh.org.uk/][bofh.org.uk]] and have done for years. These days it's pretty desultory in terms of posting, but sometimes inspiration Viewing.
 
