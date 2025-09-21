@@ -3680,14 +3680,38 @@ These days I write everything in a big org file and export it to Hugo with ~ox-h
     (if (or (org-footnote-at-definition-p)
             (org-footnote-at-reference-p))
         (save-excursion (pdc/convert-footnote-to-marginnote))
-      (pdc/org-marginnote-new))))
+      (pdc/org-marginnote-new)))
+
+  (defun hugo-site-dir (&optional path)
+    (let ((search-start (or path
+                            (buffer-file-name)
+                            default-directory)))
+      (or (locate-dominating-file search-start "config.toml")
+          (locate-dominating-file search-start "config.yaml"))))
+
+  (defun +ox-hugo-log-export-advice (retval)
+    (prog1 retval
+      (when (stringp retval)
+        (with-temp-buffer
+          (insert retval)
+          (insert "\n")
+          (when-let* ((site-dir (hugo-site-dir retval)))
+            (append-to-file (point-min)
+                            (point-max)
+                            (expand-file-name "./exports" site-dir)))))))
+
+  (advice-add 'org-hugo--export-subtree-to-md :filter-return
+              #'+ox-hugo-log-export-advice)
+  <<ox-hugo-config>>
+  )
+
 #+end_src
 
 Set up some structure templates for blogging
 
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-structure-templates
 ("d" . "description")
-("md" . "marginnote")
+("mn" . "marginnote")
 #+end_src
 
 ***** Running Hugo in development
@@ -3752,7 +3776,63 @@ Historically, Hugo stuff is setup in a support module. I'm slowly bringing it in
 (require 'pdcmacs-hugo-support)
 #+end_src
 
+***** Marking webmentions
+I'd like to be able to include webmentions within the body of an article, but both Markdown and Org-mode don't have obvious ways of adding a class (and hence a microformat) to a link. However, our blog them looks at the contents of a =mentions= list in our frontmatter, so let's write some commmands to do some of that for us.
+
+#+begin_src emacs-lisp :tangle nil :noweb-ref ox-hugo-config
+(defun +org-hugo-get-custom-frontmatter ()
+  (let ((info (org-combine-plists
+               (org-export--get-export-attributes 'hugo t)
+               (org-export--get-buffer-attributes)
+               (org-export-get-environment 'hugo t))))
+    (org-hugo--parse-property-arguments (plist-get info :hugo-custom-front-matter))))
+
+(defun +org-hugo-get-mentions ()
+  (alist-get 'mentions (+org-hugo-get-custom-frontmatter)))
+
+(defun +org-hugo-add-to-mentions (url &optional description type)
+  (save-excursion
+    (org-hugo--get-valid-subtree)
+    (let* ((mentions (+org-hugo-get-mentions)))
+      (cl-pushnew `((url . ,url)
+                    ,@(when description (list (cons 'description description)))
+                    (type . ,(or type 'in-reply-to)))
+                  mentions)
+      (+org-hugo-put-custom-frontmatter 'mentions mentions))))
+
+
+(defun +org-hugo--format-frontmatter-entry (entry)
+  (format
+   (concat ":%s "
+           (if (listp (cdr entry)) "'%S" "%S"))
+   (car entry)
+   (cdr entry)))
+
+(defun +org-hugo-put-custom-frontmatter (keysym value)
+  "Put `VALUE' in the current entry's custom hugo frontmater at `KEYSYM'.
+
+This can radically reshape the look of the PROPERTIES: drawer, but data is preserved."
+  (save-excursion
+    (org-hugo--get-valid-subtree)
+    (let* ((frontmatter (+org-hugo-get-custom-frontmatter)))
+      (setf (alist-get keysym frontmatter) value)
+      (org-entry-put (point)
+                     "export_hugo_custom_front_matter"
+                     (+org-hugo--format-frontmatter-entry (pop frontmatter)))
+      (when frontmatter
+        (org-entry-put (point)
+                       "export_hugo_custom_front_matter+"
+                       (+org-hugo--format-frontmatter-entry (pop frontmatter))))
+      (when frontmatter
+        (goto-char (cdr (org-get-property-block)))
+        (dolist (entry frontmatter)
+          (insert ":export_hugo_custom_front_matter+: "
+                  (+org-hugo--format-frontmatter-entry entry))
+          (newline))))))
+#+end_src
+
 ***** Captures
+
 
 Add the captures setup below to ~org-capture-templates~.
 
