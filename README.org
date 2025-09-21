@@ -2543,7 +2543,9 @@ Let's get ~org-mode~ and ~org-contrib~ loaded first, then we can style it out wi
   (org-insert-heading-respect-content t)
   (org-hide-emphasis-markers (display-graphic-p))
   (org-pretty-entities t)
-  (org-ellipsis "…")
+  ;; I use … a lot myself, custom C-x 8 entry included, so let's use
+  ;; something different here.
+  (org-ellipsis " ⊞")
   (org-agenda-block-separator ?—)
   (org-agenda-time-grid
    '((daily today require-timed)
