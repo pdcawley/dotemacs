@@ -4868,15 +4868,26 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
   (require 'regexp-opt)
   :custom
   (web-mode-engines-alist
-   `(("go" . "\\(/layouts/.*\\.\\(html?\\|json\\|xml\\|jfw\\)\\|\\.go\\(html?\\|tmpl\\)\\)\\'")
+   `(("go" . "\\(/layouts/.*\\.\\(html?\\|json\\|xml\\|jfw\\)\\|\\.go\\(html?\\|tmpl\\)\\)\\|\\`\\*Org Src.*\\[ \\(html\\|json\\|xml\\) \\]\\*\\'")
      ("template-toolkit" . "\\.tt3?\\'")
      ("erb" . ,(concat
                 (regexp-opt '(".erb" ".rhtml" ".ejs"))
                 "\\'"))))
+  (web-mode-content-types-alist
+   `(("css" . "\\`\\*Org Src.*\\[ \\(s?css\\|css\\.erb\\) \\]\\*\\'")
+     ("json" . "\\`\\*Org Src.*\\[ \\(api\\|json\\jsonld\\) \\]\\*\\'")
+     ("jsx" . "\\`\\*Org Src.*\\[ [j t]sx \\]\\*\\'")
+     ("javascript" . "\\`\\*Org Src.*\\[ javascript \\]\\*\\'")
+     ("typescript" . "\\`\\*Org Src.*\\[ typescript \\]\\*\\'")))
   (web-mode-indent-style 2)
   (web-mode-code-indent-offset 2)
   (web-mode-markup-indent-offset 2)
   (web-mode-attribute-indent-offset 2)
+  :init
+  (with-eval-after-load 'org
+    (setf (alist-get "html" org-src-lang-modes nil t 'equal)
+          'web))
+
   :config
   (dolist (mode '(html-ts-mode mhtml-mode css-mode css-ts-mode json-mode json-ts-mode scss-mode scss-ts-mode))
     (rassq-delete-all mode auto-mode-alist)))
