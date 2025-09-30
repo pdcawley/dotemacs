@@ -3779,6 +3779,202 @@ Historically, Hugo stuff is setup in a support module. I'm slowly bringing it in
   (require 'ox-hugo))
 (require 'pdcmacs-hugo-support)
 #+end_src
+***** Hugo Introspection
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle nil :noweb-ref hugo-query-body
+:END:
+
+Right now ox-hugo uses a short code to expand links to generated markdown files, but I'd really rather do the lookup in emacs lisp because then it becomes available to emacs. This needs to be available to my site building elisp scripts too, so we're going to tangle to a separate file which can be required from there.
+
+Here's the boilerplate.
+
+#+begin_src emacs-lisp :tangle modules/hugo-query.el :noweb-ref nil
+;;; hugo-query.el --- Find the URL generatd by a markdown source  -*- lexical-binding: t; -*-
+
+;; First saved in 2025 by  Piers Cawley
+
+
+;; Author: Piers Cawley <pdcawley@Studio-Mini.local>
+
+
+;;; Commentary:
+
+;; TODO
+
+;;; Code:
+
+<<hugo-query-body>>
+
+(provide 'hugo-query)
+;;; hugo-query.el ends here
+
+#+end_src
+
+Load some necessary packages. We're going to use at least =tomlparse= to parse =config.toml= and =ox-hugo= for some of its utility functions.
+
+#+begin_src emacs-lisp
+(use-package tomlparse
+  :autoload (tomlparse-buffer
+             tomlparse-file
+             tomlparse-string))
+
+(use-package csv
+  :defer nil)
+
+(use-package ht)
+(use-package s)
+
+(use-package ox-hugo
+  :config
+  (defun hugo-query--keep-map-updated (&rest _)
+    (hugo-query-update-site-map nil t))
+  (advice-add 'org-hugo--after-all-exports-function
+              :before #'hugo-query--keep-map-updated))
+
+#+end_src
+
+Hmm... Not sure those are actually necessary. Let's try a few things
+
+#+begin_src emacs-lisp
+(defvar hugo-query-hugo-cmd "hugo")
+
+(defvar hugo-query-site-map nil)
+
+(defun hq--hugo-dir-p (dir)
+  "Return non-nil if DIR contains a config file for Hugo."
+  (or
+   (file-exists-p (expand-file-name "config.toml" dir))
+   (file-exists-p (expand-file-name "config.yaml" dir))))
+
+(defun hugo-query-site-dir (&optional path)
+  "Return the Hugo site directory that contains PATH."
+  (let ((search-start (or path buffer-file-name default-directory)))
+    (when-let* ((dir (locate-dominating-file search-start #'hq--hugo-dir-p)))
+      (expand-file-name dir))))
+
+(defun hugo-query-update-site-map (&optional dir force?)
+  "Update `hugo-query-site-map' for the given DIR."
+  (interactive "i\nP")
+  (if-let* ((site-dir (hugo-query-site-dir dir)))
+      (when (or force?
+                (not hugo-query-site-map)
+                (not (equal site-dir (gethash :site-dir hugo-query-site-map))))
+        (setq hugo-query-site-map (hq--build-site-map site-dir))
+        (puthash :site-dir site-dir hugo-query-site-map))
+    (message "%s isn't in a Hugo site directory!"
+             (or dir buffer-file-name default-directory))))
+
+(defun hugo-query-url-for-source (file)
+  (require 'ht)
+  (let ((site-dir (hugo-query-site-dir file)))
+    (hugo-query-update-site-map file)
+    (ht-get* hugo-query-site-map
+             (file-relative-name file site-dir)
+             "permalink")))
+
+(defun hq--build-site-map (dir)
+  (require 'ht)
+  (with-temp-buffer
+    (call-process hugo-query-hugo-cmd
+                  nil t nil
+                  "-M"
+                  "-s" (expand-file-name dir)
+                  "list" "all")
+    (goto-char (point-min))
+    (when-let* ((result (make-hash-table :test 'equal))
+                (mappings (csv-parse-buffer t)))
+      (dolist (alist mappings)
+        (when-let* ((path (cdr (assoc-string "path" alist)))
+                    (hash (ht<-alist alist 'equal))
+                    (permalink-url (url-generic-parse-url
+                                    (gethash "permalink" hash)))
+                    (rel-permalink (car (url-path-and-query permalink-url))))
+          (puthash "rel-permalink" rel-permalink hash)
+          (puthash path hash result)))
+      result)))
+
+(defun +org-hugo--get-article-info ()
+  (let* ((org-use-property-inheritance (org-hugo--selective-property-inheritance)))
+    (org-combine-plists
+     (org-export--get-export-attributes
+      'hugo t nil)
+     (org-export--get-buffer-attributes)
+     (org-export-get-environment 'hugo t))))
+
+
+(defun +org-hugo-get-article-url ()
+  (save-excursion
+    (org-hugo--get-valid-subtree)
+    (hugo-query-update-site-map)
+    (let* ((info (+org-hugo--get-article-info))
+           (md-file (org-export-output-file-name
+                     ".md" t (org-hugo--get-pub-dir info))))
+      (hugo-query-url-for-source md-file))))
+
+(defun hugo-query-site-config (&optional file)
+  (let* ((config-file (expand-file-name "config.toml" (hugo-site-dir file))))
+    (tomlparse-file config-file)))
+
+(defun hugo-query--fmt-permalink (template heading info)
+  (let* ((pub-time (date-to-time
+                    (or (org-hugo--format-date :date info)
+                        (org-hugo--format-date :hugo-publishdate info))))
+         (values-plist
+          (list
+           :slug (org-hugo--heading-get-slug heading info)
+           :section (s-chop-suffix "/" (org-hugo--get-section-path info))
+           :title (org-hugo--get-sanitized-title info)
+           :filename (org-hugo--get-anchor heading info)
+           :contentbasename (org-hugo--get-anchor heading info)
+           :year (format-time-string "%G" pub-time)
+           :month (format-time-string "%m" pub-time)
+           :monthname (format-time-string "%b" pub-time)
+           :day (format-time-string "%d" pub-time)
+           :weekday (format-time-string "%U" pub-time)
+           :weekdayname (format-time-string "%a" pub-time)
+           :slugorcontentbasename
+           (or (plist-get info :hugo-slug)
+               (org-hugo--get-anchor heading info)))))
+    (--> template
+         (s-split "/" it)
+         (--map (if (s-prefix? ":" it)
+                    (plist-get values-plist it 'string-equal)
+                  it) it)
+         (s-join "/" it))))
+
+(defun +org-hugo-guess-rel-permalink (&optional heading info)
+  (save-excursion
+    (let* ((backend (plist-get info :back-end ))
+           (info (org-combine-plists
+                  (or info (+org-hugo--get-article-info))
+                  (list :back-end
+                        (if (symbolp backend)
+                            (org-export-get-backend 'hugo)
+                          backend))))
+           (heading (or heading (org-hugo--get-valid-subtree)))
+           (site-config (hugo-query-site-config))
+           (section-path (org-hugo--get-section-path info))
+           (section (s-chop-suffix "/" section-path))
+           (url (plist-get info :hugo-url)))
+      (cond (url (car (url-path-and-query (url-generic-parse-url url))))
+            ((when-let*
+                 ((permalink-template (ht-get* site-config
+                                               "permalinks"
+                                               "page"
+                                               section)))
+               (hugo-query--fmt-permalink permalink-template heading info)))
+            (t (format "%s%s/"
+                       section-path
+                       (org-hugo--get-anchor heading info)))))))
+#+end_src
+
+And let's make sure we load the resulting package.
+
+#+begin_src emacs-lisp :tangle init.el :noweb-ref nil
+(require 'hugo-query)
+#+end_src
+
+Hugo builds
 
 ***** Marking webmentions
 I'd like to be able to include webmentions within the body of an article, but both Markdown and Org-mode don't have obvious ways of adding a class (and hence a microformat) to a link. However, our blog them looks at the contents of a =mentions= list in our frontmatter, so let's write some commmands to do some of that for us.
