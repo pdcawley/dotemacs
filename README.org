@@ -4112,6 +4112,279 @@ See `org-capture-templates' for more information."
  (function +org-hugo-new-subtree-reply-capture-template)
  :jump-to-captured t)
 #+end_src
+****** Legacy post
+This is possibly a bad place for this to live, but we want to be able to pull truncated old markdown posts into Content.org, grab the full post from the Wayback Machine, tidy them up a little before committing to the updated content, and the capture system sort of fits the bill.
+
+#+begin_src emacs-lisp
+(use-package tomelr)
+(use-package tomlparse
+  :defer nil)
+
+(defun +org-hugo-get-legacy-frontmatter (file)
+  (org-with-file-buffer file
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (when (looking-at (rx "+++"))
+          (forward-line))
+        (let ((start (point)))
+          (while (not (looking-at (rx "+++")))
+            (forward-line))
+          (narrow-to-region start (point))
+          (goto-char (point-min))
+          (tomlparse-buffer :object-type 'alist :datetime-as 'datetime))))))
+
+(defcustom hugo-query-wayback-prefix "https://web.archive.org/web/20160530235900/"
+  "The waybackmachine URL to search under.")
+(defcustom hugo-query-content-start-re (rx (group line-start ":END:\n"))
+  "A regex skip the starting boilerplate.
+`(match-end 1)' should be the point to delete up to")
+
+(defcustom hugo-query-content-end-re
+  (rx (group line-start "<<commentform>>"))
+  "A regex to find where trailing boilerpoint starts.
+`(match-start 1)' should be the point to delete from.")
+
+(defcustom hugo-wayback-content-matchers
+  `((,(rx (group line-start ":END:\n")) .
+     ,(rx (group line-start "<<commentform>>")))
+    )
+  "Pairs of regexen that are possible body delimiters in archived content")
+
+
+(defvar pdc/last-imported-legacy-file nil)
+
+(defun +org-link-strip-wayback-machine-from-links (&optional buffer)
+  (let ((re (rx "[[https://web.archive.org/"
+                (*? not-newline)
+                "/"
+                (group "http" (? "s")) "://")))
+    (save-excursion
+      (with-current-buffer (or buffer (current-buffer))
+        (goto-char (point-min))
+        (while (re-search-forward re nil t)
+          (replace-match (format "[[%s://" (match-string 1)) nil nil))))))
+
+(defun +org-hugo--get-legacy-page-from-wayback (file)
+  (require 's)
+  (require 'org-macs)
+  (let* ((url (s-replace-regexp
+               (rx bos "https://") "http://"
+               (hugo-query-url-for-source file)))
+         (wbm-url (format "%s%s"
+                          hugo-query-wayback-prefix url)))
+    (with-temp-buffer
+      (call-process "pandoc" nil t t
+                    "-f" "html"
+                    "-t" "org"
+                    wbm-url)
+      (goto-char (point-min))
+      (re-search-forward hugo-query-content-start-re)
+      (replace-region-contents (point-min) (match-end 1) "")
+      (when (re-search-forward hugo-query-content-end-re nil t)
+        (replace-region-contents (match-beginning 1) (point-max) ""))
+      (+org-link-strip-wayback-machine-from-links)
+      (org-string-nw-p (substring-no-properties (buffer-string))))))
+
+(defvar +org-hugo--import-skip-front-matter-re
+  (rx (: buffer-start (group (| "+++" "---") "\n")
+         (*? anychar)
+         (backref 1))))
+
+(defun +org-hugo--import-file-body-as-org (file)
+  "Skip over the front matter and import the body with pandoc"
+  (org-with-file-buffer file
+    ;; In case we're in an existing file buffer
+    (save-excursion
+      (save-restriction
+        (widen)
+        (let* ((buf-name " *legacy-import*"))
+          (with-current-buffer (get-buffer-create buf-name)
+            (erase-buffer))
+          (goto-char (point-min))
+          (re-search-forward +org-hugo--import-skip-front-matter-re nil t)
+          (call-process-region (point) (point-max)
+                               "pandoc"
+                               nil buf-name nil
+                               "-f" "markdown"
+                               "-t" "org")
+          (with-current-buffer buf-name
+            (goto-char (point-min))
+            (save-excursion
+              (when (re-search-forward (rx bol "<!--more-->" eol) nil t)
+                (replace-match "#+hugo: more")))
+            (org-string-nw-p
+             (substring-no-properties (buffer-string)))))))))
+
+
+(defun +org-hugo-import-legacy-article-somehow (file)
+  (or (+org-hugo--get-legacy-page-from-wayback file)
+      (prog1 (+org-hugo--import-file-body-as-org file)
+        (message "Wayback Record missing. Fallling back to .md file."))
+      ""))
+
+
+(defun +org-hugo-import-legacy-article-capture-template ()
+  (interactive)
+  (let* ((file (read-file-name "Legacy MD: "
+                               "~/Sites/bofh.org.uk/legacy-content/post/"
+                               nil t))
+         (front-matter (+org-hugo-get-legacy-frontmatter file))
+         (pub-time (date-to-time (alist-get 'date front-matter)))
+         (extra-front-matter
+          (seq-reduce
+           (lambda (init pair)
+             (if (member (car pair)
+                         '(date title slug draft))
+                 init
+               (cons pair init)))
+           front-matter nil)))
+    (prog1
+        (mapconcat
+         #'identity
+         `(
+           ,(concat "* REVISING "
+                    (alist-get 'title front-matter))
+           ":PROPERTIES:"
+           ,(concat ":EXPORT_HUGO_BUNDLE: "
+                    (format-time-string "%y%m%d-" pub-time)
+                    (alist-get 'slug front-matter))
+           ":EXPORT_FILE_NAME: index"
+           ":END:"
+           ":LOGBOOK:"
+           ,(format-time-string
+             "- State \"REVISING\"   from \"DONE\"       [%F %a]")
+           ,(format-time-string
+             "- State \"DONE\"       from \"TODO\"       [%F %a]"
+             pub-time)
+           ":END:\n"
+           ,@(when extra-front-matter
+               `(
+                 "#+begin_src toml :front-matter-extra t"
+                 ,(let ((tomelr-indent-multi-line-strings t))
+                    (tomelr-encode extra-front-matter))
+                 "#+end_src"))
+           "%?\n"
+           ,(+org-hugo-import-legacy-article-somehow file))
+         "\n")
+      (setq pdc/last-imported-legacy-file file))))
+
+(defvar hugo-legacy-gravatar-prefix-re
+  (rx "//web.archive.org/web/" (+? digit) "im_/"))
+
+(defun +org-set--heading-level (target-level)
+  (save-excursion
+    (let* ((after-change-functions
+            (remq 'flyspell-after-change-function
+                  after-change-functions))
+           (old-level (org-current-level))
+           (diff (- target-level old-level))
+           (new-head (concat (make-string target-level ?*) " ")))
+      (replace-match
+       (apply #'propertize new-head
+              (text-properties-at (match-beginning 0))) t)
+      (unless (or (zerop diff)
+                  (= target-level 1))
+        (when org-auto-align-tags (org-align-tags))
+        (when org-adapt-indentation (org-fixup-indentation diff)))
+      (cond ((< diff 0) (run-hooks 'org-after-promote-entry-hook))
+            ((> diff 0) (run-hooks 'org-after-demote-entry-hook))))))
+
+
+(defun +org-hugo--fixup-comments-heading ()
+  (let ((level (org-current-level)))
+    (org-map-entries
+     (lambda ()
+       ;; Correct *** depth
+       (+org-set--heading-level (1+ level))
+       ;; Note that comments are historic
+       (when (re-search-forward org-link-bracket-re (pos-eol) t)
+         (let* ((desc (match-string 2)))
+           (replace-match (replace-regexp-in-string
+                           "\\(?:historic \\)?comment"
+                           "historic comment"
+                           desc)
+                          nil nil nil 2)))
+       ;; Remove the link to the comment form
+       (when (re-search-forward org-link-bracket-re (pos-eol) t)
+         (replace-match "»"))
+       ;; Anglicise comments id
+       (org-set-property "CUSTOM_ID" "commentary")
+       (org-end-of-meta-data)
+       (let ((case-fold-search t)
+             (+org-suppress-insert-structure-template-advice t))
+         (unless (looking-at-p "\\n*[ \t]*#\\+BEGIN_MARGINNOTE")
+           (org-insert-structure-template "marginnote")
+           (insert "These are archived comments. To respond to this post, use a webmention\n"))))
+     "CUSTOM_ID=\"commentaires\"" 'tree       )))
+
+(defun +org-hugo--fixup-comments ()
+  "Sort out broken spacing of historic comments.
+Called with point at the beginning of the comments entry."
+  (interactive)
+  (let* ((comment-level (1+ (org-current-level))))
+    (org-narrow-to-subtree)
+    ;; Fixup individual comment headings
+    (save-excursion
+      (while (re-search-forward "^  \\*\\{4\\} " nil t)
+        (replace-match (concat
+                        (make-string comment-level ?*) " "))))
+    ;; Remove excessive indents and hlines
+    (save-excursion
+      (while (re-search-forward "^  \\(?:-\\{3,\\}\n\\)?" nil t)
+        (replace-match "")))
+    ;; Fixup gravatar links and move them into the comment headers
+    ;; match-string 1: link destination
+    ;; match-string 2: link description (empty)
+    ;; match-string 3: heading stars
+    (while (re-search-forward
+            (rx (seq
+                 ;; The broken gravatar link
+                 bol "- " (regexp org-link-bracket-re)
+                 (+? anychar)
+                 ;; The fixed up headline
+                 bol (group (+ "*") " ")))
+            nil t)
+      (let ((gravatar-link (replace-regexp-in-string "\\`//web\\.archive\\.org/web/[0-9]+?im_/" "" (match-string 1)))
+            (heading-stars (match-string 3))
+            )
+        (unless (string= gravatar-link (match-string 1))
+          (replace-match (s-lex-format "${heading-stars}![[${gravatar-link}][${gravatar-link}]] ")))))))
+
+(defun +org-hugo-fixup-legacy-comments (&optional buffer-or-name)
+  "Reformat our legacy comments"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (with-current-buffer (or buffer-or-name (current-buffer))
+        (save-excursion
+          (org-hugo--get-valid-subtree)
+          (org-narrow-to-subtree)
+          (+org-hugo--fixup-comments-heading)
+          (org-map-entries
+           #'+org-hugo--fixup-comments
+           "CUSTOM_ID=\"commentary\"" 'tree))))))
+
+(defun +maybe-remove-legacy-file ()
+  (if (and pdc/last-imported-legacy-file
+           (file-exists-p pdc/last-imported-legacy-file)
+           (y-or-n-p (format "Delete %s"
+                             pdc/last-imported-legacy-file)))
+      (delete-file pdc/last-imported-legacy-file)))
+#+end_src
+
+******* Capture template
+#+begin_src emacs-lisp :tangle nil :noweb-ref hugo-capture-templates
+("R" "Recover article" entry
+ (file+headline ,(pdc-site-posts-file "bofh") "Recovered Posts")
+ (function +org-hugo-import-legacy-article-capture-template)
+ :hook +org-hugo-fixup-legacy-comments
+ :after-finalize +maybe-remove-legacy-file
+ :jump-to-captured t)
+
+#+end_src
+
 ****** Book report
 ******* DONE Grab cover images from OpenLibrary
 CLOSED: [2025-08-28 Thu 23:07]
