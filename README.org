@@ -3436,24 +3436,27 @@ Which is why we have this now
                                   (s-match-strings-all match-exp plain-body)))))))
     (-sort #'string< result)))
 
+(defvar +org-suppress-insert-structure-template-advice nil)
+
 (defun +org-insert-structure-template/after-advice (&rest _)
-  (when (derived-mode-p 'org-mode)
-    (let* ((datum (org-element-context)))
-      (save-excursion
-        (goto-char (org-element-begin datum))
-        (if (re-search-forward "\\(:\\S-+\\)\\(\\s-*\\)$" (pos-eol) t)
-            (let* ((arg (match-string-no-properties 1))
-                   (value (cond ((string= arg ":noweb-ref")
-                                 (completing-read ":noweb-ref: "
-                                                  (+org-babel-noweb-refs)
-                                                  nil nil))
-                                (t
-                                 (read-from-minibuffer (format "Value for `%s': " arg))))))
-              (end-of-line)
-              (unless (looking-back "\\s-" 1)
-                (insert " "))
-              (insert value)))))
-    (org-edit-special)))
+  (unless +org-suppress-insert-structure-template-advice
+    (when (derived-mode-p 'org-mode)
+      (let* ((datum (org-element-context)))
+        (save-excursion
+          (goto-char (org-element-begin datum))
+          (if (re-search-forward "\\(:\\S-+\\)\\(\\s-*\\)$" (pos-eol) t)
+              (let* ((arg (match-string-no-properties 1))
+                     (value (cond ((string= arg ":noweb-ref")
+                                   (completing-read ":noweb-ref: "
+                                                    (+org-babel-noweb-refs)
+                                                    nil nil))
+                                  (t
+                                   (read-from-minibuffer (format "Value for `%s': " arg))))))
+                (end-of-line)
+                (unless (looking-back "\\s-" 1)
+                  (insert " "))
+                (insert value)))))
+      (org-edit-special))))
 
 (advice-add 'tempo-insert-template :after #'+org-insert-structure-template/after-advice)
 
