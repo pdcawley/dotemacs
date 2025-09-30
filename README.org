@@ -3753,6 +3753,7 @@ Then set up prodigy from the data.
       "--disableFastRender"
       "--navigateToChanged"
       "--watch"
+      "-M"
       "--environment" "development"
       "--bind" "0.0.0.0"
       "--baseURL" "studio-mini.local"))
