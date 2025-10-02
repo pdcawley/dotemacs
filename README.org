@@ -5504,14 +5504,13 @@ Returns nil if there's no such capture"
                         (pcase (cadr data)
                           (`() nil)
                           (`(,timestamp ,target-url)
-                           (s-lex-format
-                            "https://web.archive.org/web/${timestamp}/${target-url}")))))))
+                           (s-lex-format "https://web.archive.org/web/${timestamp}/${target-url}")))))))
     capture-url))
 
 (defmacro wayback-with-page-from-before (url date &rest body)
   (declare (indent 2) (debug t))
   (let ((capture-url (make-symbol "capture-url")))
-    `(let* ((,capture-url (wayback-get-capture-before ,url ,date)))
+    `(when-let* ((,capture-url (wayback-get-capture-before ,url ,date)))
        (with-temp-buffer
          (request ,capture-url
            :sync t
