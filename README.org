@@ -3358,7 +3358,11 @@ This stanza
 (use-package ob-yaml
   :straight
   (:type git :host github :repo "llhotka/ob-yaml")
-  :after org)
+  :after org
+  :config
+  (require 'yaml-ts-mode)
+  (defalias 'yaml-mode 'yaml-ts-mode))
+
 (use-feature ob-shell
   :after org)
 (use-feature ob
