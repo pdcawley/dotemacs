@@ -5409,6 +5409,119 @@ The ~web-mode~ package aims to cope with all the HTML templating tools. I'm not 
           :repo "pdcawley/ob-restclient.el")))
 #+end_src
 
+** Web stuff
+
+*** Using the Wayback Machine
+:PROPERTIES:
+:header-args:emacs-lisp+: :tangle nil :noweb-ref wayback-body
+:END:
+
+I've discovered that I fucked up about a decade ago when moving from Typo/Publify to my current Hugo based blog and truncated a bunch of posts. Also, I lost the comments. The first step to recovering from that where possible is to fetch "complete" posts from the Internet Archive's [[https://web.archive.org/][Wayback Machine]]. I was doing things in a fairly /ad hoc/ fashion, but I've reached the point where I want an API to work with.
+
+Let's make a =wayback.el= library for that stuff because I might want to publish it, or use it in emacs scripts.
+
+#+begin_src emacs-lisp :tangle modules/wayback.el :noweb-ref nil
+;;; wayback.el --- Work with the Wayback Machine     -*- lexical-binding: t; -*-
+
+;; First saved in 2025 by  Piers Cawley
+
+
+;; Author: Piers Cawley <pdcawley@Studio-Mini.local>
+
+
+;;; Commentary:
+
+;; Interacts with the Wayback machine to fetch versions from specific dates,
+;; using the CDX api to find appropriate targets.
+
+;;; Code:
+;;; Load up modules we need
+<<wayback-requirements>>
+;;; And here's the actual code
+<<wayback-body>>
+
+(provide 'wayback)
+;;; wayback.el ends here
+
+#+end_src
+
+And make sure we load it in init.el
+
+#+begin_src emacs-lisp :tangle init.el :noweb-ref nil
+(require 'wayback)
+#+end_src
+
+**** Requirements
+:PROPERTIES:
+:header-args:emacs-lisp+: :noweb-ref wayback-requirements
+:END:
+
+***** Request
+Emacs has a built in library to fetch URLs, but it makes my head hurt to use it. The =request= package has an interface I prefer and uses =curl= to actually do the HTTP stuff, which I'm very much in favour of.
+
+#+begin_src emacs-lisp
+(use-package request
+  :autoload (request))
+#+end_src
+
+***** s.el
+I try to avoid =s.el=, but ~s-lex-format~ is too damned useful
+
+#+begin_src emacs-lisp
+(use-package s
+  :autoload (s-lex-format))
+#+end_src
+
+**** Implementation
+
+#+begin_src emacs-lisp
+(defvar wayback-cdx-endpoint "https://web.archive.org/cdx/search/cdx"
+  "The endpoint for the Wayback Machine's CDX server.")
+
+(defvar wayback-cdx-json-parser
+  (apply-partially 'json-parse-buffer :array-type 'list)
+  "Parser for json data returned from the CDX server.")
+
+(defun wayback-get-capture-before (url date)
+  "Use the CDX applet to find any version of URL captured before DATE string.
+Returns nil if there's no such capture"
+  (let ((capture-url nil))
+    (request wayback-cdx-endpoint
+      :params `((url . ,url)
+                (to . ,(if (or (numberp date)
+                               (stringp date))
+                           date
+                         (format-time-string "%Y%m%d%H%M%S" date)))
+                (collapse . digest)
+                (output . json)
+                (fl . "timestamp,original")
+                (limit . -1))
+      :parser wayback-cdx-json-parser
+      :sync t
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (setq capture-url
+                        (pcase (cadr data)
+                          (`() nil)
+                          (`(,timestamp ,target-url)
+                           (s-lex-format
+                            "https://web.archive.org/web/${timestamp}/${target-url}")))))))
+    capture-url))
+
+(defmacro wayback-with-page-from-before (url date &rest body)
+  (declare (indent 2) (debug t))
+  (let ((capture-url (make-symbol "capture-url")))
+    `(let* ((,capture-url (wayback-get-capture-before ,url ,date)))
+       (with-temp-buffer
+         (request ,capture-url
+           :sync t
+           :success (cl-function
+                     (lambda (&key data &allow-other-keys)
+                       (insert data))))
+         ,@body))))
+(defalias 'with-wayback-page-from-before 'wayback-with-page-from-before)
+#+end_src
+
 ** Personal Knowledge Management
 I'm not entirely convinced I'll use this, but it's probably worth at least trying to get better at note taking and such.
 

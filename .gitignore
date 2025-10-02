@@ -56,3 +56,4 @@ url
 /early-init.el
 /init.el
 /tree-sitter/*.dylib
+/modules/wayback.el
