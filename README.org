@@ -4141,12 +4141,14 @@ See `org-capture-templates' for more information."
 
 #+begin_src emacs-lisp :tangle nil :noweb-ref hugo-capture-templates
 ("b" "bofh.org.uk post" entry
- (file+headline ,(pdc-site-posts-file "bofh") "Posts")
+ (file+olp ,(pdc-site-posts-file "bofh") "Posts" "Uncategorised")
  (function +org-hugo-new-subtree-post-capture-template)
+ :prepend t
  :jump-to-captured t)
 ("R" "bofh.org.uk reply" entry
- (file+headline ,(pdc-site-posts-file "bofh") "Posts")
+ (file+olp ,(pdc-site-posts-file "bofh") "Posts" "Uncategorised")
  (function +org-hugo-new-subtree-reply-capture-template)
+ :prepend t
  :jump-to-captured t)
 #+end_src
 ****** Legacy post
