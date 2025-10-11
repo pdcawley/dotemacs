@@ -4154,10 +4154,282 @@ See `org-capture-templates' for more information."
 ****** Legacy post
 This is possibly a bad place for this to live, but we want to be able to pull truncated old markdown posts into Content.org, grab the full post from the Wayback Machine, tidy them up a little before committing to the updated content, and the capture system sort of fits the bill.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb nil
 (use-package tomelr)
 (use-package tomlparse
   :defer nil)
+
+(defun +org-hugo-fixup-typo:code-blocks ()
+  (require 'web-mode)
+  (unwind-protect
+      (let* ((code-fixup-alist
+              '(("…" . "...")
+                ("⇒" . "=>")
+                ("→" . "->")
+                ("<br>" . "")
+                ("<br/>" . "")))
+             (fixup-re (regexp-opt (mapcar 'car code-fixup-alist))))
+        (major-mode-suspend)
+        (web-mode)
+        (goto-char (point-min))
+        (while (re-search-forward "<typo:code>" nil t)
+          (web-mode-element-parent)
+          (when (string= (web-mode-element-tag-name) "typo:code")
+            (web-mode-element-rename "code")
+            (web-mode-element-content-select)
+            (web-mode-element-wrap "pre")
+            (web-mode-element-content-select)
+            (save-restriction
+              (narrow-to-region (point) (mark))
+              (while (re-search-forward fixup-re nil t)
+                (replace-match
+                 (alist-get (match-string-no-properties 0)
+                            code-fixup-alist nil t 'string=) t t))))))
+    (major-mode-restore)))
+
+
+
+(defun +org-hugo--get-legacy-page-from-wayback (file-or-url &optional date)
+  (require 'wayback)
+  (let* ((url (s-replace-regexp
+               (rx bos "https://") "http://"
+               (if (string-match-p "\\`https?://" file-or-url)
+                   file-or-url
+                 (hugo-query-url-for-source file-or-url)))))
+    (wayback-with-page-from-before url (or date 2015)
+      (call-process-region nil nil "tidy" t t nil
+                           "-i" "-ashtml" "--gnu-emacs" "yes")
+      (+org-hugo-fixup-typo:code-blocks)
+      (call-process-region nil nil "pandoc" t t nil
+                           "-f" "html" "-t" "org-smart")
+
+      (org-string-nw-p
+       (buffer-substring-no-properties (point-min) (point-max))))))
+
+(defun +org-has-link-with-description (desc)
+  (let ((link-re
+         (rx (seq "[["
+                  (+ (or (not (any "[]\\"))
+                         (and "\\" (* "\\\\") (any "[]"))
+                         (and (+ "\\" (not (any "[]"))))))
+                  "]"
+                  "[" (regexp desc)))))
+    (save-excursion
+      (goto-char (point-min))
+      (re-search-forward link-re nil t))))
+
+(defvar legacy-post-type-identifiers
+  `((,(-partial '+org-has-link-with-description "scribbish")
+     ( :post-variant scribbish
+       :comment-id "comments")
+     (,(rx (group
+            bol "<<content>>\n\n"
+            "<<article-" (+ digit) ">>\n")
+           (regexp org-heading-regexp) "\n"
+           (regexp org-property-drawer-re) "\n"
+           "Posted by\n"
+           (regexp org-link-bracket-re)
+           (+ not-newline) "\n")
+      . ,(rx (group
+              bol
+              "Comments\nName:\\\\")))
+     legacy-strip-wbm-from-links
+     legacy-parse-and-remove-metadata-stanza
+     legacy-guess-metadata
+     legacy-add-org-hugo-metadata
+     legacy-strip-pandoc-inferred-classes
+     legacy-fixup-scribbish-comments)
+    (t
+     ( :post-variant default
+       :comment-id "commentaires")
+     (,(rx (group
+            bol "<<page>>\n\n"
+            "<<article-" (+ digit) ">>\n")
+           (regexp org-heading-regexp) "\n"
+           (regexp org-property-drawer-re) "\n")
+      . "\\(^<<commentform>>\n\\)")
+     legacy-parse-and-remove-metadata-stanza
+     legacy-guess-metadata
+     legacy-strip-wbm-from-links
+     legacy-add-org-hugo-metadata
+     legacy-strip-pandoc-inferred-classes
+     legacy-fixup-default-comments
+     ))
+  "Matchers and cleanup functions for different site variants.")
+
+(defvar legacy-date-re
+  (rx (or "Sat" "Sun" "Mon" "Tue" "Wed" "Thu" "Fri") ", "
+      (+ digit) " "
+      (or "Jan" "Feb" "Mar" "Apr" "May" "Jun"
+          "Jul" "Aug" "Sep" "Oct" "Nov" "Dec") " "
+      (= 4 digit) " "
+      (= 2 (= 2 digit) ":") (= 2 digit) " "
+      (or (= 3 alpha)
+          (seq (any "+-") (= 2 digit) ":" (= 2 digit))))  )
+
+(defvar legacy-article-metadata-matchers-plist
+  `(
+    scribbish legacy-parse-and-remove-scribbish-metadata
+    default ,(rx bol "Published on "
+                 (group-n 3 (regexp legacy-date-re))
+                 " by "
+                 (+ alnum)
+                 (*? (+ space) (+ alnum))
+                 " "
+                 (or (seq "under\n"
+                          (group-n 1
+                            (regexp org-link-bracket-re)
+                            (* ",\n" (regexp org-link-bracket-re)))
+                          ".\n")
+                     (seq ".\n"))
+                 (? "Tags "
+                    (group-n 2
+                      (regexp org-link-bracket-re)
+                      (* ",\n" (regexp org-link-bracket-re))))
+                 (* "\n")
+                 "If you liked this article you can" (any " \n")
+                 (regexp org-link-bracket-re)
+                 "\n")))
+
+(defun legacy-guess-metadata (&optional info)
+  (unless (plist-get info :slug)
+    (org-back-to-heading-or-point-min)
+    (if-let* ((slug (org-element-property
+                     :CUSTOM_ID
+                     (org-element-at-point)
+                     nil t)))
+        (plist-put info :slug slug))))
+
+(defun legacy-parse-and-remove-scribbish-metadata (&optional info)
+  (prog1 nil
+    (cl-block nil
+      (org-element-map (org-element-parse-buffer) 'plain-list
+        (lambda (list)
+          (goto-char (org-element-contents-begin list))
+          (when (looking-at (rx "- " (or "Posted in" "Tags")))
+            (org-element-map list 'item
+              (lambda (item)
+                (goto-char (org-element-contents-begin item))
+                (when (looking-at "Tags")
+                  (plist-put
+                   info :tags (org-element-map item 'link
+                                (lambda (l)
+                                  (goto-char (org-element-begin l))
+                                  (when (looking-at org-link-bracket-re)
+                                    (match-string-no-properties 2))))))))
+            (delete-region (org-element-begin list)
+                           (org-element-end list))
+            (cl-return)))))))
+
+
+(defun legacy-parse-and-remove-metadata-stanza (&optional info)
+  (prog1 nil
+    (let ((matcher (plist-get legacy-article-metadata-matchers-plist
+                              (plist-get info :post-variant))))
+      (cond ((or (symbolp matcher)
+                 (functionp matcher)) (funcall matcher info))
+            ((stringp matcher)
+             (when (re-search-forward matcher nil t)
+               (let ((categories-start (match-beginning 1))
+                     (categories-end (match-end 1))
+                     (tags-start (match-beginning 2))
+                     (tags-end (match-end 2))
+                     (pub-date (date-to-time (match-string 3)))
+                     (categories nil)
+                     (tags nil))
+                 (save-match-data
+                   (save-excursion
+                     (when categories-start
+                       (goto-char categories-start)
+                       (while (re-search-forward org-link-bracket-re categories-end t)
+                         (cl-pushnew (match-string-no-properties 2) categories :test 'string=)))
+                     (when tags-start
+                       (goto-char tags-start)
+                       (while (re-search-forward org-link-bracket-re tags-end t)
+                         (cl-pushnew (match-string-no-properties 2) tags :test 'string=)))))
+                 (delete-region (match-beginning 0) (match-end 0))
+                 (setf (plist-get info :categories) categories)
+                 (setf (plist-get info :tags) tags)
+                 (setf (plist-get info :pub-date) pub-date))))))))
+
+(defun legacy-cleanup-wayback-article (&optional info)
+  (interactive)
+  (goto-char (point-min))
+  (save-excursion
+    (pcase-dolist
+        (`(,pred ,variant-info (,pre-re . ,post-re) . ,cleanup-funcs) legacy-post-type-identifiers)
+      (when (or (eq 't pred)
+                (funcall pred))
+        (when (re-search-forward pre-re nil t)
+          (delete-region (point-min) (match-end 1)))
+        (when (re-search-forward post-re nil t)
+          (delete-region (match-beginning 1) (point-max)))
+        (unwind-protect
+            (let ((info (org-combine-plists info variant-info))
+                  (org-todo-keywords '((sequence "TODO" "REVISING" "|"
+                                                 "DONE")))
+                  (org-log-into-drawer t))
+              (major-mode-suspend)
+              (org-mode)
+              (goto-char (point-min))
+              ;; Pre cleanup
+              ;; We want a level 1 heading.
+              ;; Capture can sort out the eventual level
+              (while (> (org-current-level) 1)
+                (org-promote-subtree))
+              ;; Run any per post type cleanup functions
+              (when cleanup-funcs
+                (goto-char (point-min))
+                (dolist (f cleanup-funcs)
+                  (save-excursion
+                    (save-restriction
+                      (deactivate-mark)
+                      (setq info (or (funcall f info)
+                                     info))
+                      )))))
+          (major-mode-restore))
+        (cl-return)))))
+
+
+(defun legacy-strip-wbm-from-links (&optional info)
+  (while (re-search-forward org-link-bracket-re nil t)
+    (replace-match
+     (replace-regexp-in-string
+      (rx bos
+          (: (? (| "//web.archive.org" "https://web.archive.org"))
+             "/web/")
+          (+ (not "/"))
+          "/"
+          (group (or "http" "https") "://"))
+      "\\1"
+      (match-string 1))
+     nil t nil 1)))
+
+(defun legacy-add-org-hugo-metadata (info)
+  (setq-local org-todo-log-states '(("REVISING" time nil)
+                                    ("DONE" time nil)))
+  (org-todo "DONE")
+  (org-add-log-note)
+  (org-todo "REVISING")
+  (org-add-log-note)
+  (re-search-forward org-logbook-drawer-re (org-entry-end-position))
+  (goto-char (match-beginning 0))
+  (re-search-forward "^- State \"DONE\".*\\[\\(.*\\)]" (match-end 0))
+  (replace-match
+   (format-time-string "%F %a" (plist-get info :pub-date))
+   nil t nil 1)
+  (org-set-property "export_hugo_bundle"
+                    (plist-get info :slug))
+  (org-set-property "export_file_name" "index")
+  (when-let* ((tags (plist-get info :tags)))
+    (org-hugo--get-valid-subtree)
+    (org-set-tags tags)))
+
+(defun legacy-strip-pandoc-inferred-classes (&optional info)
+  (prog1 nil
+    (org-hugo--get-valid-subtree)
+    (org-map-entries (-partial 'org-delete-property "CLASS") t 'tree)))
+
 
 (defun +org-hugo-get-legacy-frontmatter (file)
   (org-with-file-buffer file
@@ -4173,58 +4445,6 @@ This is possibly a bad place for this to live, but we want to be able to pull tr
           (narrow-to-region start (point))
           (goto-char (point-min))
           (tomlparse-buffer :object-type 'alist :datetime-as 'datetime))))))
-
-(defcustom hugo-query-wayback-prefix "https://web.archive.org/web/20160530235900/"
-  "The waybackmachine URL to search under.")
-(defcustom hugo-query-content-start-re (rx (group line-start ":END:\n"))
-  "A regex skip the starting boilerplate.
-`(match-end 1)' should be the point to delete up to")
-
-(defcustom hugo-query-content-end-re
-  (rx (group line-start "<<commentform>>"))
-  "A regex to find where trailing boilerpoint starts.
-`(match-start 1)' should be the point to delete from.")
-
-(defcustom hugo-wayback-content-matchers
-  `((,(rx (group line-start ":END:\n")) .
-     ,(rx (group line-start "<<commentform>>")))
-    )
-  "Pairs of regexen that are possible body delimiters in archived content")
-
-
-(defvar pdc/last-imported-legacy-file nil)
-
-(defun +org-link-strip-wayback-machine-from-links (&optional buffer)
-  (let ((re (rx "[[https://web.archive.org/"
-                (*? not-newline)
-                "/"
-                (group "http" (? "s")) "://")))
-    (save-excursion
-      (with-current-buffer (or buffer (current-buffer))
-        (goto-char (point-min))
-        (while (re-search-forward re nil t)
-          (replace-match (format "[[%s://" (match-string 1)) nil nil))))))
-
-(defun +org-hugo--get-legacy-page-from-wayback (file)
-  (require 's)
-  (require 'org-macs)
-  (let* ((url (s-replace-regexp
-               (rx bos "https://") "http://"
-               (hugo-query-url-for-source file)))
-         (wbm-url (format "%s%s"
-                          hugo-query-wayback-prefix url)))
-    (with-temp-buffer
-      (call-process "pandoc" nil t t
-                    "-f" "html"
-                    "-t" "org"
-                    wbm-url)
-      (goto-char (point-min))
-      (re-search-forward hugo-query-content-start-re)
-      (replace-region-contents (point-min) (match-end 1) "")
-      (when (re-search-forward hugo-query-content-end-re nil t)
-        (replace-region-contents (match-beginning 1) (point-max) ""))
-      (+org-link-strip-wayback-machine-from-links)
-      (org-string-nw-p (substring-no-properties (buffer-string))))))
 
 (defvar +org-hugo--import-skip-front-matter-re
   (rx (: buffer-start (group (| "+++" "---") "\n")
@@ -4330,35 +4550,161 @@ This is possibly a bad place for this to live, but we want to be able to pull tr
       (cond ((< diff 0) (run-hooks 'org-after-promote-entry-hook))
             ((> diff 0) (run-hooks 'org-after-demote-entry-hook))))))
 
-
-(defun +org-hugo--fixup-comments-heading ()
-  (let ((level (org-current-level)))
+(defun +org-hugo--fixup-comments-heading (&optional info)
+  (let ((level (org-current-level))
+        (comment-id (or (plist-get info :comment-id)
+                        "commentaires")))
     (org-map-entries
      (lambda ()
        ;; Correct *** depth
-       (+org-set--heading-level (1+ level))
-       ;; Note that comments are historic
-       (when (re-search-forward org-link-bracket-re (pos-eol) t)
-         (let* ((desc (match-string 2)))
-           (replace-match (replace-regexp-in-string
-                           "\\(?:historic \\)?comment"
-                           "historic comment"
-                           desc)
-                          nil nil nil 2)))
-       ;; Remove the link to the comment form
-       (when (re-search-forward org-link-bracket-re (pos-eol) t)
-         (replace-match "»"))
-       ;; Anglicise comments id
-       (org-set-property "CUSTOM_ID" "commentary")
-       (org-end-of-meta-data)
-       (let ((case-fold-search t)
-             (+org-suppress-insert-structure-template-advice t))
-         (unless (looking-at-p "\\n*[ \t]*#\\+BEGIN_MARGINNOTE")
-           (org-insert-structure-template "marginnote")
-           (insert "These are archived comments. To respond to this post, use a webmention\n"))))
-     "CUSTOM_ID=\"commentaires\"" 'tree       )))
+       (let ((case-fold-search t))
+         (if (looking-at-p "^[ \t]*\\** .*\\[0 comments\\]")
+             (delete-region (point) (org-entry-end-position))
+           (+org-set--heading-level (1+ level))
+           ;; Note that comments are historic
+           (when (re-search-forward org-link-bracket-re (pos-eol) t)
+             (let* ((desc (match-string 2)))
+               (replace-match (replace-regexp-in-string
+                               "\\(?:historic \\)?comment"
+                               "historic comment"
+                               desc)
+                              nil nil nil 2)))
+           ;; Remove the link to the comment form
+           (when (re-search-forward org-link-bracket-re (pos-eol) t)
+             (replace-match "»"))
+           ;; Anglicise comments id
+           (org-set-property "CUSTOM_ID" "comments")
+           (org-end-of-meta-data)
+           (let (
+                 (+org-suppress-insert-structure-template-advice t))
+             (unless (looking-at-p "\\n*[ \t]*#\\+BEGIN_MARGINNOTE")
+               (org-insert-structure-template "marginnote")
+               (insert "These are archived comments. To respond to this post, use a webmention\n"))))))
+     (format "CUSTOM_ID=\"%s\"" comment-id) 'tree     )))
 
-(defun +org-hugo--fixup-comments ()
+(defvar legacy-post-meta-re
+  (rx bol "Published on "
+      (group (+? anychar))
+      " by Piers Cawley . Tags"))
+
+(defun legacy-post-reformat-meta-stuff ()
+  (save-excursion
+    (org-hugo--get-valid-subtree)
+    (let ((tags ()))
+      (save-excursion
+        (save-restriction
+          (when (re-search-forward legacy-post-meta-re nil t)
+            (org-narrow-to-element)
+            (goto-char (point-min))
+            (while (re-search-forward org-link-bracket-re nil t)
+              (push (match-string-no-properties 2) tags))
+            (delete-region (point-min) (point-max))))
+        (while (looking-at "^$")
+          (forward-line))
+        (when (looking-at "If you liked this article you can")
+          (let ((elem (org-element-at-point)))
+            (delete-region (org-element-begin elem)
+                           (org-element-end elem)))))
+      (unless (null tags)
+        (org-set-tags tags))
+      )))
+
+(defun legacy-fixup-scribbish-comments (info)
+  (let ((comment-id (plist-get info :comment-id))
+        (comment-count 0))
+    (org-map-entries
+     (lambda ()
+       (while (> (org-current-level) 2)
+         (org-promote-subtree))
+       (org-set-property "HTML_CONTAINER" "section")
+       (org-set-property "HTML_CONTAINER_CLASS" "comments")
+       (save-restriction
+         (org-narrow-to-subtree)
+         (goto-char (org-entry-beginning-position))
+         (re-search-forward org-property-drawer-re (org-entry-end-position))
+         (next-line)
+         (beginning-of-line)
+
+         (delete-matching-lines
+          (rx (or "[[#commentform][Leave a response]]"
+                  (: "<<"
+                     (or "comments_div"
+                         (: "comment-" (+ digit)))
+                     ">>"))))
+         (let ((+org-suppress-insert-structure-template-advice t))
+           (org-insert-structure-template "marginnote")
+           (insert "These are archived comments. To respond to this post, use a webmention.\n"))
+         (while (re-search-forward
+                 (rx bol (+ digit) ". "
+                     (group-n 1 (+ "\n" (* space)))
+                     (regexp org-link-bracket-re)
+                     (group-n 2 (+? anychar) "later:" eol))
+                 nil t)
+           (replace-match
+            (replace-regexp-in-string
+             (rx (+ (any space "\n")))
+             " " (match-string 2))
+            nil t nil 2)
+           (replace-match "!" nil t nil 1)
+           (setq comment-count (1+ comment-count)))
+         ;; Turn the plain list into headlines
+         (org-element-map (org-element-parse-buffer) 'plain-list
+           (lambda (list)
+             (goto-char (org-element-begin list))
+             (let ((current-prefix-arg '(4)))
+               (org-toggle-heading))))
+         ;; Fix the Comments headline
+         (goto-char (point-min))
+         (org-edit-headline (format "%s historic comments"
+                                    comment-count))))
+     (format "CUSTOM_ID=\"%s\"" comment-id) 'tree)))
+
+(use-package org-ml
+  :defer nil)
+
+(defun legacy-fixup-default-comment-node (node info)
+
+  )
+
+
+
+
+(defun legacy-fixup-default-comments (info)
+  (let ((comment-id (plist-get info :comment-id))
+        (comment-count 0))
+    (org-map-entries
+     (lambda ()
+       (while (> (org-current-level) 2)
+         (org-promote-subtree))
+       (org-set-property "HTML_CONTAINER" "section")
+       (org-set-property "HTML_CONTAINER_CLASS" "comments")
+       (org-set-property "CUSTOM_ID" "comments")
+       (save-restriction
+         (org-narrow-to-subtree)
+         (goto-char (org-entry-beginning-position))
+         (re-search-forward org-property-drawer-re (org-entry-end-position))
+         (next-line)
+         (beginning-of-line)
+         (let ((+org-suppress-insert-structure-template-advice t))
+           (org-insert-structure-template "marginnote")
+           (insert "These are archived comments. To respond to this post, use a webmention.\n"))
+         (org-back-to-heading)
+         (save-excursion
+           (when (re-search-forward "comments\\]\\].*" (pos-eol) t)
+             (replace-match "historic comments]]"))
+           ;; (while (re-search-forward "^  " nil t)
+           ;;   (when (looking-at-p "\\*\\{4\\} ")
+           ;;     (insert "*")))
+           ;; Turn the plain list into headlines
+           (org-element-map (org-element-parse-buffer) 'plain-list
+             (lambda (list)
+               (goto-char (org-element-begin list))
+               (let ((current-prefix-arg '(4)))
+                 (org-toggle-heading)))))
+         (delete-matching-lines "^-----")))
+     (format "CUSTOM_ID=\"%s\"" comment-id) 'tree)))
+
+(defun +org-hugo--fixup-comments (&optional info)
   "Sort out broken spacing of historic comments.
 Called with point at the beginning of the comments entry."
   (interactive)
@@ -4391,19 +4737,24 @@ Called with point at the beginning of the comments entry."
         (unless (string= gravatar-link (match-string 1))
           (replace-match (s-lex-format "${heading-stars}![[${gravatar-link}][${gravatar-link}]] ")))))))
 
-(defun +org-hugo-fixup-legacy-comments (&optional buffer-or-name)
+(defun +org-hugo-fixup-legacy-comments (&optional info)
   "Reformat our legacy comments"
   (interactive)
   (save-excursion
     (save-restriction
-      (with-current-buffer (or buffer-or-name (current-buffer))
-        (save-excursion
-          (org-hugo--get-valid-subtree)
-          (org-narrow-to-subtree)
-          (+org-hugo--fixup-comments-heading)
-          (org-map-entries
-           #'+org-hugo--fixup-comments
-           "CUSTOM_ID=\"commentary\"" 'tree))))))
+      (org-hugo--get-valid-subtree)
+      (org-narrow-to-subtree)
+      (+org-hugo--fixup-comments-heading info)
+      (org-map-entries
+       (lambda ()
+         (+org-hugo--fixup-comments info))
+       "CUSTOM_ID=\"comments\"" 'tree))))
+
+(defun legacy-post-fixup-import (&optional buffer-or-name)
+  (interactive)
+  (+org-hugo-fixup-legacy-comments buffer-or-name)
+  (legacy-post-reformat-meta-stuff))
+
 
 (defun +maybe-remove-legacy-file ()
   (if (and pdc/last-imported-legacy-file
@@ -4418,7 +4769,7 @@ Called with point at the beginning of the comments entry."
 ("R" "Recover article" entry
  (file+headline ,(pdc-site-posts-file "bofh") "Recovered Posts")
  (function +org-hugo-import-legacy-article-capture-template)
- :hook +org-hugo-fixup-legacy-comments
+ :hook legacy-post-fixup-import
  :after-finalize +maybe-remove-legacy-file
  :jump-to-captured t)
 
