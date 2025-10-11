@@ -3643,6 +3643,9 @@ These days I write everything in a big org file and export it to Hugo with ~ox-h
 #+begin_src emacs-lisp
 (use-package ox-hugo
   :defer nil
+  :straight (:type git :host github
+                   :repo "kaushalmodi/ox-hugo"
+                   :fork (:host github :repo "pdcawley/ox-hugo"))
   :config
 
   (defun +org-hugo-set-shortcode-props (code &rest props)
