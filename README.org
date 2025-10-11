@@ -3105,24 +3105,51 @@ We're poaching this from Sacha again
 **** Refiling stuff
 ~org-refile~ lets you organise notes by typing in the headline to file them under.
 
+Add an ~+org-extra-refile-targets~ variable as a handy target for directory and file local variables to easily extend the list of refile targets without making the full target list unwieldy.
+
+#+begin_src emacs-lisp
+(defvar +org-extra-refile-targets nil
+  "Extra files to consider as refile targets.
+
+The expectation is that this will be overridden by file or directory
+local variables to add refile targets that make sense in different contexts, without completely clogging the list.")
+#+end_src
+
+If a buffer is open, and it's in org mode, then it should be a refile target, no? This snippet inspired by [[https://yiming.dev/blog/2018/03/02/my-org-refile-workflow/][Yiming Chen]] and doctored a bit to use ~derived-mode-p~ rather than checking if the file name matches ~\.org$~ seems to fit the bill. It might remove the need for ~+org-extra-refile-targets~.
+
+#+begin_src emacs-lisp
+(defun +org/opened-buffer-files ()
+  "Return the list of org files currently opened in emacs."
+  (delq nil
+        (mapcar (lambda (x)
+                  (with-current-buffer x
+                    (if (and (buffer-file-name x)
+                             (derived-mode-p 'org-mode))
+                        (buffer-file-name))))
+                (buffer-list))))
+#+end_src
+
 #+begin_src emacs-lisp :tangle nil :noweb-ref org-custom
-  (org-reverse-note-order t)
-  (org-refile-use-outline-path 'file)
-  (org-outline-path-complete-in-steps nil)
-  (org-refile-allow-creating-parent-nodes 'confirm)
-  (org-refile-use-cache nil)
-  (org-refile-blank-before-new-entry nil)
-  (org-refile-targets
-   `((,(+org-file-paths
-        "organiser.org"
-        "routines.org"
-        "reference.org"
-        "decisions.org"
-        "posts.org"
-        "easterley.org"
-        "inbox.org"
-        "songs.org")
-      . (:maxlevel . 5))))
+(org-reverse-note-order t)
+(org-refile-use-outline-path 'file)
+(org-outline-path-complete-in-steps nil)
+(org-refile-allow-creating-parent-nodes 'confirm)
+(org-refile-use-cache nil)
+(org-refile-blank-before-new-entry nil)
+(org-refile-targets
+ `((nil . (:maxlevel . 9))
+   (,(+org-file-paths
+      "organiser.org"
+      "routines.org"
+      "reference.org"
+      "decisions.org"
+      "posts.org"
+      "easterley.org"
+      "inbox.org"
+      "songs.org")
+    . (:maxlevel . 9))
+   (+org-extra-refile-targets
+    . (:maxlevel . 9))))
 #+end_src
 **** Helper functions
 ***** Finding .org files
