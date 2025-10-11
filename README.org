@@ -1,7 +1,7 @@
 # -*- lexical-binding: t -*-
 #+title: Piers Cawley's Literate Emacs Config
 #+author: Piers Cawley
-#+property: header-args:emacs-lisp+ :tangle yes :results silent :exports code :noweb yes :comments no :eval never-export
+#+property: header-args:emacs-lisp :tangle yes :results silent :exports code :noweb yes :comments no :eval never-export :lexical yes
 #+options: html-style:nil
 #+auto_tangle: t
 #+startup: content
