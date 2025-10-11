@@ -57,3 +57,4 @@ url
 /init.el
 /tree-sitter/*.dylib
 /modules/wayback.el
+/modules/hugo-query.el

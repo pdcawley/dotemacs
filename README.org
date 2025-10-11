@@ -1823,7 +1823,7 @@ Yeah, sometimes I want to edit ~/etc/whatever~ and I don't want to have to leave
 *** Movement
 Borrowed from [[http://yummymelon.com/devnull/rethinking-minibuffer-movement.html][Charles Choi's blog]] where he tweaks ~forward-sexp~ to jump to the beginning of the next sexp, rather than the end of the current one. Seems very sensible.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle nil
 (use-package emacs
   :bind ([remap forward-sexp] . pdc/next-sexp)
   :init
@@ -1848,9 +1848,10 @@ This has no error checking."
                 (message
                  "Unable to move point to next balanced expression (sexp)."))))))
 
-  (with-eval-after-load 'paredit
-    (bind-keys :map paredit-mode-map
-               ([remap paredit-forward] . pdc/next-sexp))))
+  ;; (with-eval-after-load 'paredit
+  ;;   (bind-keys :map paredit-mode-map
+  ;;              ([remap paredit-forward] . pdc/next-sexp)))
+  )
 
 #+end_src
 
